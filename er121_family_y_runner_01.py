@@ -1345,13 +1345,16 @@ def stage_pages(ctx) -> dict:
         pre = meaning_by_lv.get(lv, "")
         if html_by_id.get(lvd["id"]) or pre:
             lvd["study_html"] = pre + (html_by_id.get(lvd["id"]) or "")
-    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio") + _y_pww_aux_html(ctx, audience, cp),      # 候補が無ければ空(従来と同一)
+    _al_text, _al_html = _khr().render_redundancy_alarms_all(ctx.out_dir)     # D8: 重複アラーム(表示・記録のみ・非停止)。記録なし=空=従来とバイト同一
+    if _al_text:
+        print(_al_text, flush=True)
+    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio") + _y_pww_aux_html(ctx, audience, cp) + _al_html,      # 候補が無ければ空(従来と同一)
                                  show_notice=show_notice, audience=audience, highlight=bool(hl_results))
     # 委任_11(ユーザー原文_02 §3・§4): 試聴ページ(報告資料)は実Chunk境界の⏸・LR赤・Fallback濃青を持つのが正。旧「public=⏸ 0件」STOP(FAMILY_Y_PUBLIC_PAGE_HAS_CHUNK_MARKER)は撤去
     page = f"{ctx.pages_dir}/index.html" if audience == cp.AUDIENCE_PUBLIC else f"{ctx.pages_dir}/index_dev.html"      # devは公開用index.htmlを上書きしない
     with open(page, "w", encoding="utf-8") as f:
         f.write(html_text)
-    return {"page": page, "levels": [lv["id"] for lv in levels], "audience": audience, "voice_notice_shown": show_notice,
+    return {"page": page, "levels": [lv["id"] for lv in levels], "audience": audience, "voice_notice_shown": show_notice, "redundancy_alarm_report": _al_text,
             "chunk_markers": cp.count_chunk_markers(html_text), **({"highlight_levels": sorted(hl_results)} if hl_results else {})}
 
 

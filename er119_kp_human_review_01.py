@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import datetime
 import hashlib
+import html as _html
 import json
 import logging
 import os
@@ -1159,6 +1160,95 @@ def write_alarm_file_safe(kp_dir: str, review: dict, level: str, *, reached: Opt
     except Exception as e:   # noqa: BLE001  派生ファイル。確定を止めない
         _log.warning("redundancy_alarm.json write failed (non-blocking): %s: %s", type(e).__name__, e)
         return None
+
+
+
+# ---- D8(ユーザー原文§3「アラームを表示・記録」): 重複アラームの表示。正本=redundancy_alarm.json / nuance_redundancy_alarm.json(読取のみ・API 0・非停止)
+ALARM_LEVEL_LABEL = {"a2": "Standard", "b1b": "Advanced"}
+NUANCE_ALARM_FILENAME = "nuance_redundancy_alarm.json"
+
+
+def _alarm_kp_candidates(run_dir: str, level: str) -> list:
+    return [f"{run_dir}/{level}/key_phrases/redundancy_alarm.json", f"{run_dir}/key_phrases/{level}/redundancy_alarm.json"]     # X / Y,Z の配置
+
+
+def _alarm_nuance_candidates(run_dir: str, level: str) -> list:
+    sds = [f"{run_dir}/{level}/study_text"] + ([f"{run_dir}/study_text"] if level == "b1b" else [])     # X / Y,Z(Advは<run>/study_text)
+    return [f"{d}/{NUANCE_ALARM_FILENAME}" for d in sds]
+
+
+def _alarm_read(paths_: list) -> Optional[dict]:
+    for p in paths_:
+        try:
+            if os.path.exists(p):
+                d = _read_json(p)
+                if isinstance(d, dict):
+                    return d
+        except Exception:   # noqa: BLE001  壊れた/読めない派生ファイルは表示を欠くだけ(非停止)
+            continue
+    return None
+
+
+def _alarm_pair_key(a: dict) -> tuple:
+    return tuple(sorted((str(a.get("used_form_a") or a.get("candidate_id_a")), str(a.get("used_form_b") or a.get("candidate_id_b")))))
+
+
+def collect_redundancy_alarms(run_dir: str, level: str) -> Optional[dict]:
+    """level単位の重複アラーム一覧。記録ファイルが1つも無い(旧run・未確定)=None。pairs=KP/Word/追加解説/本文意味(候補QA+確定集合QA、同一ペアは1件)、nuance=ニュアンス解説。"""
+    kp = _alarm_read(_alarm_kp_candidates(run_dir, level))
+    nz = _alarm_read(_alarm_nuance_candidates(run_dir, level))
+    if kp is None and nz is None:
+        return None
+    pairs, seen = [], set()
+    for a in list((kp or {}).get("candidate_qa_alarms") or []) + list((kp or {}).get("final_set_alarms") or []):
+        k = _alarm_pair_key(a)
+        if k in seen:
+            continue
+        seen.add(k)
+        pairs.append(a)
+    return {"level": level, "kp_recorded": kp is not None, "pairs": pairs, "nuance_recorded": nz is not None,
+            "nuance": list((nz or {}).get("alarms") or [])}
+
+
+def render_redundancy_alarms(run_dir: str, level: str) -> tuple:
+    """(text, html)。記録ファイル欠落=("","")(旧run・非停止)。0件でも『重複アラーム 0件』を返す。表示のみ(確定・TTS・組立を止めない)。"""
+    try:
+        c = collect_redundancy_alarms(run_dir, level)
+    except Exception:   # noqa: BLE001
+        return "", ""
+    if c is None:
+        return "", ""
+    label = ALARM_LEVEL_LABEL.get(level, level)
+    n = len(c["pairs"]) + len(c["nuance"])
+    lines, items = [f"{label}: 重複アラーム {n}件"], []
+    for a in c["pairs"]:
+        sa, sb = a.get("slot_label_a") or "", a.get("slot_label_b") or ""
+        asp = a.get("aspects") or {}
+        asp_s = " / ".join(f"{k}={v}" for k, v in asp.items() if v)
+        why = a.get("reasoning") or "(理由の記録なし)"
+        lines.append(f"  - {a.get('used_form_a')}({sa}) x {a.get('used_form_b')}({sb}) 理由: {why}" + (f" [観点: {asp_s}]" if asp_s else ""))
+        items.append(f"<li><b>{_html.escape(str(a.get('used_form_a')))}</b>({_html.escape(sa)}) × <b>{_html.escape(str(a.get('used_form_b')))}</b>({_html.escape(sb)})"
+                     f"<br>理由: {_html.escape(str(why))}" + (f"<br>観点: {_html.escape(asp_s)}" if asp_s else "") + "</li>")
+    for a in c["nuance"]:
+        it = a.get("item") or a.get("item_id")
+        note = a.get("note") or ""
+        lines.append(f"  - ニュアンス解説 x {it} 理由: {note}")
+        items.append(f"<li>ニュアンス解説 × <b>{_html.escape(str(it))}</b><br>理由: {_html.escape(str(note))}</li>")
+    html_ = f"<h3>{_html.escape(label)}: {n}件</h3>" + (f"<ul>{''.join(items)}</ul>" if items else "<p>重複アラーム 0件</p>")
+    return "\n".join(lines), html_
+
+
+def render_redundancy_alarms_all(run_dir: str, levels: tuple = ("a2", "b1b")) -> tuple:
+    """全levelの(text, html)。html=ページ補助情報(本文領域外・全level節の後ろ)に置く事後確認節。全level記録なし=("","")=従来ページとバイト同一。"""
+    parts = [(lv, render_redundancy_alarms(run_dir, lv)) for lv in levels]
+    parts = [(lv, t, h) for lv, (t, h) in parts if h]
+    if not parts:
+        return "", ""
+    text = "[重複アラーム(選定後の重複。表示・記録のみ。確定/音声/組立は止めません)]\n" + "\n".join(t for _lv, t, _h in parts)
+    html_ = ("<section id='post-check'><h2>事後確認(重複アラーム)</h2>"
+             "<p>選定したKey Phrase等とニュアンス解説の間に、意味・用法の重なりがある可能性をAIが検知しました。"
+             "表示と記録のみで、選定は維持されます(重複の可否は事後に判断してください)。</p>" + "".join(h for _lv, _t, h in parts) + "</section>")
+    return text, html_
 
 
 def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = None, ng_scope: Optional[dict] = None) -> dict:

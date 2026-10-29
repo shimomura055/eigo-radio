@@ -2694,7 +2694,7 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
 
 
 def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: bool = False, *,
-                page_title: str = "走れメロス", audio_file_prefix: str = "Melos", study_html_by_level: dict | None = None,
+                page_title: str = "走れメロス", audio_file_prefix: str = "Melos", study_html_by_level: dict | None = None, post_check_html: str = "",
                 audience: str = "public", highlights_by_level: dict | None = None) -> dict:
     """user_test/family_z_melos_02/{index,standard,advanced}.html を生成する(静的ファイルのみ)。
     index.html=ユーザー試聴ページ標準フォーマット(Std/Adv 1ページ、通し再生・再生順スクリプト・KP、ASR警告は補助表示。委任_19、
@@ -2735,7 +2735,7 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
                             **({"study_html": _hl_block_for(highlights_by_level, level) + ((study_html_by_level or {}).get(level) or "")}
                                if (_hl_block_for(highlights_by_level, level) or (study_html_by_level or {}).get(level)) else {})})
         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
-    index_html = build_index_html(user_levels, warn_sections, page_title=page_title)
+    index_html = build_index_html(user_levels, warn_sections, page_title=page_title, post_check_html=post_check_html)
     lint = lint_page_html(index_html)
     chk = uc.check_page(index_html, base_dir=pages_dir, audience=audience)
     if any(lint.values()) or chk["overall"] != "PASS":
@@ -2765,7 +2765,7 @@ def _warn_entry_to_clip_id(entry_key: str):
     return None
 
 
-def build_index_html(user_levels: list, warn_sections=None, page_title: str = "走れメロス") -> str:
+def build_index_html(user_levels: list, warn_sections=None, page_title: str = "走れメロス", post_check_html: str = "") -> str:
     """ユーザー試聴ページ(標準フォーマット)。warn_sections=[(level_label, section_html)]: AUW 委任_03の『事後試聴リスト』節は
     補助表示(全レベル節の後ろ、折りたたみ)へ置く。standard.html/advanced.htmlは開発確認用の詳細ページとして補助表示から案内。"""
     import er_user_listening_page_common_01 as uc
@@ -2781,7 +2781,7 @@ def build_index_html(user_levels: list, warn_sections=None, page_title: str = "�
     import er133_report_marks_01 as _rm
     if any(("chunk-mark" in b or "rpt-" in b) for lv in user_levels for r in lv["rows"] for b in r["blocks"]):   # ⏸/赤/青があるページだけ凡例1行(委任_11)
         intro += _rm.legend_html()
-    return uc.render_standard_page(f"{page_title} 試聴(Standard / Advanced)", user_levels, intro_html=intro, aux_html=aux)
+    return uc.render_standard_page(f"{page_title} 試聴(Standard / Advanced)", user_levels, intro_html=intro, aux_html=aux + post_check_html)     # D8: 事後確認(重複アラーム)節。空=従来とバイト同一
 
 
 def lint_page_html(html_text: str) -> dict:

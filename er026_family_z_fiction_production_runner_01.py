@@ -2679,6 +2679,10 @@ def stage_pages(ctx) -> dict:
     study_html = _p2w().compose_page_html(p1_html.get(ADV_LEVEL, ""), _p2res, nuance=_nz[ADV_LEVEL])   # R-1/R-2: Part 1→Part 2→ニュアンス解説(共通builder1つ)
     study_html_std = _p2w().compose_page_html(p1_html.get("a2", ""), _p2res_std, nuance=_nz["a2"])   # 同じ共通builder。Standardは display_spec付きのときだけPart 1が先(Part 1→Part 2)
     extra = {"study_html_by_level": {ADV_LEVEL: study_html, "a2": study_html_std}}
+    _al_text, _al_html = _khr().render_redundancy_alarms_all(ctx.out_dir)     # D8: 重複アラーム(表示・記録のみ・非停止)。記録なし=空=従来とバイト同一
+    if _al_text:
+        print(_al_text, flush=True)
+        extra["post_check_html"] = _al_html
     if hl_by_level:
         extra["highlights_by_level"] = hl_by_level   # 無い(旧run)=キー自体を渡さない=従来とバイト同一
     return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=cfg["page_title_ja"],

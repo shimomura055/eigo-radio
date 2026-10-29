@@ -741,7 +741,8 @@ class TestIsolation(unittest.TestCase):
         offenders = []
         for p in glob.glob(os.path.join(ROOT, "*.py")):
             b = os.path.basename(p)
-            if "test" in b or b in ("er128_kp_confirmed_content_01.py", "er119_kp_human_review_01.py", "er128_form_readable_restore_01.py", "er119_kp_human_review_cli_01.py", "er128_kp_highlight_01.py"):   # 委任_04A/04B: ハイライトの確定情報アクセサ(display_spec_of/load_verified_items経由の読取。SLOT-23)は共有関数側ではなく表示builder入口。委任_07R: 人間可読復元tool(X/Z確定内容保護の入口。cmd_from_formへ委譲)とそのCLI入口はA/B/C共有関数ではない
+            if "test" in b or b in ("er128_kp_confirmed_content_01.py", "er119_kp_human_review_01.py", "er128_form_readable_restore_01.py", "er119_kp_human_review_cli_01.py", "er128_kp_highlight_01.py",
+                                                     "er129_lr_display_reflection_01.py"):   # HR-SELECTION-FLOW 委任_04(OPEN-588): LR/Fallback採用の表示反映(LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01、OPEN-569でX/Y/Z承認済み。lr_overlapの純関数再計算にer128を使う。importerはX/Y/Z(er063含む)とer130-133のみでA/B/Cは未接触)   # 委任_04A/04B: ハイライトの確定情報アクセサ(display_spec_of/load_verified_items経由の読取。SLOT-23)は共有関数側ではなく表示builder入口。委任_07R: 人間可読復元tool(X/Z確定内容保護の入口。cmd_from_formへ委譲)とそのCLI入口はA/B/C共有関数ではない
                 continue
             if re.search(r"^\s*(import|from)\s+er128_", open(p, encoding="utf-8", errors="ignore").read(), re.M):
                 offenders.append(b)

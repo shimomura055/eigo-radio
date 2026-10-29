@@ -194,6 +194,10 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
                         f"二次ASR={esc(str(e.get('secondary_text')))} / {esc(','.join(e.get('warning_labels') or []))}</li>" for e in lst.get("entries", []))
         pw.append(f"<h3>{lab}: 事後試聴リスト(PASS_WITH_WARNING) {lst.get('count', 0)}件</h3><ul>{items}</ul>")
     aux_html = "".join(aux) + "<h2 id='pww'>事後試聴リスト(PASS_WITH_WARNING、非ブロッキング)</h2>" + "".join(pw)
+    _al_text, _al_html = R._khr().render_redundancy_alarms_all(run)     # D8: 重複アラーム(表示・記録のみ・非停止)。記録なし=空=従来とバイト同一
+    if _al_text:
+        print(_al_text, flush=True)
+        aux_html += _al_html
     title = f"{ja_title or slug} 試聴ページ"
     intro = ("<div class='note'><b>状態: 完成版・ユーザー試聴待ち</b>(試聴PASSは未取得です)。上のリンクでレベルを切り替えられます。"
              + (("<br>" + esc(intro_note)) if intro_note else "") + "</div>")
@@ -207,7 +211,7 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
         page = page.replace("</head>", f"<style>{hl.HIGHLIGHT_CSS}</style></head>", 1)
 
     # ---- 必須検査(出力前) ----
-    summary = {"slug": slug, "run": run_name, "marked_levels": marked, "vocab_levels": vocab_levels, "notices": {}}
+    summary = {"slug": slug, "run": run_name, "marked_levels": marked, "vocab_levels": vocab_levels, "notices": {}, "redundancy_alarm_report": _al_text}
     cp = uc.check_page(page, levels=tuple(lab for _l, _i, lab in levels))
     if cp["overall"] != "PASS":
         raise PageStop("X_PAGE_CHECK_PAGE_FAIL: " + "; ".join(f"{k}:{v['detail']}" for k, v in cp["checks"].items() if not v["ok"])[:600])
