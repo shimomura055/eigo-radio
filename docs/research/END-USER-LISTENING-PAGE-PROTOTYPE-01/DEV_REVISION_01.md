@@ -68,5 +68,6 @@ URL=https://shimomura055.github.io/eigo-radio/user_test/dev_enduser_page_01/inde
 3. 「■ 停止」を赤系→濃グレー黒系(#2f343d地・白字)。文言・機能不変。
 4. 学習ブロックを枠線+淡背景: Vocabulary=黄(#fffbea/#e6c84a)・Grammar=青(#f1f6ff/#8fb2ee)・ニュアンス解説=緑(#f1faf3/#86c795)。添付イメージ未受領のため淡色背景+同系細枠で統一。
 5. ニュアンス解説仮表示: AI島Std/Adv・月Advに「ニュアンス解説」コーナー(文法の後)。出典=02C証拠`NUANCE-EXPLANATION-PRODUCTION-WIRING-01/evidence/X_nxm1_..._standard__nuance_fragment.html`(Std)・`X_nxm2_..._advanced__nuance_fragment.html`(Adv)の採用1件。dataに`nuance_source=placeholder_for_layout_check`、画面に「【仮データ・表示確認用】他記事のニュアンス解説を流用。記事本文とは内容が対応しません。」。生成: `tools/build_rev_d_01.py`。DEV data以外に接続なし。
+公開検証(live rev01-d、PC1280+スマホ390x844): 274チェック NG0(D1-D5+rev_c継承Regression、console error 0・HTTP 4xx5xx 0・横溢れなし)。
 注記: 日本語訳ラベル「(DEV訳・未承認)」は既存の維持対象(日本語訳)のためそのまま。
 検証: `tools/verify_rev_d_01.py`(rev_c全項目継承+D1-D5)。ローカル274チェック中NG6=「DEV文字列なし」判定が`(DEV訳・未承認)`に反応した検査側の過剰判定(正規表現を修正済み)。結果は公開検証`verify_result_rev_d_live_01.json`。
