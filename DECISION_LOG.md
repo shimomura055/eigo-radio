@@ -22805,3 +22805,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 受入: 仕様①(候補は提示前に品質検査)・仕様②(選定後の重複はアラーム表示・記録のみ、確定/TTS/組立/Productionを止めない)・ニュアンス解説の整合(選定後の重複停止3経路を撤去)を、実LLM evidence(X/Y/Z全6組合せ、blocking=false・KP stage通過・resume API 0)とtestで確認し、OPEN-600をPRODUCTION_WIREDへ。受入記録=`docs/research/HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01/FABLE_ACCEPTANCE_01.md`(未確認=後続stage全体の複製run実走、ニュアンスの実LLM evidence[実記事はLEGACY]を明記)。
 - D8(ユーザー原文§3「アラームを表示・記録」): 共通レンダ`er119_kp_human_review_01.render_redundancy_alarms`/`_all`(読取のみ・API 0・記録なし=空=従来とバイト同一)を、X listening page・Y/Z stage_pagesのページ補助情報(`#post-check`、本文領域外)とstdoutへ。Y surname候補ページの手動掲載を自動掲載へ置換(本文・音声52ファイル不変)。
 - isolation test 2件(OPEN-588): 承認済みY配線/LR表示反映/DEV専用の正当なimportとして許可集合を更新(A/B/C未接触)。新flag・新品質基準なし。
+
+### 2026-10-29 FZ-DIALOGUE-LR-ADOPTION-01 委任_01: ユーザー正式採用 ZセリフへのLR拡大(APPROVED_FOR_PRODUCTION)・最大TTS6回統一・藪の中c6をLR段階から再開(原文保存+SSOT初期反映)
+- ユーザー決定(原文=`docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER.md`): Family Z Standard/Advancedのセリフ音声にLR(Local Rewrite)を正式採用。フロー=①ctx②ctx→180秒→③従来Dialogue→LR(最大1回)→④ctx⑤ctx→180秒→⑥従来Dialogue→Human Review(最大TTS6回)。日本語音声・KP音声等のLR対象外区分には拡大しない。Fallback・LR適用一覧は8区分へ整理し「Zセリフ従来方式」の独立行を削除(従来Dialogue Styleそのもの・policy=legacy・ロールバックのコードは維持)。
+- 藪の中Adv part3_c6(武弘・Puck・91語)は既存3試行(#1 ctx NG/#2 ctx 減速後NG/180秒/#3 従来 反復検査NG/HR Lock)を再実行せず、LR段階から正規再開する(3試行は消費済み)。UDR #220=判断済み(LR段階から再開)。
+- 本委任_01は原文保存・SSOT初期反映・現状調査・設計・テスト計画のみ(コード実装禁止・API 0)。実装はOpus条件Aレビュー後。OPEN-602新規、OPEN-592/596へ関連付け。Status=APPROVED_FOR_PRODUCTION・未配線(PRODUCTION_WIREDではない)。

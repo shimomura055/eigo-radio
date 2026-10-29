@@ -603,3 +603,5 @@
 ### 2026-10-29 HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01 委任_03A 追記
 - `#190 判断済み(2026-10-29): KP正規化REVIEW_REQUIRED等のQA不合格候補は、人間確認(選定)の前に提示前で解決する(仕様①。不合格候補は選択可能な候補として提示しない)。人間が選定した後の重複アラームは表示・記録のみで確定/Productionを止めない(仕様②)。原文=docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md §2-§3(APPROVED_FOR_PRODUCTION)。SSOT=OPEN-600、CURRENT_SPEC.md「KP等の選定フロー」行。注記: 『KP選定失敗エスカレーション』に該当するUDRとして#190(REVIEW_REQUIRED時の人間確認前の運用)を当てた。別UDRを指す場合はFableが訂正。`
 
+### 2026-10-29 FZ-DIALOGUE-LR-ADOPTION-01 委任_01 追記
+- `#220 判断済み(2026-10-29): 藪の中 Adv full_story_part3_c6(武弘Puck 91語)=ユーザーはZセリフLRを正式採用(APPROVED_FOR_PRODUCTION)し、既存3試行を消費済みとしてLR段階から再開する(試聴採用でも単純な再生成承認でもなく、LR後④〜⑥を必要な範囲で実行しPASSで停止)。原文=docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER.md §1-§3。SSOT=OPEN-602/592。`
