@@ -69,7 +69,7 @@
                  '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + '</div>' +
                  '<button type="button" class="seek part" data-act="part" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button></div>';
         }).join('');
-      }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、下線付きで表示されます。</p>';
+      }).join('') + '</div>';
       out += card('Key Phrases', body, { label: 'KEY PHRASES' });
     }
     var full = parts.filter(function (p) { return p.kind === 'comment' || p.kind === 'story'; });
@@ -211,15 +211,10 @@
       $('jaTitle').textContent = art.title_ja; $('enTitle').textContent = art.topic_en;
       $('tabs').innerHTML = Object.keys(art.levels).map(function (k) { return '<button type="button" role="tab" data-lv="' + k + '">' + LEVEL_NAME[k] + '</button>'; }).join('');
       var want = Q.get('lv'); setLevel(art.levels[want] ? want : Object.keys(art.levels)[0]);
-      if (!want && Object.keys(art.levels).length > 1) {
-        $('entryLevels').innerHTML=Object.keys(art.levels).map(function(k){return '<button type="button" data-entry-lv="'+k+'">'+LEVEL_NAME[k]+'</button>';}).join('');
-        $('entry').hidden=false;
-      }
     }).catch(function (e) { $('content').innerHTML = '<div class="error"><strong>表示エラー</strong><br>' + esc(e.message) + '</div>'; });
   }
 
   /* ---------- イベント ---------- */
-  $('entryLevels').addEventListener('click',function(e){var b=e.target.closest('button[data-entry-lv]');if(!b)return;$('entry').hidden=true;setLevel(b.dataset.entryLv);});
   $('content').addEventListener('click', function (e) {
     var se = e.target.closest('.sent');
     if (se && !e.target.closest('button') && syncKind !== 'none') { seekSentence(se.dataset.sid); return; }
