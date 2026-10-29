@@ -742,7 +742,9 @@ def build_glossary(lv: str, parts: list, vocab: list, level_meanings: list | Non
                 cand = [i for i, q in enumerate(quotes) if txt.lower() in q]
                 if not cand:
                     stop("ENDUSER_GLOSSARY_ASSERT", f"{lv} {p['label']}: 下線対象'{txt}'に対応するVocabularyが無い")
-                i = cand[0]
+                # 本文の英文に下線語を含むVocabularyが複数あるとき(例: 'bandit'はconstableの例文にも現れる)は、見出し語が下線語に対応する項目を優先する
+                # (先頭候補固定だと藪の中Std『bandit』のVocabularyが一覧に載らずSTOPした=FZLR委任_07)。見出し一致が無ければ従来どおり先頭候補。
+                i = min(cand, key=lambda c: (0 if _gl_score(txt, vocab[c]["heading"]) >= 0.8 else 1, c in used_v, c))
                 ents.append({"key": key, "lk": lk, "en": vocab[i]["heading"], "ja": means[i], "vi": i, "form": txt})
                 used_v.add(i)
             else:
@@ -1377,6 +1379,42 @@ def episode_checks(dev_dir, rows_by_level: dict, meta: dict, probe, run_dir=None
     return out
 
 
+def proper_nouns_for_run(run_dir, family: str, rows_by_level: dict | None = None, meta: dict | None = None) -> dict:
+    """FZ-DIALOGUE-LR-ADOPTION-01 委任_07: runから機械的に得られる固有名詞(Whisper initial_prompt + 既知名正規化用。ページ表示の名前は不変)。
+    戻り値 {"en":[...], "ja":[...]}。Production rosterを読み取るだけ(書込なし)。
+     - Z: `<run_dir>/voice_assignment.json`のspeakersのうち、writer原稿(`<run_dir>/writer/*.md`)で大文字始まり形のみ現れる話者名(Tajomaru等。woodcutter等の一般名詞は除く)。
+     - X/Y: 記事タイトル語(meta.topic_en)の大文字始まり語 + KP表現(rows_by_levelのkp.expressions)。"""
+    en, ja = [], []
+
+    def add(lst, w):
+        w = (w or "").strip()
+        if w and w not in lst:
+            lst.append(w)
+    fam = str(family).lower()
+    if fam == "z" and run_dir:
+        rd = Path(run_dir)
+        va = rd / "voice_assignment.json"
+        text = ""
+        for f in sorted((rd / "writer").glob("*.md")) if (rd / "writer").is_dir() else []:
+            text += f.read_text(encoding="utf-8", errors="replace") + "\n"
+        if va.is_file():
+            for sp in json.loads(va.read_text(encoding="utf-8")).get("speakers", []):
+                name = str(sp.get("speaker", "")).strip()
+                if not name or "_" in name:
+                    continue
+                cap = name[:1].upper() + name[1:]
+                if re.search(r"(?<![A-Za-z])" + re.escape(cap) + r"(?![A-Za-z])", text) and not re.search(r"(?<![A-Za-z])" + re.escape(name) + r"(?![A-Za-z])", text):
+                    add(en, cap)
+    else:
+        for w in re.findall(r"[A-Z][A-Za-z'\-]+", (meta or {}).get("topic_en", "") or ""):
+            add(en, w)
+        for lv_rows in (rows_by_level or {}).values():
+            for r in lv_rows:
+                for ex in (r.get("kp") or {}).get("expressions", []) if isinstance(r.get("kp"), dict) else []:
+                    add(en, ex)
+    return {"en": en, "ja": ja}
+
+
 def produce_enduser(dev_dir, family: str, *, run_dir=None, cache_dir, ja_manuscript=None, y_article_ja=None, model="medium",
                     out_dir=None, align_mode="direct") -> dict:
     """正式経路の一括生成(API 0): dev index.html -> 行抽出 -> 02A `sync_level`(ローカルfaster-whisper。tts_textは渡さず直接整列=Fable決定)
@@ -1392,11 +1430,13 @@ def produce_enduser(dev_dir, family: str, *, run_dir=None, cache_dir, ja_manuscr
     rows_by_level, _study, meta = build_rows_from_dev_html(raw_dev.decode("utf-8"), {"family": family, "dev_dir": dev_dir, "dev_index_sha256": sha256_text_bytes(raw_dev)})
     probe = make_probe(dev_dir)
     sync_by_level, sync_wall = {}, {}
+    pn = proper_nouns_for_run(run_dir, family, rows_by_level, meta)
     os.makedirs(cache_dir, exist_ok=True)
     for lv, rows in rows_by_level.items():
         t1 = time.time()
         try:
-            sync_by_level[lv] = S.sync_level(str(dev_dir), rows_for_sync(rows), cache_dir=str(cache_dir), model=model, align_mode=align_mode)
+            sync_by_level[lv] = S.sync_level(str(dev_dir), rows_for_sync(rows), cache_dir=str(cache_dir), model=model, align_mode=align_mode,
+                                             proper_nouns=pn)
         except S.EnduserSyncError as e:
             raise EnduserPageStop(e.code, e.message) from e
         sync_wall[lv] = round(time.time() - t1, 1)

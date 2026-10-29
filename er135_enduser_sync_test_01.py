@@ -58,8 +58,12 @@ def synth_wav(path, sentences, gap=0.5, tok_s=0.25, drop=(), extra_tail=0.3, gap
     return raw
 
 
-def fake_transcribe(model_obj, audio, lang):
+PROMPTS = []
+
+
+def fake_transcribe(model_obj, audio, lang, initial_prompt=None):
     S.ASR_STATS['fake_calls'] = S.ASR_STATS.get('fake_calls', 0) + 1
+    PROMPTS.append(initial_prompt)
     return json.loads(json.dumps(FAKE[len(audio)]))
 
 
@@ -288,6 +292,81 @@ class TestSingleSentenceRow(Base):
         with self.assertRaises(S.EnduserSyncError) as cm:
             S.check_structure('x', [{'sid': 'x1', 'start': 0.0, 'end': 9.0}], 2.0, 0.05)
         self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_STRUCT')
+
+
+class TestKnownProperNouns(Base):
+    """FZ-DIALOGUE-LR-ADOPTION-01 委任_07: Whisper initial_prompt (in the cache key) + known-name-only normalisation. Thresholds unchanged."""
+    NAMES = {'en': ['Tajomaru', 'Takehiro', 'Masago']}
+
+    def _row(self, heard, shown):
+        p = os.path.join(self.d, 'pn.wav')
+        synth_wav(p, [heard[0], heard[1]])
+        return {'row_id': 'pn', 'kind': 'script', 'audio_path': p,
+                'sentences': [{'sid': 'pn-s1', 'text': shown[0]}, {'sid': 'pn-s2', 'text': shown[1]}]}
+
+    def test_split_name_and_edit_distance_match_known_names_only(self):
+        shown = ['Tajomaru says he freed Takehiro and they fought.', 'What does Masago say happened after the bandit left?']
+        heard = [['tajo', 'maru', 'says', 'he', 'freed', 'takahiro', 'and', 'they', 'fought'],
+                 ['what', 'does', 'misago', 'say', 'happened', 'after', 'the', 'bandit', 'left']]
+        row = self._row(heard, shown)
+        with self.assertRaises(S.EnduserSyncError) as cm:           # without the known names: 6/17 style miss -> STOP (threshold unchanged)
+            S.sync_level(self.d, [row], cache_dir=self.cache + '0')
+        self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_TOKEN_MATCH')
+        out = S.sync_level(self.d, [row], cache_dir=self.cache + '1', proper_nouns=self.NAMES)
+        self.assertEqual(out['gate']['status'], 'PASS')
+        self.assertEqual(out['gate']['token_match']['rows']['pn']['n_match'], out['gate']['token_match']['rows']['pn']['n_tok'])
+        w = {(x['known_name_normalized'], x['to']) for x in out['gate']['warnings'] if 'known_name_normalized' in x}
+        self.assertEqual(w, {('tajo maru', 'Tajomaru'), ('takahiro', 'Takehiro'), ('misago', 'Masago')})
+        self.assertEqual([s['text'] for s in out['rows'][0]['sentences']], shown)          # displayed names unchanged
+
+    def test_general_words_are_not_normalised(self):
+        words = [{'w': ' ' + t, 'start': i * 0.3, 'end': i * 0.3 + 0.25, 'p': 0.9} for i, t in enumerate(['masaga', 'mastery', 'takes', 'tajomar'])]
+        new, log = S.normalize_known_names_en(words, ['Tajomaru', 'Masago', 'Takehiro'], ['tajomaru', 'masago', 'takehiro', 'mastery', 'takes'])
+        self.assertEqual([x['from'] for x in log], ['masaga', 'tajomar'])        # near known names (distance <= 2)
+        self.assertEqual([w['w'].strip() for w in new if w['w'].strip() in ('mastery', 'takes')], ['mastery', 'takes'])   # general words stay
+        # a name that is NOT in this row's script is never applied, and a far token is not read as a name
+        new2, log2 = S.normalize_known_names_en(words, ['Tajomaru', 'Masago'], ['masago', 'mastery'])
+        self.assertEqual([x['to'] for x in log2], ['Masago'])
+        _, log3 = S.normalize_known_names_en([{'w': ' banana', 'start': 0, 'end': 1, 'p': 1.0}], ['Tajomaru'], ['tajomaru'])
+        self.assertEqual(log3, [])
+        # short names (< 5 letters) are not fuzzy-matched
+        _, log4 = S.normalize_known_names_en([{'w': ' moon', 'start': 0, 'end': 1, 'p': 1.0}], ['Monk'], ['monk'])
+        self.assertEqual(log4, [])
+
+    def test_exact_name_does_not_swallow_neighbours(self):
+        words = [{'w': ' ' + t, 'start': i * 0.3, 'end': i * 0.3 + 0.25, 'p': 0.9} for i, t in enumerate(['Masago', 'is', 'proud', 'Taki', 'Hiro'])]
+        new, log = S.normalize_known_names_en(words, ['Masago', 'Takehiro'], ['masago', 'is', 'proud', 'takehiro'])
+        self.assertEqual([w['w'].strip() for w in new], ['Masago', 'is', 'proud', 'Takehiro'])
+        self.assertEqual(log, [{'from': 'Taki Hiro', 'to': 'Takehiro'}])
+
+    def test_initial_prompt_is_part_of_the_cache_key(self):
+        self.assertNotEqual(S._params_key('medium', 'en', None), S._params_key('medium', 'en', 'Tajomaru.'))
+        self.assertNotEqual(S._params_key('medium', 'en', 'A.'), S._params_key('medium', 'en', 'B.'))
+        self.assertEqual(S._params_key('medium', 'en'), S._params_key('medium', 'en', None))     # old cache entries stay valid when no prompt
+        row, _ = self.mk_row('ck', ['alpha bravo charlie delta.', 'echo foxtrot golf hotel.'])
+        S.sync_level(self.d, [row], cache_dir=self.cache)
+        self.assertEqual(S.ASR_STATS['transcribe_calls'], 1)
+        S.sync_level(self.d, [row], cache_dir=self.cache)
+        self.assertEqual(S.ASR_STATS['transcribe_calls'], 1)             # same (no) prompt -> cache hit
+        del PROMPTS[:]
+        S.sync_level(self.d, [row], cache_dir=self.cache, proper_nouns=self.NAMES)
+        self.assertEqual(S.ASR_STATS['transcribe_calls'], 2)             # prompted run does not reuse the unprompted cache
+        self.assertEqual(PROMPTS, ['Tajomaru, Takehiro, Masago.'])
+        S.sync_level(self.d, [row], cache_dir=self.cache, proper_nouns=self.NAMES)
+        self.assertEqual(S.ASR_STATS['transcribe_calls'], 2)
+
+    def test_thresholds_unchanged(self):
+        self.assertEqual(S.DEFAULT_THRESHOLDS['en'], {'min_ratio': 0.90, 'short_tokens': 20, 'short_max_miss': 2, 'short_min_ratio': 0.75})
+        self.assertEqual(S.DEFAULT_THRESHOLDS['ja'], {'min_ratio': 0.90, 'short_tokens': 30, 'short_max_miss': 3, 'short_min_ratio': 0.75})
+
+    def test_collect_failures_lists_every_failing_row(self):
+        r1, _ = self.mk_row('f1', ['alpha bravo charlie delta echo.', 'foxtrot golf hotel india juliet.'], drop={(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)})
+        r2, _ = self.mk_row('f2', ['kilo lima mike november oscar.', 'papa quebec romeo sierra tango.'], drop={(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)})
+        out = S.sync_level(self.d, [r1, r2], cache_dir=self.cache, collect_failures=True)
+        self.assertEqual(out['gate']['status'], 'FAIL')
+        self.assertEqual([f['row_id'] for f in out['dry_failures']], ['f1', 'f2'])
+        with self.assertRaises(S.EnduserSyncError):
+            S.sync_level(self.d, [r1, r2], cache_dir=self.cache)
 
 
 class TestKanaFold(unittest.TestCase):

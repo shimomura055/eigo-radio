@@ -1103,5 +1103,41 @@ class T15_Determinism(unittest.TestCase):
                 self.assertEqual(starts, sorted(starts))
 
 
+class T16_ProperNounsForRun(unittest.TestCase):
+    """FZ-DIALOGUE-LR-ADOPTION-01 委任_07: runから機械的に得る固有名詞(roster読取のみ)。"""
+
+    def test_z_roster_capitalised_names_only(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            rd = Path(d)
+            (rd / "writer").mkdir()
+            (rd / "writer" / "r2.md").write_text("The woodcutter spoke. Tajomaru laughed. Then Masago and the monk left. A monk said Takehiro died.", encoding="utf-8")
+            (rd / "voice_assignment.json").write_text(json.dumps({"speakers": [{"speaker": "woodcutter"}, {"speaker": "monk"}, {"speaker": "tajomaru"},
+                                                                              {"speaker": "masago"}, {"speaker": "takehiro"}, {"speaker": "old_woman"}]}), encoding="utf-8")
+            before = sorted(p.name for p in rd.rglob("*"))
+            pn = E.proper_nouns_for_run(rd, "z")
+            self.assertEqual(sorted(pn["en"]), ["Masago", "Tajomaru", "Takehiro"])
+            self.assertEqual(before, sorted(p.name for p in rd.rglob("*")))          # 読み取りのみ
+
+    def test_xy_title_and_kp(self):
+        pn = E.proper_nouns_for_run(None, "x", {"std": [{"kp": {"expressions": ["make an effort"]}}, {"kind": "script"}]}, {"topic_en": "Wrinkles on the Moon"})
+        self.assertEqual(pn["en"], ["Wrinkles", "Moon", "make an effort"])
+
+
+class T17_GlossaryHeadingPreferred(unittest.TestCase):
+    """FZLR委任_07: 下線語が他Vocabularyの例文にも含まれるとき、見出し語が対応する項目を優先(藪の中Std bandit/constable)。"""
+
+    def test_underline_maps_to_vocab_with_matching_heading(self):
+        def vocab(h, quote, ja):
+            return {"heading": h, "fields": [{"label": "本文の英文", "html": quote}, {"label": "本文中の意味", "html": ja}]}
+        v = [vocab("constable", "I caught the famous bandit Tajomaru, the constable said", "警官"),
+             vocab("bandit", "I caught the famous bandit Tajomaru, the constable said", "盗賊")]
+        sent = {"sid": "s1", "html": '<span class="lk2" data-hl="p_a">constable</span> and <span class="lk1" data-hl="p_b">bandit</span>', "text": "constable and bandit"}
+        parts = [{"kind": "story", "label": "Part 1", "paragraphs": [[sent]], "meanings": []}]
+        self.assertEqual(E.build_glossary("std", parts, v), "applied")
+        self.assertEqual([g["en"] for g in parts[0]["glossary"]], ["constable", "bandit"])
+        self.assertEqual([g["ja"] for g in parts[0]["glossary"]], ["警官", "盗賊"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

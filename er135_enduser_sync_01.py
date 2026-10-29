@@ -240,10 +240,11 @@ def _load_model(model):
         raise EnduserSyncError("ENDUSER_SYNC_MODEL_MISSING", "cannot load faster-whisper model %r: %s" % (model, e))
 
 
-def _transcribe(model_obj, audio, lang):
-    """Patchable (tests). Returns {'text','words':[{'w','start','end','p'}]}."""
+def _transcribe(model_obj, audio, lang, initial_prompt=None):
+    """Patchable (tests). Returns {'text','words':[{'w','start','end','p'}]}. initial_prompt: proper-noun hint for Whisper (None = unchanged call)."""
+    kw = {'initial_prompt': initial_prompt} if initial_prompt else {}
     segs, _info = model_obj.transcribe(audio, language=lang, word_timestamps=True, beam_size=5,
-                                       condition_on_previous_text=False, vad_filter=False)
+                                       condition_on_previous_text=False, vad_filter=False, **kw)
     words, texts = [], []
     for s in segs:
         texts.append(s.text)
@@ -252,13 +253,23 @@ def _transcribe(model_obj, audio, lang):
     return {'text': ''.join(texts).strip(), 'words': words}
 
 
-def _params_key(model, lang):
+def _params_key(model, lang, initial_prompt=None):
     blob = json.dumps(ASR_PARAMS, sort_keys=True) + '|' + str(lang)
+    if initial_prompt:      # a prompted transcription never shares a cache entry with an unprompted one (no prompt = key unchanged)
+        blob += '|ip=' + hashlib.sha1(initial_prompt.encode('utf-8')).hexdigest()[:12]
     return "%s_%s_%s" % (model, lang or 'auto', hashlib.sha1(blob.encode()).hexdigest()[:8])
 
 
-def _cache_path(cache_dir, sha, model, lang):
-    return os.path.join(cache_dir, "%s_%s.json" % (sha, _params_key(model, lang)))
+def _cache_path(cache_dir, sha, model, lang, initial_prompt=None):
+    return os.path.join(cache_dir, "%s_%s.json" % (sha, _params_key(model, lang, initial_prompt)))
+
+
+def build_initial_prompt(proper_nouns, lang):
+    """Whisper initial_prompt from the run's known proper nouns (proper_nouns: {"en":[...], "ja":[...]}). None when there is nothing for this language."""
+    names = [n for n in ((proper_nouns or {}).get(lang) or []) if n]
+    if not names:
+        return None
+    return ('、'.join(names) + '。') if lang == 'ja' else (', '.join(names) + '.')
 
 
 def _pid_alive(pid):
@@ -330,9 +341,9 @@ def _job_label(lang, window):
     return lang if window is None else "%s@%.2f-%.2f" % (lang, window[0], window[1])
 
 
-def asr_raw_many(jobs, cache_dir, model):
+def asr_raw_many(jobs, cache_dir, model, proper_nouns=None):
     """jobs: [(mp3_path, sha, lang[, window])] -> {(sha, label): raw}; label = lang or lang@start-end for a slice.
-    Cache hit = no ASR. Raw ASR output only is stored."""
+    Cache hit = no ASR. Raw ASR output only is stored. proper_nouns -> per-language initial_prompt (part of the cache key)."""
     os.makedirs(cache_dir, exist_ok=True)
     res, todo, seen = {}, [], set()
     for job in jobs:
@@ -342,7 +353,8 @@ def asr_raw_many(jobs, cache_dir, model):
         if (sha, label) in seen:
             continue
         seen.add((sha, label))
-        cp = _cache_path(cache_dir, sha, model, label)
+        ip = build_initial_prompt(proper_nouns, lang)
+        cp = _cache_path(cache_dir, sha, model, label, ip)
         if os.path.exists(cp):
             try:
                 res[(sha, label)] = json.load(open(cp, encoding='utf-8'))
@@ -355,7 +367,8 @@ def asr_raw_many(jobs, cache_dir, model):
         with AsrLock(cache_dir):
             m = None
             for path, sha, lang, window, label in todo:
-                cp = _cache_path(cache_dir, sha, model, label)
+                ip = build_initial_prompt(proper_nouns, lang)
+                cp = _cache_path(cache_dir, sha, model, label, ip)
                 if os.path.exists(cp):          # another process filled it while we waited for the lock
                     res[(sha, label)] = json.load(open(cp, encoding='utf-8'))
                     ASR_STATS["cache_hits"] += 1
@@ -367,14 +380,14 @@ def asr_raw_many(jobs, cache_dir, model):
                     a = load_audio(path)
                     if window is not None:
                         a = a[int(window[0] * SR):int(window[1] * SR)]
-                    raw = _transcribe(m, a, lang)
+                    raw = _transcribe(m, a, lang, initial_prompt=ip) if ip else _transcribe(m, a, lang)
                 except EnduserSyncError:
                     raise
                 except Exception as e:  # noqa: BLE001
                     raise EnduserSyncError("ENDUSER_SYNC_ASR_FAILED", "ASR failed for %s: %s" % (path, e))
                 ASR_STATS["transcribe_calls"] += 1
                 raw.update({'mp3_sha256': sha, 'model': model, 'lang': lang, 'window': window, 'duration': round(len(a) / SR, 3),
-                            'elapsed': round(time.time() - t0, 1), 'params': ASR_PARAMS})
+                            'elapsed': round(time.time() - t0, 1), 'params': ASR_PARAMS, 'initial_prompt': ip})
                 tmp = cp + '.tmp%d' % os.getpid()
                 json.dump(raw, open(tmp, 'w', encoding='utf-8'), ensure_ascii=False)
                 os.replace(tmp, cp)
@@ -527,6 +540,75 @@ def map_to_display(timed, script_sents, display_sents):
     return rows
 
 
+# ----------------------------------------------------------------------------- known proper-noun normalisation (measurement only)
+def edit_distance(a, b):
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+KNOWN_NAME_MIN_LEN = 5      # edit distance <= 2 is applied only to known names of at least this many letters (short names would collide with general words)
+KNOWN_NAME_MAX_DIST = 2
+
+
+def normalize_known_names_en(words, names, row_toks):
+    """Measurement-side normalisation for the run's KNOWN proper nouns only (never general words, never the displayed text).
+    An ASR token whose normalised form is within edit distance <= 2 of a known name that occurs in this row's script (and is not itself a legitimate
+    token of the row), or 2-3 adjacent ASR tokens (none of them a legitimate row token) that concatenate to within distance <= 1 of it
+    ('Tajo'+'Maru'), is read as that name. A token already equal to a known name is never merged with its neighbours. Returns (new_words, log)."""
+    rowset = set(row_toks)
+    cand = {}
+    for n in names or []:
+        nn = norm_tok(n)
+        if nn and nn in rowset and len(nn) >= KNOWN_NAME_MIN_LEN:
+            cand[nn] = n
+    if not cand:
+        return words, []
+
+    def near(x, k):
+        """(distance, name) of the closest known name, or None. Single token: distance <= 2. Adjacent tokens (k >= 2): distance <= 1."""
+        best = None
+        for nn in cand:
+            d = edit_distance(x, nn)
+            if d <= (KNOWN_NAME_MAX_DIST if k == 1 else 1) and (best is None or d < best[0]):
+                best = (d, nn)
+        return best
+    out, log, i = [], [], 0
+    while i < len(words):
+        t0 = norm_tok(words[i]['w'])
+        hit = None
+        if t0 not in cand:                  # a token that already equals a known name is left alone (and never swallows its neighbours)
+            opts = []
+            for k in (1, 2, 3):
+                if i + k > len(words):
+                    break
+                grp = words[i:i + k]
+                toks_ = [norm_tok(g['w']) for g in grp]
+                if not all(toks_) or (k == 1 and toks_[0] in rowset):
+                    continue
+                if k >= 2 and any(t in rowset for t in toks_):          # a split name never contains a legitimate token of the row
+                    continue
+                r = near(''.join(toks_), k)
+                if r:
+                    opts.append((r[0], k, r[1], grp))
+            if opts:
+                d, k, nn, grp = min(opts, key=lambda o: (o[0], o[1]))
+                hit = (k, grp, nn)
+        if hit:
+            k, grp, nn = hit
+            out.append({'w': ' ' + cand[nn], 'start': grp[0]['start'], 'end': grp[-1]['end'], 'p': min(g['p'] for g in grp)})
+            log.append({'from': ' '.join(g['w'].strip() for g in grp), 'to': cand[nn]})
+            i += k
+        else:
+            out.append(words[i])
+            i += 1
+    return out, log
+
+
 # ----------------------------------------------------------------------------- per-row sync
 def _row_lang(row):
     if row.get('lang') in ('en', 'ja'):
@@ -535,7 +617,7 @@ def _row_lang(row):
     return 'ja' if has_cjk(text) else 'en'
 
 
-def sync_row(row, raw, audio, thresholds, align_mode):
+def sync_row(row, raw, audio, thresholds, align_mode, proper_nouns=None):
     """Returns (sentences_out, stats). raises EnduserSyncError on structural problems."""
     lang = _row_lang(row)
     sents = row['sentences']
@@ -544,6 +626,12 @@ def sync_row(row, raw, audio, thresholds, align_mode):
     tts = [t for t in (row.get('tts_text') or []) if t and t.strip()]
     two_stage = bool(tts) and align_mode != 'direct'
     display = [s['text'] for s in sents]
+    pn_log = []
+    if lang == 'en' and (proper_nouns or {}).get('en'):
+        row_toks = [t for x in display + tts for t in tokens(x)]
+        nw, pn_log = normalize_known_names_en(raw['words'], proper_nouns['en'], row_toks)
+        if pn_log:
+            raw = dict(raw, words=nw)
     if two_stage:
         script = []
         for chunk in tts:
@@ -573,6 +661,7 @@ def sync_row(row, raw, audio, thresholds, align_mode):
                     zero_match_long_sentences=sum(1 for t in timed if t['n_match'] == 0 and t['n_tok'] >= thresholds['zero_match_sentence_min_tokens']),
                     min_sentence_ratio=round(min(t['n_match'] / t['n_tok'] for t in timed), 3))
     stat['lang'] = lang
+    stat['pn_normalized'] = pn_log
     stat['audio_s'] = round(audur, 3)
     out = [dict(sid=s['sid'], text=s['text'], start=round(a, 3), end=round(b, 3)) for s, (a, b) in zip(sents, spans)]
     pauses = [out[i + 1]['start'] - out[i]['end'] for i in range(len(out) - 1)]
@@ -726,8 +815,11 @@ def merge_dropouts(raw, gaps, rraws, sha, lang):
     return dict(raw, words=words, text=''.join(w['w'] for w in words).strip()), n
 
 
-def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, align_mode="auto"):
-    """Sync one level (Std or Adv). Returns the enduser_sync_v1 dict or raises EnduserSyncError."""
+def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, align_mode="auto", proper_nouns=None, collect_failures=False):
+    """Sync one level (Std or Adv). Returns the enduser_sync_v1 dict or raises EnduserSyncError.
+    proper_nouns: {"en":[names], "ja":[names]} of the run (roster / title / KP words): used as Whisper initial_prompt (part of the ASR cache key) and for
+    the known-name normalisation of ASR tokens (warnings record every applied normalisation). Thresholds are NOT changed by it.
+    collect_failures (dry sync only): row failures are collected into result['dry_failures'] instead of raising; the result gate status is then 'FAIL'."""
     if align_mode not in ('auto', 'direct'):
         raise EnduserSyncError("ENDUSER_SYNC_ROWS_INVALID", "align_mode must be auto|direct")
     th = _merge_thresholds(thresholds)
@@ -752,7 +844,7 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
         else:
             job = (p, sha, _row_lang(r))
         prepared.append((r, audio, sha, kpw, job))
-    raws = asr_raw_many([x[4] for x in prepared], cache_dir, model)
+    raws = asr_raw_many([x[4] for x in prepared], cache_dir, model, proper_nouns)
     repairs = {}
     rjobs = []
     for r, audio, sha, kpw, job in prepared:
@@ -763,8 +855,8 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
         if gaps:
             repairs[r['row_id']] = gaps
             rjobs += [(job[0], sha, job[2], g[2]) for g in gaps]
-    rraws = asr_raw_many(rjobs, cache_dir, model) if rjobs else {}
-    out_rows, stats, warnings, repair_log = [], {}, [], []
+    rraws = asr_raw_many(rjobs, cache_dir, model, proper_nouns) if rjobs else {}
+    out_rows, stats, warnings, repair_log, dry_fail = [], {}, [], [], []
     for r, audio, sha, kpw, job in prepared:
         raw = raws[(sha, _job_label(job[2], job[3] if len(job) > 3 else None))]
         if r['row_id'] in repairs:
@@ -775,8 +867,16 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
         if r['kind'] == 'kp':
             ro['kp_en'] = kp_verify(r, raw, kpw[0], kpw[1], kpw[2], kpw[3], th)
         else:
-            sents, st = sync_row(r, raw, audio, th, align_mode)
-            check_structure(r['row_id'], sents, audur, th['audio_len_tol_s'])
+            try:
+                sents, st = sync_row(r, raw, audio, th, align_mode, proper_nouns)
+                check_structure(r['row_id'], sents, audur, th['audio_len_tol_s'])
+            except EnduserSyncError as e:
+                if not collect_failures:
+                    raise
+                dry_fail.append({'row_id': r['row_id'], 'code': e.code, 'message': e.message})
+                continue
+            for pn in st.get('pn_normalized') or []:
+                warnings.append({'row_id': r['row_id'], 'known_name_normalized': pn['from'], 'to': pn['to']})
             st['n_sentences'] = len(sents)
             if len(sents) == 1:
                 # FZ-DIALOGUE-LR-ADOPTION-01 (Fable case B, Opus M3 row-length rule): a one-sentence row has its sync boundary equal to the
@@ -789,6 +889,11 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
             else:
                 st['pass'] = token_gate(st, th)
             stats[r['row_id']] = st
+            if not st['pass'] and collect_failures:
+                dry_fail.append({'row_id': r['row_id'], 'code': 'ENDUSER_SYNC_TOKEN_MATCH', 'lang': st['lang'], 'n_tok': st['n_tok'], 'n_match': st['n_match'],
+                                 'ratio': round(st['n_match'] / st['n_tok'], 4) if st['n_tok'] else None, 'text': ' '.join(x['text'] for x in sents)[:200],
+                                 'asr_text': raw.get('text', '')[:300]})
+                continue
             if not st['pass']:
                 raise EnduserSyncError("ENDUSER_SYNC_TOKEN_MATCH",
                                        "row %s token match %d/%d (%s) below threshold" % (r['row_id'], st['n_match'], st['n_tok'], st['lang']),
@@ -801,12 +906,12 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
     mat = sum(s['n_match'] for s in stats.values())
     ratios = [s['n_match'] / s['n_tok'] for s in stats.values() if s['n_tok']]
     keep = ('mode', 'lang', 'n_tok', 'n_match', 'seq_ratio', 'min_sentence_ratio', 'zero_match_long_sentences', 'low_conf', 'min_pause', 'pass')
-    return {
+    result = {
         "schema": SCHEMA, "model": model,
         "params": dict(ASR_PARAMS, sil_db=SIL_DB, min_sil_s=MIN_SIL, align_mode=align_mode, time_base="row_local_seconds",
                        languages="ja if CJK else en (kp window: en)"),
         "rows": out_rows,
-        "gate": {"status": "PASS",
+        "gate": {"status": "FAIL" if dry_fail else "PASS",
                  "token_match": {"rows": {k: {kk: v[kk] for kk in keep} for k, v in stats.items()},
                                  "total_tokens": tot, "total_matched": mat,
                                  "min_row_ratio": round(min(ratios), 4) if ratios else None},
@@ -815,6 +920,9 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
                  "asr_transcribed": ASR_STATS["transcribe_calls"] - s0["transcribe_calls"],
                  "cached_segments": ASR_STATS["cache_hits"] - s0["cache_hits"], "model": model},
     }
+    if collect_failures:
+        result["dry_failures"] = dry_fail
+    return result
 
 
 def main(argv=None):
