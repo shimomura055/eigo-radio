@@ -116,6 +116,13 @@ class ConfirmedContentLocked(KpReviewError):
     """ユーザー確定済みの選定を書き換え得る操作(select/reselect/ng/unng/resolve-gloss/declare-absent)の拒否(M-4)。"""
 
 
+def _kp_text_norm(t):
+    """KP英語textの比較用正規化: ハイフン→空白・連続空白の圧縮・前後空白除去・小文字化。None/非文字列はそのまま(従来どおり不一致扱い)。"""
+    if not isinstance(t, str):
+        return t
+    return " ".join(t.replace("-", " ").split()).lower()
+
+
 def _cc():
     """確定内容保護の共通核(er128)。循環importを避けて遅延import。flagの読取点はer128.protection_enabled()のみ(本ファイルは環境変数を読まない)。"""
     import er128_kp_confirmed_content_01 as cc
@@ -1387,7 +1394,7 @@ def verify_selection_matches_outputs(kp_dir: str, *, level: str, tts_results_pat
             got = [_en_text(it["rank"]) for it in kp_items]
             if len(kps) != len(kp_items):
                 problems.append(f"TTSのKP件数({len(kps)})が確定KP({len(kp_items)})と一致しません")
-            if got != want:
+            if [_kp_text_norm(x) for x in got] != [_kp_text_norm(x) for x in want]:   # ハイフン/空白/大小文字差は同一視(TTS側が`-`→空白に置換したtextを記録するため。語・順序の差は従来どおり不一致)
                 problems.append(f"TTSのKP英語text {got} が確定KP {want} と一致しません")
     vocab_items = []
     if vocab_enabled(level, review):

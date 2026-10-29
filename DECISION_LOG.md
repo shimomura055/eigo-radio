@@ -22791,3 +22791,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ### 2026-10-29 END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01: ユーザー正式採用(DEV rev01-e = APPROVED_FOR_PRODUCTION)とProduction配線指示(追記のみ、API 0)
 - ユーザーがEnd User向け視聴ページ DEV rev01-e を正式採用(Family X/Y/Z × Standard/Advanced の全6組、Status=APPROVED_FOR_PRODUCTION)。目的=(1)正式Production経路へ組み込みPRODUCTION_WIREDまで完了、(2)記事完成時に開発者向け・End User向け両ページを自動生成し最終報告で両URLを提示。開発者向けページは廃止・置換しない(同一完成データから2種を生成)。DEV仮データ・未承認翻訳11ブロックの正式混入禁止、未承認の翻訳方式・同期失敗時の新fallbackを独断導入しない(新トレードオフはユーザー判断)。PRODUCTION_WIRED条件=原文§9の10項目。
 - 原文=`docs/pm/delegation_log/2026-10-29_END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01_USER.md`。管理=OPEN-597(OPEN-590の末尾にも追記)。現時点は**未配線**(PRODUCTION_WIREDではない)。委任_01=現状調査+設計(コード実装なし)→Opus条件A→実装。
+
+### 2026-10-29 FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01 委任_03C: KP verifyのハイフン表記差を比較側で正規化(不具合是正、API 0)
+- 承認済み「選定どおりの音声」と矛盾するverify誤STOP(OPEN-599)を、比較側`_kp_text_norm`(er119、er128 G2も使用)で是正。TTS記録・Prompt・閾値は不変、語・順序の差は従来どおりSTOP。page_verify単独再実行PASS。候補ページ=`user_test/family_y_production_surname_choice_01/`(ユーザー試聴待ち、OPEN-598)。

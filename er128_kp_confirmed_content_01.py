@@ -879,10 +879,10 @@ def verify_outputs(kp_dir: str, level: str, *, tts_results_path: Optional[str] =
                 continue   # artifact欠落はG1の担当
             ent = kps.get(str(art.get("rank"))) or {}
             en = _tts_text(ent.get("english"))
-            if en is not None and en != ri["used_form"]:
+            if en is not None and rv._kp_text_norm(en) != rv._kp_text_norm(ri["used_form"]):
                 block.append({"candidate_id": ri["candidate_id"], "field": "used_form(TTS英語)", "confirmed": ri["used_form"], "observed": en, "where": "tts_generation_results.json"})
             pr = _tts_text(ent.get("phrase_repeat"))   # 委任_03: Adv/X のKP復唱(phrase_repeat)も同じ確定英語でなければならない(英語の二重読み上げの片方だけ改変を見逃さない)
-            if pr is not None and pr != ri["used_form"]:
+            if pr is not None and rv._kp_text_norm(pr) != rv._kp_text_norm(ri["used_form"]):
                 block.append({"candidate_id": ri["candidate_id"], "field": "used_form(TTS復唱 phrase_repeat)", "confirmed": ri["used_form"], "observed": pr, "where": "tts_generation_results.json"})
             jm = _tts_text(ent.get("japanese_meaning")) if level == "a2" else None
             if jm is not None:
