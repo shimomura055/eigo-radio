@@ -20,3 +20,5 @@ https://shimomura055.github.io/eigo-radio/user_test/paycheck_personality_e2e_02/
 ## 注意(判断不要の記録)
 - ページ冒頭に「状態: 正式完成候補・ユーザー試聴待ち」の文言が残る(prix_pascal/tesla/moon等の前例も同様に未改変)。試聴物の同一性を保つため改変しない。必要なら別途文言更新を次委任で提案可。
 - 2026-10-29 公開ページ見出し文言修正 commit 0dee99374: live確認 HTTP 200・旧文言(試聴待ち/完成候補)0件・新文言「正式公開(2026-10-29)」2箇所
+
+- 追記(2026-10-29): index.html冒頭注記「(試聴PASSは未取得です)」を「(ユーザー試聴PASS・公開承認 2026-10-29)」へ置換(commit 3f09fb866、1件)。live(cache無効)で旧文言0件・新文言1件・HTTP 200を確認。
