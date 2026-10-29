@@ -1,7 +1,7 @@
 # SOURCE_REGISTRY_01 (FAMILY-Y-SOURCE-DEEP-RESEARCH-01 委任_03: Family Y 情報源レジストリ 正式版)
 
 作成: 2026-10-28。02B草案(`SOURCE_REGISTRY_DRAFT_01.md`)に、02A規約判定(`TERMS_REVIEW_01.md`)と委任_03の公的意見源の確認(`PUBLIC_SOURCES_CHECK_01.md`)・5テーマ確定(`THEME_FINAL_01.md`)を統合した正式版。API 0・LLM不使用。
-**本レジストリへの登録は「情報源候補としての記録」であり、Productionで継続利用してよいという承認ではない**(ユーザー決定③、`docs/pm/delegation_log/2026-10-28_FAMILY-Y-SOURCE-DEEP-RESEARCH-01_USER_02.md` §1)。`APPROVED_FOR_PRODUCTION`は人間ユーザーのみが承認する。利用は「条件付き利用可能」の条件の遵守と、新しい情報収集方式のユーザー承認が前提。未承認の新しい情報収集方式はProductionに組み込まない。
+**【2026-10-29更新】§6の19サイトはユーザー承認済み(§7、利用承認であり転載・翻案の無条件許可ではない・収集経路未配線=PRODUCTION_WIREDではない)。以下の注記は19件以外に引き続き適用。** **本レジストリへの登録は「情報源候補としての記録」であり、Productionで継続利用してよいという承認ではない**(ユーザー決定③、`docs/pm/delegation_log/2026-10-28_FAMILY-Y-SOURCE-DEEP-RESEARCH-01_USER_02.md` §1)。`APPROVED_FOR_PRODUCTION`は人間ユーザーのみが承認する。利用は「条件付き利用可能」の条件の遵守と、新しい情報収集方式のユーザー承認が前提。未承認の新しい情報収集方式はProductionに組み込まない。
 **利用規約未確認のサイトを利用可能とは断定しない。** 規約判定の根拠は`TERMS_REVIEW_01.md`(02A)・`PUBLIC_SOURCES_CHECK_01.md`(03)・`terms_evidence/`。判定が食い違う場合は、新しい確認日のものを優先する。
 ユーザー決定の記録(2026-10-28): ①発言小町=当面素材源から除外(ライセンス確認・利用許諾がない限り利用しない、過去素材も再利用しない)、②Reddit=公式Data API申請は当面見送り・継続的な自動収集の対象外(将来の利用可能性の記録は可)、③その他の調査結果は情報源候補として本レジストリに記録(登録≠継続利用承認)。
 
@@ -399,3 +399,41 @@
 2. ◎×ペルソナ◎は3件(F-5・F-7・F-17)あるが、いずれも単一テーマまたは固定データ(量産△)。テーマ○以上・ペルソナ◎・量産○以上を同時に満たす◎の源はない。掲示板型・生活密着型(F-1〜F-3・F-8・F-9)は商用○止まり。
 3. AI生成・創作投稿の混入を実測(Wikipedia Reference Desk・PTT・Hashnode)。実在の一人称かの選別を取得後に置く。
 4. 探索は検索エンジンなしの代替手段によるため、未探索領域が残る(`EVIDENCE_01.md` §5)。
+
+## 7. 正式採用(2026-10-29ユーザー決定、APPROVED_FOR_PRODUCTION)
+
+ユーザー原文=`docs/pm/delegation_log/2026-10-29_FAMILY-Y-SOURCE-ADOPTION-10-THEMES-01_USER.md` §1。FAMILY-Y-SOURCE-ADOPTION-10-THEMES-01 委任_01a。**ユーザーは§6の最終候補19サイト(国内10・海外9、◎8・○11)すべてをFamily Yの正式情報源として`APPROVED_FOR_PRODUCTION`と決定した(UDR #212・#213の採用判断に回答)。** 候補一覧の正本=`docs/research/FAMILY-Y-SOURCE-FINAL-SHORTLIST-01/SHORTLIST_01.md`、サイト別根拠=§6。
+
+**境界(ユーザー明示)**: (a) 本採用は「情報源としての利用承認」であり、**無条件に転載・翻案する許可ではない**。各サイトの確認済み利用条件・取得制限(下表)を遵守する。◎でも「AI入力」の個別明文はなく、CC BY/OGL/PDL等は出典表示が必要(音声ラジオでの出典表示方式は未設計=UDR #213の設計部分は残)。○は明示許可ではない。 (b) **Repoへの正式登録と、実際に利用可能なProduction収集経路の確認は区別する**。19件とも収集経路は未配線・未検証であり、**PRODUCTION_WIREDではない**(配線・検証完了までPRODUCTION_WIREDと判定しない)。取得は冒頭の取得運用注記(robots/Crawl-delay遵守・共通fetcher経由・手動相当の単発のみ)に従う。
+
+**既存注記「登録≠継続利用承認」の更新**: 本節の19件については「ユーザー承認済み(利用承認。転載・翻案の無条件許可ではない)」に更新する。19件以外(§1〜§5の他の登録、除外・保留・未確認、MSE Forum等)は従来どおり登録≠継続利用承認で、本決定で採用・変更されない。§6の「候補」表記は履歴として残し、採用状況は本節が優先する。
+
+### 7-1 国内(10)
+| # | サイト | 商用AI利用 | 採用Status | 収集経路 | 利用条件・取得制限の要点(SHORTLIST_01転記) |
+|---|---|---|---|---|---|
+| 1 | ガールズちゃんねる | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 運営の明示許可・禁止ともになし。著作権は投稿者。ママスタと同じ「AI入力・自動収集に許諾も禁止もない」不確実性を共有(UDR #208任意・未実施)。匿名で創作混入 |
+| 2 | ママスタBBS | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 同上。コメントは1〜2文中心 |
+| 3 | note | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 逐語転載・翻案は書き手の承諾が必要(論点・経験の再構成まで)。検索不可・タグ経由 |
+| 4 | 国会会議録検索システム | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 発言の著作権は発言者(情報解析は権利制限規定の案内のみ)。公式API |
+| 5 | ひきこもりVOICE STATION(厚労省) | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | PDL1.0。応募者との権利処理は未確認。自殺念慮等の記述に配慮 |
+| 6 | 内閣府「心の輪を広げる体験作文」 | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 著作権は内閣府。PDL1.0の適用範囲未確定(◎に上げない)。作品密着の翻案は避ける |
+| 7 | 平和祈念展示資料館(労苦体験手記) | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 政府標準利用規約準拠。手記著者との権利は未確認。実名・遺族への配慮 |
+| 8 | インターエデュ掲示板 | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 明示許可なし。「無断転載禁止」表示が掲示板に及ぶか不明 |
+| 9 | e戸建て | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 投稿の著作権は運営者(ミクル)に帰属、再許諾権も運営者 |
+| 10 | e-Govパブリック・コメント(結果公示) | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | PDL1.0(出典表示・第三者権利に注意)。PDF抽出が必要 |
+
+### 7-2 海外(9)
+| # | サイト | 商用AI利用 | 採用Status | 収集経路 | 利用条件・取得制限の要点(SHORTLIST_01転記) |
+|---|---|---|---|---|---|
+| 11 | Productivity Commission(豪州) | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 委員会作成物はCC BY 4.0。市民の提出意見の著作権は提出者 |
+| 12 | Scottish Parliament(意見募集の公開回答) | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 議会作成物は商用可。市民回答は第三者権利。回答は母集団を代表しない(安楽死法案は約92%反対) |
+| 13 | US Congressional hearings(GovInfo) | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 政府著作物は公有。民間証人の提出資料は第三者著作権の可能性 |
+| 14 | Tildes | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 投稿者が著作権を保持。運営は「データを掘って売る用途ではない」と明記 |
+| 15 | Lemmy(lemmy.world) | ○ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | 規約にAI・取得・商用の条項なし。robots待機60秒(Crawl-delay)必須 |
+| 16 | EA Forum | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | CC BY 4.0(出典表示) |
+| 17 | Harvard Dataverse(公開インタビュー逐語録) | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | CC0。参加者同意の範囲と倫理に注意。データセットごとにライセンス確認 |
+| 18 | UK議会 請願サイト+Hansard | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | OGL v3.0(出典表示)。Hansard本文は今回未取得 |
+| 19 | フランス Grand Débat National(公開データ) | ◎ | APPROVED_FOR_PRODUCTION | 収集経路=未配線(PRODUCTION_WIREDではない) | Licence Ouverte 2.0。取得は手動ダウンロード限定(robotsが自動取得を拒否) |
+
+### 7-3 未解決・任意
+1. 出典表示方式(音声ラジオ)は未設計(UDR #213の設計部分)。 2. 任意の照会系 UDR #208(ガルちゃん・ママスタ運営)・#214(Ask a Manager)・#215(MSE Forum)は任意のまま。 3. 収集経路の配線・検証は別委任(未着手)。
