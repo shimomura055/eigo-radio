@@ -66,6 +66,16 @@ def _unit_key(part_label: str):
     return "in_one_line" if part_label.startswith("In One Line") else None
 
 
+_DELIM_HTML_RE = re.compile(r"[ \t]*={5,}[ \t]*(?=</p>)")
+_DELIM_TAIL_RE = re.compile(r"\n?={5,}[ \t\r\n]*$")
+
+def strip_trailing_delim(text: str) -> str:
+    """OPEN-591 第1段: LLM終端区切り`=====`(連続=5個以上のみの終端)を表示時にstrip。
+    HTML(`... =====</p>`)とmarkdown末尾の両方。`=====ITEM`等の非終端・`=====`無し入力は不変。"""
+    text = _DELIM_HTML_RE.sub("", text)
+    return _DELIM_TAIL_RE.sub("", text)
+
+
 def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hres, jobs):
     """1level分の行データ。音声のmp3変換はjobsへ積むだけ(全検査PASS後に実行)。"""
     import soundfile as sf
@@ -233,7 +243,7 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
     if cp2["overall"] != "PASS":
         raise PageStop("X_PAGE_CHECK_PAGE_FAIL(audio): " + "; ".join(f"{k}:{v['detail']}" for k, v in cp2["checks"].items() if not v["ok"])[:600])
     with open(os.path.join(web, "index.html"), "w", encoding="utf-8") as f:
-        f.write(page)
+        f.write(strip_trailing_delim(page))   # OPEN-591 第1段: 4者一致検査はstrip前HTMLで実施済。書出し直前の表示層でのみLLM終端`=====`をstrip
     summary["rows"] = {lab: (len(info[lv]["rows"]), round(info[lv]["duration"], 2)) for lv, _i, lab in levels}
     return summary
 
