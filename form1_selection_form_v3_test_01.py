@@ -188,7 +188,8 @@ class SelectionFormV3Test(unittest.TestCase):
     def test_reason_missing_warning_only_for_p7w5_docs(self):
         """委任_05(ユーザー決定2026-10-27 §4): 7+5 docで理由欠落は`data_warnings`、旧Prompt 2 docは警告なし(理由欄非表示のみ)。"""
         xf = self._xf()
-        mk = lambda cid, rj: {"candidate_id": cid, "selection_phrase": cid, "used_form": cid, "japanese_gloss": "訳", "source_sentence": "s", "origin": "call1", "kind": "phrase", "reason_ja": rj, "ai_rank": 1}
+        mk = lambda cid, rj: {"candidate_id": cid, "selection_phrase": cid, "used_form": cid, "japanese_gloss": "訳", "source_sentence": "s", "origin": "call1", "kind": "phrase", "reason_ja": rj, "ai_rank": 1,
+                               "gates": {"gloss": "ALIGNED"}, "item": {"qa_overall_status": "PASS"}}      # 提示可能な正式候補(仕様①2026-10-29: 提示集合は rv.presentable_candidates)
         kw = dict(slug="s", level="a2", name="n", family="X", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
         p7 = xf.convert(dict(candidates=[mk("p_1", "理由"), mk("p_2", "")], backfill={}, prompt_ids={"call1": "kp_prompt_p7", "call2": "kp_prompt_w5p"}), **kw)
         self.assertEqual(len(p7["data_warnings"]), 1)

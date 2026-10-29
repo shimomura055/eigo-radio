@@ -14,7 +14,7 @@ import unittest
 
 import er119_kp_human_review_01 as rv
 import er119_kp_human_review_cli_01 as cli
-from er119_test_support_01 import CALL1, Env, KpTestCase, jd, jl, rd
+from er119_test_support_01 import CALL1, Env, KpTestCase, jd, jl, make_legacy_flagged, rd
 
 
 def run_cli(args):
@@ -130,7 +130,9 @@ class TestCli(KpTestCase):
         self.assertEqual(json.loads(out)["levels"][0]["status"], rv.ST_AUTO)
 
     def test_resolve_gloss_cli(self):
-        self._gen(gloss_fail_phrases=["time lag"])
+        """旧doc(仕様①より前に gloss HR待ちが旗付きで保存された候補doc)のresolve-gloss救済は残置。新docではHR待ち候補は提示されない(除外+補完)。"""
+        self._gen()
+        make_legacy_flagged(self.kp_dir, [3], gloss_hr=[3])
         rc, out, err = run_cli(["resolve-gloss", "--run", self.run_dir, "--level", "b1b", "--rank", "3", "--gloss", "時間差", "--by", "t"])
         self.assertEqual(rc, 0, err)
         self.assertFalse(rv.load_candidates(self.kp_dir)["candidates"][2]["flags"]["gloss_hr_pending"])

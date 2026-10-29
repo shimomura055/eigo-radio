@@ -201,6 +201,7 @@ def paths(kp_dir: str, kind: str = KIND_KP) -> dict:
         "final": f"{kp_dir}/{pre}_selection_final.json",
         "kp": f"{kp_dir}/keywords_canonicalized.json",
         "vocab": f"{kp_dir}/vocab_confirmed.json",
+        "alarm": f"{kp_dir}/redundancy_alarm.json",       # 仕様②: 重複アラームの派生ファイル(再導出可能・書込失敗は確定を止めない)
         "rounds": f"{kp_dir}/kp_candidates",
     }
 
@@ -498,6 +499,129 @@ def _pairs(cands: dict) -> set:
     return out
 
 
+# ---- 仕様① 候補は人間への提示前に品質検査(HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01、ユーザー正式採用2026-10-29)
+# 提示集合の唯一の定義: 「提示された候補は、単独で選んでも確定時の候補単位検査(validate_selection / cmd_from_form の ja_gloss_status)を必ず通る」。
+# 候補生成(_gate_chain)・HR依頼書(render_request_md)・フォームdata(exporter)・auto_select・ニュアンスpool(er134.presented_pool)はすべてここを通る(二重定義しない)。
+# 品質基準(11 QAフィールド・閾値)は変更しない。変えるのは『不合格候補を旗付きで提示→除外して提示しない』だけ。
+PRESENTABLE_FILTER_VERSION = "presentable_v1_2026-10-29"
+GLOSS_OFFICIAL_GATES = ("ALIGNED", "HUMAN_RESOLVED")          # exporter.gloss_status の official 条件(Production正式経路)と同一
+BLOCKER_STAGE = {"qa_fail": "canonicalization_qa", "canonicalization_qa": "canonicalization_qa", "rescue_unverified": "canonicalization_qa",
+                 "gloss_hr_pending": "gloss_unresolved", "gloss_not_official": "gloss_unresolved", "not_selectable": "not_selectable"}
+PRESENTATION_FILTER_STAGES = ("canonicalization_qa", "gloss_unresolved")     # 生成時にdroppedへ入る段名(補完backfillの対象。GATE_DROP_EXEMPTには入れない)
+
+
+def presentation_blockers(c: dict) -> list:
+    """候補cが『人間に提示してはならない』理由 [(code, 日本語理由)]。空=提示可能。決定論・API 0。
+    fail-closed: qa_overall_statusが PASS 以外(欠落・未知値を含む)、救済(canonicalization段)でQA再判定PASS/gloss再整合REALIGNEDが揃わない候補、
+    gloss未確定(HR待ち)・正式訳でない候補は提示しない。"""
+    out = []
+    it = c.get("item") or {}
+    fl = c.get("flags") or {}
+    if not c.get("human_selectable", True):
+        out.append(("not_selectable", "選択不可(Gate不合格)"))
+    st = it.get("qa_overall_status")
+    if fl.get("qa_fail") or st == "REVIEW_REQUIRED":
+        bad = [k for k, v in (it.get("qa") or {}).items() if v == "FAIL"]
+        out.append(("qa_fail", "canonicalization QA不合格(REVIEW_REQUIRED)" + (": " + ", ".join(bad) if bad else "")))
+    elif st != "PASS":
+        out.append(("canonicalization_qa", f"canonicalization QAの判定が確認できない(qa_overall_status={st!r}。未検査候補は提示しない=fail-closed)"))
+    rs = c.get("rescue") or it.get("rescue")
+    if rs and rs.get("canonicalization"):
+        qs, gs = (rs.get("qa") or {}).get("status"), (rs.get("gloss") or {}).get("status")
+        if qs != "PASS" or gs != "REALIGNED":
+            out.append(("rescue_unverified", f"救済後の表現が未検査(QA再判定={qs} / gloss再整合={gs})。検査未了の候補は提示しない=fail-closed"))
+    gate_gloss = (c.get("gates") or {}).get("gloss")
+    if fl.get("gloss_hr_pending") or gate_gloss == "HR_PENDING":
+        out.append(("gloss_hr_pending", "日本語訳が未確定(gloss HR待ち)"))
+    elif not (c.get("japanese_gloss") or "").strip() or gate_gloss not in GLOSS_OFFICIAL_GATES:
+        out.append(("gloss_not_official", f"日本語訳が正式でない(gloss gate={gate_gloss!r})"))
+    return out
+
+
+def blocker_stage(blockers: list) -> str:
+    codes = [b[0] for b in blockers]
+    for k in ("qa_fail", "canonicalization_qa", "rescue_unverified"):
+        if k in codes:
+            return BLOCKER_STAGE[k]
+    return BLOCKER_STAGE[codes[0]]
+
+
+def presentable_candidates(cands) -> list:
+    """提示可能な候補(元の順序・元のdict)。candsは候補doc(dict)またはcandidate listのどちらでも可。"""
+    lst = cands.get("candidates") if isinstance(cands, dict) else cands
+    return [c for c in (lst or []) if not presentation_blockers(c)]
+
+
+def excluded_from_presentation(cands) -> list:
+    """提示から外した候補 [{candidate_id, ai_rank, used_form, codes, reasons}]。HR依頼書・exporterのdata_warningsに記録する(隠さない)。"""
+    lst = cands.get("candidates") if isinstance(cands, dict) else cands
+    out = []
+    for c in lst or []:
+        b = presentation_blockers(c)
+        if b:
+            out.append({"candidate_id": c.get("candidate_id"), "ai_rank": c.get("ai_rank"), "used_form": c.get("used_form"),
+                        "codes": [x[0] for x in b], "reasons": [x[1] for x in b]})
+    return out
+
+
+# ---- 仕様② 意味・用法の重複は『アラームのみ』(確定・音声・組立・Productionを停止しない)。判定(4観点x10ペアLLM)とflags.redundant_withは維持。
+ASPECTS = ("meaning_overlap", "usage_context_overlap", "grammatical_teaching_value_overlap", "conceptual_role_overlap")
+SLOT_LABEL_JA = {"key_phrase": "Key Phrase(①)", "extra_explanation": "追加解説(②)", "meaning_display": "本文意味(③)"}
+
+
+def redundancy_alarms(cands: dict, slots: dict, *, source: str = "candidate_qa") -> list:
+    """選定された表現同士の重複アラーム(純関数・API 0)。slots={slot名(key_phrase|extra_explanation|meaning_display): [candidate_id]}。
+    候補docの redundancy_qa.duplicate_pairs(ai_rank対・4観点・reasoning)から、選定内の対だけを返す。duplicate_pairs無しで flags.redundant_with だけある
+    対は reasoning 無し(source=flags_only)で返す。停止条件ではない(情報提供)。"""
+    cm = _cand_map(cands)
+    rank_to_cid = {c.get("ai_rank"): c["candidate_id"] for c in cm.values()}
+    slot_of = {}
+    for slot, ids in (slots or {}).items():
+        for i in ids or []:
+            slot_of.setdefault(i, slot)
+    out, seen = [], set()
+
+    def _add(a, b, detail):
+        if a not in slot_of or b not in slot_of or a == b:
+            return
+        key = frozenset((a, b))
+        if key in seen:
+            return
+        seen.add(key)
+        ca, cb = cm.get(a, {}), cm.get(b, {})
+        out.append({"candidate_id_a": a, "candidate_id_b": b, "used_form_a": ca.get("used_form"), "used_form_b": cb.get("used_form"),
+                    "ai_rank_a": ca.get("ai_rank"), "ai_rank_b": cb.get("ai_rank"), "slot_a": slot_of[a], "slot_b": slot_of[b],
+                    "slot_label_a": SLOT_LABEL_JA.get(slot_of[a]), "slot_label_b": SLOT_LABEL_JA.get(slot_of[b]),
+                    "aspects": {k: (detail or {}).get(k) for k in ASPECTS} if detail else None,
+                    "reasoning": (detail or {}).get("reasoning"), "source": source if detail else "flags_only"})
+    for p in ((cands.get("redundancy_qa") or {}).get("duplicate_pairs") or []):
+        a, b = rank_to_cid.get(p.get("rank_a")), rank_to_cid.get(p.get("rank_b"))
+        if a and b:
+            _add(a, b, p)
+    for pr in sorted(tuple(sorted(x)) for x in _pairs(cands)):
+        _add(pr[0], pr[1], None)
+    out.sort(key=lambda x: (x["ai_rank_a"] or 0, x["ai_rank_b"] or 0))
+    return out
+
+
+def final_qa_to_alarm(fq: dict, cands: dict) -> dict:
+    """確定集合Redundancy QAのNG結果(_run_final_qaの戻り)を ALARM形へ変換して保存用にする(人間選定の確定のみ。AUTOでは使わない)。
+    `_run_final_qa`の判定値(REDUNDANCY_NG/ng_pairs)は変えない(AUTO分岐が使う)。判定不能はここへ来ない(KpReviewError=fail-closed)。"""
+    cm = _cand_map(cands)
+    pairs = []
+    for name, r in (fq.get("results") or {}).items():
+        if r.get("status") != "REDUNDANCY_NG":
+            continue
+        for p in r.get("duplicate_pairs") or []:
+            pairs.append({"set": name, "rank_a": p.get("rank_a"), "rank_b": p.get("rank_b"), "reasoning": p.get("reasoning"),
+                          "aspects": {k: p.get(k) for k in ASPECTS}})
+    ng = [list(p) for p in fq.get("ng_pairs") or []]
+    for q, (a, b) in zip(pairs, ng):     # _run_final_qaは同順でng_pairsへ積む
+        q.update(candidate_id_a=a, candidate_id_b=b, used_form_a=(cm.get(a) or {}).get("used_form"), used_form_b=(cm.get(b) or {}).get("used_form"))
+    return {"status": "REDUNDANCY_ALARM", "judged_status": "REDUNDANCY_NG", "nonblocking": True, "key": fq.get("key"),
+            "results": fq.get("results"), "alarm_pairs": pairs}
+
+
 def vocab_enabled(level: str, review: Optional[dict] = None) -> bool:
     """Part 1(単語解説=vocab)を扱うか。Advanced(b1b)は常に、Standard(a2)はreviewに`std_part1`マークがあるときだけ(SLOT-23 委任_04B、
     ユーザー正式決定2026-10-27 Std②=C案・遡及なし)。vocab可否の単一関数(select/auto/最終QA/finalize/消費側検査はすべてここを通る)。"""
@@ -544,7 +668,7 @@ def validate_selection(cands: dict, selection: dict, *, level: str, kind: str = 
                 errs.append("vocab: 単語解説(vocab)の選択が必要です(KP3件を含む最大5件)")
             elif not set(kp) <= set(vocab):
                 errs.append("vocab: KPに選んだ候補をすべて含めてください(KP ⊂ vocab)")
-    pairs = _pairs(cands)
+    # 仕様②(2026-10-29): 意味・用法の重複(Redundancy pair)は選定・確定を拒否しない(アラームのみ=redundancy_alarms)。他の候補単位検査は従来どおり。
     seen = list(dict.fromkeys(chosen_all))
     for i, a in enumerate(seen):
         c = cm.get(a)
@@ -561,10 +685,6 @@ def validate_selection(cands: dict, selection: dict, *, level: str, kind: str = 
             errs.append(f"候補{c['ai_rank']}({c.get('used_form')})はNGに指定済みです(選択できません)")
         elif m == "similar" and not allow_similar_ng:
             errs.append(f"候補{c['ai_rank']}({c.get('used_form')})はNG句に類似しています")
-        for b in seen[i + 1:]:
-            if frozenset((a, b)) in pairs:
-                cb = cm.get(b, {})
-                errs.append(f"候補{c['ai_rank']}と候補{cb.get('ai_rank')}は意味・用法が重複しています(Redundancy QA)。どちらか一方にしてください")
     return errs
 
 
@@ -582,7 +702,8 @@ def auto_select(cands: dict, *, level: str, kind: str = KIND_KP, ng_entries: Opt
     excluded = set(excluded_ids or [])
     pairs = _pairs(cands)
     chosen = []
-    for c in sorted(cands.get("candidates") or [], key=lambda x: x["ai_rank"]):
+    pool = presentable_candidates(cands) if kind == KIND_KP else (cands.get("candidates") or [])    # 提示集合はKPのみ(文法候補はQA/glossの構造が別=対象外)
+    for c in sorted(pool, key=lambda x: x["ai_rank"]):
         cid = c["candidate_id"]
         if cid in excluded or not auto_eligible_now(c, ng_entries):
             continue
@@ -647,8 +768,9 @@ def _rank_to_cid(cands: dict, ranks: list) -> list:
 
 def op_select(kp_dir: str, *, kp_ranks: list, vocab_ranks: Optional[list] = None, ng: Optional[dict] = None,
               accept_qa_fail: Optional[list] = None, by: str, accept_ai: bool = False, shown_candidates_sha256: Optional[str] = None,
-              kind: str = KIND_KP) -> dict:
-    """Humanの選択(CLI)。ng={ai_rank: reason}。検証→REVIEWED。PENDING_REVIEW(または確定済みの事後Review)からのみ。"""
+              kind: str = KIND_KP, meaning_display_ids: Optional[list] = None) -> dict:
+    """Humanの選択(CLI)。ng={ai_rank: reason}。検証→REVIEWED。PENDING_REVIEW(または確定済みの事後Review)からのみ。
+    meaning_display_ids: フォーム経由の③本文意味のcandidate_id(selectionには入らない。重複アラームの対象にだけ含める。仕様②/Opus M6)。"""
     if not (by or "").strip():
         raise KpReviewError("--by(操作者)が必須です")
     with review_lock(kp_dir, kind, by):
@@ -720,6 +842,13 @@ def op_select(kp_dir: str, *, kp_ranks: list, vocab_ranks: Optional[list] = None
                       verdicts=verdicts, status=ST_REVIEWED, last_human_op_at=_now(), mode_used=None, final_qa=None)
         _event(review, "select" if not accept_ai else "accept_ai", by,
                {"from": prev_status, "selection": selection, "ng": list(ng_cids), "accepted_qa_fail": accepted_qf})
+        if kind == KIND_KP:     # 仕様②: 重複はアラームとして記録するだけ(拒否しない)。新roundの選定は前の選定のアラームを引き継がない(ここで置換)
+            alarms = redundancy_alarms(cands, {"key_phrase": sel_ids(selection, "kp"),
+                                               "extra_explanation": [i for i in sel_ids(selection, "vocab") if i not in set(sel_ids(selection, "kp"))],
+                                               "meaning_display": list(meaning_display_ids or [])})
+            review["redundancy_alarms"] = alarms
+            if alarms:
+                _event(review, "redundancy_alarm", by, {"n": len(alarms), "pairs": [[a["candidate_id_a"], a["candidate_id_b"]] for a in alarms], "blocking": False})
         out = save_review(kp_dir, review, expected_revision=review["revision"], kind=kind)
         invalidate_gloss_snapshot(kp_dir)   # M-2: 選び直し時に未消費のgloss HR snapshot(旧選定)を失効させる
         return out
@@ -754,7 +883,7 @@ def op_reselect(kp_dir: str, *, ng: Optional[dict] = None, note: str = "", by: s
             review["verdicts"][cid] = "NG"
         prev = review["status"]
         review.update(status=ST_RESELECT, reselect_count=review.get("reselect_count", 0) + 1, last_human_op_at=_now(),
-                      selection={}, mode_used=None, final_qa=None)
+                      selection={}, mode_used=None, final_qa=None, redundancy_alarms=[])
         _event(review, "reselect", by, {"from": prev, "note": note, "ng": [cid for cid in review["verdicts"] if review["verdicts"][cid] == "NG"]})
         out = save_review(kp_dir, review, expected_revision=review["revision"], kind=kind)
         invalidate_gloss_snapshot(kp_dir)   # M-2
@@ -786,7 +915,7 @@ def op_ng(kp_dir: str, *, ng: dict, by: str, kind: str = KIND_KP) -> dict:
             sel = review.get("selection") or {}
             bad = [cid for cid in sum((list(v) for v in sel.values()), []) if cid in {e["candidate_id"] for e in review["ng"]}]
             if bad:
-                review.update(status=ST_PENDING, selection={}, final_qa=None, mode_used=None)
+                review.update(status=ST_PENDING, selection={}, final_qa=None, mode_used=None, redundancy_alarms=[])
                 _event(review, "ng_removed_selection", by, {"ids": bad})
         _event(review, "ng", by, {"ids": [_rank_to_cid(cands, [r])[0] for r in ng]})
         return save_review(kp_dir, review, expected_revision=review["revision"], kind=kind)
@@ -983,14 +1112,52 @@ def _run_final_qa(cands: dict, selection: dict, level: str, redundancy_fn: Optio
                 if a and b:
                     res["ng_pairs"].append((a, b))
         elif st != "REDUNDANCY_PASS":
-            raise KpReviewError(f"確定集合のRedundancy QAが判定不能です(status={st}, set={name})。fail-closedで停止します")
+            raise KpReviewError(f"確定集合のRedundancy QAが判定不能です(status={st}, set={name})。これは『重複』の判定結果ではなく判定器(Redundancy QA)の故障です。"
+                                "fail-closedで停止します(選定は保持されます。制作コマンドを同じまま再実行すると判定だけを再試行します)")
     return res
+
+
+def redundancy_telemetry(review: dict) -> dict:
+    """finalizeごとのrun監査(0件でも記録): final_qa status / アラーム件数(候補QA由来+確定集合QA由来) / nonblocking。到達後続stageはrunner側(kp_stage_reached)が追記する。"""
+    fq = review.get("final_qa") or {}
+    n_final = len(fq.get("alarm_pairs") or [])
+    n_cand = len(review.get("redundancy_alarms") or [])
+    return {"final_qa_status": fq.get("status"), "final_qa_alarm_pairs": n_final, "candidate_qa_alarm_pairs": n_cand,
+            "alarm_count": n_final + n_cand, "nonblocking": True, "review_status": review.get("status"), "filter_version": PRESENTABLE_FILTER_VERSION}
+
+
+ALARM_SCHEMA = "kp_redundancy_alarm_v1"
+
+
+def write_alarm_file_safe(kp_dir: str, review: dict, level: str, *, reached: Optional[str] = None) -> Optional[str]:
+    """重複アラームの派生ファイル `<kp_dir>/redundancy_alarm.json`(0件でも書く=run監査)。正本は kp_selection_final.json.final_redundancy_qa / review.history。
+    書込失敗はwarningログのみ(確定・制作を失敗させない。er078 write_listening_list_safeと同じ思想)。reached=到達した後続stage(runnerが追記)。"""
+    try:
+        p = paths(kp_dir)["alarm"]
+        prev = _read_json(p) if os.path.exists(p) else None
+        tel = redundancy_telemetry(review)
+        if reached:
+            tel["reached_next_stage"] = reached
+        elif prev and (prev.get("telemetry") or {}).get("reached_next_stage") and prev.get("selection_signature") == review.get("selection_signature"):
+            tel["reached_next_stage"] = prev["telemetry"]["reached_next_stage"]
+        fq = review.get("final_qa") or {}
+        doc = {"schema": ALARM_SCHEMA, "level": level, "selection_signature": review.get("selection_signature"),
+               "blocking": False, "candidate_qa_alarms": list(review.get("redundancy_alarms") or []),
+               "final_set_alarms": list(fq.get("alarm_pairs") or []), "telemetry": tel}
+        if prev and {k: v for k, v in prev.items() if k != "checked_at"} == doc:
+            return p
+        doc["checked_at"] = _now()
+        _write_json_atomic(p, doc)
+        return p
+    except Exception as e:   # noqa: BLE001  派生ファイル。確定を止めない
+        _log.warning("redundancy_alarm.json write failed (non-blocking): %s: %s", type(e).__name__, e)
+        return None
 
 
 def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = None, ng_scope: Optional[dict] = None) -> dict:
     """review(REVIEWED/UNREVIEWED_AUTO_ADOPTED)から確定物を書く。idempotent: 署名が同じなら本名ファイルは書き直さない
     (後段のgloss修復・SRC D1・resolve_glossの編集を壊さない)。returns {"review","items","vocab_items","signature","wrote"}。
-    Humanの確定が確定集合のRedundancy QAでNGなら PENDING_REVIEW に戻して KpReviewPending。"""
+    仕様②(2026-10-29): Humanの確定が確定集合のRedundancy QAでNGでも差し戻さない(REDUNDANCY_ALARMとして記録し続行)。判定不能のみKpReviewError(fail-closed)。"""
     pth = paths(kp_dir)
     with review_lock(kp_dir, KIND_KP, "finalize"):
         review, cands = load_review(kp_dir), load_candidates(kp_dir)
@@ -1010,7 +1177,11 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
         # M-8
         fq = review.get("final_qa")
         dirty = review.get("selection_signature") is None
-        if not fq or fq.get("key") != _qa_key(sel) or fq.get("status") != "REDUNDANCY_PASS":
+        # キャッシュ(Opus M5): key一致 かつ (PASS または (ALARM かつ AUTOでない))。ALARMは人間選定の確定でのみ保存する形のため、AUTOでは有効としない。
+        # ALARM確定後のresume/_try_refinalize(redundancy_fn=None)は有料API 0回で通る。REBOUND時はkeyが選定IDのみ(candidates_shaを含まない)=既存挙動のまま。
+        _cache_ok = bool(fq) and fq.get("key") == _qa_key(sel) and (
+            fq.get("status") == "REDUNDANCY_PASS" or (fq.get("status") == "REDUNDANCY_ALARM" and review["status"] != ST_AUTO))
+        if not _cache_ok:
             dirty = True
             if review["status"] == ST_AUTO:
                 excluded = list((review.get("auto_qa_excluded") or []))
@@ -1034,12 +1205,11 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
             else:
                 fq = _run_final_qa(cands, sel, level, redundancy_fn, _sp1)
                 if fq["status"] != "REDUNDANCY_PASS":
-                    review.update(status=ST_PENDING, selection={}, final_qa=None, mode_used=None)
-                    _event(review, "final_redundancy_ng", "runner", {"pairs": [list(p) for p in fq["ng_pairs"]]})
-                    save_review(kp_dir, review, expected_revision=review["revision"])
-                    _cc().on_final_redundancy_ng(kp_dir, fq["ng_pairs"])   # ユーザー確定レコードは reconfirm_required へ(黙って差し替えない)
-                    raise KpReviewPending("確定集合のRedundancy QAがNGでした。選び直してください", [
-                        {"level": level, "kp_dir": kp_dir, "reason": "final_redundancy_ng", "request_md": pth["request"]}])
+                    # 仕様②(2026-10-29): 人間選定の確定集合が重複NGでも差し戻さない(PENDINGへ戻さない・選定を消さない・確定レコードを変えない)。
+                    # アラームとして記録し確定を続行する。判定不能(INVALID等)は_run_final_qaがKpReviewError(fail-closed)=重複ではなく判定器の故障。
+                    fq = final_qa_to_alarm(fq, cands)
+                    _event(review, "final_redundancy_alarm", "runner", {"pairs": [[p.get("candidate_id_a"), p.get("candidate_id_b")] for p in fq["alarm_pairs"]],
+                                                                      "blocking": False})
                 review["final_qa"] = fq
         if dirty:
             review = save_review(kp_dir, review, expected_revision=review["revision"])
@@ -1075,12 +1245,15 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
                  "text_sha256": review["text_sha256"], "candidates_sha256": review["candidates_sha256"],
                  "round": review.get("round", 1), "selection": review["selection"],
                  "ng_candidate_ids": sorted(e["candidate_id"] for e in ng_ent), "final_redundancy_qa": review.get("final_qa"),
+                 "redundancy_alarms": review.get("redundancy_alarms") or [],
+                 "redundancy_telemetry": redundancy_telemetry(review),
                  "mode_used": review.get("mode_used"), "finalized_at": _now()}
         curf = _read_json(pth["final"]) if os.path.exists(pth["final"]) else None
         if curf is None or curf.get("selection_signature") != sig:
             _write_json_atomic(pth["final"], final)
             wrote.append("kp_selection_final.json")
         _cc().on_finalize_post_write(kp_dir, level)   # G0: 書いた成果物が確定レコードと一致すること
+        write_alarm_file_safe(kp_dir, review, level)
         return {"review": review, "items": items, "vocab_items": vocab_items, "signature": sig, "wrote": wrote}
 
 
@@ -1294,17 +1467,13 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
     bfl = _backfill_summary_line(cands)
     if bfl:
         lines[5:5] = [bfl]      # 見出し直後(箇条書きの末尾)に補完の要約を1行(補完が発動した/失敗したときだけ。未発動は従来のまま)
-    for c in sorted(cands.get("candidates") or [], key=lambda x: x["ai_rank"]):
+    for c in sorted(presentable_candidates(cands), key=lambda x: x["ai_rank"]):      # 仕様①: 提示は品質検査を通った候補のみ(除外は下の節に事実を表示)
         cid = c["candidate_id"]
         mark = "KP" if cid in top_kp else ("単語" if cid in top_vocab else "")
         flags = []
         f = c.get("flags") or {}
-        if f.get("qa_fail"):
-            flags.append("QA FAIL(採用には --accept-qa-fail)")
-        if f.get("gloss_hr_pending"):
-            flags.append("gloss HR待ち(resolve-gloss必要)")
         if f.get("redundant_with"):
-            flags.append("重複: " + ",".join(str(next((x['ai_rank'] for x in cands['candidates'] if x['candidate_id'] == o), '?')) for o in f["redundant_with"]))
+            flags.append("重複(アラームのみ・選んでも止まりません): " + ",".join(str(next((x['ai_rank'] for x in cands['candidates'] if x['candidate_id'] == o), '?')) for o in f["redundant_with"]))
         m = match_ng(c, ng_entries)
         if m == "exact":
             flags.append("NG済み")
@@ -1325,6 +1494,11 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
         lines += ["", "## Gateで除外された候補(参考)", ""]
         for x in d:
             lines.append(f"- {x.get('phrase')} : {x.get('stage')} : {' / '.join(x.get('reasons') or [])}")
+    ex = excluded_from_presentation(cands)       # 旧doc(qa_fail旗付きで保存済み)をresumeした場合の提示除外。新docでは生成時にdroppedへ入るため通常0件
+    if ex:
+        lines += ["", "## 提示から除外した候補(品質検査で不適合。選択肢には出していません)", ""]
+        for x in ex:
+            lines.append(f"- 番号{x['ai_rank']} {x['used_form']} : {' / '.join(x['reasons'])}")
     p = cli_prefix()
     lines += ["", "## 操作(コマンド)", "",
               f"- 状況確認: `{p} status --run {run_hint}`",
@@ -1461,13 +1635,7 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
             _write_text_atomic(pth["request"], _cc().request_notice(kp_dir) + render_request_md(cands, review, run_hint=run_hint, ng_entries=ng_ent))
             return {"state": "PENDING", "pending": pending_summary(kp_dir, level), "generated": generated}
     if review["status"] in FORWARD_STATUSES:
-        try:
-            fin = finalize_kp(kp_dir, level=level, redundancy_fn=redundancy_fn)
-        except KpReviewPending:
-            rv2 = load_review(kp_dir)
-            ng_ent = ng_entries_of(rv2, family, slug, level)
-            _write_text_atomic(pth["request"], _cc().request_notice(kp_dir) + render_request_md(cands, rv2, run_hint=run_hint, ng_entries=ng_ent))
-            return {"state": "PENDING", "pending": pending_summary(kp_dir, level), "generated": generated}
+        fin = finalize_kp(kp_dir, level=level, redundancy_fn=redundancy_fn)   # 仕様②: finalizeはKpReviewPendingを送出しない(重複NGは差し戻さない)
         return {"state": "FINALIZED", "final": fin, "generated": generated}
     raise KpReviewError(f"想定外のstatus={review['status']}")
 

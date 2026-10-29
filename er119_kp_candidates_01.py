@@ -257,6 +257,7 @@ def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], o
         items = [new_by.get(x["rank"], x) for x in items]
     # 候補ID・NG(基本形化後のused_form照合)
     cands = []
+    pf_checked, pf_dropped = 0, {}       # 仕様①telemetry: 品質検査(presentable filter)の検査件数と除外件数(コード別)
     for it in items:
         i = idx_of[it["rank"]]
         m = meta[i]
@@ -284,7 +285,20 @@ def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], o
         cand["auto_eligible"] = not (qa_fail or hr or sim)
         cand["human_selectable"] = True
         er125.annotate_candidate(cand)     # [H4] 救済の旗・gates・rescueメタ。auto_eligibleは緩めない(AND のみ)
+        # 仕様①(HR-SELECTION-FLOW-QA-FIRST、2026-10-29): 品質検査を人間への提示前に完結させる。canonicalization QA不合格(REVIEW_REQUIRED・判定欠落)・
+        # 救済後の未検査・gloss未確定/正式でない候補は旗付きで残さず**除外**する(Human NG除外と同型)。除外はGate除外として数えられ、既存の補完(backfill)が
+        # 代替を補う(新しいretry/上限は作らない)。品質基準(11 QAフィールド・閾値)は不変。提示集合の定義は rv.presentation_blockers の1か所。
+        pf_checked += 1
+        blockers = rv.presentation_blockers(cand)
+        if blockers:
+            for b in blockers:
+                pf_dropped[b[0]] = pf_dropped.get(b[0], 0) + 1
+            dropped.append({"raw_rank": m["raw_rank"], "phrase": m["selection_phrase"], "stage": rv.blocker_stage(blockers),
+                            "reasons": [b[1] for b in blockers], "origin": m["origin"], "blocker_codes": [b[0] for b in blockers]})
+            continue
         cands.append(cand)
+    stages[f"{stage_prefix}presentable_filter"] = {"version": rv.PRESENTABLE_FILTER_VERSION, "checked": pf_checked, "dropped": sum(pf_dropped.values()),
+                                                  "dropped_by_code": pf_dropped}
     return {"status": "OK", "cands": cands}
 
 
@@ -489,10 +503,25 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
            "shortfall": len(cands) < rv.KP_CANDIDATE_MAX, "outer_attempts": outer, "outer_retry_log": log,
            "rescue_provenance": er125.provenance(),      # R2: 辞書sha・lexicon_status・rescue_enabled・schema(resume時にドリフトをlogのみ)
            "backfill": backfill_rec,                     # F-2: 補完の記録(enabled/triggered/status/E[種類別]/N/added/surplus/dropped/sha/model_id)
+           "presentable_filter": _presentable_telemetry(cands, dropped, log[-1] if log else {}),   # 仕様①telemetry(0件でも記録)
            "shortfall_detail": _shortfall_detail(cands, backfill_rec)}
     with open(f"{work}/outer_retry_log.json", "w", encoding="utf-8") as f:
         json.dump({"attempts": log, "excluded_phrases": excluded}, f, ensure_ascii=False, indent=2)
     return {"ok": True, "doc": doc}
+
+
+def _presentable_telemetry(cands: list, dropped: list, last_entry: dict) -> dict:
+    """候補生成ごとのrun監査(HR-SELECTION-FLOW-QA-FIRST、Opus telemetry): QA検査した件数(初回+補完)・canonicalization_qa除外件数・提示可能件数・filter版。0件でも記録。
+    検査件数/除外件数は最終attemptの_gate_chain(初回+補完)が`stages`へ記録した値の合計。"""
+    st = (last_entry or {}).get("stages") or {}
+    pf = [v for k, v in st.items() if k.endswith("presentable_filter") and isinstance(v, dict)]
+    by_stage = {}
+    for d in dropped:
+        by_stage[d.get("stage")] = by_stage.get(d.get("stage"), 0) + 1
+    return {"version": rv.PRESENTABLE_FILTER_VERSION, "checked": sum(x.get("checked", 0) for x in pf),
+            "canonicalization_qa_dropped": by_stage.get("canonicalization_qa", 0), "gloss_unresolved_dropped": by_stage.get("gloss_unresolved", 0),
+            "dropped_by_code": {c: sum((x.get("dropped_by_code") or {}).get(c, 0) for x in pf) for c in sorted({c for x in pf for c in (x.get("dropped_by_code") or {})})},
+            "presentable": len(rv.presentable_candidates(cands)), "n_candidates": len(cands)}
 
 
 def _shortfall_detail(cands: list, rec: dict) -> dict:
@@ -673,6 +702,9 @@ def candidate_doc_from_items(items: list, level: str, *, round_no: int = 1, reas
         sp = it.get("source_span") or it.get("display_phrase") or it.get("used_form")
         it2 = json.loads(json.dumps(it))
         it2["rank"] = n
+        # mock/hook経路(旧kp_fn adapter、呼出側がCANONICALIZATION_PASSを確認済み)専用: per-itemの qa_overall_status を持たない旧hookのitemはPASS受理済みとして扱う
+        # (正式生成経路は_gate_chainが実際のQA判定を持つitemだけを候補にする=この補完は通らない。仕様①の提示前QAはREVIEW_REQUIREDを除外する)
+        it2.setdefault("qa_overall_status", "PASS")
         cid = rv.candidate_id_for(sp)
         if cid in seen_ids:   # fixture用: 同一句が複数あっても候補IDは一意にする
             cid = f"{cid}_{n}"

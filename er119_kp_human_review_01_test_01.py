@@ -18,7 +18,7 @@ import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
 import er119_kp_p7w5_prompts_01 as p7w5
 from er119_test_support_01 import ARTICLE, ARTICLE2, CALL1, CALL2, Env, KpTestCase, jd, jl, rd, wr
-from er119_test_support_01 import legacy_unmarked_flow  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
+from er119_test_support_01 import legacy_unmarked_flow, make_legacy_flagged  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 P2_SHA = "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a"
 
@@ -158,23 +158,28 @@ class TestCandidateGeneration(KpTestCase):
         self.assertEqual(env.n["call1"], 1)   # LLMが少なく返しただけ=shortfall受容(数合わせretryなし)
         self.assertEqual(len(rv.load_candidates(self.kp_dir)["candidates"]), 4)
 
-    def test_review_required_item_gets_qa_fail_flag_and_not_auto(self):
+    def test_review_required_item_is_excluded_before_presentation_spec1(self):
+        """仕様①(2026-10-29)の置換test(旧: qa_fail旗付きで提示)。QA不合格の候補は旗付き提示でなく**除外**(dropped, stage=canonicalization_qa)。"""
         with Env(self.tmp, qa_fail_phrases=["pushed prices up"]) as env:
             self.ensure(env)
         c = rv.load_candidates(self.kp_dir)
-        x = next(i for i in c["candidates"] if i["selection_phrase"] == "pushed prices up")
-        self.assertTrue(x["flags"]["qa_fail"])
-        self.assertFalse(x["auto_eligible"])
-        self.assertEqual(x["gates"]["canonicalization"], "REVIEW_REQUIRED")
-        self.assertEqual(env.n["call1"], 1)   # 有効>=3なので再選定なし
+        self.assertNotIn("pushed prices up", [i["selection_phrase"] for i in c["candidates"]])
+        d = next(x for x in c["dropped"] if x["phrase"] == "pushed prices up")
+        self.assertEqual(d["stage"], "canonicalization_qa")
+        self.assertIn("qa_fail", d["blocker_codes"])
+        self.assertTrue(all(i["flags"]["qa_fail"] is False and i["auto_eligible"] for i in c["candidates"]))      # スキーマ互換: 旗は残るが常にFalse
+        self.assertEqual(rv.presentable_candidates(c), c["candidates"])
+        self.assertEqual(c["presentable_filter"]["canonicalization_qa_dropped"], 1)
 
-    def test_gloss_hr_pending_flag(self):
+    def test_gloss_hr_pending_candidate_is_excluded_before_presentation_M1(self):
+        """Opus M1: 提示された候補は単独で確定できる必要がある。gloss HR待ちの候補も除外(旧: 旗付き提示→確定時に差し戻し)。"""
         with Env(self.tmp, gloss_fail_phrases=["time lag"]) as env:
             self.ensure(env)
         c = rv.load_candidates(self.kp_dir)
-        x = next(i for i in c["candidates"] if i["selection_phrase"] == "time lag")
-        self.assertTrue(x["flags"]["gloss_hr_pending"])
-        self.assertFalse(x["auto_eligible"])
+        self.assertNotIn("time lag", [i["selection_phrase"] for i in c["candidates"]])
+        d = next(x for x in c["dropped"] if x["phrase"] == "time lag")
+        self.assertEqual(d["stage"], "gloss_unresolved")
+        self.assertIn("gloss_hr_pending", d["blocker_codes"])
 
     def test_redundancy_flags_from_candidate_wide_qa(self):
         with Env(self.tmp, red_ng_pairs=[(1, 2)]) as env:
@@ -231,9 +236,7 @@ class TestReviewFlowAndFinalize(KpTestCase):
 
     def test_select_validation_errors(self):
         self._pending(red_ng_pairs=[(1, 2)])
-        with self.assertRaises(rv.KpReviewError) as e:
-            rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=[1, 2, 3], by="h")
-        self.assertIn("重複", str(e.exception))                       # redundancy pair
+        # 仕様②: 重複pair(1,2)の選択は拒否しない(アラームのみ)ため、ここでは他の検証エラーだけを確認する(重複の受理は TestRedundancyAlarmNonBlocking)
         with self.assertRaises(rv.KpReviewError):
             rv.op_select(self.kp_dir, kp_ranks=[1, 3, 4, 5], vocab_ranks=[1, 3, 4, 5], by="h")   # KP最大3
         with self.assertRaises(rv.KpReviewError):
@@ -263,7 +266,9 @@ class TestReviewFlowAndFinalize(KpTestCase):
         self.assertFalse(os.path.exists(f"{self.kp_dir_a2}/vocab_confirmed.json"))   # Stdは単語解説なし(I-1)
 
     def test_qa_fail_requires_explicit_accept(self):
-        self._pending(qa_fail_phrases=["pushed prices up"])
+        """旧doc(仕様①より前に旗付きで保存された候補doc)の救済経路: --accept-qa-fail は残置(確定時の安全網)。新docではQA不合格候補は存在しない。"""
+        self._pending()
+        make_legacy_flagged(self.kp_dir, [1], qa_fail=[1])
         with self.assertRaises(rv.KpReviewError) as e:
             rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=[1, 2, 3], by="h")
         self.assertIn("--accept-qa-fail", str(e.exception))
@@ -271,7 +276,9 @@ class TestReviewFlowAndFinalize(KpTestCase):
         self.assertEqual(rv.load_review(self.kp_dir)["status"], rv.ST_REVIEWED)
 
     def test_gloss_hr_pending_not_selectable_until_resolved(self):
-        self._pending(gloss_fail_phrases=["time lag"])
+        """旧doc(gloss HR待ちが旗付きで保存済み)の防御: 確定時の安全網とresolve-gloss(op_resolve_gloss)は残置。新docではHR待ち候補は提示されない。"""
+        self._pending()
+        make_legacy_flagged(self.kp_dir, [3], gloss_hr=[3])
         with self.assertRaises(rv.KpReviewError) as e:
             rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=[1, 2, 3], by="h")
         self.assertIn("gloss HR", str(e.exception))
@@ -290,16 +297,22 @@ class TestReviewFlowAndFinalize(KpTestCase):
         self.assertTrue(r["accept_ai_default"])
         self.assertEqual(r["selection"]["kp"], [cid(p["phrase"]) for p in CALL1])
 
-    def test_final_redundancy_ng_on_human_selection_returns_to_pending_M8(self):
+    def test_final_redundancy_ng_on_human_selection_is_alarm_and_finalizes_spec2(self):
+        """仕様②(2026-10-29)の置換test(旧: 人間選定の確定集合がNGならPENDINGへ巻戻し・選定消去)。重複NGでも差し戻さず、ALARMとして記録して確定を続行する。"""
         env = self._pending()
         rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=[1, 2, 3], by="h")
         env.final_red_seq = ["NG"]
         r = self.ensure(env)
-        self.assertEqual(r["state"], "PENDING")
+        self.assertEqual(r["state"], "FINALIZED")
         rev = rv.load_review(self.kp_dir)
-        self.assertEqual(rev["status"], rv.ST_PENDING)
-        self.assertFalse(os.path.exists(f"{self.kp_dir}/keywords_canonicalized.json"))
-        self.assertIn("final_redundancy_ng", [h["event"] for h in rev["history"]])
+        self.assertEqual(rev["status"], rv.ST_REVIEWED)
+        self.assertEqual(rev["selection"]["kp"], [cid(CALL1[0]["phrase"]), cid(CALL1[1]["phrase"]), cid(CALL1[2]["phrase"])])    # 選定は維持
+        self.assertEqual(rev["final_qa"]["status"], "REDUNDANCY_ALARM")
+        self.assertTrue(rev["final_qa"]["nonblocking"])
+        self.assertTrue(rev["final_qa"]["alarm_pairs"])
+        self.assertTrue(os.path.exists(f"{self.kp_dir}/keywords_canonicalized.json"))
+        self.assertIn("final_redundancy_alarm", [h["event"] for h in rev["history"]])
+        self.assertNotIn("final_redundancy_ng", [h["event"] for h in rev["history"]])
 
 
 class TestAutoMode(KpTestCase):
@@ -320,7 +333,10 @@ class TestAutoMode(KpTestCase):
             self.assertEqual(rev["mode_used"]["declared_by"], "tester")
 
     def test_auto_skips_qa_fail_and_redundant_pair(self):
-        with Env(self.tmp, qa_fail_phrases=["took a sharp turn"], red_ng_pairs=[(1, 3)]) as env:
+        """AUTO(AIの自動選定)の重複回避・qa_fail除外は不変(仕様②の対象外=人間選定ではない)。qa_failは旧doc(旗付き保存済み)で再現する。"""
+        with Env(self.tmp, red_ng_pairs=[(1, 3)]) as env:
+            self.assertEqual(self.ensure(env)["state"], "PENDING")
+            make_legacy_flagged(self.kp_dir, [2], qa_fail=[2])
             self.declare()
             self.ensure(env)
             rev = rv.load_review(self.kp_dir)
@@ -333,12 +349,24 @@ class TestAutoMode(KpTestCase):
             self.assertEqual(len(used), 3)
 
     def test_auto_zero_eligible_stops(self):
-        qa = [p["phrase"] for p in CALL1] + [p["phrase"] for p in CALL2]
-        with Env(self.tmp, qa_fail_phrases=qa) as env:
+        """AUTO枯渇STOPは『範囲外として意図的に残す既存動作』(Opus D-6)。旧doc(全候補がqa_fail旗付き)でAUTO適格0 -> STOP。"""
+        with Env(self.tmp) as env:
+            self.assertEqual(self.ensure(env)["state"], "PENDING")
+            c = rv.load_candidates(self.kp_dir)
+            make_legacy_flagged(self.kp_dir, [x["ai_rank"] for x in c["candidates"]], qa_fail=[x["ai_rank"] for x in c["candidates"]])
             self.declare()
             with self.assertRaises(rv.KpReviewError):
                 self.ensure(env)
             self.assertFalse(os.path.exists(f"{self.kp_dir}/keywords_canonicalized.json"))
+
+    def test_all_candidates_qa_fail_at_generation_fails_closed_with_no_presentable_candidate_spec1(self):
+        """仕様①: 生成時に全候補がQA不合格 -> 提示できる候補が無い。旗付きで提示せず、既存のOUTER_RETRY_EXHAUSTED経路(FAILED)へ(未検査/不合格候補を出さない)。"""
+        qa = [p["phrase"] for p in CALL1] + [p["phrase"] for p in CALL2]
+        with Env(self.tmp, qa_fail_phrases=qa) as env:
+            self.declare()
+            r = self.ensure(env)
+        self.assertEqual(r["state"], "FAILED")
+        self.assertFalse(os.path.exists(f"{self.kp_dir}/keywords_canonicalized.json"))
 
     def test_auto_final_redundancy_ng_advances_to_next_candidate_M8(self):
         with Env(self.tmp) as env:

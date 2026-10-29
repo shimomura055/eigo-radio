@@ -40,6 +40,7 @@ def _shape_final(kp_dir: str, article_id: str, level: str, step: dict) -> dict:
     if ev is not None:
         events.append(ev)
     cands = rv.load_candidates(kp_dir) or {}
+    rv.write_alarm_file_safe(kp_dir, review, level, reached="runner_kp_stage_passed")    # 仕様②: 重複アラームがあってもKP stageは通過し後続(gate/assemble/音声)へ進む。通過を監査に記録
     res = {
         "selection": {"status": "KEY_WORDS_STRUCTURE_PASS", "kp_backend_used": "fulltext_p2", "kp_review_status": review["status"],
                       "kp_attempts": cands.get("outer_attempts")},

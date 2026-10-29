@@ -499,19 +499,25 @@ class TestOuterRetryAndFailures(BfCase):
                                 bad_phrases=["pushed prices up", "took a sharp turn"])
         self.assertEqual(env.n["call1"], 2)
 
-    def test_rescued_not_auto_leg_removed_on_TBF18c(self):
+    def test_rescued_unverified_excluded_not_presented_and_no_outer_retry_M8(self):
+        """HR-SELECTION-FLOW(2026-10-29, Opus M8): 旧test_rescued_not_auto_leg_removed_on_TBF18c の置換。救済(canonicalization段)後のQA再判定が未了(NOT_REJUDGED)の
+        候補は『HR限定で提示』ではなく**除外**する(未検査候補は提示しない=fail-closed)。除外はGate除外に数えられ、補完ON(既定)では外側retry脚が無い=初回候補を捨てない。"""
         art = g.ART_R
         call1 = g.CALL1_C
         with Env(self.tmp, call1=call1, call2=[], canon_keys={"pushed prices up": "totally different"}, qa_mismatch={"pushed prices up"}) as env, \
                 mock.patch.dict(os.environ, ON):
             self.ensure(env, text=art)
         doc = rv.load_candidates(self.kp_dir)
-        c = next(x for x in doc["candidates"] if x["selection_phrase"] == "pushed prices up")
-        self.assertFalse(c["auto_eligible"])
-        self.assertEqual(env.n["call1"], 1)                                      # 救済済み(HR限定)候補を含む初回候補を捨てて作り直さない
+        self.assertFalse([x for x in doc["candidates"] if x["selection_phrase"] == "pushed prices up"])      # 提示集合に無い
+        d = next(x for x in doc["dropped"] if x["phrase"] == "pushed prices up")
+        self.assertEqual(d["stage"], "canonicalization_qa")
+        self.assertIn("rescue_unverified", d["blocker_codes"])
+        self.assertEqual(env.n["call1"], 2)                                      # 初回1回+補完(P7)1回。外側retryはしない(補完ONでは初回合格候補を保持)
         self.assertEqual(doc["outer_attempts"], 1)
-        self.assertEqual(len(doc["candidates"]), 3)
-        self.assertFalse(doc["backfill"]["triggered"])                           # 救済済みは除外に数えない(TBF06)
+        self.assertTrue(doc["backfill"]["triggered"])                            # 除外はGate除外として数えられ、補完が代替を補う(新しいretry/上限は作らない)
+        self.assertEqual(doc["presentable_filter"]["version"], rv.PRESENTABLE_FILTER_VERSION)
+        self.assertEqual(doc["presentable_filter"]["canonicalization_qa_dropped"], 1)
+        self.assertEqual(doc["presentable_filter"]["presentable"], len(doc["candidates"]))
 
     def test_technical_failure_and_zero_candidates_still_retry_TBF18b(self):
         env, doc = None, None
@@ -764,7 +770,9 @@ class TestGoldenPureRefactorTBF24(unittest.TestCase):
 
     def test_call1_portion_equals_legacy_3plus5_golden_except_prompt_swap(self):
         """Gate連鎖は無変更: 旧3+5 golden(golden_02a、履歴・不変)のcall1の3件分は、7+5でも(Prompt差替・追記項目・redundant_with以外)同一。"""
-        for name in ("s01_default_8", "s06_qa_fail", "s07_gloss_hr"):
+        # s06_qa_fail / s07_gloss_hr は仕様①(2026-10-29)で意図的に挙動が変わった(QA不合格・gloss HR待ちの候補は旗付き提示でなく除外)ため対象外。
+        # 置換test: test_qa_fail_and_gloss_hr_candidates_excluded_before_presentation_spec1
+        for name in ("s01_default_8",):
             with self.subTest(name):
                 new = g.run_scenario(name, ON)
                 old = self._golden(name, legacy=True)
@@ -777,6 +785,18 @@ class TestGoldenPureRefactorTBF24(unittest.TestCase):
                 self.assertEqual([core(c) for c in new["candidates"][:3]], [core(c) for c in old["candidates"][:3]])
                 self.assertEqual(new["prompt_ids"], {"call1": "kp_prompt_p7", "call2": "kp_prompt_w5p"})
                 self.assertEqual(old["prompt_ids"], {"call1": "kp_prompt_2", "call2": "kp_prompt_2v"})
+
+
+    def test_qa_fail_and_gloss_hr_candidates_excluded_before_presentation_spec1(self):
+        """仕様①: QA不合格(s06)・gloss HR待ち(s07)の候補は提示集合に無く、droppedに理由付きで残る。他の候補(call1の残り)は旧goldenと同じ内容。"""
+        for name, phrase, stage in (("s06_qa_fail", "pushed prices up", "canonicalization_qa"), ("s07_gloss_hr", "time lag", "gloss_unresolved")):
+            with self.subTest(name):
+                new = g.run_scenario(name, ON)
+                self.assertNotIn(phrase, [c["selection_phrase"] for c in new["candidates"]])
+                self.assertIn((phrase, stage), [(d["phrase"], d["stage"]) for d in new["dropped"]])
+                self.assertTrue(all(not c["flags"]["qa_fail"] and not c["flags"]["gloss_hr_pending"] and c["auto_eligible"] for c in new["candidates"]))
+                self.assertEqual(rv.presentable_candidates(new), new["candidates"])
+                self.assertGreaterEqual(new["presentable_filter"]["checked"], len(new["candidates"]) + 1)
 
 
 if __name__ == "__main__":

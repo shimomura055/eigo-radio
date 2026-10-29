@@ -2,109 +2,6 @@
  "candidates": [
   {
    "ai_rank": 1,
-   "auto_eligible": false,
-   "candidate_id": "p_d39db088c9",
-   "flags": {
-    "gloss_hr_pending": false,
-    "qa_fail": true,
-    "redundant_with": [],
-    "similar_to_ng": false
-   },
-   "gates": {
-    "canonicalization": "REVIEW_REQUIRED",
-    "cmu": "PASS",
-    "gloss": "ALIGNED",
-    "src_d1": "NA",
-    "symbol": "PASS",
-    "validate": "PASS"
-   },
-   "human_selectable": true,
-   "item": {
-    "changed_from_display_phrase": false,
-    "declared_word_count_mismatch": false,
-    "display_phrase": "pushed prices up",
-    "fulltext_source_ref": "fulltext_exact_v1",
-    "gloss_alignment": {
-     "added_word_mappings": [],
-     "adopted_attempt": 1,
-     "attempts_count": 1,
-     "current_gloss_consistent_verdict": false,
-     "gloss_equals_naive_ja": false,
-     "import_flags": [],
-     "machine_check_record_only": {
-      "covered": {},
-      "malformed_mappings": 0,
-      "note": "必須内容語なし(機械検査対象外)",
-      "pass": true,
-      "required_words": [],
-      "span_not_in_gloss": [],
-      "symbol_only_spans": [],
-      "uncovered": []
-     },
-     "meaning_in_text_en": "meaning",
-     "meaning_stage": "applied",
-     "meaning_stage_path": "newgen_meaning_v1",
-     "naive_ja": "字義訳",
-     "naive_ja_conveys": "yes",
-     "original_japanese_gloss": null,
-     "reasoning": "r",
-     "status": "GLOSS_REALIGNED",
-     "version": "ER-003-KP-GLOSS-ALIGN-02"
-    },
-    "gloss_alignment_status": "ALIGNED",
-    "gloss_review_hint": false,
-    "japanese_gloss": "意味一",
-    "japanese_gloss_tts": "意味一",
-    "key_phrase": "pushed prices up",
-    "kp_extends_beyond_candidate": false,
-    "normalization_reason": "none",
-    "occurrence_count": 1,
-    "occurrence_sentence_ids": [
-     "S6"
-    ],
-    "person_role_repair": {
-     "key_before": "pushed prices up",
-     "repairs": [],
-     "role_ok_poss": [],
-     "roles_ok": null,
-     "roles_reason": "",
-     "status": "NO_POSSESSIVE"
-    },
-    "qa": {
-     "qa_context_sufficiency": "PASS",
-     "qa_core_meaning_preserved": "PASS",
-     "qa_listening_blocker_value_preserved": "PASS",
-     "qa_meaning_or_usage_unchanged": "PASS",
-     "qa_no_residual_context_word": "PASS",
-     "qa_no_semantic_role_loss": "PASS",
-     "qa_not_over_minimized": "PASS",
-     "qa_person_reference_generalized": "PASS",
-     "qa_reusable_other_context": "PASS",
-     "qa_standalone_comprehensibility": "PASS",
-     "qa_standalone_natural_unit": "FAIL",
-     "qa_traceable_contiguous_span": "PASS"
-    },
-    "qa_overall_status": "REVIEW_REQUIRED",
-    "rank": 1,
-    "reasoning": "r",
-    "selection_resolution_method": "fulltext_exact_unique",
-    "source_sentence": "Some owners pushed prices up in May",
-    "source_sentence_id": "S6",
-    "source_span": "pushed prices up",
-    "used_form": "pushed prices up"
-   },
-   "japanese_gloss": "意味一",
-   "origin": "call1",
-   "raw_rank": 1,
-   "reason_ja": "",
-   "selection_phrase": "pushed prices up",
-   "source_sentence": "Some owners pushed prices up in May",
-   "source_sentence_id": "S6",
-   "used_form": "pushed prices up",
-   "word_count": 3
-  },
-  {
-   "ai_rank": 2,
    "auto_eligible": true,
    "candidate_id": "p_eaa9e530f0",
    "flags": {
@@ -207,7 +104,7 @@
    "word_count": 4
   },
   {
-   "ai_rank": 3,
+   "ai_rank": 2,
    "auto_eligible": true,
    "candidate_id": "p_3dd01ec937",
    "flags": {
@@ -310,7 +207,7 @@
    "word_count": 2
   },
   {
-   "ai_rank": 4,
+   "ai_rank": 3,
    "auto_eligible": true,
    "candidate_id": "p_73cc33b96d",
    "flags": {
@@ -413,7 +310,7 @@
    "word_count": 1
   },
   {
-   "ai_rank": 5,
+   "ai_rank": 4,
    "auto_eligible": true,
    "candidate_id": "p_ed487e1e87",
    "flags": {
@@ -516,7 +413,7 @@
    "word_count": 1
   },
   {
-   "ai_rank": 6,
+   "ai_rank": 5,
    "auto_eligible": true,
    "candidate_id": "p_347f7bac55",
    "flags": {
@@ -619,7 +516,7 @@
    "word_count": 1
   },
   {
-   "ai_rank": 7,
+   "ai_rank": 6,
    "auto_eligible": true,
    "candidate_id": "p_be18cc28cc",
    "flags": {
@@ -722,7 +619,7 @@
    "word_count": 1
   },
   {
-   "ai_rank": 8,
+   "ai_rank": 7,
    "auto_eligible": true,
    "candidate_id": "p_f8f2f1b9c7",
    "flags": {
@@ -825,7 +722,20 @@
    "word_count": 1
   }
  ],
- "dropped": [],
+ "dropped": [
+  {
+   "blocker_codes": [
+    "qa_fail"
+   ],
+   "origin": "call1",
+   "phrase": "pushed prices up",
+   "raw_rank": 1,
+   "reasons": [
+    "canonicalization QA不合格(REVIEW_REQUIRED): qa_standalone_natural_unit"
+   ],
+   "stage": "canonicalization_qa"
+  }
+ ],
  "kind": "kp",
  "level": "b1b",
  "model_id": {
@@ -840,8 +750,8 @@
    "call2_status": "OK",
    "excluded_in": [],
    "n_auto_eligible": 7,
-   "n_candidates": 8,
-   "n_gate_dropped": 0,
+   "n_candidates": 7,
+   "n_gate_dropped": 1,
    "n_rescued": 0,
    "outer_attempt": 1,
    "rescued_not_auto": [],

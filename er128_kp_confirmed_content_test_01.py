@@ -579,25 +579,28 @@ class TestReviseRestore(CCBase):
         with self.assertRaises(rv.ConfirmedContentIssue):
             cc.cmd_restore(self.run_dir, "b1b", "fable-ai", "r")
 
-    def test_redundancy_ng_marks_reconfirm_required_and_allows_user_reselect(self):
+    def test_redundancy_ng_is_alarm_only_record_stays_live_and_finalizes_spec2(self):
+        """仕様②(2026-10-29)の置換test(旧: 確定集合の重複NG -> 確定レコードを reconfirm_required へ・CONFIRMED_CONTENT_ISSUE・PENDINGへ差戻し)。
+        重複NGでも確定レコードは変わらず(state=live・revision不変・ISSUEなし)、REDUNDANCY_ALARMを記録して確定が進み、消費者入口(G1)を通る。"""
         shutil.rmtree(self.run_dir)
         env = Env(self.tmp, final_red_seq=["NG", "PASS", "PASS"])
         with env:
             self.ensure(env)
             rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=[1, 2, 3, 4, 5], by="human")
             cc.cmd_from_review(self.run_dir, "b1b", "human", self.uref)   # 確定をfinalize前にレコード化(フォーム経路は送信時点で作られる)
+            rec0 = self.rec()
             r = self.ensure(env)
-            self.assertEqual(r["state"], "PENDING")   # 既存挙動(PENDING差戻し)を維持
+            self.assertEqual(r["state"], "FINALIZED")                      # 差戻さない
             rec = self.rec()
-            self.assertEqual(rec["state"], cc.STATE_RECONFIRM)
-            self.assertEqual(rec["history"][-1]["event"], "redundancy_ng_reconfirm_required")
-            self.assertEqual(rec["items"][0]["used_form"], jl(rv.paths(self.kp_dir)["candidates"])["candidates"][0]["item"]["used_form"])   # 旧確定は履歴/レコードに保存
-            self.assertTrue(rd(rv.paths(self.kp_dir)["request"]).startswith("# 確定内容の確認依頼"))   # 依頼書の先頭に『確定内容の確認依頼』節
-            rv.op_select(self.kp_dir, kp_ranks=[1, 2, 4], vocab_ranks=[1, 2, 4, 5, 6], by="human")   # ユーザーの選び直し(ガード対象外)
-            self.ensure(env)
-            rec = self.rec()
-            self.assertEqual((rec["state"], rec["revision"]), (cc.STATE_LIVE, 2))
-            self.consume()
+            self.assertEqual((rec["state"], rec["revision"]), (cc.STATE_LIVE, rec0["revision"]))
+            self.assertEqual(rec["history"], rec0["history"])               # 重複で履歴(状態遷移)を追加しない
+            self.assertFalse(os.path.exists(rv.paths(self.kp_dir)["review"].replace("kp_human_review.json", cc.FILE_ISSUE_JSON)))
+            fin = jl(rv.paths(self.kp_dir)["final"])
+            self.assertEqual(fin["final_redundancy_qa"]["status"], "REDUNDANCY_ALARM")
+            self.assertTrue(fin["redundancy_telemetry"]["nonblocking"])
+            self.assertGreaterEqual(fin["redundancy_telemetry"]["alarm_count"], 1)
+            self.consume()                                                  # 消費者入口(G1/G0)を通る
+            self.assertFalse(hasattr(cc, "STATE_RECONFIRM") or hasattr(cc, "on_final_redundancy_ng") or hasattr(cc, "raise_issue_nowait"))     # 旧停止機構は撤去
 
 
 # ============================================================

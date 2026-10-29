@@ -281,7 +281,8 @@ def presented_pool(kp_cands: dict) -> list:
     """フォームに提示されるKey Phrase・Word候補(HRで人間が選べる集合)。exporter(`export_form_data_01.convert`)と同じ算出:
     ai_rank順に並べ、phrases[:cap_by_kind.phrase] + words[:cap_by_kind.word]。parityは実exporterと突合するtestで固定(M-4)。
     戻り値: ai_rank順のcandidate dict(元docのdictそのもの)。"""
-    cands = sorted((kp_cands or {}).get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
+    # 仕様①(2026-10-29): 提示集合は rv.presentable_candidates(品質検査を通った候補のみ)を通してから種類別capを適用する(exporterと同一。Opus M2)
+    cands = sorted(rv.presentable_candidates(kp_cands or {}), key=lambda c: c.get("ai_rank") or 99)
     _, cbk = _cap_info(kp_cands or {})
     phrases = [c for c in cands if kind_of(c) == "phrase"][:cbk.get("phrase", 7)]
     words = [c for c in cands if kind_of(c) == "word"][:cbk.get("word", 5)]

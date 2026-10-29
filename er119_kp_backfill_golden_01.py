@@ -129,14 +129,16 @@ def strip_additive(doc: dict) -> dict:
     for e in d.get("outer_retry_log", []):
         for k in ADDITIVE_LOG_KEYS:
             e.pop(k, None)
+        for k in [k for k in (e.get("stages") or {}) if k.endswith("presentable_filter")]:     # 品質検査telemetry(追記専用。HR-SELECTION-FLOW 2026-10-29)
+            e["stages"].pop(k, None)
     return d
 
 
-ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail")
+ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail", "presentable_filter")     # presentable_filter=HR-SELECTION-FLOW(2026-10-29)追記専用telemetry
 ADDITIVE_CAND_KEYS = ("kind",)
 ADDITIVE_LOG_KEYS = ("backfill",)
 # 補完ON(既定)でも抽出前goldenと完全一致するscenario(E=0かつ外側retry脚の撤去に影響されないもの)
-ON_EQUAL_SCENARIOS = ("s01_default_8", "s05_shortfall_no_drop", "s06_qa_fail", "s07_gloss_hr", "s08_redundancy_pair", "s11_rescue_selection_stage")
+ON_EQUAL_SCENARIOS = ("s01_default_8", "s05_shortfall_no_drop", "s08_redundancy_pair", "s11_rescue_selection_stage")     # s06/s07は仕様①(2026-10-29)で除外=E>0になったため対象外
 
 
 def golden_path(name: str) -> str:
@@ -146,7 +148,9 @@ def golden_path(name: str) -> str:
 if __name__ == "__main__":
     if "--write" in sys.argv:
         os.makedirs(GOLDEN_DIR, exist_ok=True)
-        for n in SCENARIOS:
+        # HR-SELECTION-FLOW(2026-10-29): `--write <scenario>...` で指定scenarioだけ再生成できる(仕様①で挙動が意図的に変わるscenarioの更新用。他は触らない)
+        only = [a for a in sys.argv[sys.argv.index("--write") + 1:] if not a.startswith("--")]
+        for n in (only or SCENARIOS):
             d = strip_additive(run_scenario(n, {"EIGO_KP_BACKFILL": "0"}))    # 補完OFF=補完機能が無い状態の挙動を固定する(ON時のE=0一致・OFF一致をtestが検査)
             with open(golden_path(n), "w", encoding="utf-8") as f:
                 json.dump(d, f, ensure_ascii=False, indent=1, sort_keys=True)

@@ -68,6 +68,14 @@ def sha_info(doc: dict, source_kind: str) -> tuple:
     return None, ("unavailable_replay_doc" if source_kind.startswith("REPLAY") else "unavailable_dev_trial_doc")
 
 
+def _rv():
+    """提示集合の唯一の定義(er119_kp_human_review_01.presentable_candidates)。exporter専用の定義を持たない(HR-SELECTION-FLOW-QA-FIRST、2026-10-29)。"""
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+    import er119_kp_human_review_01 as rv
+    return rv
+
+
 def flag_notes(c: dict) -> list:
     fl = c.get("flags") or {}
     notes = []
@@ -75,15 +83,11 @@ def flag_notes(c: dict) -> list:
         notes.append("補完候補(Gate除外の代替)")
     if fl.get("rescued"):
         notes.append("KP救済済み(" + "/".join(fl.get("rescue_codes") or (c.get("rescue") or {}).get("codes") or []) + ")")
-    if fl.get("qa_fail"):
-        notes.append("QA不合格(人間のみ採用可)")
-    if fl.get("gloss_hr_pending"):
-        notes.append("意味確認待ち(人間のみ採用可)")
     if fl.get("similar_to_ng"):
         notes.append("不適切(NG)指定に類似(人間のみ採用可)")
     if fl.get("redundant_with"):
         notes.append("他候補と重複の可能性")
-    if not c.get("auto_eligible", True) and not any(n.startswith(("QA", "意味", "不適切")) for n in notes):
+    if not c.get("auto_eligible", True) and not any(n.startswith("不適切") for n in notes):
         notes.append("AUTO採用不可(人間のみ採用可)")
     return notes
 
@@ -242,7 +246,9 @@ def nuance_bundle_from_study_dir(study_dir: str, level: str, kp_cands: dict):
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
             grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None,
             grammar_meta: dict | None = None, nuance_bundle: dict | None = None) -> dict:
-    cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
+    rv = _rv()
+    cands = sorted(rv.presentable_candidates(doc), key=lambda c: c.get("ai_rank") or 99)      # 仕様①: 品質検査を通った候補だけを選択可能に提示する
+    excluded_pres = rv.excluded_from_presentation(doc)                                       # 旧doc(旗付きで保存済み)の提示除外。新docは生成時にdropped済み=通常0件
     es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
     sha, sha_src = sha_info(doc, source_kind)
@@ -279,6 +285,10 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
     w = reason_missing_warning(doc, es)
     if w:
         out["data_warnings"] = [w]
+    if excluded_pres:                          # 提示から外した候補を隠さず記録(0件のdocはキー自体を出さない=従来とバイト同一)
+        out.setdefault("data_warnings", []).append({"code": "presentation_excluded", "count": len(excluded_pres), "candidates": excluded_pres,
+                                                    "filter_version": rv.PRESENTABLE_FILTER_VERSION,
+                                                    "message_ja": "品質検査で不適合のため選択肢に出していない候補が" + str(len(excluded_pres)) + "件あります(旧候補doc由来)"})
     over = [e for e in es if e["kind"] == "phrase"][cbk.get("phrase", 7):] + [e for e in es if e["kind"] == "word"][cbk.get("word", 5):]
     if over:                                   # フォームの枠(フレーズ7/単語5)を超える候補は表示せず別枠に保持(情報は失わない)
         out["overflow"] = over

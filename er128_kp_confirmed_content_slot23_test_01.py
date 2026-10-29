@@ -326,7 +326,7 @@ class TestReconsume(Slot23Base):
     def test_reconsume_validation_failure_is_issue_and_changes_nothing(self):
         with Env(self.tmp) as env:
             rec0, rv0 = self._legacy_a2(env)
-            with mock.patch.object(rv, "validate_selection", return_value=["候補5と候補1は意味・用法が重複しています(Redundancy QA)"]):
+            with mock.patch.object(rv, "validate_selection", return_value=["候補5(example)はNGに指定済みです(選択できません)"]):
                 with self.assertRaises(rv.ConfirmedContentIssue):
                     cc.cmd_reconsume(self.run_dir, "a2", "human", self.uref)
             self.assertEqual(cc.load_record(self.kp_dir_a2), rec0)

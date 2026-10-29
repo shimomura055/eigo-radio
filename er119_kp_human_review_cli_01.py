@@ -84,7 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--kp", default="")
     p.add_argument("--vocab", default=None)
     p.add_argument("--ng", action="append", default=[])
-    p.add_argument("--accept-qa-fail", default="")
+    p.add_argument("--accept-qa-fail", default="", help="旧候補doc(仕様①より前に旗付きで保存されたQA不合格候補)の救済専用。新docではQA不合格候補は提示されない")
     p.add_argument("--accept-ai", action="store_true")
     p.add_argument("--candidates-sha", default=None, help="--accept-ai時: 表示した候補のcandidates_sha256(未表示候補への了承を拒否する)")
     p.add_argument("--from-json", default=None)
@@ -326,6 +326,7 @@ def run(argv=None) -> int:
             review = rv.op_select(kp_dir, kp_ranks=kp_ranks, vocab_ranks=vocab_ranks, ng=ng, accept_qa_fail=qf, by=by,
                                   accept_ai=a.accept_ai, shown_candidates_sha256=a.candidates_sha)
             _print({"status": review["status"], "selection": review["selection"], "revision": review["revision"],
+                    "redundancy_alarms": review.get("redundancy_alarms") or [], "redundancy_alarm_nonblocking": True,      # 仕様②: 重複はアラームのみ(止まらない)
                     "next": "制作コマンドを同じまま再実行してください(finalize→後続が進みます)"})
             return 0
         if a.cmd == "reselect":

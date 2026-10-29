@@ -211,23 +211,22 @@ class TestWiredFlow(KpTestCase):
         self.assertEqual(out["kept"], [])
         self.assertEqual(out["dropped"][0]["stage"], "duplicate_of_top3")
 
-    def test_w6_m3_rescued_but_not_auto_triggers_outer_retry_without_f1_exclusion(self):
+    def test_w6_m3_rescued_unverified_is_excluded_and_counts_as_gate_drop_for_outer_retry_spec1(self):
         call1 = [{"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2}, {"phrase": "took a sharp turn", "word_count": 4}]
-        # 'pushed prices up'のLLM keyが不適切 -> revertで救済、QA再判定のkeyが不一致(NOT_REJUDGED)=auto不可。n_auto=2<3かつGate除外0件
-        # 『rescued_not_auto脚』は補完OFF(EIGO_KP_BACKFILL=0)の現行条件。補完ON(既定)では撤去(Opus M-3、初回合格候補を入れ替えない。er119_kp_backfill_test_01 TBF18)
+        # 'pushed prices up'のLLM keyが不適切 -> revertで救済、QA再判定のkeyが不一致(NOT_REJUDGED)。
+        # 仕様①(2026-10-29, Opus M8)で置換: 旧は『HR限定候補として残しrescued_not_auto脚でretry・F1累積除外へ入れない』。新は未検査の救済候補を提示せず**除外**する
+        # (stage=canonicalization_qa)。除外はGate除外に数えられ、補完OFF(EIGO_KP_BACKFILL=0)では既存の外側retry条件(n_auto<3かつgate_dropped)が働き、
+        # 除外句はF1累積除外へ入る(再選定で同じ未検査句を再提示しない)。補完ON(既定)ではretryせず補完が代替を補う(er119_kp_backfill_test_01 M8)
         with Env(self.tmp, call1=call1, call2=[], canon_keys={"pushed prices up": "totally different"}, qa_mismatch={"pushed prices up"}) as env,                 mock.patch.dict(os.environ, {"EIGO_KP_BACKFILL": "0"}):
             self.ensure(env, text=ART)
         doc = rv.load_candidates(self.kp_dir)
-        c = _cand(doc, "pushed prices up")
-        self.assertEqual(c["rescue"]["canonicalization"]["code"], r.R_REVERT)
-        self.assertEqual(c["rescue"]["qa"]["status"], r.QA_NOT_REJUDGED)
-        self.assertFalse(c["auto_eligible"])
-        self.assertEqual(c["gates"]["canonicalization"], "RESCUED_QA_NOT_REJUDGED")
-        self.assertEqual(env.n["call1"], sc.KP_OUTER_RETRY_MAX)                        # 外側retryが発動(上限まで)。承認済みmax_outer内
-        for m in env.messages1[1:]:
-            self.assertNotIn("「pushed prices up」", m)     # F1累積除外へ入れない(再選定でHR候補として残り得る)=除外指定noteに現れない
-        self.assertEqual(doc["outer_retry_log"][0]["rescued_not_auto"], [c["candidate_id"]])
-        self.assertTrue(c["flags"]["rescued"])
+        self.assertFalse([x for x in doc["candidates"] if x["selection_phrase"] == "pushed prices up"])      # 未検査の救済候補は提示集合に無い
+        e0 = doc["outer_retry_log"][0]                                                  # 1周目: 未検査の救済候補が品質検査で除外された記録(最終周のdroppedには残らない=F1累積除外で再選定されないため)
+        self.assertEqual(e0["stages"]["presentable_filter"]["dropped_by_code"], {"rescue_unverified": 1})
+        self.assertGreaterEqual(e0["n_gate_dropped"], 1)
+        self.assertGreaterEqual(env.n["call1"], 2)                                      # 既存の外側retry条件(補完OFF)が働く。承認済みmax_outer内で新しい上限は作らない
+        self.assertLessEqual(env.n["call1"], sc.KP_OUTER_RETRY_MAX)
+        self.assertTrue(any("pushed prices up" in m for m in env.messages1[1:]))        # 除外句は再選定のnoteに入る(同じ未検査句を再提示しない)
 
     def test_w6b_rescued_and_auto_ok_does_not_retry(self):
         call1 = [{"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2}, {"phrase": "took a sharp turn", "word_count": 4}]

@@ -32,7 +32,8 @@ PARAS = [P1, P2, P3]
 
 def _cand(cid, rank, used, kind="phrase", display=None):
     return {"candidate_id": cid, "ai_rank": rank, "used_form": used, "selection_phrase": display or used, "kind": kind, "japanese_gloss": f"{used}の訳",
-            "auto_eligible": True, "item": {"display_phrase": display or used, "key_phrase": used}}
+            "auto_eligible": True, "gates": {"gloss": "ALIGNED"},      # 提示集合(仕様①2026-10-29 rv.presentable_candidates)を通る正式候補のfixture: QA PASS・gloss整合済み
+            "item": {"display_phrase": display or used, "key_phrase": used, "qa_overall_status": "PASS"}}
 
 
 def kp_doc():

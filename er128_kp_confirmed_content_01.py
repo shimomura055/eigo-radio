@@ -77,7 +77,6 @@ FILE_LEGACY = "confirmed_content_legacy_drift.json"
 FILE_DISABLED = "confirmed_protection_disabled.json"
 
 STATE_LIVE = "live"
-STATE_RECONFIRM = "reconfirm_required"   # 確定集合のRedundancy QAがNG→reviewがPENDINGへ戻った(ユーザーの選び直し待ち。黙って別候補へ差し替えない)
 STATE_REVOKED = "revoked"
 ACTOR_USER = "user"
 ACTOR_EVIDENCE = "evidence"               # 02B: runtime evidence用(ユーザー確定ではない)。保護の強度はuserと同じ(英語・訳・区分・文法を守る)が、記録上は明示的に区別する
@@ -276,7 +275,7 @@ def build_items(cands: dict, kp_ids: list, vocab_ids: list) -> list:
 
 def _display_spec_for_new(prev: Optional[dict], review: Optional[dict]) -> Optional[str]:
     """新レコードのdisplay_spec。前レコードがlive(確定中)ならそれを継承(遡及なし。マーク無しはマーク無しのまま)、
-    前レコードが無い/取消済み/reconfirm_requiredなら新規扱いでreviewのstd_part1マークから導出する(マークはnew_reviewだけが発行する)。"""
+    前レコードが無い/取消済みなら新規扱いでreviewのstd_part1マークから導出する(マークはnew_reviewだけが発行する)。"""
     if prev is not None and prev.get("state") == STATE_LIVE:
         return prev.get("display_spec")
     return DISPLAY_SPEC_V1 if (review or {}).get("std_part1") else None
@@ -576,10 +575,6 @@ def verify_g1(kp_dir: str, level: str, review: dict, cands: dict, *, assets_json
     if rec.get("state") == STATE_REVOKED:
         _legacy_drift(kp_dir, level, review, cands, assets_json)   # 取消済み=保護なし(次の確定で新レコード)
         return
-    if rec.get("state") == STATE_RECONFIRM:
-        raise_issue(kp_dir, level, "確定集合がRedundancy QAでNGになり、ユーザーの選び直し待ちです。", [], proposal=[
-            "kp_human_review_request.md の候補から選び直してください(旧確定は履歴に保存されています)"],
-            next_steps=["py er119_kp_human_review_cli_01.py select ... (選び直し)"])
     diffs = []
     o = rec.get("origin") or {}
     if o.get("candidates_sha256") != review.get("candidates_sha256") or rec["article"].get("text_sha256") != review.get("text_sha256"):
@@ -679,8 +674,6 @@ def on_finalize_pre_write(kp_dir: str, review: dict, cands: dict, level: str, *,
         save_record(kp_dir, new)
         return
     ev = "confirmed" if actor == ACTOR_USER else "auto_adopted"
-    if rec is not None and rec.get("state") == STATE_RECONFIRM and actor == ACTOR_AUTO:
-        ev = "auto_adopted_after_reconfirm_required"
     new = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=build, actor=actor, origin=origin, by=by or "runner",
                       attestation=("cli --by " + by) if actor == ACTOR_USER else "declare-absent", user_ref="", prev=rec, event=ev)
     save_record(kp_dir, new)
@@ -698,27 +691,9 @@ def on_finalize_post_write(kp_dir: str, level: str) -> None:
         raise_integrity(kp_dir, level, block, "finalizeが書いた成果物が確定レコードと一致しません(G0)。")
 
 
-def on_final_redundancy_ng(kp_dir: str, ng_pairs: list) -> None:
-    """確定集合のRedundancy QA NG(reviewがPENDINGへ戻る)。ユーザー確定レコードは reconfirm_required にして履歴へ残す(黙って差し替えない)。"""
-    rec = load_record(kp_dir) if protection_enabled() else None
-    if rec is None or rec.get("state") != STATE_LIVE:
-        return
-    rec["state"] = STATE_RECONFIRM
-    _append_history(rec, event="redundancy_ng_reconfirm_required", by="runner", reason="確定集合のRedundancy QAがNG(ユーザーの選び直し待ち)",
-                    extra={"ng_pairs": [list(p) for p in ng_pairs]})
-    save_record(kp_dir, rec)
-    raise_issue_nowait(kp_dir, rec, ng_pairs)
-
-
-def raise_issue_nowait(kp_dir: str, rec: dict, ng_pairs: list) -> None:
-    pairs = []
-    cm = {it["candidate_id"]: it for it in rec.get("items") or []}
-    for a, b in ng_pairs:
-        pairs.append(f"{(cm.get(a) or {}).get('used_form', a)} と {(cm.get(b) or {}).get('used_form', b)} が重複(Redundancy QA NG)")
-    _write_issue(kp_dir, kind="CONFIRMED_CONTENT_ISSUE", summary="確定した集合がRedundancy QAでNGになりました。選び直しが必要です(AIは自動で差し替えません)。",
-                 diffs=[{"candidate_id": None, "field": "redundancy", "confirmed": "(旧確定)", "observed": x, "where": "final_redundancy_qa"} for x in pairs],
-                 next_steps=["kp_human_review_request.md の候補から選び直す(旧確定はconfirmed_selection.jsonのhistoryに保存)"],
-                 proposal=["重複ペアの片方を別候補に替えて再選択してください"])
+# 仕様②(2026-10-29): 旧 on_final_redundancy_ng / raise_issue_nowait / STATE_RECONFIRM(確定集合の重複NG→確定レコードをreconfirm_requiredへ→ISSUE停止)は撤去。
+# 重複はアラームのみ(rv.finalize_kp が REDUNDANCY_ALARM を記録して続行し、確定レコードの状態は変えない)。
+# ディスク上の reconfirm_required レコードは0件(HR-SELECTION-FLOW 棚卸し: confirmed_selection.json 58件すべて state=live)。
 
 
 def stale_issue(kp_dir: str, new_text_sha: str) -> Optional[str]:
@@ -1429,10 +1404,13 @@ def _pending_study_dir(run: str, level: str) -> Optional[str]:
     return dirs[0] if dirs else None
 
 
-def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str, *, actor: str = ACTOR_USER, grammar_pending: bool = False) -> dict:
+def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str, *, actor: str = ACTOR_USER, grammar_pending: bool = False,
+                  attestation: Optional[str] = None, origin_extra: Optional[dict] = None) -> dict:
     """grammar_pending=True(KP先行確定モード): KP/KW(区分①②③)だけを確定・保護する。文法は『選定待ち』のまま=0件として確定しない
     (文法reviewは触らない。sidecarはstatus=pendingで作る/無ければrecordの印だけ。payloadのgrammar[]は使わず、無視した件数を出力に残す)。
-    後から `cmd_grammar_from_form` で文法だけを確定する。"""
+    後から `cmd_grammar_from_form` で文法だけを確定する。
+    attestation/origin_extra(HR-SELECTION-FLOW M4): 既定(None)は従来どおり(form_submit/EVIDENCE_RUN)。ユーザー原文の指示を転記して確定する場合だけ
+    attestation="user_instruction_transcription" と由来(origin_extra)を記録する。検証は一切省略しない(同じ内部関数・同じ検査を通る)。"""
     if actor not in ENFORCING_ACTORS:
         raise CliError(f"--actor は user|evidence のみ(指定: {actor!r})")
     by, user_ref = _need_by(by), _need_user_ref(user_ref)
@@ -1502,7 +1480,8 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
     vocab_ids = (ids["cat1"] + ids["cat2"]) if vocab_on else None
     by_rank = {cid: cm[cid]["ai_rank"] for cid in seen}
     # 既存検証(Redundancy/NG/gloss_hr_pending/qa_fail/件数)を全て通す op_select。失敗=何も書かない
-    review = rv.op_select(kp_dir, kp_ranks=[by_rank[i] for i in kp_ids], vocab_ranks=([by_rank[i] for i in vocab_ids] if vocab_ids is not None else None), by=by)
+    review = rv.op_select(kp_dir, kp_ranks=[by_rank[i] for i in kp_ids], vocab_ranks=([by_rank[i] for i in vocab_ids] if vocab_ids is not None else None), by=by,
+                          meaning_display_ids=list(ids["cat3"]))      # 仕様②: ③本文意味も重複アラームの対象に含める(拒否しない。Opus M6)
     unconsumed = [{"candidate_id": i["candidate_id"], "kind": i.get("kind"), "category": 3, "used_form": i.get("term"), "japanese_gloss": i.get("ja_gloss"),
                    "reason": REASON_C3_HIGHLIGHT if spec else REASON_C3_NO_CONSUMER} for i in groups.get("meaning_display") or []]
     if level != "b1b" and not spec:
@@ -1520,8 +1499,10 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
             f.write(raw)
         origin = {"kind": "form_submission", "form_schema": payload.get("schema"), "form_schema_version": 2, "form_payload_sha256": hashlib.sha256(raw).hexdigest(),
                   "source_revision": rev_no, "user_ref": user_ref}
+        if origin_extra:
+            origin["transcription"] = dict(origin_extra)       # 由来(旧readable sha・原文file:line・差分)。form_payload_sha256/_form_source_problemsと独立のキー
         rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=actor, origin=origin, by=by,
-                          attestation=("form_submit" if actor == ACTOR_USER else "EVIDENCE_RUN(ユーザー確定ではない。runtime evidence用にフォーム送信を再現した記録。user_refは委任文)"), user_ref=user_ref,
+                          attestation=(attestation or ("form_submit" if actor == ACTOR_USER else "EVIDENCE_RUN(ユーザー確定ではない。runtime evidence用にフォーム送信を再現した記録。user_refは委任文)")), user_ref=user_ref,
                           comment=payload.get("comment") or "", unconsumed=unconsumed, prev=prev, event="confirmed",
                           confirmation_id="cf_" + hashlib.sha256(raw).hexdigest()[:16])
         rec.pop("grammar", None)
@@ -1535,6 +1516,7 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
             rec["nuance"] = _write_nuance_sidecar(run, rec, nv, kp_dir, level=level, by=by, user_ref=user_ref)
         save_record(kp_dir, rec)   # 確定点(ここまで失敗なら確定レコードは作られない。同じ入力の再送は冪等)
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in items],
+            "redundancy_alarms": list(review.get("redundancy_alarms") or []), "redundancy_alarm_nonblocking": True,
             "unconsumed": [(u["candidate_id"], u["reason"]) for u in unconsumed], "grammar": len(gv["items"]),
             "grammar_review": grammar_review,
             "grammar_status": GRAMMAR_PENDING if gv.get("pending") else "confirmed",

@@ -265,6 +265,30 @@ class KpTestCase(unittest.TestCase):
         return rv.add_declaration(run_dirs=[run_dir or self.run_dir], by=by, reason=reason, rounds=list(rounds))
 
 
+def make_legacy_flagged(kp_dir, ranks, *, qa_fail=(), gloss_hr=()):
+    """test専用: 仕様①(2026-10-29)より前に生成された『旗付きで保存済みの候補doc』を再現する(QA FAIL / gloss HR待ちの候補を提示集合に含む旧doc)。
+    保存済みの候補docの指定ai_rankの候補を旧形式(flags.qa_fail / gloss_hr_pending 付き・auto不可)へ書換え、candidates_shaとreviewを更新する。
+    Production経路はこの形の新docを作らない(除外される)。旧doc救済(--accept-qa-fail / resolve-gloss)と提示時の防御(presentable_candidates)のtest用。"""
+    cands = rv.load_candidates(kp_dir)
+    for c in cands["candidates"]:
+        if c["ai_rank"] in set(qa_fail):
+            c["item"]["qa_overall_status"] = "REVIEW_REQUIRED"
+            c["item"].setdefault("qa", {})["qa_no_residual_context_word"] = "FAIL"
+            c["flags"]["qa_fail"] = True
+            c["gates"]["canonicalization"] = "REVIEW_REQUIRED"
+            c["auto_eligible"] = False
+        if c["ai_rank"] in set(gloss_hr):
+            c["item"]["gloss_alignment_status"] = "FAILED_HUMAN_REVIEW_REQUIRED"
+            c["flags"]["gloss_hr_pending"] = True
+            c["gates"]["gloss"] = "HR_PENDING"
+            c["auto_eligible"] = False
+    cands = rv.save_candidates(kp_dir, cands)
+    review = rv.load_review(kp_dir)
+    review["candidates_sha256"] = cands["candidates_sha256"]
+    rv.save_review(kp_dir, review, expected_revision=review["revision"])
+    return cands
+
+
 def declare_in_mock_contexts(runner_module):
     """test専用: 既存のZ mock E2E系testが『KP Human Review導入前と同じく最後まで進む』ように、runner_module.build_mock_contextを
     『Human不在を明示宣言済みのctx』を返すようにwrapする(宣言は通常のadd_declaration=宣言ファイル。runnerのProductionコードには暗黙のauto経路を作らない)。
