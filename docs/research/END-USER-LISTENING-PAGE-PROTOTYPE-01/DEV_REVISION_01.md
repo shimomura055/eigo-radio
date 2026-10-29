@@ -71,3 +71,11 @@ URL=https://shimomura055.github.io/eigo-radio/user_test/dev_enduser_page_01/inde
 公開検証(live rev01-d、PC1280+スマホ390x844): 274チェック NG0(D1-D5+rev_c継承Regression、console error 0・HTTP 4xx5xx 0・横溢れなし)。
 注記: 日本語訳ラベル「(DEV訳・未承認)」は既存の維持対象(日本語訳)のためそのまま。
 検証: `tools/verify_rev_d_01.py`(rev_c全項目継承+D1-D5)。ローカル274チェック中NG6=「DEV文字列なし」判定が`(DEV訳・未承認)`に反応した検査側の過剰判定(正規表現を修正済み)。結果は公開検証`verify_result_rev_d_live_01.json`。
+
+## § 追加(rev01-e、委任_05、2026-10-29): 学習ブロック引用英文内の解説対象語句を太字化
+原文=`docs/pm/delegation_log/2026-10-29_END-USER-LISTENING-PAGE-DEV-REVISION-01_USER_04.md`。ビルドID rev01-e。変更=`user_test/dev_enduser_page_01/`(app.js `emphasize()`/`matchPhrase()`、style.css `.target-term{font-weight:700}`、index.html build id)のみ。Production・API 0。
+- 方式(表示時のみ・データ英文不変・記事非依存・特定表現のハードコードなし): 見出し語をトークン化し語境界付きで照合。語形変化=規則接尾辞(s/es/ed/d/ing/er/est、y→ies等、子音重複)+小さな不規則共通表(get/got/gotten等)。プレースホルダ(one's/someone/something/sb/sth等)は1〜3トークンに一致し太字にしない。一致0件・複数候補は太字にしない(フェイルセーフ)。隣接する一致語は1つの`<strong class="target-term">`にまとめる。
+- 対象は学習ブロックの引用英文のみ(Vocab/ニュアンス「本文の英文」、文法「対象となる本文英文」)。本文transcript・意味一覧・KP・日本語訳のDOM/イベントには触れない。
+- 文法: 構文名の指定がデータにないため、「文法・構文の仕組み」解説内の「…」で囲まれた英語2語以上の語句のうち、引用英文に一意に一致する最初のものを対象とする。
+- 太字件数(Std/Adv): AI島Std Vocab5/5・ニュアンス1/1・文法1/1、AI島Adv Vocab5/5・ニュアンス1/1・文法1/1、月Adv Vocab5/5・ニュアンス1/1・文法1/1。文法の特定不可=0件(仮データ3件とも「what matters」を太字化)。
+- 検証: `tools/verify_rev_e_01.py`(rev01-d全チェック継承+(a)〜(e)+汎用性単体テスト)。ローカル342チェックNG0(`verify_result_rev_e_local_01.json`)。transcript署名比較の基準=公開rev01-dページから取得した`rev_e_baseline_signature_01.json`。PC/スマホ=Playwright 1280/390幅。CSSは幅依存の変更なし。実機iOS/Androidは未確認。

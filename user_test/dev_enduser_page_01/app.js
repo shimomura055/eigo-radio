@@ -112,8 +112,78 @@
       }).join(''), { label: nph ? 'NUANCE(仮)' : 'NUANCE', id: 'nuance', cls: 'blk-nuance' });
     }
     $('content').innerHTML = out;
+    emphasize();
     sentEls = {};
     Array.prototype.forEach.call(document.querySelectorAll('[data-sid]'), function (e) { sentEls[e.dataset.sid] = e; });
+  }
+
+  /* ---------- rev01-e: 学習ブロック引用英文内の解説対象語句を太字化(表示時のみ。データの英文は不変・記事非依存) ---------- */
+  var IRR = (function () {
+    var g = 'get got gotten|give gave given|hold held|go went gone|take took taken|make made|come came|do did done|have has had|be is are was were been am|say said|see saw seen|know knew known|think thought|feel felt|leave left|keep kept|find found|tell told|bring brought|buy bought|run ran|write wrote written|speak spoke spoken|break broke broken|choose chose chosen|fall fell fallen|grow grew grown|let|put|cut|set|read|lose lost|mean meant|meet met|pay paid|sell sold|send sent|sit sat|stand stood|win won|begin began begun|catch caught|teach taught|forget forgot forgotten'.split('|'), m = {};
+    g.forEach(function (x) { var w = x.split(' '); w.forEach(function (a) { m[a] = w; }); });
+    return m;
+  })();
+  var PH = { "one's": 1, "someone's": 1, "sb's": 1, "somebody's": 1, one: 1, someone: 1, somebody: 1, something: 1, sth: 1, sb: 1, oneself: 1, etc: 1 };
+  function toks(s) { var r = [], re = /[A-Za-z0-9]+(?:['’][A-Za-z]+)?/g, m; while ((m = re.exec(s))) r.push({ w: m[0].toLowerCase().replace(/’/g, "'"), s: m.index, e: m.index + m[0].length }); return r; }
+  function forms(w) {
+    if (IRR[w]) return IRR[w];
+    var f = [w]; if (w.length < 3) return f;
+    var last = w.charAt(w.length - 1), pre = w.slice(0, -1), cons = !/[aeiou]/.test(last);
+    f.push(w + 's', w + 'es', w + 'ed', w + 'd', w + 'ing', w + 'er', w + 'est');
+    if (last === 'e') f.push(pre + 'ing');
+    if (last === 'y' && !/[aeiou]/.test(w.charAt(w.length - 2))) f.push(pre + 'ies', pre + 'ied', pre + 'ier', pre + 'iest');
+    if (cons && /[aeiou]/.test(w.charAt(w.length - 2)) && w.length < 7) f.push(w + last + 'ed', w + last + 'ing', w + last + 'er');
+    return f;
+  }
+  /* heading → 本文tokens上の一意な一致範囲(wildcard=プレースホルダ。空配列=特定不可)。{ranges:[[s,e]..], n:一致数} */
+  function matchPhrase(heading, text, allowWild) {
+    var ht = toks(heading).map(function (t) { return { w: t.w, ph: allowWild && !!PH[t.w], f: null }; });
+    if (!ht.length || ht.every(function (t) { return t.ph; })) return { n: 0, ranges: [] };
+    ht.forEach(function (t) { if (!t.ph) t.f = forms(t.w); });
+    var qt = toks(text), hits = [];
+    function rec(hi, qi, acc) {
+      if (hi === ht.length) { hits.push(acc); return; }
+      var h = ht[hi];
+      if (h.ph) { for (var n = 1; n <= 3; n++) if (qi + n <= qt.length) rec(hi + 1, qi + n, acc); return; }
+      if (qi < qt.length && h.f.indexOf(qt[qi].w.replace(/'s$/, '')) >= 0) rec(hi + 1, qi + 1, acc.concat([[qt[qi].s, qt[qi].e]]));
+    }
+    for (var i = 0; i < qt.length; i++) rec(0, i, []);
+    var seen = {}, uniq = hits.filter(function (h) { var k = h.map(function (r) { return r[0]; }).join(','); if (seen[k]) return false; seen[k] = 1; return true; });
+    if (uniq.length !== 1) return { n: uniq.length, ranges: [] };
+    var out = [], cur = null, prevEnd = -1;   // 隣接トークン(間が空白のみ)は1つの太字にまとめる
+    uniq[0].forEach(function (r) { if (cur && /^\s*$/.test(text.slice(prevEnd, r[0]))) cur[1] = r[1]; else { cur = [r[0], r[1]]; out.push(cur); } prevEnd = r[1]; });
+    return { n: 1, ranges: out };
+  }
+  function wrapRanges(dd, ranges) {
+    var nodes = [], w = document.createTreeWalker(dd, NodeFilter.SHOW_TEXT, null), n, off = 0;
+    while ((n = w.nextNode())) { nodes.push({ n: n, s: off, e: off + n.nodeValue.length }); off += n.nodeValue.length; }
+    ranges.slice().reverse().forEach(function (r) {
+      nodes.slice().reverse().forEach(function (x) {
+        var a = Math.max(r[0], x.s), b = Math.min(r[1], x.e); if (a >= b) return;
+        var t = x.n, mid = (a > x.s) ? t.splitText(a - x.s) : t; if (b < x.e) mid.splitText(b - a);
+        var st = document.createElement('strong'); st.className = 'target-term'; mid.parentNode.insertBefore(st, mid); st.appendChild(mid);
+      });
+    });
+  }
+  function ddOf(box, label) { var dts = box.querySelectorAll('dt'); for (var i = 0; i < dts.length; i++) if (dts[i].textContent === label) return dts[i].nextElementSibling; return null; }
+  function emphasize() {
+    var stats = { vocab: [], nuance: [], grammar: [] };
+    function item(kind, box, heading, qLabel) {
+      var dd = ddOf(box, qLabel), text = dd ? dd.textContent : '', r = matchPhrase(heading, text, true);
+      if (dd && r.ranges.length) wrapRanges(dd, r.ranges);
+      stats[kind].push({ heading: heading, bold: r.ranges.length ? dd.querySelectorAll('strong.target-term').length : 0, matches: r.n, reason: r.ranges.length ? null : (r.n ? 'multiple_candidates' : 'no_match') });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#vocab details.vi'), function (b) { item('vocab', b, b.querySelector('.vh').textContent, '本文の英文'); });
+    Array.prototype.forEach.call(document.querySelectorAll('#nuance .gr'), function (b) { item('nuance', b, b.querySelector('.nh').textContent, '本文の英文'); });
+    Array.prototype.forEach.call(document.querySelectorAll('#grammar .gr'), function (b) {   // 文法: 解説本文の「…」内の英語2語以上の語句のうち、引用英文に一意に一致する最初のもの
+      var dd = ddOf(b, '対象となる本文英文'), ex = ddOf(b, '文法・構文の仕組み'), text = dd ? dd.textContent : '', res = null, reason = 'no_english_phrase_in_explanation', heads = [], re = /「([^」]+)」/g, m;
+      while (ex && (m = re.exec(ex.textContent))) { var c = m[1].trim(); if (/^[A-Za-z][A-Za-z0-9'’,\- ]*$/.test(c) && toks(c).length >= 2) heads.push(c); }
+      if (heads.length) reason = 'no_unique_match';
+      for (var i = 0; i < heads.length && !res; i++) { var r = matchPhrase(heads[i], text, false); if (r.ranges.length) res = { h: heads[i], r: r }; else if (r.n > 1) reason = 'multiple_candidates'; }
+      if (res) wrapRanges(dd, res.r.ranges);
+      stats.grammar.push({ heading: res ? res.h : null, bold: res ? 1 : 0, reason: res ? null : reason });
+    });
+    window.__EMPH = stats; window.__matchPhrase = matchPhrase;   // 検証用の読取専用フック
   }
 
   /* ---------- 再生 ---------- */
