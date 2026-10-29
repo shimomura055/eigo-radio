@@ -1,0 +1,8 @@
+# Fable受入記録 委任_03B/03C(2026-10-29) 候補提出
+受入記録:
+(1)当初目的・要求された最終状態: ユーザー原文`docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER.md`「結婚するとき、男性が妻の姓を選ぶのはあり?」(仮題)をStd/Advで承認済み3Voice構成により正式Production経路で制作し「Std/Advの完成候補 試聴URL」を提出、「ユーザーの最終試聴・承認前に、記事全体を正式公開完了扱いにしないこと」。KP確定はHR原文`_USER_HR_01.md`+共通仕様原文`2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md`(Std `old-fashioned about it`→`old-fashioned`、Adv let go of / hold one's son back / give something up を維持、重複はアラーム記録のみ)。
+(2)実際に生成・残存した最終成果物: 候補ページ`user_test/family_y_production_surname_choice_01/index.html`(Std/Adv、「候補版」表記、正式公開表記なし)、run `er121_output/family_y_production_01/surname_choice/run_02/`(pages, a2/b1b assembled wav、key_phrases/{a2,b1b}/confirmed_selection.json・redundancy_alarm.json)、commit 2aa0af4f3・ac5558218。途中のSTOP(page_verify `FAMILY_Y_KP_SELECTION_OUTPUT_MISMATCH`)はハイフン表記差の比較側不具合(11-8)として是正(er119:119 `_kp_text_norm`、:1397、er128:883,886)、再verify PASS。失敗経路の残存成果物なし(verify未通過の間は候補ページ未公開=fail-closed維持)。
+(3)証拠: confirmed_selection.json(a2/b1b)にユーザー決定語が各6件存在(Fable Grep)、候補ページに「候補版」「重複アラーム」「LEGACY」の記載(Fable Grep)、live検証=index 200・音声52本200・`=====`0件・4者一致KP6件OK(Worker RESULT_PACKET_YSC03C)、gate b1b 15/15・a2 18/18 PASS、ニュアンス=run_02に`nuance_spec.json`なし(er121:656 N0は新規KP review作成時のみ発行)=LEGACY 0件非表示。
+(4)目的要件との一致: Std/Adv候補URL提出=一致 / 3Voice構成(V1 Puck/V2 Zephyr/V3 Schedar)=一致 / KPユーザー決定どおり=一致 / 重複=アラーム記録・非停止=一致(Adv 2件・Std 1件) / 正式公開扱いにしない=一致 / ニュアンス解説=対象外(LEGACY、KP review確定が配線前のため)=仕様どおりだが記事にニュアンスコーナーは無い(ユーザーへ明示) / Advの`taking offense`はASRで`Taking effect.`(PASS_WITH_WARNING)=試聴時要確認。
+(5)最終受入判定と理由: ACCEPTED(候補提出として)。ユーザー最終試聴・承認は未了のためAPPROVED_FOR_PRODUCTIONではない。
+判定整合: 重大NG=なし
