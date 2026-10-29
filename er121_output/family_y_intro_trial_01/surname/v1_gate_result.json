@@ -1,0 +1,30 @@
+{
+ "REC": {
+  "text": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+  "len": 34,
+  "check_intro": {
+   "ok": true,
+   "violations": []
+  },
+  "leadintro_gate": {
+   "status": "PASS",
+   "applicable_flagged": [],
+   "model": "gpt-6-luna"
+  }
+ },
+ "MIN": {
+  "text": "最初に話すのは、婿養子になって妻の姓を名乗っている男性。妻の実家で、家族と暮らしている。",
+  "len": 44,
+  "check_intro": {
+   "ok": false,
+   "violations": [
+    "COPIES_VOICE_BODY_10CHARS"
+   ]
+  },
+  "leadintro_gate": {
+   "status": "PASS",
+   "applicable_flagged": [],
+   "model": "gpt-6-luna"
+  }
+ }
+}

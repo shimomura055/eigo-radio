@@ -605,3 +605,6 @@
 
 ### 2026-10-29 FZ-DIALOGUE-LR-ADOPTION-01 委任_01 追記
 - `#220 判断済み(2026-10-29): 藪の中 Adv full_story_part3_c6(武弘Puck 91語)=ユーザーはZセリフLRを正式採用(APPROVED_FOR_PRODUCTION)し、既存3試行を消費済みとしてLR段階から再開する(試聴採用でも単純な再生成承認でもなく、LR後④〜⑥を必要な範囲で実行しPASSで停止)。原文=docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER.md §1-§3。SSOT=OPEN-602/592。`
+### 2026-10-29 FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01 委任_04A 追記
+- `#221 **登録済み・未提示・分類D**(2026-10-29): Family Y人物紹介の一般化方式(属性でなく『テーマに対する立場・経験』を主にする原則Prompt)をProduction正式採用するか。Trial結果=OPEN-603(`docs/research/FY-SPEAKER-INTRO-GENERALIZATION-TRIAL-01/RESULT_01.md`)。推奨=条件付き(時期語の決定論検査追加・`role_patterns`更新・他記事検証後に再提示)。本記事V1の個別是正はこの判断と独立に04Bで実施。`
+- `#222 **登録済み・未提示・分類D**(2026-10-29): Standard Voice 2(母親)の女性Voiceを現行Zephyrから変更するか(候補Kore/Leda/Sulafat/Erinome)。Trial結果・試聴URL=OPEN-604(`docs/research/FY-STD-V2-FEMALE-VOICE-TRIAL-01/RESULT_01.md`、https://shimomura055.github.io/eigo-radio/user_test/family_y_surname_v2_voice_trial_01/index.html)。採用時の割当変更範囲(Std限定かY共通か)も併せて決定。`
