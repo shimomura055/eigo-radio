@@ -42,3 +42,8 @@ b1b: 実TTS入力で上記4点OK、Preview/Comment先取りなし。a2: 確定�
 - confirmed_selection(a2): `a2/audit/confirmed_selection.json` sha256 9bf2f55ea955784d…(`key_phrases/a2/confirmed_selection.json`と同一)。KP=on silent feet / constable / drown(vocab一致、kp_selection_verified ok)。Adv KP=cold contempt / on soft feet / medium。
 - Voice map(voice_assignment.json、Z APPROVED 2026-10-23): woodcutter=Algieba / monk=Schedar / constable=Fenrir / old_woman=Zephyr / tajomaru=Orus / masago=Kore / takehiro=Puck、ナレーター=Aoede(Std)・Charon(Adv comment/preview)。Std comment_3(日本語ナレ)=Aoede、part1_c3=Algieba(きこり、ユーザー採用#2)。
 - 7証言・3矛盾証言・結末・評決なし・非グラフィック(委任_07 §1〜5)はStd最終確定本文でも不変(std.md/r2.md無変更、TTS入力一致を上記で確認)。
+
+## 委任_13(2026-10-29、API 0): 本文差分と忠実性(修正①②)
+- **本文(writer/std.md・r2.md)は一字も変更していない**(std.md sha 4f7fb3dc… / r2.md 4573e7c9…、provenance `std_sha256`/`adv_final_sha256` 不変)。引用符の扱いは本文ではなく処理側(閉じ引用符の無い発言の認識=`er062 quote_spans`)で解決したため、『修正前後の本文差分=0バイト』。7証言の順序・3矛盾証言・結末・評決なし・非グラフィックの記述(§1〜5)は修正前後で完全に不変。
+- 閉じ引用符の無い発言(段落末を閉じず次段落を“で再開する慣習)の一覧と話者(LLM判定=決定論/文脈と不一致0): Std q4_2 多襄丸「The wind lifted her face covering… She fought with her dagger.」/q6_2・q7_1 真砂/q9_2・q10_1・q11_1・q12_1 武弘、Adv q4_2 多襄丸「But listen before you call me a coward!…」/q6_2・q7_1 真砂/q9_2・q10_1・q11_1・q12_1 武弘。他4証言者(木樵り・旅法師・放免・媼)は全引用が閉じており同種問題なし。
+- Std KP: `bandit`(S8『I caught the famous bandit Tajomaru near the bridge』・真砂証言『The bandit had left him tied up』に出現、全Gate PASS・gloss=盗賊/ALIGNED)。constableは追加解説。Adv KPは cold contempt / on soft feet / medium(不変)。

@@ -860,12 +860,30 @@ def validate_split_choice(choice, cands) -> tuple:
 # ------------------------------------------------------------
 # 3. Dialogue話者判定(決定論 + LLM突合)
 # ------------------------------------------------------------
+_OPEN_CURLY_QUOTE = "“"
+
+
+def quote_spans(para: str) -> list:
+    """段落内の引用区間 [(start, end)] を出現順に返す。閉じ引用符で閉じた引用(QUOTE_RE)に加え、段落末尾の『閉じ引用符の無い開き引用』
+    (英語の複数段落にわたる発言の慣習: 段落末は閉じず次段落を再び“で始める)を、開き“から段落末までの1引用として含める(FZIG 委任_13、
+    OPEN-596)。これが無いと、閉じていない引用の本文が地の文(narrator)へ倒れ、発言者Voiceでなくナレーターで読まれる。
+    閉じ括りが無いのは末尾の1区間だけ(それ以前はQUOTE_REが対で拾う)。引用符を含まない段落・全て閉じた段落の結果は従来と同一。"""
+    spans = [(m.start(), m.end()) for m in QUOTE_RE.finditer(para)]
+    tail_from = spans[-1][1] if spans else 0
+    j = para.find(_OPEN_CURLY_QUOTE, tail_from)
+    if j != -1:
+        end = len(para.rstrip())
+        if end > j + 1 and para[j + 1:end].strip():
+            spans.append((j, end))
+    return spans
+
+
 def extract_quotes(paragraphs) -> list:
     quotes = []
     for p_idx, para in enumerate(paragraphs):
-        for k, m in enumerate(QUOTE_RE.finditer(para), start=1):
+        for k, (s_, e_) in enumerate(quote_spans(para), start=1):
             quotes.append({"quote_id": f"q{p_idx}_{k}", "paragraph_index": p_idx, "ordinal": k,
-                           "start": m.start(), "end": m.end(), "text": m.group(0)})
+                           "start": s_, "end": e_, "text": para[s_:e_]})
     return quotes
 
 
@@ -925,12 +943,12 @@ def build_flat_chunks(paragraphs, speakers: dict) -> list:
     flat = []
     for p_idx, para in enumerate(paragraphs):
         pos, k = 0, 0
-        for m in QUOTE_RE.finditer(para):
+        for s_, e_ in quote_spans(para):
             k += 1
-            if m.start() > pos and para[pos:m.start()].strip():
-                flat.append((p_idx, "narrator", para[pos:m.start()]))
-            flat.append((p_idx, speakers[f"q{p_idx}_{k}"], m.group(0)))
-            pos = m.end()
+            if s_ > pos and para[pos:s_].strip():
+                flat.append((p_idx, "narrator", para[pos:s_]))
+            flat.append((p_idx, speakers[f"q{p_idx}_{k}"], para[s_:e_]))
+            pos = e_
         if pos < len(para) and para[pos:].strip():
             flat.append((p_idx, "narrator", para[pos:]))
     return flat

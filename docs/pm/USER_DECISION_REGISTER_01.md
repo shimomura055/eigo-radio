@@ -596,3 +596,7 @@
 ### 2026-10-29 FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_12 追記
 - `#216 判断済み(2026-10-29): comment_3=試行#3採用(ユーザー指定)、full_story_part1_c3=全PASS→Fableが#2を選定(ユーザー委任)。原文=docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_HR_01.md。採用反映済み(commit f96afd335)。`
 - `#218 **新規・未回答・分類D**(2026-10-29): 藪の中 Std/Adv 完成候補の試聴PASS/NG(正式公開前の最終確認)。URL=https://shimomura055.github.io/eigo-radio/user_test/family_z_in_a_grove_01/ 。Adv comment_3は承認済みアラーム方針によりPASS_WITH_PRONUNCIATION_ALARM(Tajomaruの読みのASR誤認、再生成なし完成扱い)で、聴いて問題があればNG。回答=PASS(記事単位APPROVED_FOR_PRODUCTION・正式公開へ)/NG(該当箇所指摘)。追加API費用0、累計¥86.3468/Cap90。SSOT=OPEN-592。`
+
+### 2026-10-29 FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_13 追記
+- `#218 判断済み(2026-10-29): 藪の中 Std/Adv 完成候補の試聴=NG(修正指示①多襄丸の発言範囲とVoice配役[Std/Adv]、②Std KP constable→bandit・constableは追加解説)。原文=docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_FIX_01.md。SSOT=OPEN-592/596。`
+- `#220 **登録済み・未提示・分類D**(2026-10-29): 藪の中 修正版Std/Adv完成候補の試聴PASS/NG。修正版はTTS再生成(STOP解除+Cap引上げ待ち)後に提示する(現時点で試聴URLなし=回答不可)。回答=PASS(記事単位APPROVED_FOR_PRODUCTION・正式公開へ)/NG(該当箇所)。`

@@ -119,36 +119,56 @@
     "plan_b1b": {
       "stage": "plan_b1b",
       "input_sha256": "64644ae817a4610c2017fc87230ed5c21195fcb5532adbf8cabceb07effb7565",
-      "output_sha256": "e27f3ecd2788faed73acffd64a71b20f061a647852d365a61dcc554c0d64eb34",
-      "generated_at": "2026-10-28T13:01:40+00:00",
+      "output_sha256": "37654e149e1da9fee869138a124ef7124c0768c68827ad969c713fdd63a04f85",
+      "generated_at": "2026-10-29T05:34:56+00:00",
       "routing_keys": [
         "FAMILY_Z_STORY_SPLIT",
         "FAMILY_Z_DIALOGUE_ATTRIBUTION"
       ],
-      "cost_jpy": 0.1377
+      "cost_jpy": 0.1573
     },
     "plan_a2": {
       "stage": "plan_a2",
       "input_sha256": "bf00f7cdcaf77471e3a1b7a0abf3aa02f10fa54c0228220973e216cc91263f16",
-      "output_sha256": "0828e77b5e15825792660e26f74f96e6e6c53233d60377bcec8b3e005e66fe3f",
-      "generated_at": "2026-10-28T13:32:47+00:00",
+      "output_sha256": "538a6152801a20118c67ca160bceb574c5d85d4e4290fdeb84fb94969ddea0bc",
+      "generated_at": "2026-10-29T05:35:04+00:00",
       "routing_keys": [
         "FAMILY_Z_STORY_SPLIT",
         "FAMILY_Z_DIALOGUE_ATTRIBUTION"
       ],
-      "cost_jpy": 0.1185
+      "cost_jpy": 0.131
     },
     "support_b1b": {
       "stage": "support_b1b",
-      "input_sha256": "cd47ad9324d553ca0cd6740e2af4cb74260b983efe38161f870ef67c72c32f94",
+      "input_sha256": "b3fe216958be84192eee0199fcb2cb2cee5cf2cb098294041051124cf2dcb364",
       "output_sha256": "1fb49aa0d3ced1d5c0756d2336c68b4116a180499da3894182688532e2490dcc",
-      "generated_at": "2026-10-28T13:02:19+00:00"
+      "generated_at": "2026-10-28T13:02:19+00:00",
+      "rebinds": [
+        {
+          "at": "2026-10-29T14:35:04",
+          "reason": "FZ13_plan_quote_span_fix(閉じ引用符の無い発言をdialogue clipへ)",
+          "from_input_sha256": "cd47ad9324d553ca0cd6740e2af4cb74260b983efe38161f870ef67c72c32f94",
+          "to_input_sha256": "b3fe216958be84192eee0199fcb2cb2cee5cf2cb098294041051124cf2dcb364",
+          "api_calls": 0,
+          "invariants": "本文sha・Part境界・段落数・parts統計・clip数/id・Comment位置が不変(上のassert)。support出力は本文とPart境界のみから作られるため不変"
+        }
+      ]
     },
     "support_a2": {
       "stage": "support_a2",
-      "input_sha256": "0f88c2a9e5135ba194fe8f81dc5ba4cbe5db916d8589e7d8a67c035592c884d0",
+      "input_sha256": "9343a61f6c098fa417dd974b5f69f1a2664e19c0e4e74d827e1d8f0d02de1197",
       "output_sha256": "5d09acdebfdb7c29923850a2be6c3f380ea24f3eb82728b00f26cdbb01d0b65b",
-      "generated_at": "2026-10-28T13:35:35+00:00"
+      "generated_at": "2026-10-28T13:35:35+00:00",
+      "rebinds": [
+        {
+          "at": "2026-10-29T14:35:04",
+          "reason": "FZ13_plan_quote_span_fix(閉じ引用符の無い発言をdialogue clipへ)",
+          "from_input_sha256": "0f88c2a9e5135ba194fe8f81dc5ba4cbe5db916d8589e7d8a67c035592c884d0",
+          "to_input_sha256": "9343a61f6c098fa417dd974b5f69f1a2664e19c0e4e74d827e1d8f0d02de1197",
+          "api_calls": 0,
+          "invariants": "本文sha・Part境界・段落数・parts統計・clip数/id・Comment位置が不変(上のassert)。support出力は本文とPart境界のみから作られるため不変"
+        }
+      ]
     },
     "part2_cand_b1b": {
       "stage": "part2_cand_b1b",
@@ -174,11 +194,11 @@
     },
     "kp_a2": {
       "stage": "kp_a2",
-      "input_sha256": "928477ee22631abdb3846a102795f70b28d4f0c2886cbf0b2c5a70adef5caca6",
-      "output_sha256": "eb6c55e2ddbc34fe3eea50dad7d13a755d02581246b37b7a1e48807e8c34153b",
-      "generated_at": "2026-10-28T23:17:37+00:00",
+      "input_sha256": "efb0c76b51d3692e75c99fb9d19061076b713091a6485bc9870abfa356a9727d",
+      "output_sha256": "33b1a1b48931024c81bd05aee6128fff786b193eeabd023adce5ec9b088c5da8",
+      "generated_at": "2026-10-29T05:36:00+00:00",
       "kp_review_status": "REVIEWED",
-      "kp_selection_signature": "0b20a8029bd987c3bfcd28931c648f1d52f63a944e6f9d077c6715cdabdda4c3"
+      "kp_selection_signature": "2bce25b25671fe8e0f3165d32a49cfb82b5da466c56cbbdcb4b191f6ea87c1d9"
     },
     "kp_expl_b1b": {
       "stage": "kp_expl_b1b",
@@ -329,6 +349,48 @@
         "output_sha256": "2323e4956dd025d2b29beabca537ceff3c8b8574f7ea8634f09110fd1ad48b99",
         "generated_at": "2026-10-28T13:05:19+00:00",
         "label": "In a Grove"
+      }
+    },
+    {
+      "stage": "plan_b1b",
+      "replaced_at": "2026-10-29T05:34:56+00:00",
+      "old": {
+        "stage": "plan_b1b",
+        "input_sha256": "64644ae817a4610c2017fc87230ed5c21195fcb5532adbf8cabceb07effb7565",
+        "output_sha256": "e27f3ecd2788faed73acffd64a71b20f061a647852d365a61dcc554c0d64eb34",
+        "generated_at": "2026-10-28T13:01:40+00:00",
+        "routing_keys": [
+          "FAMILY_Z_STORY_SPLIT",
+          "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+        ],
+        "cost_jpy": 0.1377
+      }
+    },
+    {
+      "stage": "plan_a2",
+      "replaced_at": "2026-10-29T05:35:04+00:00",
+      "old": {
+        "stage": "plan_a2",
+        "input_sha256": "bf00f7cdcaf77471e3a1b7a0abf3aa02f10fa54c0228220973e216cc91263f16",
+        "output_sha256": "0828e77b5e15825792660e26f74f96e6e6c53233d60377bcec8b3e005e66fe3f",
+        "generated_at": "2026-10-28T13:32:47+00:00",
+        "routing_keys": [
+          "FAMILY_Z_STORY_SPLIT",
+          "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+        ],
+        "cost_jpy": 0.1185
+      }
+    },
+    {
+      "stage": "kp_a2",
+      "replaced_at": "2026-10-29T05:36:00+00:00",
+      "old": {
+        "stage": "kp_a2",
+        "input_sha256": "928477ee22631abdb3846a102795f70b28d4f0c2886cbf0b2c5a70adef5caca6",
+        "output_sha256": "eb6c55e2ddbc34fe3eea50dad7d13a755d02581246b37b7a1e48807e8c34153b",
+        "generated_at": "2026-10-28T23:17:37+00:00",
+        "kp_review_status": "REVIEWED",
+        "kp_selection_signature": "0b20a8029bd987c3bfcd28931c648f1d52f63a944e6f9d077c6715cdabdda4c3"
       }
     }
   ],
