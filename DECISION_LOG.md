@@ -22853,3 +22853,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ### 2026-10-29 NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01 ①②受入・③Trial受入・混入事故記録(委任_03、API 0・Production code編集0)
 - **Fable受入**: ①ニュアンス表示順序・②HR事前チェック=Y PRODUCTION_WIRED(実runtime・live 170 NG0)、X/Z=共通builder配線・stage実行確認済・実記事runtime証拠待ち(X=FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01、Z=次Z記事)。記録=`docs/research/NUANCE-EXPLANATION-PRODUCTION-WIRING-01/FABLE_ACCEPTANCE_NDO01.md`(OPEN-610/611)。③品質改善Trial=ACCEPTED(VALIDATED)、Production採否はUDR #224(提示済み・回答待ち)。記録=`docs/research/NUANCE-QUALITY-IMPROVEMENT-TRIAL-01/FABLE_ACCEPTANCE_01.md`(OPEN-609)。form1_selection_form_v3_test 4件の既存FAILはOPEN-613(別委任で修正)。
 - **混入事故**: 前Worker(NDO02)が22:00:43、別タスク(FAMILY-Y-SOURCE-DEEP-RESEARCH-01)の古い追記(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS[OPEN-613〜615行]/ACTIVE_TASK/USER_DECISION_REGISTER)を作業ツリーへ誤混入(scratchpadの古いssot.py取り違え)。委任_03でEditにより該当追加行のみ除去(HEAD側の正規記録は不変)。stale ssot*.pyは`stale_ssot_py_DO_NOT_RUN/`へ退避。
+
+### 2026-10-30 ONE-STEP-FURTHER-CORNER-TRIAL-01 委任_01: 新学習コーナー「One Step Further」品質検証Trialを開始(Trial専用・Production未変更)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ONE-STEP-FURTHER-CORNER-TRIAL-01_USER.md`)に基づき、ニュアンス解説に代わる新コーナー案の内容品質・再現性・費用をTrial。対象=Y姓/X AIの島/Z告げ口心臓×Std/Adv。到達Status上限=VALIDATED。新コーナーの採用・ニュアンス解説の扱い・表示仕様はユーザー判断(OPEN-614、UDRはFable提示)。Production code/Prompt/記事本文/音声/KP/文法は変更しない。
