@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_0e9ad64181812a49006ae33f55769487d09ffd5d318560145b",
+  "response_id": "resp_048cc821e1bca03f006ae34bf5674887d0b27200dbe3192292",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -18,10 +18,10 @@
           {
             "rank": 1,
             "possessor_roles": [],
-            "key_phrase": "play favorites",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "「えこひいきする」という意味の自然な動詞句で、動詞もすでに基本形です。",
+            "key_phrase": "put the brakes on",
+            "changed_from_display_phrase": true,
+            "normalization_reason": "lemma_normalization",
+            "reasoning": "句動詞表現の意味を保ったまま、動詞puttingを見出し形putにしました。the brakesとonは慣用表現の一部なので残します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -39,17 +39,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "play favorites",
+              "key_before": "put the brakes on",
               "role_ok_poss": []
             }
           },
           {
             "rank": 2,
             "possessor_roles": [],
-            "key_phrase": "capture all that complexity",
+            "key_phrase": "whose interests the conversation serves",
             "changed_from_display_phrase": false,
-            "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "意味の核を保った自然な動詞句で、captureはすでに基本形です。thatは不可算名詞complexityを指す限定詞なので置換しません。",
+            "normalization_reason": "none",
+            "reasoning": "会話が誰の利益にかなうかを問う自然な節で、whoseやthe conversationを除くと意味が損なわれます。文の節構造を保つためservesもそのままにします。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -67,17 +67,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "capture all that complexity",
+              "key_before": "whose interests the conversation serves",
               "role_ok_poss": []
             }
           },
           {
             "rank": 3,
             "possessor_roles": [],
-            "key_phrase": "a different script",
+            "key_phrase": "Sales pitch",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「異なる指示・台本」という意味の自然な名詞句です。不定冠詞は可算名詞句を自然に成立させるため残します。",
+            "reasoning": "単独で意味の分かる自然な名詞句であり、文脈限定語も含まれていないため表示形を保ちます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -95,17 +95,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "a different script",
+              "key_before": "Sales pitch",
               "role_ok_poss": []
             }
           },
           {
             "rank": 4,
             "possessor_roles": [],
-            "key_phrase": "choose at random",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "lemma_normalization",
-            "reasoning": "動詞の過去分詞chosenを基本形chooseにし、自然な表現「無作為に選ぶ」として提示します。",
+            "key_phrase": "confirm a clear drop",
+            "changed_from_display_phrase": false,
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "動詞confirmはすでに基本形で、「明確な減少を確認する」という意味もこの句だけで十分に伝わるため、変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -123,17 +123,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "choose at random",
+              "key_before": "confirm a clear drop",
               "role_ok_poss": []
             }
           },
           {
             "rank": 5,
             "possessor_roles": [],
-            "key_phrase": "what stands out",
+            "key_phrase": "counted as having failed",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「目立つもの・際立つ点は何か」という自然な表現です。standsを基本形にするとこの構文が不自然になるため、表層形を保ちます。",
+            "reasoning": "句の中心となる動詞countedを基本形countにしました。having failedは完了の構造に必要な形なので維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -151,17 +151,40 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "what stands out",
+              "key_before": "count as having failed",
               "role_ok_poss": []
+            },
+            "kp_rescue": {
+              "schema": "kp_rescue_v1",
+              "stage": "canonicalization",
+              "code": "REVERT_SURFACE",
+              "display_phrase": "counted as having failed",
+              "llm_key_phrase": "count as having failed",
+              "rescued_key": "counted as having failed",
+              "llm_tokens_used": 0,
+              "dropped_tail": [],
+              "reasons_before": [
+                "key_phrase('count as having failed')がdisplay_phraseと一致せず、source_span('counted as having failed')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ],
+              "validator_args": {
+                "key": "counted as having failed",
+                "display": "counted as having failed",
+                "source_span": "counted as having failed",
+                "original_span": "counted as having failed",
+                "allow_inflection_normalization": true,
+                "role_ok_poss": [],
+                "normalization_reason": "none"
+              },
+              "validator_args_sha256": "644d9f2fd4641866a50a960272b5d721cd0e279fbee793914ab6d26a369fa730"
             }
           },
           {
             "rank": 6,
             "possessor_roles": [],
-            "key_phrase": "in a news flash",
+            "key_phrase": "rate at which",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「ニュース速報で」という意味で再利用できる自然な前置詞句です。aは可算名詞news flashに必要なので残します。",
+            "reasoning": "rate at whichだけでは何が起きる頻度なのかが不足するため、source_spanからparticipants choseを補い、動詞は基本形chooseにしました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -179,17 +202,43 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "in a news flash",
+              "key_before": "rate at which participants choose",
               "role_ok_poss": []
+            },
+            "kp_rescue": {
+              "schema": "kp_rescue_v1",
+              "stage": "canonicalization",
+              "code": "REVERT_SURFACE",
+              "display_phrase": "rate at which",
+              "llm_key_phrase": "rate at which participants choose",
+              "rescued_key": "rate at which",
+              "llm_tokens_used": 0,
+              "dropped_tail": [
+                "participants",
+                "choose"
+              ],
+              "reasons_before": [
+                "key_phrase('rate at which participants choose')がdisplay_phraseと一致せず、source_span('rate at which')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ],
+              "validator_args": {
+                "key": "rate at which",
+                "display": "rate at which",
+                "source_span": "rate at which",
+                "original_span": "rate at which",
+                "allow_inflection_normalization": true,
+                "role_ok_poss": [],
+                "normalization_reason": "none"
+              },
+              "validator_args_sha256": "95b46a4e3cd92ec22d910264a3e007b63d6bc8e304f5afd308f821052f3de3c0"
             }
           },
           {
             "rank": 7,
             "possessor_roles": [],
-            "key_phrase": "a prominent spot",
+            "key_phrase": "persuasion",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「目立つ位置」という自然で意味の分かる名詞句です。不定冠詞は可算名詞spotに必要なので維持します。",
+            "reasoning": "自然な名詞で、単独でも意味が通じます。文脈に限定された語もないため変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -207,17 +256,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "a prominent spot",
+              "key_before": "persuasion",
               "role_ok_poss": []
             }
           },
           {
             "rank": 8,
             "possessor_roles": [],
-            "key_phrase": "persuasive",
+            "key_phrase": "biased",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「説得力のある／説得を目的とした」を表す形容詞で、基本形のまま学習単位として成立します。",
+            "reasoning": "評価の偏りを表す形容詞として自然に使えるため、語形を変えずに保ちます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -235,17 +284,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "persuasive",
+              "key_before": "biased",
               "role_ok_poss": []
             }
           },
           {
             "rank": 9,
             "possessor_roles": [],
-            "key_phrase": "motive",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "lemma_normalization",
-            "reasoning": "可算名詞の複数形motivesを、見出し語として自然な単数形motiveにします。",
+            "key_phrase": "persuade",
+            "changed_from_display_phrase": false,
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "動詞の基本形であり、見出し語としてそのまま提示できます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -263,17 +312,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "motive",
+              "key_before": "persuade",
               "role_ok_poss": []
             }
           },
           {
             "rank": 10,
             "possessor_roles": [],
-            "key_phrase": "placement",
+            "key_phrase": "complications",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "広告などの「配置・掲載位置」を表す名詞として自然な学習単位であり、変更は不要です。",
+            "reasoning": "複数形が実際の複雑な事情の広がりを表しており、自然な学習単位なので単数形にはしません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -291,45 +340,17 @@
               "roles_ok": null,
               "roles_reason": "",
               "repairs": [],
-              "key_before": "placement",
+              "key_before": "complications",
               "role_ok_poss": []
             }
           },
           {
             "rank": 11,
             "possessor_roles": [],
-            "key_phrase": "estimate",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "lemma_normalization",
-            "reasoning": "動詞の過去形estimatedを基本形estimateにし、見出し語として提示します。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS",
-            "person_role_repair": {
-              "status": "NO_POSSESSIVE",
-              "roles_ok": null,
-              "roles_reason": "",
-              "repairs": [],
-              "key_before": "estimate",
-              "role_ok_poss": []
-            }
-          },
-          {
-            "rank": 12,
-            "possessor_roles": [],
             "key_phrase": "sponsored",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "ここではbookを修飾する形容詞的な過去分詞であり、規則に従って動詞の基本形には戻しません。",
+            "reasoning": "ここでは商品に付く形容詞として使われており、動詞の活用形を基本形に戻す対象ではありません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -354,7 +375,7 @@
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_0e9ad64181812a49006ae33f55769487d09ffd5d318560145b"
+      "response_id": "resp_048cc821e1bca03f006ae34bf5674887d0b27200dbe3192292"
     }
   ],
   "template": "fulltext_p2"

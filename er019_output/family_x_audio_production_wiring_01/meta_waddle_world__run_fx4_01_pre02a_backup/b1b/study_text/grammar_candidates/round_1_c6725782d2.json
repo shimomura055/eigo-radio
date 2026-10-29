@@ -1,0 +1,168 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "Today's Diary Is Written by a Pet",
+  "text_sha256": "d6463275c8df1bbcb8391b225682c7f1d89d8736f0f3041d02ccc44afeca12b6",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "cccecfdaa3169f8929744a851da3491d7d7cc47f0231658fd9820375a6af97c2",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P1",
+      "cls": "POSTMOD",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "不定代名詞を説明する句が後ろに置かれ、間に動詞が入る場合もあると見抜く。",
+      "front_kind": "",
+      "sentence": "Did anything even happen worth writing about?",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "CLEFT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "Whatで始まる節が主語になり、be動詞の後ろにその内容が述べられる形を見抜く。",
+      "front_kind": "",
+      "sentence": "What makes it interesting isn’t a promise that each result will be good, but the idea of changing who tells the diary.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P8",
+      "cls": "OTHER",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "TV=LOW",
+        "class=OTHER"
+      ],
+      "tv": "LOW",
+      "tv_ja": "",
+      "front_kind": "",
+      "sentence": "A day that has nothing worth writing about if you write it yourself.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "d62fcc60512ae6a57ceac3d6e880c9c1211e394ab7d40282852d50cdca32db2e",
+    "response_ids": [
+      "resp_0cceb9b04f1ab888006ae33f65c57087d0a9f309d0a19aeca1"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3563,
+          "output_tokens": 4663,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 3825
+        },
+        "response_id": "resp_0cceb9b04f1ab888006ae33f65c57087d0a9f309d0a19aeca1",
+        "elapsed_sec": 42.08,
+        "cost_jpy": 0.43
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.43,
+    "generated_at": "2026-10-29T21:43:59+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gfcaf4105a1",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CLEFT",
+      "para": "P7",
+      "sentence": "What makes it interesting isn’t a promise that each result will be good, but the idea of changing who tells the diary.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "What makes it interesting",
+      "misread_ja": "文頭のWhatを疑問詞と捉え、主語の名詞節ではなく疑問文の一部として読んでしまう可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "Whatで始まる節が主語になり、be動詞の後ろにその内容が述べられる形を見抜く。",
+      "construct_ja": "What節を主語にした疑似分裂文",
+      "points_ja": [
+        "What makes it interestingが主語の節。",
+        "isn’tの後ろではなくの対比がbutで示される。"
+      ],
+      "context_ja": "各結果が良いという保証ではなく、日記の語り手を変える発想が面白さだと述べている。",
+      "prev": "There’s no guarantee that each one will be just what you hoped for.",
+      "next": "A day that has nothing worth writing about if you write it yourself.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        171,
+        289
+      ]
+    },
+    {
+      "candidate_id": "g01f6a8d646",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "POSTMOD",
+      "para": "P1",
+      "sentence": "Did anything even happen worth writing about?",
+      "front_kind": "",
+      "misread_target": "MODIFIEE",
+      "misread_quote": "worth writing about",
+      "misread_ja": "後置された句がanythingではなく、happenした出来事全体を修飾すると読んでしまう可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "不定代名詞を説明する句が後ろに置かれ、間に動詞が入る場合もあると見抜く。",
+      "construct_ja": "不定代名詞を修飾する後置形容詞句",
+      "points_ja": [
+        "worth writing aboutはanythingを後ろから説明する。",
+        "語順を補うとanything worth writing aboutとなる。"
+      ],
+      "context_ja": "日記に書く価値のあることが起きたかを問いかけている。",
+      "prev": "“",
+      "next": "” The editorial meeting has already hit a dead end before it has even begun.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        97,
+        142
+      ]
+    }
+  ],
+  "top_ids": [
+    "gfcaf4105a1",
+    "g01f6a8d646"
+  ],
+  "n_eligible": 2,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "c6725782d21a08618ecc2c5ab5b30f56fc7e9063865ddc53c50b39eeb0a1e71f",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

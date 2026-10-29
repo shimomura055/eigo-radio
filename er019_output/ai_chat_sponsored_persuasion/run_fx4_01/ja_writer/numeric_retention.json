@@ -2,18 +2,21 @@
   "rule_version": "fx_core_numeric_retention_v4_j2_01",
   "mode": "field_ok",
   "E": [
-    "61.2%"
+    "40.7%",
+    "9.5%"
   ],
   "gate_E": [
-    "61.2%"
+    "40.7%",
+    "9.5%"
   ],
   "observe_E": [],
   "field_items": [
-    "61.2%"
+    "40.7%",
+    "9.5%"
   ],
   "m1_violations": [],
   "j2": {
-    "r4_input_changed": true,
+    "r4_input_changed": false,
     "output_normalized": {
       "r0": 0,
       "w1_astra_r1": 0,
@@ -25,7 +28,12 @@
       "missing_first": [],
       "detail_first": [
         {
-          "surface": "61.2%",
+          "surface": "40.7%",
+          "present": true,
+          "mode": "strong"
+        },
+        {
+          "surface": "9.5%",
           "present": true,
           "mode": "strong"
         }
@@ -35,7 +43,12 @@
       "missing_first": [],
       "detail_first": [
         {
-          "surface": "61.2%",
+          "surface": "40.7%",
+          "present": true,
+          "mode": "strong"
+        },
+        {
+          "surface": "9.5%",
           "present": true,
           "mode": "strong"
         }
@@ -45,7 +58,12 @@
       "missing_first": [],
       "detail_first": [
         {
-          "surface": "61.2%",
+          "surface": "40.7%",
+          "present": true,
+          "mode": "strong"
+        },
+        {
+          "surface": "9.5%",
           "present": true,
           "mode": "strong"
         }
@@ -67,14 +85,21 @@
     "demote": [
       {
         "surface": "22.4%",
-        "concept": "C6",
+        "concept": "C4",
         "kind": "magnitude",
         "unit_hint": "",
         "dimension": "percent"
       },
       {
         "surface": "26.8%",
-        "concept": "C7",
+        "concept": "C5",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "dimension": "percent"
+      },
+      {
+        "surface": "61.2%",
+        "concept": "C6",
         "kind": "magnitude",
         "unit_hint": "",
         "dimension": "percent"
@@ -82,32 +107,8 @@
     ],
     "kept_core": [
       {
-        "surface": "2",
-        "concept": "C1",
-        "kind": "magnitude",
-        "unit_hint": "",
-        "dimension": "",
-        "why_kept": "unitless_small_int"
-      },
-      {
-        "surface": "2,012人",
-        "concept": "C2",
-        "kind": "magnitude",
-        "unit_hint": "",
-        "dimension": "",
-        "why_kept": "unit_unresolved_or_other_system"
-      },
-      {
-        "surface": "1～2",
-        "concept": "C1",
-        "kind": "range",
-        "unit_hint": "",
-        "dimension": "",
-        "why_kept": "unit_unresolved_or_other_system"
-      },
-      {
         "surface": "5",
-        "concept": "C3",
+        "concept": "C1",
         "kind": "magnitude",
         "unit_hint": "",
         "dimension": "",
@@ -115,15 +116,23 @@
       },
       {
         "surface": "5分",
-        "concept": "C3",
+        "concept": "C1",
         "kind": "magnitude",
         "unit_hint": "",
         "dimension": "",
         "why_kept": "unit_unresolved_or_other_system"
       },
       {
-        "surface": "61.2%",
+        "surface": "40.7%",
         "concept": "C8",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "dimension": "percent",
+        "why_kept": "in_E"
+      },
+      {
+        "surface": "9.5%",
+        "concept": "C23",
         "kind": "magnitude",
         "unit_hint": "",
         "dimension": "percent",
@@ -132,17 +141,17 @@
     ],
     "applied": true,
     "marks_swapped": {
-      "facts_text": 3,
-      "news_field_text": 3,
-      "demoted_surfaces": 2
+      "facts_text": 6,
+      "news_field_text": 6,
+      "demoted_surfaces": 3
     },
-    "news_field_sha256_before": "6ca24433dc6a8f839ac489493bdbb68e9827dd42fbe0328dde8d3945fdfdd7b7",
-    "news_field_sha256_after": "29a9712c76d6f75cc37e22e154ae2c9d250ca434223b3105c40a665e4e3cecfc"
+    "news_field_sha256_before": "73e821b84178d9f58abe1ba24385bcae16ef4ccb001db8e3fc165b2a1676bbef",
+    "news_field_sha256_after": "d8a0be97300ad0b4eb9b6a4f32b6840392183824c8872d06f22168624b2902cd"
   },
   "warn": [],
   "b3_addendum_sha256": "a7b643ba41d618c545ab087e06c08a6400988970132e9e3bccce88802c63cc81",
-  "r0_news_field_sha256_after_o2prime_r4": "cc71b0f9ba7586225e74ea433532a159f80228195d1f32b4f5a7d1dc092bf8b2",
-  "r0_prompt_sha256": "2720b69e6174ebcf5e6827bf1dfd0910a9908bfd2e070040fc0176be50f3258f",
+  "r0_news_field_sha256_after_o2prime_r4": "e6ee81200ca94d1011c5049595a3961f76112306a14eb39dfc3988ebadfda26f",
+  "r0_prompt_sha256": "a00d19468f35eac0f2cef0a67db6f41d2d1f6f0634baf8ee0111a1d179c63163",
   "model_ids": {
     "r0": [
       "gpt-6.1-sol"
@@ -154,5 +163,5 @@
       "gpt-6.1-sol"
     ]
   },
-  "written": "2026-10-29T12:32:25+00:00"
+  "written": "2026-10-29T13:17:53+00:00"
 }

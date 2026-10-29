@@ -1,0 +1,285 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "meta_waddle_world__run_fx4_01",
+  "article_level": "a2",
+  "article_sha256": "187fcedd4e6c7fc471926eba6b1780a44f7077474bfcc2db10f8132b4642b459",
+  "ledger_sha256": "39606fea729a3f82c751d0b80186a17dbe0bfd381ed4360d1daaf46da1f6e27f",
+  "run_id": "rf20261029T123643Z-9b53",
+  "timestamp": "2026-10-29T12:36:43+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01",
+  "sentence_count": 45,
+  "fact_count": 12,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4961,
+      "output_tokens": 522,
+      "cached_tokens": 0,
+      "cost_jpy": 0.121136,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5111,
+      "output_tokens": 1269,
+      "cached_tokens": 0,
+      "cost_jpy": 0.183296,
+      "flag_count": 3,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 2,
+      "input_tokens": 9058,
+      "output_tokens": 190,
+      "cached_tokens": 2031,
+      "cost_jpy": 0.423045,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4649,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.224752,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "meta_waddle_world__run_fx4_01__a2__187fcedd__rf20261029T123643Z-9b53__s13",
+      "article_id": "meta_waddle_world__run_fx4_01",
+      "article_level": "a2",
+      "article_sha256": "187fcedd4e6c7fc471926eba6b1780a44f7077474bfcc2db10f8132b4642b459",
+      "run_id": "rf20261029T123643Z-9b53",
+      "timestamp": "2026-10-29T12:36:43+00:00",
+      "sentence_id": "s13",
+      "sentence_text": "Then the pet, which was listening just moments before, becomes the storyteller.",
+      "context": {
+        "before": [
+          "It is an interesting way to divide the jobs.",
+          "Our job is to tell it what happened today."
+        ],
+        "after": [
+          "Some days feel too plain for us to write about.",
+          "But they can change when another storyteller tells them."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "WW-03"
+      ],
+      "facts": [
+        {
+          "fact_id": "WW-03",
+          "text": "App StoreとGoogle Playの説明は、利用者が音声またはテキストで一日の出来事を伝え、ペットが自身の声による日記エントリーと手描き風の落書きを作る機能を説明している。\n  scope: 公式ストア説明に記載された機能\n  conditions: 音声入力またはテキスト入力が可能と記載。\n  date_or_period: 2026-10-29確認時点\n  notes_for_writer: Metaの製品説明として記述する。日記の生成を独立検証済みの性能評価として表現しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「was listening just moments before」は、音声またはテキストで出来事を伝える機能を超えて、ペットが直前まで聞き続けていたことを示す表現ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.29,
+          "type": "その他",
+          "fact_ids": [
+            "WW-03"
+          ],
+          "question": "「was listening just moments before」は、音声またはテキストで出来事を伝える機能を超えて、ペットが直前まで聞き続けていたことを示す表現ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.29
+    },
+    {
+      "issue_id": "meta_waddle_world__run_fx4_01__a2__187fcedd__rf20261029T123643Z-9b53__s34",
+      "article_id": "meta_waddle_world__run_fx4_01",
+      "article_level": "a2",
+      "article_sha256": "187fcedd4e6c7fc471926eba6b1780a44f7077474bfcc2db10f8132b4642b459",
+      "run_id": "rf20261029T123643Z-9b53",
+      "timestamp": "2026-10-29T12:36:43+00:00",
+      "sentence_id": "s34",
+      "sentence_text": "There is no promise that every result will be just what you hoped for.",
+      "context": {
+        "before": [
+          "It feels more like opening a package when you do not know what is inside.",
+          "Of course, the official description alone cannot tell us if the writing or pictures are good."
+        ],
+        "after": [
+          "The interesting part is not a promise that every result will be good.",
+          "It is the idea of changing who tells the diary."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "WW-03"
+      ],
+      "facts": [
+        {
+          "fact_id": "WW-03",
+          "text": "App StoreとGoogle Playの説明は、利用者が音声またはテキストで一日の出来事を伝え、ペットが自身の声による日記エントリーと手描き風の落書きを作る機能を説明している。\n  scope: 公式ストア説明に記載された機能\n  conditions: 音声入力またはテキスト入力が可能と記載。\n  date_or_period: 2026-10-29確認時点\n  notes_for_writer: Metaの製品説明として記述する。日記の生成を独立検証済みの性能評価として表現しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "「There is no promise」と保証がないことを断定していますが、台帳は結果保証の有無を確認していないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.28,
+          "type": "不在断定",
+          "fact_ids": [
+            "WW-03"
+          ],
+          "question": "「There is no promise」と保証がないことを断定していますが、台帳は結果保証の有無を確認していないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.28
+    },
+    {
+      "issue_id": "meta_waddle_world__run_fx4_01__a2__187fcedd__rf20261029T123643Z-9b53__s41",
+      "article_id": "meta_waddle_world__run_fx4_01",
+      "article_level": "a2",
+      "article_sha256": "187fcedd4e6c7fc471926eba6b1780a44f7077474bfcc2db10f8132b4642b459",
+      "run_id": "rf20261029T123643Z-9b53",
+      "timestamp": "2026-10-29T12:36:43+00:00",
+      "sentence_id": "s41",
+      "sentence_text": "For now, the human only has to bring in the story of the day.",
+      "context": {
+        "before": [
+          "The events stay the same, but the reason to open the page changes.",
+          "You are the main character, and your pet does the writing."
+        ],
+        "after": [
+          "## In one line",
+          "Meta’s Waddle World is an app offered in the Philippines."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "WW-03"
+      ],
+      "facts": [
+        {
+          "fact_id": "WW-03",
+          "text": "App StoreとGoogle Playの説明は、利用者が音声またはテキストで一日の出来事を伝え、ペットが自身の声による日記エントリーと手描き風の落書きを作る機能を説明している。\n  scope: 公式ストア説明に記載された機能\n  conditions: 音声入力またはテキスト入力が可能と記載。\n  date_or_period: 2026-10-29確認時点\n  notes_for_writer: Metaの製品説明として記述する。日記の生成を独立検証済みの性能評価として表現しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「only has to bring in the story」は人間に必要な操作がそれだけだと限定していますが、台帳は必要な操作の全範囲を示していないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.25,
+          "type": "その他",
+          "fact_ids": [
+            "WW-03"
+          ],
+          "question": "「only has to bring in the story」は人間に必要な操作がそれだけだと限定していますが、台帳は必要な操作の全範囲を示していないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.25
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10072,
+      "output_tokens": 1791,
+      "cost_jpy": 0.304432,
+      "a3_flag_count": 0,
+      "a4_flag_count": 3,
+      "unique_issue": 3,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 3,
+      "input_tokens": 13707,
+      "output_tokens": 194,
+      "cost_jpy": 0.647797,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "a2",
+      "article_status": "OK",
+      "unique_issue": 3,
+      "cost_jpy": 0.952229,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

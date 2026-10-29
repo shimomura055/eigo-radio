@@ -1,22 +1,48 @@
 {
   "schema": "grammar_candidates_v1",
   "level": "Standard",
-  "label": "Today's Diary Is Written by a Pet",
-  "text_sha256": "c55cfd2be190d5b033425789300dfccd2816914d3abbadd4902e9898bf4c419e",
+  "label": "AI Pets Are Free. But Their Owners Still Have Only 24 Hours a Day",
+  "text_sha256": "b1df83d948f1ee216f9253816769108ee18179ca8baa29e50b287194fa5e86ba",
   "n_paragraphs": 8,
   "prompt_id": "part2_stepA8",
   "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
   "model": "gpt-6-luna",
-  "extract_signature": "575eef938eec91272e158f11834658936478b983da557a8bbb35e475ca2b9c02",
+  "extract_signature": "165d1f78202859debfae2d1849784e5107d379a106b28801d8e10f72f06dcf3c",
   "round": 1,
-  "tier_table": [],
+  "tier_table": [
+    {
+      "para": "P6",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級に比較の基準が明示されているかを確認し、文脈上の対比と区別する。",
+      "front_kind": "",
+      "sentence": "An AI pet may matter less to adults for what it can do.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級に比較の基準が明示されているかを確認し、条件節が比較基準を示すとは限らないと読む。",
+      "front_kind": "",
+      "sentence": "It may matter more if they want to make room for one during the gaps in a busy day.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
   "no_feature_paras": [
     "P1",
     "P2",
     "P3",
     "P4",
     "P5",
-    "P6",
     "P7",
     "P8"
   ],
@@ -26,41 +52,103 @@
     "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
     "model": "gpt-6-luna",
     "requested_model": "gpt-6-luna",
-    "prompt_sha256": "3b33ada9e2fda735c05b742faf54fafe2b8d03c7cb20e9997e2d0199725593c3",
+    "prompt_sha256": "86fe2671fda066cb374a8ecab57e3cff55edb83542cdb796add87a6c1b840352",
     "response_ids": [
-      "resp_022cab55766052ec006ae33eb5663c87d08c314897048fed3b"
+      "resp_08fe1c33fb9d44c7006ae34a026d6887d091519d84a2ba632e"
     ],
     "calls": [
       {
         "attempt": 1,
         "response_model": "gpt-6-luna",
         "usage": {
-          "input_tokens": 3534,
-          "output_tokens": 1573,
+          "input_tokens": 3536,
+          "output_tokens": 3581,
           "cached_input_tokens": 0,
-          "reasoning_tokens": 1521
+          "reasoning_tokens": 3106
         },
-        "response_id": "resp_022cab55766052ec006ae33eb5663c87d08c314897048fed3b",
-        "elapsed_sec": 16.23,
-        "cost_jpy": 0.1824
+        "response_id": "resp_08fe1c33fb9d44c7006ae34a026d6887d091519d84a2ba632e",
+        "elapsed_sec": 32.08,
+        "cost_jpy": 0.3431
       }
     ],
     "retried_for_parse": false,
-    "total_cost_jpy": 0.1824,
-    "generated_at": "2026-10-29T21:40:37+0900",
+    "total_cost_jpy": 0.3431,
+    "generated_at": "2026-10-29T22:29:06+0900",
     "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
   },
   "reselect_count": 0,
   "reextract_count": 0,
   "reselect_log": [],
-  "candidates": [],
-  "top_ids": [],
-  "n_eligible": 0,
+  "candidates": [
+    {
+      "candidate_id": "g3106d82186",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P6",
+      "sentence": "An AI pet may matter less to adults for what it can do.",
+      "front_kind": "",
+      "misread_target": "",
+      "misread_quote": "matter less to adults",
+      "misread_ja": "「less」が何との比較なのかを、機能以外の価値との比較だと決めつけて読むおそれがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級に比較の基準が明示されているかを確認し、文脈上の対比と区別する。",
+      "construct_ja": "比較級の比較基準が明示されない表現",
+      "points_ja": [
+        "less は matter の程度を表す",
+        "比較の基準はこの文では明示されていない"
+      ],
+      "context_ja": "AIペットができることを理由に、大人にとってどの程度重要かを述べている。",
+      "prev": "But “I kind of want to see it” is hard to put in a chart.",
+      "next": "It may matter more if they want to make room for one during the gaps in a busy day.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        126,
+        181
+      ]
+    },
+    {
+      "candidate_id": "g5df5dd244f",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P6",
+      "sentence": "It may matter more if they want to make room for one during the gaps in a busy day.",
+      "front_kind": "",
+      "misread_target": "",
+      "misread_quote": "matter more if they want",
+      "misread_ja": "「more」が何との比較なのかを、条件節の内容そのものとの比較だと取り違えるおそれがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級に比較の基準が明示されているかを確認し、条件節が比較基準を示すとは限らないと読む。",
+      "construct_ja": "比較級の比較基準が明示されない表現",
+      "points_ja": [
+        "more は matter の程度を表す",
+        "if 節は条件を示し、比較基準を明示してはいない"
+      ],
+      "context_ja": "忙しい日のすき間にペットのための場所を作りたい場合、その重要性が増す可能性を述べている。",
+      "prev": "An AI pet may matter less to adults for what it can do.",
+      "next": "Still, it is too soon to get excited about future predictions.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        182,
+        265
+      ]
+    }
+  ],
+  "top_ids": [
+    "g3106d82186",
+    "g5df5dd244f"
+  ],
+  "n_eligible": 2,
   "ng": [],
   "filtered_by_ng": [],
   "rejected_ids": [],
-  "candidates_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  "status": "NO_CANDIDATE",
+  "candidates_sha256": "7241ced3e30cadd897a821eded57cb6e0404a65d93c1bfb2c0071d9a58313fee",
+  "status": "HAS_CANDIDATES",
   "exhausted": false,
   "reused_from_previous_run": false
 }

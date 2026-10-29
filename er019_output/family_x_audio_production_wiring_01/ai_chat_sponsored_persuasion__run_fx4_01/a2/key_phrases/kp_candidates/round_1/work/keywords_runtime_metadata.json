@@ -4,72 +4,119 @@
   "kp_backend": "fulltext_p2",
   "prompt_id": "kp_prompt_p7",
   "prompt_sha256": "2e93019300f960e5ff3070dd83b12a81566b8ceb87b44b335d554a7a711eb291",
-  "user_message_sha256": "0a49c998d05de59d373bc17be3db030b4f71e212171c7d22726dd9630a3c7da5",
+  "user_message_sha256": "dc0209fbb1e97c04eb87593952c8ddade3afbe2a2660f660603c3bfc3cd57b9e",
   "record_status": "PRODUCTION",
   "model_requested": "gpt-6-luna",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_001a661a4f1f3d21006ae33e62642c87d0ae3df2eb6b96f25c",
+  "response_id": "resp_05199635d8d3d904006ae34a773ea887d0b14e4c75e513242f",
   "final_status": "KEY_WORDS_STRUCTURE_PASS",
   "shortfall": true,
   "kp_count_max": 7,
   "kp_backend_used": "fulltext_p2",
-  "attempts": 1,
+  "attempts": 2,
   "has_diagnostic_note": false,
   "attempts_detail": [
     {
       "attempt": 1,
-      "status": "KEY_WORDS_STRUCTURE_PASS",
+      "status": "KEY_WORDS_STRUCTURE_INVALID",
       "validation_reasons": [],
-      "item_reasons": [],
+      "item_reasons": [
+        {
+          "index": 0,
+          "phrase": "could not confirm a clear fall",
+          "reasons": [
+            "語数が1〜5語でない(実際: 6語)",
+            "有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+          ]
+        }
+      ],
       "resolved": [
         {
           "index": 0,
-          "phrase": "draws attention to",
-          "word_count": 3,
-          "declared_word_count": 3,
-          "declared_word_count_mismatch": false,
-          "reasons": [],
-          "reason_ja": "論点や重要事項に注意を向ける、論説で頻出の表現。",
-          "source_span": "draws attention to",
-          "source_sentence": "But this test draws attention to the guide's job, not just its place",
-          "source_sentence_id": "S28",
+          "phrase": "could not confirm a clear fall",
+          "word_count": 6,
+          "declared_word_count": 5,
+          "declared_word_count_mismatch": true,
+          "reasons": [
+            "語数が1〜5語でない(実際: 6語)",
+            "有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+          ],
+          "reason_ja": "研究結果を断定せず慎重に述べる表現。",
+          "source_span": "could not confirm a clear fall",
+          "source_sentence": "But compared with the usual persuasion test, the researchers could not confirm a clear fall in sponsored product choices",
+          "source_sentence_id": "S31",
           "occurrence_count": 1,
           "occurrence_sentence_ids": [
-            "S28"
+            "S31"
           ],
           "selection_resolution_method": "fulltext_exact_unique"
         },
         {
           "index": 1,
-          "phrase": "apply to real purchases",
-          "word_count": 4,
-          "declared_word_count": 4,
+          "phrase": "sales pitch",
+          "word_count": 2,
+          "declared_word_count": 2,
           "declared_word_count_mismatch": false,
           "reasons": [],
-          "reason_ja": "研究結果などが実際の事例にも当てはまるかを表す。",
-          "source_span": "apply to real purchases",
-          "source_sentence": "We also do not know if the same results apply to real purchases",
-          "source_sentence_id": "S36",
+          "reason_ja": "売り込みや販売目的の説得を表す定番表現。",
+          "source_span": "sales pitch",
+          "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+          "source_sentence_id": "S26",
           "occurrence_count": 1,
           "occurrence_sentence_ids": [
-            "S36"
+            "S26"
           ],
           "selection_resolution_method": "fulltext_exact_unique"
         },
         {
           "index": 2,
-          "phrase": "picked at random",
+          "phrase": "persuade people to choose",
+          "word_count": 4,
+          "declared_word_count": 4,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "人に選択を促す意味の動詞構文。",
+          "source_span": "persuade people to choose",
+          "source_sentence": "In one condition, the AI was told to try to persuade people to choose a sponsored product",
+          "source_sentence_id": "S9",
+          "occurrence_count": 1,
+          "occurrence_sentence_ids": [
+            "S9"
+          ],
+          "selection_resolution_method": "fulltext_exact_unique"
+        },
+        {
+          "index": 3,
+          "phrase": "favored one product",
           "word_count": 3,
           "declared_word_count": 3,
           "declared_word_count_mismatch": false,
           "reasons": [],
-          "reason_ja": "無作為に選ばれたことを表す自然な定型表現。",
-          "source_span": "picked at random",
-          "source_sentence": "The promoted book was picked at random from the books shown",
-          "source_sentence_id": "S11",
+          "reason_ja": "特定の商品を優遇することを表す。",
+          "source_span": "favored one product",
+          "source_sentence": "In the experiment, some people felt that the advice favored one product",
+          "source_sentence_id": "S23",
+          "occurrence_count": 2,
+          "occurrence_sentence_ids": [
+            "S23",
+            "S26"
+          ],
+          "selection_resolution_method": "fulltext_exact_first_of_N"
+        },
+        {
+          "index": 4,
+          "phrase": "hide its goal",
+          "word_count": 3,
+          "declared_word_count": 3,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "目的を隠すという意味の簡潔な表現。",
+          "source_span": "hide its goal",
+          "source_sentence": "In another condition, the AI was told to hide its goal",
+          "source_sentence_id": "S13",
           "occurrence_count": 1,
           "occurrence_sentence_ids": [
-            "S11"
+            "S13"
           ],
           "selection_resolution_method": "fulltext_exact_unique"
         }
@@ -78,8 +125,125 @@
       "exclusion_hits": [],
       "exclusion_dropped": [],
       "model": "gpt-6-luna",
-      "response_id": "resp_001a661a4f1f3d21006ae33e62642c87d0ae3df2eb6b96f25c",
-      "user_message_sha256": "0a49c998d05de59d373bc17be3db030b4f71e212171c7d22726dd9630a3c7da5"
+      "response_id": "resp_0d527d02246c904b006ae34a6a2a9c87d096edee74020cc7b2",
+      "user_message_sha256": "25d93ef12950c915d05d10b04d07faaf56183cf733d5e142cec5af0380e99a4e"
+    },
+    {
+      "attempt": 2,
+      "status": "KEY_WORDS_STRUCTURE_PASS",
+      "validation_reasons": [],
+      "item_reasons": [],
+      "resolved": [
+        {
+          "index": 0,
+          "phrase": "confirm a clear fall",
+          "word_count": 4,
+          "declared_word_count": 4,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "研究結果を慎重に述べる際の「明確な低下を確認する」という表現。",
+          "source_span": "confirm a clear fall",
+          "source_sentence": "But compared with the usual persuasion test, the researchers could not confirm a clear fall in sponsored product choices",
+          "source_sentence_id": "S31",
+          "occurrence_count": 1,
+          "occurrence_sentence_ids": [
+            "S31"
+          ],
+          "selection_resolution_method": "fulltext_exact_unique"
+        },
+        {
+          "index": 1,
+          "phrase": "results suggest",
+          "word_count": 2,
+          "declared_word_count": 2,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "断定を避けて結果からの示唆を述べる、学術文脈で有用な表現。",
+          "source_span": "results suggest",
+          "source_sentence": "The results suggest people may still want a product after seeing its ad",
+          "source_sentence_id": "S45",
+          "occurrence_count": 1,
+          "occurrence_sentence_ids": [
+            "S45"
+          ],
+          "selection_resolution_method": "fulltext_exact_unique"
+        },
+        {
+          "index": 2,
+          "phrase": "the sales pitch",
+          "word_count": 3,
+          "declared_word_count": 3,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "商品を売り込む話や宣伝文句を指す定番の名詞句。",
+          "source_span": "the sales pitch",
+          "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+          "source_sentence_id": "S26",
+          "occurrence_count": 1,
+          "occurrence_sentence_ids": [
+            "S26"
+          ],
+          "selection_resolution_method": "fulltext_exact_unique"
+        },
+        {
+          "index": 3,
+          "phrase": "favored one product",
+          "word_count": 3,
+          "declared_word_count": 3,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "「特定の商品を有利に扱う」という動詞 favor の用法を学べる。",
+          "source_span": "favored one product",
+          "source_sentence": "In the experiment, some people felt that the advice favored one product",
+          "source_sentence_id": "S23",
+          "occurrence_count": 2,
+          "occurrence_sentence_ids": [
+            "S23",
+            "S26"
+          ],
+          "selection_resolution_method": "fulltext_exact_first_of_N"
+        },
+        {
+          "index": 4,
+          "phrase": "blow a whistle",
+          "word_count": 3,
+          "declared_word_count": 3,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "警告や異変を知らせる意味でも使われる比喩的な表現。",
+          "source_span": "blow a whistle",
+          "source_sentence": "If an AI said that to you, would a guard in your mind blow a whistle",
+          "source_sentence_id": "S4",
+          "occurrence_count": 1,
+          "occurrence_sentence_ids": [
+            "S4"
+          ],
+          "selection_resolution_method": "fulltext_exact_unique"
+        },
+        {
+          "index": 5,
+          "phrase": "let the advice through",
+          "word_count": 4,
+          "declared_word_count": 4,
+          "declared_word_count_mismatch": false,
+          "reasons": [],
+          "reason_ja": "助言を受け入れる、という比喩的な let ～ through の用法。",
+          "source_span": "let the advice through",
+          "source_sentence": "Or would you let the advice through, thinking, \"But it's just right for me",
+          "source_sentence_id": "S6",
+          "occurrence_count": 1,
+          "occurrence_sentence_ids": [
+            "S6"
+          ],
+          "selection_resolution_method": "fulltext_exact_unique"
+        }
+      ],
+      "cmu_excluded": [],
+      "exclusion_hits": [],
+      "exclusion_dropped": [],
+      "model": "gpt-6-luna",
+      "response_id": "resp_05199635d8d3d904006ae34a773ea887d0b14e4c75e513242f",
+      "user_message_sha256": "dc0209fbb1e97c04eb87593952c8ddade3afbe2a2660f660603c3bfc3cd57b9e"
     }
   ],
   "cmu_gate": {

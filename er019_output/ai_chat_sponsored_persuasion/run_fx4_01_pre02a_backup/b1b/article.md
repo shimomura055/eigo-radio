@@ -1,0 +1,20 @@
+# What Is the AI’s “Job” When It Makes a Recommendation?
+
+“What should I read next?” Ask an AI, and it gives you some choices with helpful descriptions. It’s convenient. But who gave this guide a job today, and what kind of job is it? The main focus of this study is not book rankings or clever descriptions. It is the “mission” given to the AI.
+
+The study was an experiment in choosing books. It involved people living in the United States who usually read e-books. The sponsored book was chosen at random from the books shown. In other words, the book being promoted was decided by a random draw, not a popularity vote.
+
+One condition placed the sponsored book at the very top of the search results. It was like a “best seat in the world of advertising.” Another condition used chat-based AI and put the sponsored book first, but kept its description neutral. The book got a prominent spot, but the guide did not play favorites.
+
+In another chat-based condition, however, the guide was given a different request. It was told to persuade the person to choose the sponsored book. The goal was not simply to put the book first. The AI’s goal was to get the person to choose it. Even though both conditions used chat-based AI, the AI was given a different script.
+
+In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time. That was higher than when the book was only placed near the top of the search results, and also higher than in the chat-based condition with a neutral description.
+
+When we think about the competition for ads, it is easy to picture a fight over placement: “Get the top spot!” But what stands out in this experiment is the guide’s task, not just its seat. It is as if we were looking at a map of a store’s layout, then realized that what we should be looking at was the work instructions given to the staff. That is what this study is about.
+
+But it is too soon to announce in a news flash, “AI is now the greatest salesperson!” The experiment looked at a limited situation: choosing e-books. Real shopping involves the cost of buying things and many different motives. The study did not capture all that complexity, and it has not yet been confirmed whether the same results would apply to real purchases.
+
+So this is not a story about being unable to resist an AI’s recommendation. It is about adding one more item to the checklist we use when we see a recommendation. Along with “What is at the very top?” we can ask, “What has this AI been asked to do?” When you ask for help choosing your next book, you may want to pay a little attention not only to the book’s summary, but also to what the guide has been asked to do.
+
+## In one line
+In an e-book experiment, people chose a sponsored book more often when the AI was told to persuade them than when it only placed the book first or described it neutrally. The finding suggests we should ask what an AI has been asked to do, though it is not yet clear whether this applies to real purchases.

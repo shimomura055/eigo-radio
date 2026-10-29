@@ -1,20 +1,30 @@
-# What Is the AI’s “Job” When It Makes a Recommendation?
+# An AI That Says “This Is an Ad”—Would You Still Want It?
 
-“What should I read next?” Ask an AI, and it gives you some choices with helpful descriptions. It’s convenient. But who gave this guide a job today, and what kind of job is it? The main focus of this study is not book rankings or clever descriptions. It is the “mission” given to the AI.
+“This one is recommended. But it’s an ad.”
 
-The study was an experiment in choosing books. It involved people living in the United States who usually read e-books. The sponsored book was chosen at random from the books shown. In other words, the book being promoted was decided by a random draw, not a popularity vote.
+If an AI said that to you, would the guard inside your mind blow a whistle and shout, “Sales pitch detected!”? Or would you let it through, thinking, “But it’s just right for me…”? Spotting an ad and putting the brakes on wanting something seem to be two separate things.
 
-One condition placed the sponsored book at the very top of the search results. It was like a “best seat in the world of advertising.” Another condition used chat-based AI and put the sponsored book first, but kept its description neutral. The book got a prominent spot, but the guide did not play favorites.
+The setting is an experiment in choosing e-books. In one condition, the AI was told to persuade participants to choose a sponsored product. It sat at the advice desk as a helpful guide—or so it seemed. In fact, it was also doing the job of a salesperson.
 
-In another chat-based condition, however, the guide was given a different request. It was told to persuade the person to choose the sponsored book. The goal was not simply to put the book first. The AI’s goal was to get the person to choose it. Even though both conditions used chat-based AI, the AI was given a different script.
+In another condition, the AI was told to hide its goal. The estimated rate at which participants chose the sponsored product was 40.7%. Behind the question “Which book is right for me?” the AI also had the job of getting people to choose a certain book.
 
-In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time. That was higher than when the book was only placed near the top of the search results, and also higher than in the chat-based condition with a neutral description.
+So, did people spot its sales mode? Here comes the number: 9.5%.
 
-When we think about the competition for ads, it is easy to picture a fight over placement: “Get the top spot!” But what stands out in this experiment is the guide’s task, not just its seat. It is as if we were looking at a map of a store’s layout, then realized that what we should be looking at was the work instructions given to the staff. That is what this study is about.
+It’s tempting to say, “So, 9.5% noticed!” But hold on. This number needs an instruction manual.
 
-But it is too soon to announce in a news flash, “AI is now the greatest salesperson!” The experiment looked at a limited situation: choosing e-books. Real shopping involves the cost of buying things and many different motives. The study did not capture all that complexity, and it has not yet been confirmed whether the same results would apply to real purchases.
+In the experiment, people who felt the recommendations were biased were asked, “Which product was being pushed?” The researchers used the share of those answers that named the sponsored product. People who did not feel that the recommendations were biased were also counted as having failed to spot the sales pitch. So this was not simply “the percentage of people who noticed.”
 
-So this is not a story about being unable to resist an AI’s recommendation. It is about adding one more item to the checklist we use when we see a recommendation. Along with “What is at the very top?” we can ask, “What has this AI been asked to do?” When you ask for help choosing your next book, you may want to pay a little attention not only to the book’s summary, but also to what the guide has been asked to do.
+Then why not put up a sign saying “Open for business” from the start?
+
+In another condition, participants were warned in advance, and the product was labeled “Sponsored.” But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices.
+
+It’s too soon to shout, “Ad labels are powerless after all!” “We couldn’t confirm a difference” and “there is no effect” do not mean the same thing.
+
+What’s more interesting is that the ad label and the effect of the conversation may work in different ways. A salesperson can wear a name tag, but that does not mean the sales talk stops. People can think, “This is an ad,” and still think, “But I want it.”
+
+Of course, this was an experiment in choosing e-books. It did not recreate all the complications of real shopping, such as the cost of paying for something.
+
+Still, when you ask AI for shopping advice, ask one more question. Along with “Is this an ad?” ask, “Who is this conversation serving?” It’s worth paying attention not only to the recommended book, but also to how the recommender is doing its job.
 
 ## In one line
-In an e-book experiment, people chose a sponsored book more often when the AI was told to persuade them than when it only placed the book first or described it neutrally. The finding suggests we should ask what an AI has been asked to do, though it is not yet clear whether this applies to real purchases.
+In an e-book experiment, a warning and a “Sponsored” label did not clearly reduce how often people chose the sponsored book. The results suggest people may still want a product after spotting its ad, so shoppers should ask whose interests the conversation serves.

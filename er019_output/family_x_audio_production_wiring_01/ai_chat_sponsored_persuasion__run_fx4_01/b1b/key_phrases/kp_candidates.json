@@ -13,31 +13,31 @@
     "call1": "gpt-6-luna",
     "call2": "gpt-6-luna"
   },
-  "generated_at": "2026-10-29T21:45:35.619940+09:00",
+  "generated_at": "2026-10-29T22:41:46.196212+09:00",
   "round": 1,
   "candidates": [
     {
-      "candidate_id": "p_f8e3ed9edc",
-      "selection_phrase": "play favorites",
-      "used_form": "play favorites",
-      "japanese_gloss": "えこひいきする",
-      "source_sentence": "The book got a prominent spot, but the guide did not play favorites",
-      "source_sentence_id": "S15",
-      "word_count": 2,
-      "reason_ja": "人や物をえこひいきすることを表す慣用表現。",
+      "candidate_id": "p_c4a11ad39d",
+      "selection_phrase": "putting the brakes on",
+      "used_form": "put the brakes on",
+      "japanese_gloss": "抑える",
+      "source_sentence": "Spotting an ad and putting the brakes on wanting something seem to be two separate things",
+      "source_sentence_id": "S6",
+      "word_count": 4,
+      "reason_ja": "計画や行動を抑制することを表す比喩的な慣用表現。",
       "origin": "call1",
       "raw_rank": 1,
       "item": {
         "rank": 1,
-        "source_span": "play favorites",
-        "source_sentence": "The book got a prominent spot, but the guide did not play favorites",
-        "display_phrase": "play favorites",
-        "key_phrase": "play favorites",
-        "used_form": "play favorites",
-        "japanese_gloss": "えこひいきする",
-        "japanese_gloss_tts": "えこひいきする",
-        "changed_from_display_phrase": false,
-        "normalization_reason": "inherit_selection_normalization",
+        "source_span": "putting the brakes on",
+        "source_sentence": "Spotting an ad and putting the brakes on wanting something seem to be two separate things",
+        "display_phrase": "putting the brakes on",
+        "key_phrase": "put the brakes on",
+        "used_form": "put the brakes on",
+        "japanese_gloss": "抑える",
+        "japanese_gloss_tts": "抑える",
+        "changed_from_display_phrase": true,
+        "normalization_reason": "lemma_normalization",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
           "qa_no_residual_context_word": "PASS",
@@ -53,14 +53,14 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "「えこひいきする」という意味の自然な動詞句で、動詞もすでに基本形です。",
+        "reasoning": "句動詞表現の意味を保ったまま、動詞puttingを見出し形putにしました。the brakesとonは慣用表現の一部なので残します。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S15",
+        "source_sentence_id": "S6",
         "occurrence_count": 1,
         "occurrence_sentence_ids": [
-          "S15"
+          "S6"
         ],
         "selection_resolution_method": "fulltext_exact_unique",
         "declared_word_count_mismatch": false,
@@ -70,7 +70,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "play favorites",
+          "key_before": "put the brakes on",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -78,7 +78,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "favoriteを特別扱いする慣用表現で、ガイドが特定の本をひいきすることを指します。",
+          "reasoning": "欲しい気持ちを抑える比喩的な用法です。日本語では「抑える」と短く自然に表せます。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -94,20 +94,43 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "To favor one option over others rather than treat them equally.",
-          "naive_ja": "お気に入りを演じる",
-          "naive_ja_conveys": "no",
+          "meaning_in_text_en": "To stop or restrain something.",
+          "naive_ja": "ブレーキをかける",
+          "naive_ja_conveys": "yes",
           "import_flags": [],
           "gloss_equals_naive_ja": false
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "schema": "kp_rescue_v1",
+          "codes": [
+            "REANCHOR_D1"
+          ],
+          "selection": {
+            "schema": "kp_rescue_v1",
+            "stage": "selection",
+            "code": "REANCHOR_D1",
+            "original_phrase": "put the brakes on",
+            "reasons_before": [
+              "本文に連続一致しない(変更・言い換え・創作)"
+            ],
+            "rescued_phrase": "putting the brakes on",
+            "headword": null,
+            "lexicon_sha256": null
+          },
+          "canonicalization": null
+        }
       },
       "kind": "phrase",
       "flags": {
         "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
-        "redundant_with": []
+        "redundant_with": [],
+        "rescued": true,
+        "rescue_codes": [
+          "REANCHOR_D1"
+        ]
       },
       "gates": {
         "validate": "PASS",
@@ -119,30 +142,50 @@
       },
       "auto_eligible": true,
       "human_selectable": true,
+      "rescue": {
+        "schema": "kp_rescue_v1",
+        "codes": [
+          "REANCHOR_D1"
+        ],
+        "selection": {
+          "schema": "kp_rescue_v1",
+          "stage": "selection",
+          "code": "REANCHOR_D1",
+          "original_phrase": "put the brakes on",
+          "reasons_before": [
+            "本文に連続一致しない(変更・言い換え・創作)"
+          ],
+          "rescued_phrase": "putting the brakes on",
+          "headword": null,
+          "lexicon_sha256": null
+        },
+        "canonicalization": null
+      },
+      "rescue_note": "修正済み(元: put the brakes on / REANCHOR_D1)",
       "ai_rank": 1
     },
     {
-      "candidate_id": "p_7c9b54e42e",
-      "selection_phrase": "capture all that complexity",
-      "used_form": "capture all that complexity",
-      "japanese_gloss": "複雑な事情をすべて捉える",
-      "source_sentence": "The study did not capture all that complexity, and it has not yet been confirmed whether the same results would apply to real purchases",
-      "source_sentence_id": "S30",
-      "word_count": 4,
-      "reason_ja": "複雑さを余さず捉えるという自然な動詞の使い方。",
+      "candidate_id": "p_88f790dc5f",
+      "selection_phrase": "whose interests the conversation serves",
+      "used_form": "whose interests the conversation serves",
+      "japanese_gloss": "会話が誰の利益になるのか",
+      "source_sentence": "The results suggest people may still want a product after spotting its ad, so shoppers should ask whose interests the conversation serves",
+      "source_sentence_id": "S40",
+      "word_count": 5,
+      "reason_ja": "会話が誰の利益にかなうかを問う、抽象的な表現。",
       "origin": "call1",
       "raw_rank": 2,
       "item": {
         "rank": 2,
-        "source_span": "capture all that complexity",
-        "source_sentence": "The study did not capture all that complexity, and it has not yet been confirmed whether the same results would apply to real purchases",
-        "display_phrase": "capture all that complexity",
-        "key_phrase": "capture all that complexity",
-        "used_form": "capture all that complexity",
-        "japanese_gloss": "複雑な事情をすべて捉える",
-        "japanese_gloss_tts": "複雑な事情をすべて捉える",
+        "source_span": "whose interests the conversation serves",
+        "source_sentence": "The results suggest people may still want a product after spotting its ad, so shoppers should ask whose interests the conversation serves",
+        "display_phrase": "whose interests the conversation serves",
+        "key_phrase": "whose interests the conversation serves",
+        "used_form": "whose interests the conversation serves",
+        "japanese_gloss": "会話が誰の利益になるのか",
+        "japanese_gloss_tts": "会話が誰の利益になるのか",
         "changed_from_display_phrase": false,
-        "normalization_reason": "inherit_selection_normalization",
+        "normalization_reason": "none",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
           "qa_no_residual_context_word": "PASS",
@@ -158,14 +201,14 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "意味の核を保った自然な動詞句で、captureはすでに基本形です。thatは不可算名詞complexityを指す限定詞なので置換しません。",
+        "reasoning": "会話が誰の利益にかなうかを問う自然な節で、whoseやthe conversationを除くと意味が損なわれます。文の節構造を保つためservesもそのままにします。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S30",
+        "source_sentence_id": "S40",
         "occurrence_count": 1,
         "occurrence_sentence_ids": [
-          "S30"
+          "S40"
         ],
         "selection_resolution_method": "fulltext_exact_unique",
         "declared_word_count_mismatch": false,
@@ -175,7 +218,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "capture all that complexity",
+          "key_before": "whose interests the conversation serves",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -183,7 +226,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "ここでのcaptureは、実際の買い物にある複雑な要素を研究が十分に考慮することを表します。",
+          "reasoning": "会話が誰の利益につながるのかを問う表現です。「仕える」では意味が伝わりにくいため、自然な言い方にしました。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -199,8 +242,8 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "To represent or take into account all the many complicated factors involved.",
-          "naive_ja": "その複雑さをすべて捕らえる",
+          "meaning_in_text_en": "It asks whose benefit is being promoted through the discussion.",
+          "naive_ja": "会話が誰の利益に仕えるのか",
           "naive_ja_conveys": "no",
           "import_flags": [],
           "gloss_equals_naive_ja": false
@@ -227,25 +270,25 @@
       "ai_rank": 2
     },
     {
-      "candidate_id": "p_e6bdb3a31f",
-      "selection_phrase": "a different script",
-      "used_form": "a different script",
-      "japanese_gloss": "別の指示",
-      "source_sentence": "Even though both conditions used chat-based AI, the AI was given a different script",
-      "source_sentence_id": "S20",
-      "word_count": 3,
-      "reason_ja": "指示や役割を「脚本」にたとえた比喩表現。",
+      "candidate_id": "p_a9008be6cd",
+      "selection_phrase": "Sales pitch",
+      "used_form": "Sales pitch",
+      "japanese_gloss": "売り込み文句",
+      "source_sentence": "If an AI said that to you, would the guard inside your mind blow a whistle and shout, \"Sales pitch detected!",
+      "source_sentence_id": "S4",
+      "word_count": 2,
+      "reason_ja": "商品を売り込む話や宣伝文句を表す定番の連語。",
       "origin": "call1",
       "raw_rank": 3,
       "item": {
         "rank": 3,
-        "source_span": "a different script",
-        "source_sentence": "Even though both conditions used chat-based AI, the AI was given a different script",
-        "display_phrase": "a different script",
-        "key_phrase": "a different script",
-        "used_form": "a different script",
-        "japanese_gloss": "別の指示",
-        "japanese_gloss_tts": "別の指示",
+        "source_span": "Sales pitch",
+        "source_sentence": "If an AI said that to you, would the guard inside your mind blow a whistle and shout, \"Sales pitch detected!",
+        "display_phrase": "Sales pitch",
+        "key_phrase": "Sales pitch",
+        "used_form": "Sales pitch",
+        "japanese_gloss": "売り込み文句",
+        "japanese_gloss_tts": "売り込み文句",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -263,16 +306,17 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "「異なる指示・台本」という意味の自然な名詞句です。不定冠詞は可算名詞句を自然に成立させるため残します。",
+        "reasoning": "単独で意味の分かる自然な名詞句であり、文脈限定語も含まれていないため表示形を保ちます。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S20",
-        "occurrence_count": 1,
+        "source_sentence_id": "S4",
+        "occurrence_count": 2,
         "occurrence_sentence_ids": [
-          "S20"
+          "S22",
+          "S4"
         ],
-        "selection_resolution_method": "fulltext_exact_unique",
+        "selection_resolution_method": "fulltext_exact_first_of_N",
         "declared_word_count_mismatch": false,
         "possessor_roles": [],
         "person_role_repair": {
@@ -280,7 +324,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "a different script",
+          "key_before": "Sales pitch",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -288,7 +332,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "scriptは舞台の台本ではなく、AIに与えられた指示の内容を指します。",
+          "reasoning": "商品を買わせたり選ばせたりするための話し方を指します。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -304,8 +348,8 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "A set of instructions or wording that differs from another one.",
-          "naive_ja": "異なる台本",
+          "meaning_in_text_en": "An attempt to convince someone to buy or choose a product.",
+          "naive_ja": "販売の投球",
           "naive_ja_conveys": "no",
           "import_flags": [],
           "gloss_equals_naive_ja": false
@@ -317,7 +361,10 @@
         "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
-        "redundant_with": []
+        "redundant_with": [
+          "p_a9296ef44f",
+          "p_cd0de7c91e"
+        ]
       },
       "gates": {
         "validate": "PASS",
@@ -332,27 +379,27 @@
       "ai_rank": 3
     },
     {
-      "candidate_id": "p_02dd55a9eb",
-      "selection_phrase": "chosen at random",
-      "used_form": "choose at random",
-      "japanese_gloss": "無作為に選ぶ",
-      "source_sentence": "The sponsored book was chosen at random from the books shown",
-      "source_sentence_id": "S10",
-      "word_count": 3,
-      "reason_ja": "「無作為に選ばれる」を表す定型表現。",
+      "candidate_id": "p_b8f343217d",
+      "selection_phrase": "confirm a clear drop",
+      "used_form": "confirm a clear drop",
+      "japanese_gloss": "明らかな減少を確認する",
+      "source_sentence": "But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices",
+      "source_sentence_id": "S26",
+      "word_count": 4,
+      "reason_ja": "数値の明確な低下を確認する、研究報告で使える表現。",
       "origin": "call1",
       "raw_rank": 4,
       "item": {
         "rank": 4,
-        "source_span": "chosen at random",
-        "source_sentence": "The sponsored book was chosen at random from the books shown",
-        "display_phrase": "chosen at random",
-        "key_phrase": "choose at random",
-        "used_form": "choose at random",
-        "japanese_gloss": "無作為に選ぶ",
-        "japanese_gloss_tts": "無作為に選ぶ",
-        "changed_from_display_phrase": true,
-        "normalization_reason": "lemma_normalization",
+        "source_span": "confirm a clear drop",
+        "source_sentence": "But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices",
+        "display_phrase": "confirm a clear drop",
+        "key_phrase": "confirm a clear drop",
+        "used_form": "confirm a clear drop",
+        "japanese_gloss": "明らかな減少を確認する",
+        "japanese_gloss_tts": "明らかな減少を確認する",
+        "changed_from_display_phrase": false,
+        "normalization_reason": "inherit_selection_normalization",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
           "qa_no_residual_context_word": "PASS",
@@ -368,14 +415,14 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "動詞の過去分詞chosenを基本形chooseにし、自然な表現「無作為に選ぶ」として提示します。",
+        "reasoning": "動詞confirmはすでに基本形で、「明確な減少を確認する」という意味もこの句だけで十分に伝わるため、変更しません。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S10",
+        "source_sentence_id": "S26",
         "occurrence_count": 1,
         "occurrence_sentence_ids": [
-          "S10"
+          "S26"
         ],
         "selection_resolution_method": "fulltext_exact_unique",
         "declared_word_count_mismatch": false,
@@ -385,7 +432,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "choose at random",
+          "key_before": "confirm a clear drop",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -393,7 +440,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "特定の好みや意図によらず、偶然に選ぶ意味です。",
+          "reasoning": "dropは物の落下ではなく、率などの減少を表しています。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -409,9 +456,9 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "To select something by chance rather than by preference or deliberate choice.",
-          "naive_ja": "ランダムに選ぶ",
-          "naive_ja_conveys": "yes",
+          "meaning_in_text_en": "To establish that an obvious decrease has occurred.",
+          "naive_ja": "明確な落下を確認する",
+          "naive_ja_conveys": "no",
           "import_flags": [],
           "gloss_equals_naive_ja": false
         },
@@ -437,25 +484,25 @@
       "ai_rank": 4
     },
     {
-      "candidate_id": "p_0e4e95c83b",
-      "selection_phrase": "what stands out",
-      "used_form": "what stands out",
-      "japanese_gloss": "際立っている点",
-      "source_sentence": "But what stands out in this experiment is the guide's task, not just its seat",
-      "source_sentence_id": "S24",
+      "candidate_id": "p_25ebc7f202",
+      "selection_phrase": "rate at which",
+      "used_form": "rate at which",
+      "japanese_gloss": "起こる割合",
+      "source_sentence": "The estimated rate at which participants chose the sponsored product was 40.7%",
+      "source_sentence_id": "S12",
       "word_count": 3,
-      "reason_ja": "特に目立つ点を導く便利な表現。",
+      "reason_ja": "「〜する割合」を導く、説明・分析で便利な構文。",
       "origin": "call1",
-      "raw_rank": 5,
+      "raw_rank": 6,
       "item": {
-        "rank": 5,
-        "source_span": "what stands out",
-        "source_sentence": "But what stands out in this experiment is the guide's task, not just its seat",
-        "display_phrase": "what stands out",
-        "key_phrase": "what stands out",
-        "used_form": "what stands out",
-        "japanese_gloss": "際立っている点",
-        "japanese_gloss_tts": "際立っている点",
+        "rank": 6,
+        "source_span": "rate at which",
+        "source_sentence": "The estimated rate at which participants chose the sponsored product was 40.7%",
+        "display_phrase": "rate at which",
+        "key_phrase": "rate at which",
+        "used_form": "rate at which",
+        "japanese_gloss": "起こる割合",
+        "japanese_gloss_tts": "起こる割合",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -473,14 +520,14 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "「目立つもの・際立つ点は何か」という自然な表現です。standsを基本形にするとこの構文が不自然になるため、表層形を保ちます。",
+        "reasoning": "rate at whichだけでは何が起きる頻度なのかが不足するため、source_spanからparticipants choseを補い、動詞は基本形chooseにしました。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S24",
+        "source_sentence_id": "S12",
         "occurrence_count": 1,
         "occurrence_sentence_ids": [
-          "S24"
+          "S12"
         ],
         "selection_resolution_method": "fulltext_exact_unique",
         "declared_word_count_mismatch": false,
@@ -490,15 +537,15 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "what stands out",
+          "key_before": "rate at which participants choose",
           "role_ok_poss": []
         },
         "gloss_alignment": {
           "version": "ER-003-KP-GLOSS-ALIGN-02",
-          "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
-          "current_gloss_consistent_verdict": false,
-          "reasoning": "物理的に突き出ることではなく、特に目立つ点や注目すべき点を表します。",
+          "status": "GLOSS_ALREADY_CONSISTENT",
+          "original_japanese_gloss": "起こる割合",
+          "current_gloss_consistent_verdict": true,
+          "reasoning": "「rate at which」が表す、何かが起こる割合という意味が表れています。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -511,56 +558,134 @@
             "pass": true,
             "note": "必須内容語なし(機械検査対象外)"
           },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "The thing or feature that is especially noticeable or important.",
-          "naive_ja": "何が突き出ているか",
-          "naive_ja_conveys": "no",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
+          "attempts_count": 1
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "schema": "kp_rescue_v1",
+          "codes": [
+            "REVERT_SURFACE"
+          ],
+          "selection": null,
+          "canonicalization": {
+            "schema": "kp_rescue_v1",
+            "stage": "canonicalization",
+            "code": "REVERT_SURFACE",
+            "display_phrase": "rate at which",
+            "llm_key_phrase": "rate at which participants choose",
+            "rescued_key": "rate at which",
+            "llm_tokens_used": 0,
+            "dropped_tail": [
+              "participants",
+              "choose"
+            ],
+            "reasons_before": [
+              "key_phrase('rate at which participants choose')がdisplay_phraseと一致せず、source_span('rate at which')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            ],
+            "validator_args": {
+              "key": "rate at which",
+              "display": "rate at which",
+              "source_span": "rate at which",
+              "original_span": "rate at which",
+              "allow_inflection_normalization": true,
+              "role_ok_poss": [],
+              "normalization_reason": "none"
+            },
+            "validator_args_sha256": "95b46a4e3cd92ec22d910264a3e007b63d6bc8e304f5afd308f821052f3de3c0"
+          },
+          "gloss": {
+            "status": "REALIGNED"
+          },
+          "qa": {
+            "status": "PASS",
+            "model_id": "gpt-6-luna"
+          }
+        }
       },
       "kind": "phrase",
       "flags": {
         "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
-        "redundant_with": []
+        "redundant_with": [],
+        "rescued": true,
+        "rescue_codes": [
+          "REVERT_SURFACE"
+        ]
       },
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "PASS",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
       "auto_eligible": true,
       "human_selectable": true,
+      "rescue": {
+        "schema": "kp_rescue_v1",
+        "codes": [
+          "REVERT_SURFACE"
+        ],
+        "selection": null,
+        "canonicalization": {
+          "schema": "kp_rescue_v1",
+          "stage": "canonicalization",
+          "code": "REVERT_SURFACE",
+          "display_phrase": "rate at which",
+          "llm_key_phrase": "rate at which participants choose",
+          "rescued_key": "rate at which",
+          "llm_tokens_used": 0,
+          "dropped_tail": [
+            "participants",
+            "choose"
+          ],
+          "reasons_before": [
+            "key_phrase('rate at which participants choose')がdisplay_phraseと一致せず、source_span('rate at which')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ],
+          "validator_args": {
+            "key": "rate at which",
+            "display": "rate at which",
+            "source_span": "rate at which",
+            "original_span": "rate at which",
+            "allow_inflection_normalization": true,
+            "role_ok_poss": [],
+            "normalization_reason": "none"
+          },
+          "validator_args_sha256": "95b46a4e3cd92ec22d910264a3e007b63d6bc8e304f5afd308f821052f3de3c0"
+        },
+        "gloss": {
+          "status": "REALIGNED"
+        },
+        "qa": {
+          "status": "PASS",
+          "model_id": "gpt-6-luna"
+        }
+      },
+      "rescue_note": "修正済み(元: rate at which / REVERT_SURFACE)・QA再判定済み",
       "ai_rank": 5
     },
     {
-      "candidate_id": "p_010295b775",
-      "selection_phrase": "in a news flash",
-      "used_form": "in a news flash",
-      "japanese_gloss": "ニュース速報で",
-      "source_sentence": "But it is too soon to announce in a news flash, \"AI is now the greatest salesperson",
-      "source_sentence_id": "S27",
-      "word_count": 4,
-      "reason_ja": "速報として大々的に伝える場面を指す表現。",
-      "origin": "call1",
-      "raw_rank": 6,
+      "candidate_id": "p_a9296ef44f",
+      "selection_phrase": "persuasion",
+      "used_form": "persuasion",
+      "japanese_gloss": "説得",
+      "source_sentence": "But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices",
+      "source_sentence_id": "S26",
+      "word_count": 1,
+      "reason_ja": "説得という抽象概念を表し、学術・社会的な文脈でも使える。",
+      "origin": "call2",
+      "raw_rank": 1,
       "item": {
-        "rank": 6,
-        "source_span": "in a news flash",
-        "source_sentence": "But it is too soon to announce in a news flash, \"AI is now the greatest salesperson",
-        "display_phrase": "in a news flash",
-        "key_phrase": "in a news flash",
-        "used_form": "in a news flash",
-        "japanese_gloss": "ニュース速報で",
-        "japanese_gloss_tts": "ニュース速報で",
+        "rank": 7,
+        "source_span": "persuasion",
+        "source_sentence": "But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices",
+        "display_phrase": "persuasion",
+        "key_phrase": "persuasion",
+        "used_form": "persuasion",
+        "japanese_gloss": "説得",
+        "japanese_gloss_tts": "説得",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -578,14 +703,14 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "「ニュース速報で」という意味で再利用できる自然な前置詞句です。aは可算名詞news flashに必要なので残します。",
+        "reasoning": "自然な名詞で、単独でも意味が通じます。文脈に限定された語もないため変更しません。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S27",
+        "source_sentence_id": "S26",
         "occurrence_count": 1,
         "occurrence_sentence_ids": [
-          "S27"
+          "S26"
         ],
         "selection_resolution_method": "fulltext_exact_unique",
         "declared_word_count_mismatch": false,
@@ -595,7 +720,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "in a news flash",
+          "key_before": "persuasion",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -603,7 +728,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "news flashは「速報」の意味で、速報として発表するという用法です。",
+          "reasoning": "この文では、人に特定の選択をさせようとする働きかけを指します。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -619,20 +744,23 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "As a short, urgent news bulletin announcing a new development.",
-          "naive_ja": "ニュースの閃光の中で",
-          "naive_ja_conveys": "no",
+          "meaning_in_text_en": "The act of trying to convince someone to accept an idea or make a choice.",
+          "naive_ja": "説得すること",
+          "naive_ja_conveys": "yes",
           "import_flags": [],
           "gloss_equals_naive_ja": false
         },
         "gloss_alignment_status": "ALIGNED"
       },
-      "kind": "phrase",
+      "kind": "word",
       "flags": {
         "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
-        "redundant_with": []
+        "redundant_with": [
+          "p_a9008be6cd",
+          "p_cd0de7c91e"
+        ]
       },
       "gates": {
         "validate": "PASS",
@@ -647,132 +775,25 @@
       "ai_rank": 6
     },
     {
-      "candidate_id": "p_ecbbb619a6",
-      "selection_phrase": "a prominent spot",
-      "used_form": "a prominent spot",
-      "japanese_gloss": "人目につく位置",
-      "source_sentence": "The book got a prominent spot, but the guide did not play favorites",
-      "source_sentence_id": "S15",
-      "word_count": 3,
-      "reason_ja": "目立つ位置を表す、広告や配置で使える語句。",
-      "origin": "call1",
-      "raw_rank": 7,
-      "item": {
-        "rank": 7,
-        "source_span": "a prominent spot",
-        "source_sentence": "The book got a prominent spot, but the guide did not play favorites",
-        "display_phrase": "a prominent spot",
-        "key_phrase": "a prominent spot",
-        "used_form": "a prominent spot",
-        "japanese_gloss": "人目につく位置",
-        "japanese_gloss_tts": "人目につく位置",
-        "changed_from_display_phrase": false,
-        "normalization_reason": "none",
-        "qa": {
-          "qa_standalone_natural_unit": "PASS",
-          "qa_no_residual_context_word": "PASS",
-          "qa_meaning_or_usage_unchanged": "PASS",
-          "qa_reusable_other_context": "PASS",
-          "qa_traceable_contiguous_span": "PASS",
-          "qa_listening_blocker_value_preserved": "PASS",
-          "qa_standalone_comprehensibility": "PASS",
-          "qa_not_over_minimized": "PASS",
-          "qa_context_sufficiency": "PASS",
-          "qa_core_meaning_preserved": "PASS",
-          "qa_no_semantic_role_loss": "PASS",
-          "qa_person_reference_generalized": "PASS"
-        },
-        "qa_overall_status": "PASS",
-        "reasoning": "「目立つ位置」という自然で意味の分かる名詞句です。不定冠詞は可算名詞spotに必要なので維持します。",
-        "kp_extends_beyond_candidate": false,
-        "gloss_review_hint": false,
-        "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S15",
-        "occurrence_count": 1,
-        "occurrence_sentence_ids": [
-          "S15"
-        ],
-        "selection_resolution_method": "fulltext_exact_unique",
-        "declared_word_count_mismatch": false,
-        "possessor_roles": [],
-        "person_role_repair": {
-          "status": "NO_POSSESSIVE",
-          "roles_ok": null,
-          "roles_reason": "",
-          "repairs": [],
-          "key_before": "a prominent spot",
-          "role_ok_poss": []
-        },
-        "gloss_alignment": {
-          "version": "ER-003-KP-GLOSS-ALIGN-02",
-          "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
-          "current_gloss_consistent_verdict": false,
-          "reasoning": "prominentは目立つこと、spotは位置を表しています。",
-          "adopted_attempt": 1,
-          "added_word_mappings": [],
-          "machine_check_record_only": {
-            "required_words": [],
-            "covered": {},
-            "uncovered": [],
-            "span_not_in_gloss": [],
-            "symbol_only_spans": [],
-            "malformed_mappings": 0,
-            "pass": true,
-            "note": "必須内容語なし(機械検査対象外)"
-          },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "A highly visible or noticeable position.",
-          "naive_ja": "目立つ場所",
-          "naive_ja_conveys": "yes",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
-        },
-        "gloss_alignment_status": "ALIGNED"
-      },
-      "kind": "phrase",
-      "flags": {
-        "qa_fail": false,
-        "gloss_hr_pending": false,
-        "similar_to_ng": false,
-        "redundant_with": [
-          "p_7843fc5bea"
-        ]
-      },
-      "gates": {
-        "validate": "PASS",
-        "cmu": "PASS",
-        "canonicalization": "PASS",
-        "gloss": "ALIGNED",
-        "symbol": "PASS",
-        "src_d1": "NA"
-      },
-      "auto_eligible": true,
-      "human_selectable": true,
-      "ai_rank": 7
-    },
-    {
-      "candidate_id": "p_11b2369e7c",
-      "selection_phrase": "persuasive",
-      "used_form": "persuasive",
-      "japanese_gloss": "説得を目的とした",
-      "source_sentence": "In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time",
-      "source_sentence_id": "S21",
+      "candidate_id": "p_11037490f6",
+      "selection_phrase": "biased",
+      "used_form": "biased",
+      "japanese_gloss": "偏った",
+      "source_sentence": "In the experiment, people who felt the recommendations were biased were asked, \"Which product was being pushed",
+      "source_sentence_id": "S20",
       "word_count": 1,
-      "reason_ja": "人を説得する性質を表す、議論や文章で役立つ語です。",
+      "reason_ja": "偏りや先入観のある状態を表す、汎用性の高い語。",
       "origin": "call2",
-      "raw_rank": 1,
+      "raw_rank": 2,
       "item": {
         "rank": 8,
-        "source_span": "persuasive",
-        "source_sentence": "In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time",
-        "display_phrase": "persuasive",
-        "key_phrase": "persuasive",
-        "used_form": "persuasive",
-        "japanese_gloss": "説得を目的とした",
-        "japanese_gloss_tts": "説得を目的とした",
+        "source_span": "biased",
+        "source_sentence": "In the experiment, people who felt the recommendations were biased were asked, \"Which product was being pushed",
+        "display_phrase": "biased",
+        "key_phrase": "biased",
+        "used_form": "biased",
+        "japanese_gloss": "偏った",
+        "japanese_gloss_tts": "偏った",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -790,16 +811,17 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "「説得力のある／説得を目的とした」を表す形容詞で、基本形のまま学習単位として成立します。",
+        "reasoning": "評価の偏りを表す形容詞として自然に使えるため、語形を変えずに保ちます。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S21",
-        "occurrence_count": 1,
+        "source_sentence_id": "S20",
+        "occurrence_count": 2,
         "occurrence_sentence_ids": [
-          "S21"
+          "S20",
+          "S22"
         ],
-        "selection_resolution_method": "fulltext_exact_unique",
+        "selection_resolution_method": "fulltext_exact_first_of_N",
         "declared_word_count_mismatch": false,
         "possessor_roles": [],
         "person_role_repair": {
@@ -807,7 +829,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "persuasive",
+          "key_before": "biased",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -815,7 +837,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "単に説得力があるというより、人を説得することを目的とした条件を表します。",
+          "reasoning": "推薦が特定の商品などに偏っているという意味です。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -831,8 +853,8 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "Intended to convince someone to do or believe something.",
-          "naive_ja": "説得力のある",
+          "meaning_in_text_en": "Favoring one side or option over others, often unfairly.",
+          "naive_ja": "偏見のある",
           "naive_ja_conveys": "partly",
           "import_flags": [
             "past_tense_ending"
@@ -858,30 +880,30 @@
       },
       "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 8
+      "ai_rank": 7
     },
     {
-      "candidate_id": "p_bfd238b4d7",
-      "selection_phrase": "motives",
-      "used_form": "motive",
-      "japanese_gloss": "行動の理由",
-      "source_sentence": "Real shopping involves the cost of buying things and many different motives",
-      "source_sentence_id": "S29",
+      "candidate_id": "p_cd0de7c91e",
+      "selection_phrase": "persuade",
+      "used_form": "persuade",
+      "japanese_gloss": "説得する",
+      "source_sentence": "In one condition, the AI was told to persuade participants to choose a sponsored product",
+      "source_sentence_id": "S8",
       "word_count": 1,
-      "reason_ja": "行動の背後にある動機を表す、幅広く使える語です。",
+      "reason_ja": "「説得する」を表す動詞で、幅広い場面で使える。",
       "origin": "call2",
-      "raw_rank": 2,
+      "raw_rank": 3,
       "item": {
         "rank": 9,
-        "source_span": "motives",
-        "source_sentence": "Real shopping involves the cost of buying things and many different motives",
-        "display_phrase": "motives",
-        "key_phrase": "motive",
-        "used_form": "motive",
-        "japanese_gloss": "行動の理由",
-        "japanese_gloss_tts": "行動の理由",
-        "changed_from_display_phrase": true,
-        "normalization_reason": "lemma_normalization",
+        "source_span": "persuade",
+        "source_sentence": "In one condition, the AI was told to persuade participants to choose a sponsored product",
+        "display_phrase": "persuade",
+        "key_phrase": "persuade",
+        "used_form": "persuade",
+        "japanese_gloss": "説得する",
+        "japanese_gloss_tts": "説得する",
+        "changed_from_display_phrase": false,
+        "normalization_reason": "inherit_selection_normalization",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
           "qa_no_residual_context_word": "PASS",
@@ -897,14 +919,14 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "可算名詞の複数形motivesを、見出し語として自然な単数形motiveにします。",
+        "reasoning": "動詞の基本形であり、見出し語としてそのまま提示できます。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S29",
+        "source_sentence_id": "S8",
         "occurrence_count": 1,
         "occurrence_sentence_ids": [
-          "S29"
+          "S8"
         ],
         "selection_resolution_method": "fulltext_exact_unique",
         "declared_word_count_mismatch": false,
@@ -914,7 +936,7 @@
           "roles_ok": null,
           "roles_reason": "",
           "repairs": [],
-          "key_before": "motive",
+          "key_before": "persuade",
           "role_ok_poss": []
         },
         "gloss_alignment": {
@@ -922,7 +944,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "ここでは買い物をする人を動かす理由や目的を指します。",
+          "reasoning": "相手を説得し、特定の選択をさせようとする動詞です。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -938,9 +960,117 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "A reason or desire that leads someone to act.",
-          "naive_ja": "動機",
+          "meaning_in_text_en": "To get someone to accept an idea or make a particular choice by convincing them.",
+          "naive_ja": "説得をする",
           "naive_ja_conveys": "yes",
+          "import_flags": [],
+          "gloss_equals_naive_ja": false
+        },
+        "gloss_alignment_status": "ALIGNED"
+      },
+      "kind": "word",
+      "flags": {
+        "qa_fail": false,
+        "gloss_hr_pending": false,
+        "similar_to_ng": false,
+        "redundant_with": [
+          "p_a9008be6cd",
+          "p_a9296ef44f"
+        ]
+      },
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      },
+      "auto_eligible": true,
+      "human_selectable": true,
+      "ai_rank": 8
+    },
+    {
+      "candidate_id": "p_5cd15f7135",
+      "selection_phrase": "complications",
+      "used_form": "complications",
+      "japanese_gloss": "複雑な要素",
+      "source_sentence": "It did not recreate all the complications of real shopping, such as the cost of paying for something",
+      "source_sentence_id": "S33",
+      "word_count": 1,
+      "reason_ja": "事態を複雑にする要因を指す、応用範囲の広い語。",
+      "origin": "call2",
+      "raw_rank": 4,
+      "item": {
+        "rank": 10,
+        "source_span": "complications",
+        "source_sentence": "It did not recreate all the complications of real shopping, such as the cost of paying for something",
+        "display_phrase": "complications",
+        "key_phrase": "complications",
+        "used_form": "complications",
+        "japanese_gloss": "複雑な要素",
+        "japanese_gloss_tts": "複雑な要素",
+        "changed_from_display_phrase": false,
+        "normalization_reason": "none",
+        "qa": {
+          "qa_standalone_natural_unit": "PASS",
+          "qa_no_residual_context_word": "PASS",
+          "qa_meaning_or_usage_unchanged": "PASS",
+          "qa_reusable_other_context": "PASS",
+          "qa_traceable_contiguous_span": "PASS",
+          "qa_listening_blocker_value_preserved": "PASS",
+          "qa_standalone_comprehensibility": "PASS",
+          "qa_not_over_minimized": "PASS",
+          "qa_context_sufficiency": "PASS",
+          "qa_core_meaning_preserved": "PASS",
+          "qa_no_semantic_role_loss": "PASS",
+          "qa_person_reference_generalized": "PASS"
+        },
+        "qa_overall_status": "PASS",
+        "reasoning": "複数形が実際の複雑な事情の広がりを表しており、自然な学習単位なので単数形にはしません。",
+        "kp_extends_beyond_candidate": false,
+        "gloss_review_hint": false,
+        "fulltext_source_ref": "fulltext_exact_v1",
+        "source_sentence_id": "S33",
+        "occurrence_count": 1,
+        "occurrence_sentence_ids": [
+          "S33"
+        ],
+        "selection_resolution_method": "fulltext_exact_unique",
+        "declared_word_count_mismatch": false,
+        "possessor_roles": [],
+        "person_role_repair": {
+          "status": "NO_POSSESSIVE",
+          "roles_ok": null,
+          "roles_reason": "",
+          "repairs": [],
+          "key_before": "complications",
+          "role_ok_poss": []
+        },
+        "gloss_alignment": {
+          "version": "ER-003-KP-GLOSS-ALIGN-02",
+          "status": "GLOSS_REALIGNED",
+          "original_japanese_gloss": null,
+          "current_gloss_consistent_verdict": false,
+          "reasoning": "医療上の合併症ではなく、物事を複雑にするさまざまな要素を指します。",
+          "adopted_attempt": 1,
+          "added_word_mappings": [],
+          "machine_check_record_only": {
+            "required_words": [],
+            "covered": {},
+            "uncovered": [],
+            "span_not_in_gloss": [],
+            "symbol_only_spans": [],
+            "malformed_mappings": 0,
+            "pass": true,
+            "note": "必須内容語なし(機械検査対象外)"
+          },
+          "attempts_count": 1,
+          "meaning_stage": "applied",
+          "meaning_stage_path": "newgen_meaning_v1",
+          "meaning_in_text_en": "Difficult or complex factors that make an activity less straightforward.",
+          "naive_ja": "合併症",
+          "naive_ja_conveys": "no",
           "import_flags": [],
           "gloss_equals_naive_ja": false
         },
@@ -966,237 +1096,25 @@
       "ai_rank": 9
     },
     {
-      "candidate_id": "p_7843fc5bea",
-      "selection_phrase": "placement",
-      "used_form": "placement",
-      "japanese_gloss": "掲載される位置",
-      "source_sentence": "When we think about the competition for ads, it is easy to picture a fight over placement: \"Get the top spot",
-      "source_sentence_id": "S23",
-      "word_count": 1,
-      "reason_ja": "配置や掲載位置を表し、広告などで使われます。",
-      "origin": "call2",
-      "raw_rank": 3,
-      "item": {
-        "rank": 10,
-        "source_span": "placement",
-        "source_sentence": "When we think about the competition for ads, it is easy to picture a fight over placement: \"Get the top spot",
-        "display_phrase": "placement",
-        "key_phrase": "placement",
-        "used_form": "placement",
-        "japanese_gloss": "掲載される位置",
-        "japanese_gloss_tts": "掲載される位置",
-        "changed_from_display_phrase": false,
-        "normalization_reason": "none",
-        "qa": {
-          "qa_standalone_natural_unit": "PASS",
-          "qa_no_residual_context_word": "PASS",
-          "qa_meaning_or_usage_unchanged": "PASS",
-          "qa_reusable_other_context": "PASS",
-          "qa_traceable_contiguous_span": "PASS",
-          "qa_listening_blocker_value_preserved": "PASS",
-          "qa_standalone_comprehensibility": "PASS",
-          "qa_not_over_minimized": "PASS",
-          "qa_context_sufficiency": "PASS",
-          "qa_core_meaning_preserved": "PASS",
-          "qa_no_semantic_role_loss": "PASS",
-          "qa_person_reference_generalized": "PASS"
-        },
-        "qa_overall_status": "PASS",
-        "reasoning": "広告などの「配置・掲載位置」を表す名詞として自然な学習単位であり、変更は不要です。",
-        "kp_extends_beyond_candidate": false,
-        "gloss_review_hint": false,
-        "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S23",
-        "occurrence_count": 1,
-        "occurrence_sentence_ids": [
-          "S23"
-        ],
-        "selection_resolution_method": "fulltext_exact_unique",
-        "declared_word_count_mismatch": false,
-        "possessor_roles": [],
-        "person_role_repair": {
-          "status": "NO_POSSESSIVE",
-          "roles_ok": null,
-          "roles_reason": "",
-          "repairs": [],
-          "key_before": "placement",
-          "role_ok_poss": []
-        },
-        "gloss_alignment": {
-          "version": "ER-003-KP-GLOSS-ALIGN-02",
-          "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
-          "current_gloss_consistent_verdict": false,
-          "reasoning": "広告などをどこに載せるかという位置を表し、単なる物の配置より掲載場所の意味合いです。",
-          "adopted_attempt": 1,
-          "added_word_mappings": [],
-          "machine_check_record_only": {
-            "required_words": [],
-            "covered": {},
-            "uncovered": [],
-            "span_not_in_gloss": [],
-            "symbol_only_spans": [],
-            "malformed_mappings": 0,
-            "pass": true,
-            "note": "必須内容語なし(機械検査対象外)"
-          },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "The position where something is placed or displayed.",
-          "naive_ja": "配置",
-          "naive_ja_conveys": "partly",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
-        },
-        "gloss_alignment_status": "ALIGNED"
-      },
-      "kind": "word",
-      "flags": {
-        "qa_fail": false,
-        "gloss_hr_pending": false,
-        "similar_to_ng": false,
-        "redundant_with": [
-          "p_ecbbb619a6"
-        ]
-      },
-      "gates": {
-        "validate": "PASS",
-        "cmu": "PASS",
-        "canonicalization": "PASS",
-        "gloss": "ALIGNED",
-        "symbol": "PASS",
-        "src_d1": "NA"
-      },
-      "auto_eligible": true,
-      "human_selectable": true,
-      "ai_rank": 10
-    },
-    {
-      "candidate_id": "p_781012cf77",
-      "selection_phrase": "estimated",
-      "used_form": "estimate",
-      "japanese_gloss": "およその値を出す",
-      "source_sentence": "In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time",
-      "source_sentence_id": "S21",
-      "word_count": 1,
-      "reason_ja": "数値や規模を推定したことを表す、学術文脈でも有用な語です。",
-      "origin": "call2",
-      "raw_rank": 4,
-      "item": {
-        "rank": 11,
-        "source_span": "estimated",
-        "source_sentence": "In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time",
-        "display_phrase": "estimated",
-        "key_phrase": "estimate",
-        "used_form": "estimate",
-        "japanese_gloss": "およその値を出す",
-        "japanese_gloss_tts": "およその値を出す",
-        "changed_from_display_phrase": true,
-        "normalization_reason": "lemma_normalization",
-        "qa": {
-          "qa_standalone_natural_unit": "PASS",
-          "qa_no_residual_context_word": "PASS",
-          "qa_meaning_or_usage_unchanged": "PASS",
-          "qa_reusable_other_context": "PASS",
-          "qa_traceable_contiguous_span": "PASS",
-          "qa_listening_blocker_value_preserved": "PASS",
-          "qa_standalone_comprehensibility": "PASS",
-          "qa_not_over_minimized": "PASS",
-          "qa_context_sufficiency": "PASS",
-          "qa_core_meaning_preserved": "PASS",
-          "qa_no_semantic_role_loss": "PASS",
-          "qa_person_reference_generalized": "PASS"
-        },
-        "qa_overall_status": "PASS",
-        "reasoning": "動詞の過去形estimatedを基本形estimateにし、見出し語として提示します。",
-        "kp_extends_beyond_candidate": false,
-        "gloss_review_hint": false,
-        "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S21",
-        "occurrence_count": 1,
-        "occurrence_sentence_ids": [
-          "S21"
-        ],
-        "selection_resolution_method": "fulltext_exact_unique",
-        "declared_word_count_mismatch": false,
-        "possessor_roles": [],
-        "person_role_repair": {
-          "status": "NO_POSSESSIVE",
-          "roles_ok": null,
-          "roles_reason": "",
-          "repairs": [],
-          "key_before": "estimate",
-          "role_ok_poss": []
-        },
-        "gloss_alignment": {
-          "version": "ER-003-KP-GLOSS-ALIGN-02",
-          "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
-          "current_gloss_consistent_verdict": false,
-          "reasoning": "正確な確定値ではなく、データなどから概算を導く意味です。",
-          "adopted_attempt": 1,
-          "added_word_mappings": [],
-          "machine_check_record_only": {
-            "required_words": [],
-            "covered": {},
-            "uncovered": [],
-            "span_not_in_gloss": [],
-            "symbol_only_spans": [],
-            "malformed_mappings": 0,
-            "pass": true,
-            "note": "必須内容語なし(機械検査対象外)"
-          },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "To form an approximate judgment or calculation about something.",
-          "naive_ja": "見積もる",
-          "naive_ja_conveys": "yes",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
-        },
-        "gloss_alignment_status": "ALIGNED"
-      },
-      "kind": "word",
-      "flags": {
-        "qa_fail": false,
-        "gloss_hr_pending": false,
-        "similar_to_ng": false,
-        "redundant_with": []
-      },
-      "gates": {
-        "validate": "PASS",
-        "cmu": "PASS",
-        "canonicalization": "PASS",
-        "gloss": "ALIGNED",
-        "symbol": "PASS",
-        "src_d1": "NA"
-      },
-      "auto_eligible": true,
-      "human_selectable": true,
-      "ai_rank": 11
-    },
-    {
       "candidate_id": "p_8fc41ece90",
       "selection_phrase": "sponsored",
       "used_form": "sponsored",
-      "japanese_gloss": "スポンサー付きの",
-      "source_sentence": "The sponsored book was chosen at random from the books shown",
-      "source_sentence_id": "S10",
+      "japanese_gloss": "スポンサーの支援を受けた",
+      "source_sentence": "In one condition, the AI was told to persuade participants to choose a sponsored product",
+      "source_sentence_id": "S8",
       "word_count": 1,
-      "reason_ja": "資金提供や広告支援を受けた状態を表す語です。",
+      "reason_ja": "広告・資金提供を受けた状態を表す重要語。",
       "origin": "call2",
       "raw_rank": 5,
       "item": {
-        "rank": 12,
+        "rank": 11,
         "source_span": "sponsored",
-        "source_sentence": "The sponsored book was chosen at random from the books shown",
+        "source_sentence": "In one condition, the AI was told to persuade participants to choose a sponsored product",
         "display_phrase": "sponsored",
         "key_phrase": "sponsored",
         "used_form": "sponsored",
-        "japanese_gloss": "スポンサー付きの",
-        "japanese_gloss_tts": "スポンサー付きの",
+        "japanese_gloss": "スポンサーの支援を受けた",
+        "japanese_gloss_tts": "スポンサーの支援を受けた",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -1214,19 +1132,19 @@
           "qa_person_reference_generalized": "PASS"
         },
         "qa_overall_status": "PASS",
-        "reasoning": "ここではbookを修飾する形容詞的な過去分詞であり、規則に従って動詞の基本形には戻しません。",
+        "reasoning": "ここでは商品に付く形容詞として使われており、動詞の活用形を基本形に戻す対象ではありません。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
         "fulltext_source_ref": "fulltext_exact_v1",
-        "source_sentence_id": "S10",
-        "occurrence_count": 6,
+        "source_sentence_id": "S8",
+        "occurrence_count": 7,
         "occurrence_sentence_ids": [
-          "S10",
           "S12",
-          "S14",
-          "S17",
           "S21",
-          "S37"
+          "S25",
+          "S26",
+          "S39",
+          "S8"
         ],
         "selection_resolution_method": "fulltext_exact_first_of_N",
         "declared_word_count_mismatch": false,
@@ -1244,7 +1162,7 @@
           "status": "GLOSS_REALIGNED",
           "original_japanese_gloss": null,
           "current_gloss_consistent_verdict": false,
-          "reasoning": "単に後援されるというより、スポンサーの支援を受けた本を指します。",
+          "reasoning": "ここではスポンサーの支援を受けて宣伝される商品を指します。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -1260,10 +1178,12 @@
           "attempts_count": 1,
           "meaning_stage": "applied",
           "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "Paid for or promoted with a sponsor's support.",
+          "meaning_in_text_en": "Supported or promoted by a sponsor, often in exchange for payment.",
           "naive_ja": "後援された",
           "naive_ja_conveys": "partly",
-          "import_flags": [],
+          "import_flags": [
+            "past_tense_ending"
+          ],
           "gloss_equals_naive_ja": false
         },
         "gloss_alignment_status": "ALIGNED"
@@ -1285,26 +1205,162 @@
       },
       "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 12
+      "ai_rank": 10
+    },
+    {
+      "candidate_id": "p_717155ef88",
+      "selection_phrase": "or so it seemed",
+      "used_form": "or so it seemed",
+      "japanese_gloss": "そう見えたのだが",
+      "source_sentence": "It sat at the advice desk as a helpful guide—or so it seemed",
+      "source_sentence_id": "S9",
+      "word_count": 4,
+      "reason_ja": "見かけと実態が異なることを示す、自然な挿入表現です。",
+      "origin": "backfill",
+      "raw_rank": 1,
+      "item": {
+        "rank": 1,
+        "source_span": "or so it seemed",
+        "source_sentence": "It sat at the advice desk as a helpful guide—or so it seemed",
+        "display_phrase": "or so it seemed",
+        "key_phrase": "or so it seemed",
+        "used_form": "or so it seemed",
+        "japanese_gloss": "そう見えたのだが",
+        "japanese_gloss_tts": "そう見えたのだが",
+        "changed_from_display_phrase": false,
+        "normalization_reason": "none",
+        "qa": {
+          "qa_standalone_natural_unit": "PASS",
+          "qa_no_residual_context_word": "PASS",
+          "qa_meaning_or_usage_unchanged": "PASS",
+          "qa_reusable_other_context": "PASS",
+          "qa_traceable_contiguous_span": "PASS",
+          "qa_listening_blocker_value_preserved": "PASS",
+          "qa_standalone_comprehensibility": "PASS",
+          "qa_not_over_minimized": "PASS",
+          "qa_context_sufficiency": "PASS",
+          "qa_core_meaning_preserved": "PASS",
+          "qa_no_semantic_role_loss": "PASS",
+          "qa_person_reference_generalized": "PASS"
+        },
+        "qa_overall_status": "PASS",
+        "reasoning": "「そう見えたにすぎない」という意味の自然な慣用的表現で、単独でも意味が分かるため変更しません。",
+        "kp_extends_beyond_candidate": false,
+        "gloss_review_hint": false,
+        "fulltext_source_ref": "fulltext_exact_v1",
+        "source_sentence_id": "S9",
+        "occurrence_count": 1,
+        "occurrence_sentence_ids": [
+          "S9"
+        ],
+        "selection_resolution_method": "fulltext_exact_unique",
+        "declared_word_count_mismatch": false,
+        "possessor_roles": [],
+        "person_role_repair": {
+          "status": "NO_POSSESSIVE",
+          "roles_ok": null,
+          "roles_reason": "",
+          "repairs": [],
+          "key_before": "or so it seemed",
+          "role_ok_poss": []
+        },
+        "gloss_alignment": {
+          "version": "ER-003-KP-GLOSS-ALIGN-02",
+          "status": "GLOSS_REALIGNED",
+          "original_japanese_gloss": null,
+          "current_gloss_consistent_verdict": false,
+          "reasoning": "実際とは異なる可能性を含ませる挿入句なので、「そう見えたのだが」と自然に表した。",
+          "adopted_attempt": 1,
+          "added_word_mappings": [],
+          "machine_check_record_only": {
+            "required_words": [],
+            "covered": {},
+            "uncovered": [],
+            "span_not_in_gloss": [],
+            "symbol_only_spans": [],
+            "malformed_mappings": 0,
+            "pass": true,
+            "note": "必須内容語なし(機械検査対象外)"
+          },
+          "attempts_count": 1,
+          "meaning_stage": "applied",
+          "meaning_stage_path": "newgen_meaning_v1",
+          "meaning_in_text_en": "It appeared to be that way, although that appearance could be misleading.",
+          "naive_ja": "あるいはそう見えた",
+          "naive_ja_conveys": "partly",
+          "import_flags": [],
+          "gloss_equals_naive_ja": false
+        },
+        "gloss_alignment_status": "ALIGNED"
+      },
+      "kind": "phrase",
+      "flags": {
+        "qa_fail": false,
+        "gloss_hr_pending": false,
+        "similar_to_ng": false,
+        "redundant_with": []
+      },
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      },
+      "auto_eligible": true,
+      "human_selectable": true,
+      "ai_rank": 11
     }
   ],
-  "dropped": [],
+  "dropped": [
+    {
+      "raw_rank": 5,
+      "phrase": "counted as having failed",
+      "stage": "canonicalization_qa",
+      "reasons": [
+        "救済後の表現が未検査(QA再判定=NOT_REJUDGED / gloss再整合=REALIGNED)。検査未了の候補は提示しない=fail-closed"
+      ],
+      "origin": "call1",
+      "blocker_codes": [
+        "rescue_unverified"
+      ]
+    }
+  ],
   "redundancy_qa": {
     "status": "REDUNDANCY_NG",
     "duplicate_pairs": [
       {
-        "rank_a": 7,
-        "rank_b": 10,
+        "rank_a": 3,
+        "rank_b": 6,
         "meaning_overlap": "FAIL",
         "usage_context_overlap": "FAIL",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "a prominent spotは「目立つ位置」、placementは「掲載位置」を指し、表現の範囲や強調点は異なりますが、記事ではどちらも検索結果における本・広告の位置を表しています。文法的な形は異なるものの、この文脈では配置という同じ内容を示す近い表現です。"
+        "reasoning": "「sales pitch」は販売を目的とする説得、「persuasion」は説得行為を指し、記事ではいずれも商品選択を促す働きを表します。前者は売り込みに限定される一方、文法上は名詞句の種類が異なります。"
+      },
+      {
+        "rank_a": 3,
+        "rank_b": 8,
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL",
+        "reasoning": "「sales pitch」は販売のための説得的な働きかけで、「persuade」は説得する行為を表し、記事ではどちらも商品選択を促す文脈です。名詞句と動詞で構文上の学習価値は異なります。"
+      },
+      {
+        "rank_a": 6,
+        "rank_b": 8,
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL",
+        "reasoning": "「persuasion」と「persuade」は同じ説得の概念を名詞と動詞で表し、記事でも商品選択を促す行為を指します。名詞と動詞の使い分けは異なるため、文法上の学習価値は重複しません。"
       }
     ],
     "model_id": "gpt-6-luna"
   },
-  "shortfall": false,
+  "shortfall": true,
   "outer_attempts": 1,
   "outer_retry_log": [
     {
@@ -1314,7 +1370,16 @@
         "canonicalization_0": "CANONICALIZATION_PASS",
         "presentable_filter": {
           "version": "presentable_v1_2026-10-29",
-          "checked": 12,
+          "checked": 11,
+          "dropped": 1,
+          "dropped_by_code": {
+            "rescue_unverified": 1
+          }
+        },
+        "backfill_canonicalization_0": "CANONICALIZATION_PASS",
+        "backfill_presentable_filter": {
+          "version": "presentable_v1_2026-10-29",
+          "checked": 3,
           "dropped": 0,
           "dropped_by_code": {}
         },
@@ -1323,15 +1388,15 @@
       "call1_status": "KEY_WORDS_STRUCTURE_PASS",
       "call2_status": "OK",
       "backfill": {
-        "triggered": false,
-        "status": "NOT_TRIGGERED",
-        "E": 0,
-        "added": 0
+        "triggered": true,
+        "status": "OK",
+        "E": 1,
+        "added": 1
       },
-      "n_candidates": 12,
-      "n_auto_eligible": 12,
-      "n_gate_dropped": 0,
-      "n_rescued": 0,
+      "n_candidates": 11,
+      "n_auto_eligible": 11,
+      "n_gate_dropped": 1,
+      "n_rescued": 2,
       "rescued_not_auto": []
     }
   ],
@@ -1346,46 +1411,128 @@
   },
   "backfill": {
     "enabled": true,
-    "triggered": false,
-    "status": "NOT_TRIGGERED",
-    "reason": "E=0",
+    "triggered": true,
+    "status": "OK",
+    "failure": null,
     "E": {
-      "total": 0,
-      "phrase": 0,
+      "total": 1,
+      "phrase": 1,
       "word": 0,
       "human_ng": 0,
       "excluded": 0,
-      "by_stage": {},
-      "items": []
-    }
+      "by_stage": {
+        "canonicalization_qa": 1
+      },
+      "items": [
+        {
+          "phrase": "counted as having failed",
+          "kind": "phrase",
+          "stage": "canonicalization_qa",
+          "origin": "call1"
+        }
+      ]
+    },
+    "N": {
+      "room": 2,
+      "total": 1,
+      "phrase_wanted": 1,
+      "word_wanted": 0,
+      "capped": false,
+      "quota_phrase": 1,
+      "quota_word": 0
+    },
+    "prompt_id": "per_kind",
+    "prompt_sha256": "per_kind",
+    "prompts": {
+      "phrase": {
+        "id": "kp_prompt_p7",
+        "sha256": "2e93019300f960e5ff3070dd83b12a81566b8ceb87b44b335d554a7a711eb291",
+        "quota": 1,
+        "status": "OK",
+        "failure": null,
+        "model_id": "gpt-6-luna",
+        "response_id": "resp_0414de3062dce668006ae34c93155487d0b172438f3f892dd7",
+        "n_kept": 3,
+        "n_dropped": 0
+      },
+      "word": {
+        "id": "kp_prompt_w5p",
+        "sha256": "12d3370876d189f016cc49e26b2abcbe2618f028b380fe7fcff479554fa693b8",
+        "quota": 0,
+        "status": "SKIPPED",
+        "failure": null,
+        "model_id": null,
+        "response_id": null
+      }
+    },
+    "model_id": "gpt-6-luna",
+    "response_id": "resp_0414de3062dce668006ae34c93155487d0b172438f3f892dd7",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "model": "gpt-6-luna",
+        "response_id": "resp_0414de3062dce668006ae34c93155487d0b172438f3f892dd7",
+        "n_selected": 3,
+        "n_kept": 3,
+        "n_dropped": 0,
+        "kind": "phrase"
+      }
+    ],
+    "added": [
+      {
+        "candidate_id": "p_717155ef88",
+        "kind": "phrase",
+        "used_form": "or so it seemed",
+        "ai_rank": 11
+      }
+    ],
+    "surplus": [
+      {
+        "candidate_id": "p_2f1dd3997f",
+        "kind": "phrase",
+        "used_form": "It's tempting to say"
+      },
+      {
+        "candidate_id": "p_a5a60e50ea",
+        "kind": "phrase",
+        "used_form": "The results suggest"
+      }
+    ],
+    "dropped_by_stage": {}
   },
   "presentable_filter": {
     "version": "presentable_v1_2026-10-29",
-    "checked": 12,
-    "canonicalization_qa_dropped": 0,
+    "checked": 14,
+    "canonicalization_qa_dropped": 1,
     "gloss_unresolved_dropped": 0,
-    "dropped_by_code": {},
-    "presentable": 12,
-    "n_candidates": 12
+    "dropped_by_code": {
+      "rescue_unverified": 1
+    },
+    "presentable": 11,
+    "n_candidates": 11
   },
   "shortfall_detail": {
-    "n_candidates": 12,
+    "n_candidates": 11,
     "cap": 12,
-    "missing": 0,
+    "missing": 1,
     "cap_by_kind": {
       "phrase": 7,
       "word": 5
     },
     "missing_by_kind": {
-      "phrase": 0,
+      "phrase": 1,
       "word": 0
     },
-    "E_total": 0,
-    "backfilled": 0,
-    "unfilled_by_kind": null
+    "E_total": 1,
+    "backfilled": 1,
+    "unfilled_by_kind": {
+      "phrase": 0,
+      "word": 0
+    }
   },
-  "text_sha256": "5f88b4c74a00acd49a782e28706909c356ce0e041fb9dbcf96748fdec715efde",
+  "text_sha256": "94f8cf4a551adc9dbf76330ae38f91ddb9e9fabf4a0912e4838db040e7376177",
   "schema": "kp_candidates_v1",
   "kind": "kp",
-  "candidates_sha256": "43aeae9f42844d140cb582b47a87d71f99119a4573f85095ea2963a4a9b01974"
+  "candidates_sha256": "fd0b3f442dc0621b39adf6281e6a197d00ff16a2f1e86561e18f775143639dc1"
 }

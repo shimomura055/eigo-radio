@@ -1,18 +1,18 @@
 {
- "annotated_md_sha256": "b59ba824bd937ee6a1199445e3a5355b7c9c22953e90d9d2539b6da35640404b",
+ "annotated_md_sha256": "996ce1b13d278a551ad935250248187f5dc61ce5b7598392c6264a77843276e9",
  "core_concept_order": [
   "C1",
-  "C2",
-  "C3",
+  "C4",
+  "C5",
   "C6",
-  "C7",
-  "C8"
+  "C8",
+  "C23"
  ],
  "entries": [
   {
-   "approved_condition": "参加者の範囲・条件の解釈に必要な数値は厳密値を維持する。",
+   "approved_condition": "実験条件数・設計上の比率など、数値そのものが事実の内容を示す場合は厳密値を維持する。",
    "basis_fact_ids": [
-    "F02"
+    "F07"
    ],
    "concept": "C1",
    "downgrade_reasons": [],
@@ -22,62 +22,10 @@
    "final_decision": "EXACT_REQUIRED",
    "kind": "magnitude",
    "ledger_ids": [
-    "F02"
-   ],
-   "llm_decision": "EXACT_REQUIRED",
-   "reason": "実験数と参加者の対象条件を示す数値であり、精度を保つ必要があります。",
-   "surfaces": [
-    {
-     "approx": null,
-     "surface": "2"
-    },
-    {
-     "approx": null,
-     "surface": "1～2"
-    }
-   ]
-  },
-  {
-   "approved_condition": "研究対象者数など、事実としての人数は厳密値を維持する。",
-   "basis_fact_ids": [
-    "F02"
-   ],
-   "concept": "C2",
-   "downgrade_reasons": [],
-   "fact_ns": [
-    1
-   ],
-   "final_decision": "EXACT_REQUIRED",
-   "kind": "magnitude",
-   "ledger_ids": [
-    "F02"
-   ],
-   "llm_decision": "EXACT_REQUIRED",
-   "reason": "最終分析対象の人数を示す実数であり、丸めると標本規模の事実が変わります。",
-   "surfaces": [
-    {
-     "approx": null,
-     "surface": "2,012人"
-    }
-   ]
-  },
-  {
-   "approved_condition": "実験条件や設計上の割合など、解釈に必要な数値は厳密値を維持する。",
-   "basis_fact_ids": [
-    "F07"
-   ],
-   "concept": "C3",
-   "downgrade_reasons": [],
-   "fact_ns": [
-    2
-   ],
-   "final_decision": "EXACT_REQUIRED",
-   "kind": "magnitude",
-   "ledger_ids": [
     "F07"
    ],
    "llm_decision": "EXACT_REQUIRED",
-   "reason": "条件数とスポンサー商品の表示割合を示す数値であり、研究設計の理解に必要です。",
+   "reason": "条件数とスポンサー商品比率の分母を示す数値であり、実験設計の具体的な構成を表すため維持します。",
    "surfaces": [
     {
      "approx": null,
@@ -90,14 +38,14 @@
    ]
   },
   {
-   "approved_condition": "精度自体が意味を持たない割合は、意味を損なわない範囲で聞き取りやすく概数化する。",
+   "approved_condition": "小数精度が意味や重要な比較を変えない場合は、聞き取りやすい概数を優先する。",
    "basis_fact_ids": [
     "F08"
    ],
-   "concept": "C6",
+   "concept": "C4",
    "downgrade_reasons": [],
    "fact_ns": [
-    3
+    2
    ],
    "final_decision": "APPROXIMATE_OK",
    "kind": "magnitude",
@@ -105,7 +53,7 @@
     "F08"
    ],
    "llm_decision": "APPROXIMATE_OK",
-   "reason": "選択率の小数部分は比較の方向や大きさの理解に必須ではなく、整数への丸め後も他の条件との差は保たれます。",
+   "reason": "この条件の選択率は概数でも比較の意味を損なわず、小数精度自体が聞き手の理解に必要とはいえません。",
    "surfaces": [
     {
      "approx": "約22%",
@@ -114,14 +62,14 @@
    ]
   },
   {
-   "approved_condition": "精度自体が意味を持たない割合は、意味を損なわない範囲で聞き取りやすく概数化する。",
+   "approved_condition": "小数精度が意味や重要な比較を変えない場合は、聞き取りやすい概数を優先する。",
    "basis_fact_ids": [
     "F08"
    ],
-   "concept": "C7",
+   "concept": "C5",
    "downgrade_reasons": [],
    "fact_ns": [
-    3
+    2
    ],
    "final_decision": "APPROXIMATE_OK",
    "kind": "magnitude",
@@ -129,7 +77,7 @@
     "F08"
    ],
    "llm_decision": "APPROXIMATE_OK",
-   "reason": "選択率の小数部分は比較の方向や大きさの理解に必須ではなく、整数への丸め後も他の条件との差は保たれます。",
+   "reason": "この条件の選択率は概数でも意味を保てます。別条件の22.4%とは個別の条件に帰属させ、数値を統合しません。",
    "surfaces": [
     {
      "approx": "約27%",
@@ -138,14 +86,41 @@
    ]
   },
   {
-   "approved_condition": "精度自体が意味を持たない割合は、意味を損なわない範囲で聞き取りやすく概数化する。",
+   "approved_condition": "余分な小数精度が重要な差や解釈に影響しない場合は、概数にしてよい。",
+   "basis_fact_ids": [
+    "F08",
+    "F09"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    3
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F08",
+    "F09"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "選択率の大きさを伝えるには約61%で十分であり、小数精度を保つ必要はありません。",
+   "surfaces": [
+    {
+     "approx": "約61%",
+     "surface": "61.2%"
+    }
+   ]
+  },
+  {
+   "approved_condition": "小数精度が意味や重要な比較を変えない場合は、聞き取りやすい概数を優先する。",
    "basis_fact_ids": [
     "F08"
    ],
    "concept": "C8",
    "downgrade_reasons": [],
    "fact_ns": [
-    3
+    2
    ],
    "final_decision": "APPROXIMATE_OK",
    "kind": "magnitude",
@@ -153,11 +128,35 @@
     "F08"
    ],
    "llm_decision": "APPROXIMATE_OK",
-   "reason": "選択率の小数部分は比較の方向や大きさの理解に必須ではなく、整数への丸め後も他の条件との差は保たれます。",
+   "reason": "意図を隠す条件の選択率は約41%と丸めても意味を損ないません。別の選択率とは個別の条件に帰属させます。",
    "surfaces": [
     {
-     "approx": "約61%",
-     "surface": "61.2%"
+     "approx": "約41%",
+     "surface": "40.7%"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度自体が意味を損なわない範囲では概数を基本とし、別の指標や解釈と混同しない。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C23",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "この複合指標は約10%と概数化できますが、指標の定義を保ち、「10%未満しか気づかなかった」とは言い換えません。",
+   "surfaces": [
+    {
+     "approx": "約10%",
+     "surface": "9.5%"
     }
    ]
   }
@@ -168,22 +167,22 @@
   "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
   "model_requested": "gpt-6-luna",
   "model_returned": "gpt-6-luna",
-  "response_id": "resp_04e7f256d73454cd006ae33c411d0887d090ddd55e462b0fbd",
-  "sec": 7.1,
+  "response_id": "resp_0243e18f8355647e006ae346f4d46087d08cc1c7d05f88c0e4",
+  "sec": 7.8,
   "usage": {
-   "input_tokens": 4140,
-   "output_tokens": 883,
-   "reasoning_tokens": 200
+   "input_tokens": 4873,
+   "output_tokens": 990,
+   "reasoning_tokens": 257
   },
-  "user_prompt_sha256": "493c8ebe37f6ce59049767b8197a446a786ea017c8a3af7c6ffbaa5a249bdd3a"
+  "user_prompt_sha256": "d6fce4d424f86cdf8e7ab77c346d3eb8c763df272e2626e6522ed08af3c10e34"
  },
- "n_approximate_ok": 3,
- "overlay_sha256": "f73b95a1d77a7b25413a81ab676e634ade893c6b2260fc9a1dca9e8f34096a1f",
+ "n_approximate_ok": 5,
+ "overlay_sha256": "a2e9e5c5153ef2db022d4925030af8f9cbd0214b44fc27fdd7f2d3f5457c030a",
  "requested_effort": "low",
  "requested_model": "gpt-6-luna",
  "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
  "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
- "sidecar_sha256": "9c43e05cb5c742c6bd3f639ac3bc87b4dc4c601b491346015cac2f9563e20426",
+ "sidecar_sha256": "becbecddafcd02fed9ceb88ff4f90034f3c025edc5421c11af341c17394e821e",
  "status": "OK",
  "v8_max_relative_error": "0.10",
  "violations": []

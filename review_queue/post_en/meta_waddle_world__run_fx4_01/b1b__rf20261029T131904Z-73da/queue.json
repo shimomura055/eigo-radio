@@ -1,0 +1,181 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "meta_waddle_world__run_fx4_01",
+  "article_level": "b1b",
+  "article_sha256": "94830dda58ca7b61127db9d900cf5bf3dafc2804110219eba1649ebb5bc89b88",
+  "ledger_sha256": "39606fea729a3f82c751d0b80186a17dbe0bfd381ed4360d1daaf46da1f6e27f",
+  "run_id": "rf20261029T131904Z-73da",
+  "timestamp": "2026-10-29T13:19:04+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01",
+  "sentence_count": 43,
+  "fact_count": 12,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4956,
+      "output_tokens": 414,
+      "cached_tokens": 0,
+      "cost_jpy": 0.112416,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5106,
+      "output_tokens": 263,
+      "cached_tokens": 0,
+      "cost_jpy": 0.102736,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4539,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.219472,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4659,
+      "output_tokens": 5,
+      "cached_tokens": 0,
+      "cost_jpy": 0.225632,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "meta_waddle_world__run_fx4_01__b1b__94830dda__rf20261029T131904Z-73da__s34",
+      "article_id": "meta_waddle_world__run_fx4_01",
+      "article_level": "b1b",
+      "article_sha256": "94830dda58ca7b61127db9d900cf5bf3dafc2804110219eba1649ebb5bc89b88",
+      "run_id": "rf20261029T131904Z-73da",
+      "timestamp": "2026-10-29T13:19:04+00:00",
+      "sentence_id": "s34",
+      "sentence_text": "TechCrunch also mentions that the app could be an early sign of future pet-like devices from Meta.",
+      "context": {
+        "before": [
+          "I don’t want to give it a star rating based on the description alone.",
+          "I’ll leave that question open for now."
+        ],
+        "after": [
+          "But it does not say that it confirmed any specific connection between the app and a device.",
+          "It’s too soon to get excited and say, “Next, a buddy in the palm of your hand!”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "WW-12"
+      ],
+      "facts": [
+        {
+          "fact_id": "WW-12",
+          "text": "TechCrunchはWaddle Worldについて、MetaのMuse搭載ペット型端末の先駆けとなる可能性を示した。一方、記事は可能性として記述しており、Waddle WorldとMuse Charmの具体的な技術・製品上の関連を確認したとは述べていない。\n  scope: TechCrunchによるWaddle Worldの報道・見立て\n  conditions: 記者による可能性の提示であり、Metaによる公式発表ではない。\n  date_or_period: 2026-10-28\n  notes_for_writer: 「先駆けになる可能性」はTechCrunchの推測として帰属を明示する。アプリがブームになる、Muse Charmの前段階として開発された、などの確定表現を裏付ける事実はこの資料から得られない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「future pet-like devices from Meta」は、Factが可能性として述べるMuse搭載ペット型端末より広い範囲を指しているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.34,
+          "type": "その他",
+          "fact_ids": [
+            "WW-12"
+          ],
+          "question": "「future pet-like devices from Meta」は、Factが可能性として述べるMuse搭載ペット型端末より広い範囲を指しているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        }
+      ],
+      "confidence": 0.34
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10062,
+      "output_tokens": 677,
+      "cost_jpy": 0.215152,
+      "a3_flag_count": 1,
+      "a4_flag_count": 0,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 9198,
+      "output_tokens": 9,
+      "cost_jpy": 0.445104,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 1,
+      "cost_jpy": 0.660256,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

@@ -1,0 +1,22 @@
+# Today’s Diary: Letting My Pet Tell the Story
+
+Whenever I try to write in my diary, my language arts teacher somehow appears in my head. “What did you learn today?” No, I was just tired today. What if my pet spoke for me while I sat frozen before a blank page?
+
+TechCrunch reported that Meta released its Waddle World app in the Philippines. The app store description says you can tell it about your day by voice or text. Then your pet makes a diary in its own voice, with little drawings that look hand-drawn.
+
+So I give it the day’s events, and my pet becomes the storyteller. I am still the main character, as always. Only the storyteller changes. My life does not change in a big way. It is more like changing the music behind everyday life a little.
+
+It is surprising how much I like the idea. On some days, I might only say, “I got up. I worked. I’m tired. That’s all.” A different voice might make those words sound different. It does not have to be a great day. I wonder, “So, how would you tell that ordinary little story?”
+
+When I open my diary, I think, “I have to write this properly.” But when I tell my pet about my day, I may be able to start with, “So, today...” It is like moving from a writing test to a chat at home. At least, it seems easier than facing a blank page and struggling.
+
+Do I want to write well? Or do I want someone to listen as I talk about my day? They may seem alike, but they are two different things. My writing grade matters less to me. What matters more is the voice that answers when I finish talking. I also care about how today sounds in that voice.
+
+Of course, this is all based on reading the app store description. Will it be fun to hear, or just awkward? Will I say, “I’ll ask you again tomorrow,” or, “I’ll write it myself today”? I don’t want to give it a star rating just from the description. I’ll leave that question open for now.
+
+TechCrunch also says the app may be an early sign of future pet-like devices from Meta. But TechCrunch does not say it has confirmed a specific link between the app and a device. It is too soon to get excited and say, “Next, a buddy in the palm of your hand!”
+
+For now, let’s not worry about whether this will be the next craze after Tamagotchi. What sounds fun to me first is just changing the diary’s storyteller. “You worked hard today.” If I hear that line in my pet’s voice, I might look forward a little to telling it about tomorrow.
+
+## In one line
+Meta’s Waddle World was released in the Philippines, and its page says it turns users’ days into diaries in their pets’ voices. This could make ordinary days easier to share, though the writer has only read the app page.

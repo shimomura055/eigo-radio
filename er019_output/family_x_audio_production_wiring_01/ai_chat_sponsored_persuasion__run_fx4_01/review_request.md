@@ -9,24 +9,26 @@
 
 # KP Human Review 依頼(a2) round 1
 
-- 状態: PENDING_REVIEW / candidates_sha256: `c0c11f7c3ed34c8c` / 本文sha: `483654aeb99e`
+- 状態: PENDING_REVIEW / candidates_sha256: `f688fdbba5b6e229` / 本文sha: `7bd525e4c83b`
 - あなたの作業: KPに使う最大3件と、単語解説に使う最大5件(KP3件を含む)を選びます。
 - 選ばない候補は『NG』にもできます(NGは以後の再生成でも復活しません)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけ)。
 
 | 番号 | AI推奨 | 英語表現(used_form) | 本文中の意味 | 出典文 | AI理由 | 旗 |
 |---|---|---|---|---|---|---|
-| 1 | KP | draw attention to | ～に注意を向けさせる | But this test draws attention to the guide's job, not just its place | 論点や重要事項に注意を向ける、論説で頻出の表現。 |  |
-| 2 | KP | apply to real purchases | 実際の買い物にも当てはまる | We also do not know if the same results apply to real purchases | 研究結果などが実際の事例にも当てはまるかを表す。 |  |
-| 3 | KP | pick at random | 無作為に選ぶ | The promoted book was picked at random from the books shown | 無作為に選ばれたことを表す自然な定型表現。 |  |
-| 4 | 単語 | persuade | 説得する | It was told to persuade the person to choose the promoted book | 相手を説得して行動させる意味の重要な動詞。 |  |
-| 5 | 単語 | promoted | 宣伝対象の | The promoted book was picked at random from the books shown | 宣伝・販売促進の文脈で使われる語。 |  |
-| 6 |  | neutral | 偏りのない | It put the promoted book first, but gave it a neutral description | 偏りや立場がないことを表す汎用性の高い語。 |  |
-| 7 |  | estimate | 推定する | In this test, the study estimated that people chose the promoted book 61.2% of the time | データなどを基に推定する意味を学べる。 |  |
+| 1 | KP | confirm a clear fall | はっきりした減少を確認する | But compared with the usual persuasion test, the researchers could not confirm a clear fall in sponsored product choices | 研究結果を慎重に述べる際の「明確な低下を確認する」という表現。 |  |
+| 2 | KP | results suggest | 結果から～と考えられる | The results suggest people may still want a product after seeing its ad | 断定を避けて結果からの示唆を述べる、学術文脈で有用な表現。 |  |
+| 3 | KP | sales pitch | 売り込み | People who did not think the advice favored one product were also counted as people who missed the sales pitch | 商品を売り込む話や宣伝文句を指す定番の名詞句。 | 重複(アラームのみ・選んでも止まりません): 7,8 |
+| 4 | 単語 | favor one product | 特定の商品を推す | In the experiment, some people felt that the advice favored one product | 「特定の商品を有利に扱う」という動詞 favor の用法を学べる。 |  |
+| 5 | 単語 | blow a whistle | 警報を鳴らす | If an AI said that to you, would a guard in your mind blow a whistle | 警告や異変を知らせる意味でも使われる比喩的な表現。 |  |
+| 6 |  | let the advice through | 助言を受け入れる | Or would you let the advice through, thinking, "But it's just right for me | 助言を受け入れる、という比喩的な let ～ through の用法。 | 修正済み(元: let the advice through / REVERT_SURFACE)・QA再判定済み |
+| 7 |  | persuasion | 説得 | But compared with the usual persuasion test, the researchers could not confirm a clear fall in sponsored product choices | 説得や説得手法を表す抽象度の高い語です。 | 重複(アラームのみ・選んでも止まりません): 3,8 |
+| 8 |  | persuade | 納得させる | In one condition, the AI was told to try to persuade people to choose a sponsored product | 「説得する」を表し、幅広い文脈で使えます。 | 重複(アラームのみ・選んでも止まりません): 3,7 |
+| 9 |  | sponsored | 広告主に宣伝されている | In one condition, the AI was told to try to persuade people to choose a sponsored product | 広告や支援を受けた状態を表す重要語です。 |  |
 
 ## 操作(コマンド)
 
 - 状況確認: `py er119_kp_human_review_cli_01.py status --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01`
-- AI推奨を了承: `py er119_kp_human_review_cli_01.py select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --accept-ai --candidates-sha c0c11f7c3ed34c8c680a16f7259885f38a1f61909b43521fb831406683d0f8af --by <名前>`
+- AI推奨を了承: `py er119_kp_human_review_cli_01.py select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --accept-ai --candidates-sha f688fdbba5b6e229b8a9f252baa17f4068f94768205befaae40265f77fd9fdd0 --by <名前>`
 - 選択: `py er119_kp_human_review_cli_01.py select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --kp 1,2,3 --vocab 1,2,3,4,5 [--ng 6:理由] --by <名前>`
 - 選び直し(NG付き): `py er119_kp_human_review_cli_01.py reselect --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --ng 4:理由 --by <名前>`(上限2回)
 - 不在として進める(明示宣言。このrun・この候補round限り): `py er119_kp_human_review_cli_01.py declare-absent --runs er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`
@@ -39,29 +41,33 @@
 
 # KP Human Review 依頼(b1b) round 1
 
-- 状態: PENDING_REVIEW / candidates_sha256: `43aeae9f42844d14` / 本文sha: `5f88b4c74a00`
+- 状態: PENDING_REVIEW / candidates_sha256: `fd0b3f442dc0621b` / 本文sha: `94f8cf4a551a`
 - あなたの作業: KPに使う最大3件と、単語解説に使う最大5件(KP3件を含む)を選びます。
 - 選ばない候補は『NG』にもできます(NGは以後の再生成でも復活しません)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけ)。
+- Gate除外 1件(フレーズ1・単語0)に対し、補完候補 1件を末尾に追加しました(補完status: OK)
 
 | 番号 | AI推奨 | 英語表現(used_form) | 本文中の意味 | 出典文 | AI理由 | 旗 |
 |---|---|---|---|---|---|---|
-| 1 | KP | play favorites | えこひいきする | The book got a prominent spot, but the guide did not play favorites | 人や物をえこひいきすることを表す慣用表現。 |  |
-| 2 | KP | capture all that complexity | 複雑な事情をすべて捉える | The study did not capture all that complexity, and it has not yet been confirmed whether the same results would apply to real purchases | 複雑さを余さず捉えるという自然な動詞の使い方。 |  |
-| 3 | KP | a different script | 別の指示 | Even though both conditions used chat-based AI, the AI was given a different script | 指示や役割を「脚本」にたとえた比喩表現。 |  |
-| 4 | 単語 | choose at random | 無作為に選ぶ | The sponsored book was chosen at random from the books shown | 「無作為に選ばれる」を表す定型表現。 |  |
-| 5 | 単語 | what stands out | 際立っている点 | But what stands out in this experiment is the guide's task, not just its seat | 特に目立つ点を導く便利な表現。 |  |
-| 6 |  | in a news flash | ニュース速報で | But it is too soon to announce in a news flash, "AI is now the greatest salesperson | 速報として大々的に伝える場面を指す表現。 |  |
-| 7 |  | a prominent spot | 人目につく位置 | The book got a prominent spot, but the guide did not play favorites | 目立つ位置を表す、広告や配置で使える語句。 | 重複(アラームのみ・選んでも止まりません): 10 |
-| 8 |  | persuasive | 説得を目的とした | In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time | 人を説得する性質を表す、議論や文章で役立つ語です。 |  |
-| 9 |  | motive | 行動の理由 | Real shopping involves the cost of buying things and many different motives | 行動の背後にある動機を表す、幅広く使える語です。 |  |
-| 10 |  | placement | 掲載される位置 | When we think about the competition for ads, it is easy to picture a fight over placement: "Get the top spot | 配置や掲載位置を表し、広告などで使われます。 | 重複(アラームのみ・選んでも止まりません): 7 |
-| 11 |  | estimate | およその値を出す | In this persuasive condition, the study estimated that people chose the sponsored book 61.2% of the time | 数値や規模を推定したことを表す、学術文脈でも有用な語です。 |  |
-| 12 |  | sponsored | スポンサー付きの | The sponsored book was chosen at random from the books shown | 資金提供や広告支援を受けた状態を表す語です。 |  |
+| 1 | KP | put the brakes on | 抑える | Spotting an ad and putting the brakes on wanting something seem to be two separate things | 計画や行動を抑制することを表す比喩的な慣用表現。 | 修正済み(元: put the brakes on / REANCHOR_D1) |
+| 2 | KP | whose interests the conversation serves | 会話が誰の利益になるのか | The results suggest people may still want a product after spotting its ad, so shoppers should ask whose interests the conversation serves | 会話が誰の利益にかなうかを問う、抽象的な表現。 |  |
+| 3 | KP | Sales pitch | 売り込み文句 | If an AI said that to you, would the guard inside your mind blow a whistle and shout, "Sales pitch detected! | 商品を売り込む話や宣伝文句を表す定番の連語。 | 重複(アラームのみ・選んでも止まりません): 6,8 |
+| 4 | 単語 | confirm a clear drop | 明らかな減少を確認する | But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices | 数値の明確な低下を確認する、研究報告で使える表現。 |  |
+| 5 | 単語 | rate at which | 起こる割合 | The estimated rate at which participants chose the sponsored product was 40.7% | 「〜する割合」を導く、説明・分析で便利な構文。 | 修正済み(元: rate at which / REVERT_SURFACE)・QA再判定済み |
+| 6 |  | persuasion | 説得 | But compared with the usual persuasion condition, the researchers could not confirm a clear drop in the rate of sponsored product choices | 説得という抽象概念を表し、学術・社会的な文脈でも使える。 | 重複(アラームのみ・選んでも止まりません): 3,8 |
+| 7 |  | biased | 偏った | In the experiment, people who felt the recommendations were biased were asked, "Which product was being pushed | 偏りや先入観のある状態を表す、汎用性の高い語。 |  |
+| 8 |  | persuade | 説得する | In one condition, the AI was told to persuade participants to choose a sponsored product | 「説得する」を表す動詞で、幅広い場面で使える。 | 重複(アラームのみ・選んでも止まりません): 3,6 |
+| 9 |  | complications | 複雑な要素 | It did not recreate all the complications of real shopping, such as the cost of paying for something | 事態を複雑にする要因を指す、応用範囲の広い語。 |  |
+| 10 |  | sponsored | スポンサーの支援を受けた | In one condition, the AI was told to persuade participants to choose a sponsored product | 広告・資金提供を受けた状態を表す重要語。 |  |
+| 11 |  | or so it seemed | そう見えたのだが | It sat at the advice desk as a helpful guide—or so it seemed | 見かけと実態が異なることを示す、自然な挿入表現です。 | 補完候補(Gate除外の代替) |
+
+## Gateで除外された候補(参考)
+
+- counted as having failed : canonicalization_qa : 救済後の表現が未検査(QA再判定=NOT_REJUDGED / gloss再整合=REALIGNED)。検査未了の候補は提示しない=fail-closed
 
 ## 操作(コマンド)
 
 - 状況確認: `py er119_kp_human_review_cli_01.py status --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01`
-- AI推奨を了承: `py er119_kp_human_review_cli_01.py select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --accept-ai --candidates-sha 43aeae9f42844d140cb582b47a87d71f99119a4573f85095ea2963a4a9b01974 --by <名前>`
+- AI推奨を了承: `py er119_kp_human_review_cli_01.py select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --accept-ai --candidates-sha fd0b3f442dc0621b39adf6281e6a197d00ff16a2f1e86561e18f775143639dc1 --by <名前>`
 - 選択: `py er119_kp_human_review_cli_01.py select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --kp 1,2,3 --vocab 1,2,3,4,5 [--ng 6:理由] --by <名前>`
 - 選び直し(NG付き): `py er119_kp_human_review_cli_01.py reselect --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --ng 4:理由 --by <名前>`(上限2回)
 - 不在として進める(明示宣言。このrun・この候補round限り): `py er119_kp_human_review_cli_01.py declare-absent --runs er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`
@@ -74,60 +80,62 @@
 
 # Part 2 文法解説 Human Review 依頼(Standard) round 1
 
-- 状態: PENDING_REVIEW / candidates_sha256: `14ff473058f5b54c` / 本文sha: `0ef561d7afa7` / 再選定 0/2回・再抽出 0/1回
+- 状態: PENDING_REVIEW / candidates_sha256: `5e67783cff9ce06f` / 本文sha: `6760244d1caa` / 再選定 0/2回・再抽出 0/1回
 - あなたの作業: 下のTop1・Top2(AI評価順位・最大2件)の文法名と解説を読み、学習に載せる文法を**1件だけ**選びます(適切なものが無ければ0件=omit。2件同時選択は不可。AI推奨=Top1)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけで、その場合はAI推奨1件のみ)。
 
-## AI推奨(Top1): 比較級とwhen節による比較基準 [T1 / CMP] 段落P5  (評価順位1 / id: `geaa1c64605`)
+## AI推奨(Top1): 疑似分裂文 [T1 / CLEFT] 段落P11  (評価順位1 / id: `g9053a0e595`)
 
-> This was more often than when the book was only near the top of the search results.
+> What is more interesting is that an ad label and the effect of a conversation may work in different ways.
 
-- 教える価値: 比較級の後にwhen節が続く場合、何の頻度をどの条件下で比べているかを補って読む。
-- 読み違えやすい点: than when以下を単なる時の比較と捉え、前半の選択頻度と別条件での選択頻度を比べていることを取り違えることがある。
+- 教える価値: What で始まる名詞節が主語となり、後ろの be 動詞で説明内容につながる形を捉える。
+- 読み違えやすい点: What で始まる節全体が主語ですが、What を疑問詞と取って文の構造を疑問文のように取り違える可能性があります。
 
 ### 解説(学習ページに載る全文)
 
 【日本語訳】
-この本が選ばれる頻度は、本が検索結果の上位付近に置かれているだけの場合よりも高かった。
+さらに興味深いのは、広告ラベルと会話の効果が異なる仕方で働く可能性があるということだ。
 
 【文法・構文の仕組み】
-「more often」は「より頻繁に」という意味で、人々が本を選ぶ頻度を表しています。「than when ...」は、その頻度を比べる基準を示します。ここでは「when the book was only near the top of the search results」が、本が検索結果の上位付近に置かれていた別の条件を表しています。
+この文は疑似分裂文です。文頭の **What is more interesting** が主語となる名詞節で、「より興味深いことは」という意味です。ここでの **what** は疑問を表すのではなく、「〜すること・もの」という内容をまとめています。
 
-「This」は、前の文で述べられた、このテストでの選択頻度を指しています。文の意味は「このテストでの選択頻度は、本が検索結果の上位付近に置かれていたときの選択頻度より高かった」ということです。
+**is** の後ろの **that an ad label and the effect of a conversation may work in different ways** は、何が興味深いのかを示す節です。**that** は節を導く語で、節全体が **is** の後ろに置かれています。
 
 【通常の表現・語順との比較】
-比較用：People chose the book more often than they did when it was only near the top of the search results.
+比較用：**It is more interesting that an ad label and the effect of a conversation may work in different ways.**
 
-比較用の文では「than they did」と、比較の基準となる「そのときに選んだ頻度」を明示しています。元の英文では、この部分を省いて「than when ...」と簡潔に表しています。
+こちらも「広告ラベルと会話の効果が異なる仕方で働く可能性があるのは、より興味深い」という内容を表します。一方、本文の形では **What is more interesting** を先に置き、「興味深いことは何か」を示してから、その内容を **that** 節で説明しています。
 
 【意味・ニュアンス・表現効果】
-「more often」によって、単に二つの条件を並べるのではなく、このテストでの選択頻度が、検索結果の上位付近に本が置かれた場合より高かったことに焦点が当たっています。前の文で示された選択頻度を、別の表示条件と比較する表現です。
+前の文では、「違いを確認できなかったこと」と「効果がないこと」は同じ意味ではないと述べています。続くこの文は、広告ラベルと会話の効果が異なる仕方で働く可能性に焦点を移しています。**may** があるため、異なる仕方で働くと断定せず、その可能性を示しています。
 
-## Top2: 比較級とwhen節による比較基準 [T1 / CMP] 段落P5  (評価順位2 / id: `gb73f6ff163`)
+## Top2: 長い動名詞句を主語とする文 [T1 / HEAVY] 段落P2  (評価順位2 / id: `ga4a4325b64`)
 
-> It was also more often than when chat-based AI gave a neutral description.
+> Noticing an ad and stopping yourself from wanting the product seem like two different things.
 
-- 教える価値: 比較級の後にwhen節が続く場合、何の頻度をどの条件下で比べているかを補って読む。
-- 読み違えやすい点: than when以下を単なる時の比較と捉え、前半の選択頻度と別条件での選択頻度を比べていることを取り違えることがある。
+- 教える価値: 動名詞句が主語になる文では、主語の範囲を見極めてから動詞を探す。
+- 読み違えやすい点: 長い動名詞句全体が主語ですが、「the product」を主語と取り、後ろの動詞とのつながりを取り違える可能性があります。
 
 ### 解説(学習ページに載る全文)
 
 【日本語訳】
-その選択が起きた頻度も、チャット型AIが中立的な説明をした場合より高かった。
+広告に気づくことと、その商品を欲しいと思う気持ちを自分で抑えることは、別々のことのように思えます。
 
 【文法・構文の仕組み】
-“It was also more often” の “more often” は「より頻繁に」「起きる頻度がより高く」を表しています。ここで比べているのは、選択が行われた頻度です。
+文の主語は、文頭の **Noticing an ad and stopping yourself from wanting the product** 全体です。**Noticing an ad**（広告に気づくこと）と **stopping yourself from wanting the product**（その商品を欲しいと思う気持ちを自分で抑えること）という、2つの動名詞句が **and** で結ばれています。
 
-“than when chat-based AI gave a neutral description” は比較の基準を示し、「チャット型AIが中立的な説明をした場合よりも」という意味です。“than” の後ろに “when” で始まる節を置くことで、頻度を比べる条件を表しています。
+このように複数の行為を並べた主語を受けて、動詞は **seem** となっています。**like two different things** は「別々のことのように」という意味で、2つの行為がどのように見えるのかを示しています。
 
 【意味・ニュアンス・表現効果】
-この文は、ある条件での選択頻度を、中立的な説明が提示された場合の頻度と比べています。“also” があるため、この比較は前の内容に加えて示されています。
+広告に気づくことと、商品を欲しがる気持ちを抑えることは別の行為だ、という内容です。**seem** が使われているため、「別のことだ」と断定するよりも、「別のことのように思える」という捉え方になっています。本文では、広告に気づくことと欲求を抑えることを区別して述べています。
+
+(他5件は非表示: AI評価のTop1/Top2(先頭2件)だけを提示しています。reselectすると提示中の候補をNGにして次順位が新しいTop1/Top2になります)
 
 ## 操作(コマンド。`--by` は操作者名。`--level`は必須)
 
-- AI推奨(候補1)だけを選ぶ(了承): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 14ff473058f5b54cd4562abbd4371a7ec856701ec8fdd91d124538b5c8c98e4f --by <名前> --choice pick --ids geaa1c64605 --accept-ai`
-- 1件を選ぶ(Top1以外は理由必須。2件同時選択は不可): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 14ff473058f5b54cd4562abbd4371a7ec856701ec8fdd91d124538b5c8c98e4f --by <名前> --choice pick --ids <id> --reason <理由>`
-- 選び直し(提示中の候補をNGにして次順位へ。理由必須・上限あり): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 14ff473058f5b54cd4562abbd4371a7ec856701ec8fdd91d124538b5c8c98e4f --by <名前> --choice reselect --reason <理由>`
-- 今回は文法解説を出さない(理由必須): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 14ff473058f5b54cd4562abbd4371a7ec856701ec8fdd91d124538b5c8c98e4f --by <名前> --choice omit --reason <理由>`
+- AI推奨(候補1)だけを選ぶ(了承): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 5e67783cff9ce06f0b1d6ba731b114b876da5cb400f78e7739b5518556a82c91 --by <名前> --choice pick --ids g9053a0e595 --accept-ai`
+- 1件を選ぶ(Top1以外は理由必須。2件同時選択は不可): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 5e67783cff9ce06f0b1d6ba731b114b876da5cb400f78e7739b5518556a82c91 --by <名前> --choice pick --ids <id> --reason <理由>`
+- 選び直し(提示中の候補をNGにして次順位へ。理由必須・上限あり): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 5e67783cff9ce06f0b1d6ba731b114b876da5cb400f78e7739b5518556a82c91 --by <名前> --choice reselect --reason <理由>`
+- 今回は文法解説を出さない(理由必須): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --candidates-sha 5e67783cff9ce06f0b1d6ba731b114b876da5cb400f78e7739b5518556a82c91 --by <名前> --choice omit --reason <理由>`
 - 状況: `py er119_kp_human_review_cli_01.py status --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01` / 表示: `py er119_kp_human_review_cli_01.py grammar-show --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2`
 - 不在として進める(明示宣言。このrun・この候補round限り。AI推奨1件のみ採用): `py er119_kp_human_review_cli_01.py declare-absent --runs er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`
 
@@ -139,68 +147,62 @@
 
 # Part 2 文法解説 Human Review 依頼(Advanced) round 1
 
-- 状態: PENDING_REVIEW / candidates_sha256: `2e0759223e893431` / 本文sha: `d1c87a38d469` / 再選定 0/2回・再抽出 0/1回
+- 状態: PENDING_REVIEW / candidates_sha256: `53adab857b154529` / 本文sha: `165307a8e442` / 再選定 0/2回・再抽出 0/1回
 - あなたの作業: 下のTop1・Top2(AI評価順位・最大2件)の文法名と解説を読み、学習に載せる文法を**1件だけ**選びます(適切なものが無ければ0件=omit。2件同時選択は不可。AI推奨=Top1)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけで、その場合はAI推奨1件のみ)。
 
-## AI推奨(Top1): 疑似分裂文 [T1 / CLEFT] 段落P6  (評価順位1 / id: `g169734270c`)
+## AI推奨(Top1): What節を用いた疑似分裂文 [T1 / CLEFT] 段落P11  (評価順位1 / id: `g6f66e2d3d5`)
 
-> But what stands out in this experiment is the guide’s task, not just its seat.
+> What’s more interesting is that the ad label and the effect of the conversation may work in different ways.
 
-- 教える価値: What節が文の主語となり、be動詞の後ろに焦点となる内容が置かれる形を読み取る。
-- 読み違えやすい点: what節を主語ではなくstand outの目的語のように捉え、isの後ろのthe guide’s taskを主語と取り違えるおそれがある。
-
-### 解説(学習ページに載る全文)
-
-【日本語訳】
-しかし、この実験で目を引くのは、ガイドの席だけではなく、ガイドが担う仕事だ。
-
-【文法・構文の仕組み】
-この文は、**what節を主語にし、be動詞の後ろに焦点となる内容を置く疑似分裂文**です。
-
-主語は **what stands out in this experiment**（この実験で目立つもの）です。ここでの **what** は「何」ではなく、「〜するもの・こと」という意味で、節全体が文の主語になっています。**is** の後ろにある **the guide’s task** が、その「目立つもの」の具体的な内容です。さらに **not just its seat** が続き、「ガイドの席だけではない」と補っています。
-
-【通常の表現・語順との比較】
-**比較用：** *The guide’s task, not just its seat, stands out in this experiment.*
-
-こちらは「ガイドの仕事が目立つ」と先に述べる語順です。元の文では **what stands out in this experiment** を先に置き、「目立つものは何か」という問いかけの形を作ってから、**the guide’s task** を答えとして示しています。
-
-【意味・ニュアンス・表現効果】
-前の文では、広告をめぐる競争が掲載位置の争いとして描かれています。それを受けてこの文は、目立つ点は単にガイドの席の位置ではなく、ガイドが担う仕事だと焦点を移しています。疑似分裂文によって「この実験で何が重要なのか」を示す内容が、文の後半で明確に提示されています。
-
-## Top2: 従属節内の疑似分裂文 [T1 / CLEFT] 段落P6  (評価順位2 / id: `g178b97cd7b`)
-
-> It is as if we were looking at a map of a store’s layout, then realized that what we should be looking at was the work instructions given to the staff.
-
-- 教える価値: 埋め込まれた疑似分裂文では、what節がbe動詞の前の主語となり、後ろに焦点となる名詞句が続く。
-- 読み違えやすい点: what節をwasの後ろに続く補語のように捉え、実際にはその節がwasの主語であることを取り違えるおそれがある。
+- 教える価値: What節の内部の動詞と主節の動詞を区別し、What節を主語として読む。
+- 読み違えやすい点: What’sのisを主節の動詞と捉え、その後のisを見落とすおそれがある。
 
 ### 解説(学習ページに載る全文)
 
 【日本語訳】
-まるで、店の配置図を見ていた私たちが、そのあと、本当に見るべきなのはスタッフに渡された作業指示書だと気づいたかのようです。
+さらに興味深いのは、広告ラベルと会話の効果が異なる形で働く可能性があるという点だ。
 
 【文法・構文の仕組み】
-`realized that ...` の `that` 以下に、疑似分裂文 `what we should be looking at was the work instructions given to the staff` が入っています。
+この文は、What節を主語にした疑似分裂文です。冒頭の「What’s more interesting」は「さらに興味深いこと」という意味のWhat節で、節の中の「’s」は「is」です。ここでの「is」は「more interesting」と結びつき、「何がさらに興味深いのか」を示しています。
 
-この部分では、`what we should be looking at`（私たちが見るべきもの）が `was` の主語、`the work instructions given to the staff`（スタッフに渡された作業指示書）が補語です。つまり、「私たちが見るべきものは、スタッフに渡された作業指示書だった」という形です。`given to the staff` は `the work instructions` を説明しています。
-
-また、`as if` の後ろでは、`we were looking at ...` と `then realized ...` が `we` を主語として続いています。店の配置図を見ていた状態から、見るべきものに気づく、という流れを表しています。
+主節の動詞は、その後にある二つ目の「is」です。「that the ad label and the effect of the conversation may work in different ways」はthat節で、この二つ目の「is」の補語になっています。つまり、「さらに興味深いことは何か」に対して、that節がその内容を説明しています。
 
 【通常の表現・語順との比較】
-比較用：`We should be looking at the work instructions given to the staff.`
-こちらは「私たちはスタッフに渡された作業指示書を見るべきだ」と、主語 `we` から述べる通常の語順です。本文の文では `what we should be looking at` を先に置くことで、「見るべきものは何か」という枠を作り、その答えを `the work instructions` として示しています。
+比較用：It is more interesting that the ad label and the effect of the conversation may work in different ways.
+
+この形では「It is ... that ...」で内容を述べています。一方、本文の文は「What’s more interesting」を先に置き、「何が興味深いのか」という話題を示してから、that節で答えています。
 
 【意味・ニュアンス・表現効果】
-この文は、店の配置図を見ることにたとえて、「注目すべきなのは配置ではなく、スタッフへの作業指示だ」と伝えています。疑似分裂文によって「見るべきものは何か」が前面に出て、答えにあたる `the work instructions` がはっきり示されています。直前の文の「ガイドの仕事が目立つのであって、座席だけではない」という趣旨を、配置図と指示書の対比で言い換えています。
+「may work in different ways」は「異なる形で働く可能性がある」という意味で、断定を避けています。前の文では「差を確認できなかった」ことと「効果がない」ことは同じではないと述べられており、この文はさらに、広告ラベルと会話の効果も同じように働くとは限らない可能性に焦点を移しています。
 
-(他1件は非表示: AI評価のTop1/Top2(先頭2件)だけを提示しています。reselectすると提示中の候補をNGにして次順位が新しいTop1/Top2になります)
+## Top2: 並列した動名詞句を含む長い主語 [T1 / HEAVY] 段落P2  (評価順位2 / id: `g2981f58e59`)
+
+> Spotting an ad and putting the brakes on wanting something seem to be two separate things.
+
+- 教える価値: 複数の動名詞句がandで結ばれて主語となり、複数形の動詞に続くことを見分ける。
+- 読み違えやすい点: 文頭の動名詞句を主語と取らず、somethingを主語と見てしまうおそれがある。
+
+### 解説(学習ページに載る全文)
+
+【日本語訳】
+広告だと見抜くことと、何かを欲しいという気持ちにブレーキをかけることは、別々のことのようです。
+
+【文法・構文の仕組み】
+主語は、動名詞句の **Spotting an ad** と **putting the brakes on wanting something** を **and** で並べたものです。前者は「広告だと見抜くこと」、後者は「何かを欲しいという気持ちにブレーキをかけること」を表します。
+
+主語が長くても、文の中心となる動詞は **seem** です。その後の **to be two separate things** が「別々の二つのことのようだ」という内容を示します。なお、**putting the brakes on** は「ブレーキをかける、抑える」という表現で、**on** の後ろの **wanting something** は「何かを欲しがること」です。
+
+【意味・ニュアンス・表現効果】
+この文は、広告だと気づくことと、その広告を見て生まれる「欲しい」という気持ちを抑えることを、別の働きとして示しています。**seem to be** を使っているため、「完全に別だ」と断定するより、「別々のことのように思える」という言い方になっています。
+
+(他2件は非表示: AI評価のTop1/Top2(先頭2件)だけを提示しています。reselectすると提示中の候補をNGにして次順位が新しいTop1/Top2になります)
 
 ## 操作(コマンド。`--by` は操作者名。`--level`は必須)
 
-- AI推奨(候補1)だけを選ぶ(了承): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 2e0759223e893431398df585fbba23455631907bc396e97368154d5bdc7d9837 --by <名前> --choice pick --ids g169734270c --accept-ai`
-- 1件を選ぶ(Top1以外は理由必須。2件同時選択は不可): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 2e0759223e893431398df585fbba23455631907bc396e97368154d5bdc7d9837 --by <名前> --choice pick --ids <id> --reason <理由>`
-- 選び直し(提示中の候補をNGにして次順位へ。理由必須・上限あり): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 2e0759223e893431398df585fbba23455631907bc396e97368154d5bdc7d9837 --by <名前> --choice reselect --reason <理由>`
-- 今回は文法解説を出さない(理由必須): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 2e0759223e893431398df585fbba23455631907bc396e97368154d5bdc7d9837 --by <名前> --choice omit --reason <理由>`
+- AI推奨(候補1)だけを選ぶ(了承): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 53adab857b1545293f05c2cfe77b301f8495b0745f8af70d480a8172b85d187b --by <名前> --choice pick --ids g6f66e2d3d5 --accept-ai`
+- 1件を選ぶ(Top1以外は理由必須。2件同時選択は不可): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 53adab857b1545293f05c2cfe77b301f8495b0745f8af70d480a8172b85d187b --by <名前> --choice pick --ids <id> --reason <理由>`
+- 選び直し(提示中の候補をNGにして次順位へ。理由必須・上限あり): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 53adab857b1545293f05c2cfe77b301f8495b0745f8af70d480a8172b85d187b --by <名前> --choice reselect --reason <理由>`
+- 今回は文法解説を出さない(理由必須): `py er119_kp_human_review_cli_01.py grammar-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --candidates-sha 53adab857b1545293f05c2cfe77b301f8495b0745f8af70d480a8172b85d187b --by <名前> --choice omit --reason <理由>`
 - 状況: `py er119_kp_human_review_cli_01.py status --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01` / 表示: `py er119_kp_human_review_cli_01.py grammar-show --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b`
 - 不在として進める(明示宣言。このrun・この候補round限り。AI推奨1件のみ採用): `py er119_kp_human_review_cli_01.py declare-absent --runs er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`
 
@@ -213,21 +215,21 @@
 # ニュアンス解説 Human Review 依頼
 
 - level: a2(Standard) / 最大1件・採用するか不採用かを決めます(不採用でも代替候補は自動補充されません)
-- 候補ID: nuance_92dcad8c3ae79cba / candidate_sha256: 92dcad8c3ae79cbade64d77ba44b65a259078b475a49054c8bd29472c1e3055f
+- 候補ID: nuance_ea71dfc0cae8d584 / candidate_sha256: ea71dfc0cae8d584071d0f930d3f8b50c95bd8f9295b5e6bf5ed92b48416d768
 
-## too soon to say
-- 本文の英文: But it is too soon to say, “AI is now the greatest salesperson!” The experiment looked at one limited situation: choosing e-books.
-- 日本語訳: しかし、「AIは今や最高のセールスマンだ」と言うのはまだ早すぎます。この実験が見たのは、電子書籍を選ぶという限られた状況でした。
-- ポイント: 結論を否定せず、判断するには証拠が足りないと示す
+## still
+- 本文の英文: People can think, “This is an ad,” and still think, “But I want it.”
+- 日本語訳: 人は「これは広告だ」と思いながら、それでも「でも欲しい」と思うことがある。
+- ポイント: 広告だと分かっていても欲しい、という逆接的な継続
 
 解説(全文):
-ここでの too soon to say は、単に「言うタイミングが早い」というより、「今ある証拠だけでは、その結論を出すには不十分」という慎重な姿勢を表します。「AIは最高のセールスマンではない」と否定しているわけではなく、今後そうなる可能性を残しています。たとえば「That is false」と言えば、結論そのものを否定する印象になります。
+ここでのstillは「まだ考える」ではなく、「広告だと分かっていても、それでも欲しいと思う」という逆接的な継続です。広告だと気づけば欲しさが消える、という予想を崩す場面なので、時間を表す「まだ」とだけ捉えると要点が伝わりません。たとえば “I know it’s an ad, but I still want it.” も同じ含みです。
 
 - 重複判定(KP/Word): pass / 暫定選定のKey Phrase・Wordとは学習上の焦点が別と判定しました。
 
 ## 決め方
 - V3フォーム: 『ニュアンス解説』欄で採用/不採用を選び、KP・文法と一緒に送信(推奨)
-- CLI(KPを先に確定した場合など): `py er119_kp_human_review_cli_01.py nuance-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --choice adopt|reject --candidates-sha 92dcad8c3ae79cbade64d77ba44b65a259078b475a49054c8bd29472c1e3055f --by <名前> --user-ref <ユーザー発言のdelegation_logパス>`
+- CLI(KPを先に確定した場合など): `py er119_kp_human_review_cli_01.py nuance-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level a2 --choice adopt|reject --candidates-sha ea71dfc0cae8d584071d0f930d3f8b50c95bd8f9295b5e6bf5ed92b48416d768 --by <名前> --user-ref <ユーザー発言のdelegation_logパス>`
 
 ---
 ## ニュアンス解説(level=b1b)
@@ -236,19 +238,19 @@
 # ニュアンス解説 Human Review 依頼
 
 - level: b1b(Advanced) / 最大1件・採用するか不採用かを決めます(不採用でも代替候補は自動補充されません)
-- 候補ID: nuance_69480bd19db102e6 / candidate_sha256: 69480bd19db102e6b9e2ca2f5a3987b12414efec6884caec4ec33dc943270b02
+- 候補ID: nuance_9ca48f908aeb6fef / candidate_sha256: 9ca48f908aeb6fef622beac0eed033bb0047cd57a87f495d3f7ba353bd3f4b10
 
-## may want to
-- 本文の英文: When you ask for help choosing your next book, you may want to pay a little attention not only to the book’s summary, but also to what the guide has been asked to do.
-- 日本語訳: 次に読む本選びを手伝ってもらうときは、本のあらすじだけでなく、案内役が何をするよう求められているかにも少し注意を向けてみるとよいかもしれません。
-- ポイント: 希望の推測ではなく、控えめな助言を表す用法
+## It’s tempting to say
+- 本文の英文: It’s tempting to say, “So, 9.5% noticed!” But hold on.
+- 日本語訳: 「つまり、9.5％の人が気づいたんだ！」と言いたくなるところです。でも、ちょっと待ってください。
+- ポイント: 早合点を誘う、もっともらしい結論への自覚
 
 解説(全文):
-ここでの may want to は、相手がそう望んでいるかを推測するというより、提案を控えめに伝える言い方です。たとえば You should pay attention なら「注意すべきだ」と比較的強く促しますが、本文の you may want to pay a little attention は、読者に選択の余地を残します。直訳して「注意したいかもしれない」と受け取らないのがポイントです。
+ここでの tempting は「魅力的」というより、もっともらしくて思わず口にしたくなる、という含みです。“It’s easy to say ...” なら「言うのは簡単だ」に寄り、早合点したくなる気持ちへの自覚は弱まります。本文では、9.5％をそのまま「気づいた人の割合」と受け取る反応を先回りして示し、結論を急がないよう促しています。
 
 - 重複判定(KP/Word): pass / 暫定選定のKey Phrase・Wordとは学習上の焦点が別と判定しました。
 
 ## 決め方
 - V3フォーム: 『ニュアンス解説』欄で採用/不採用を選び、KP・文法と一緒に送信(推奨)
-- CLI(KPを先に確定した場合など): `py er119_kp_human_review_cli_01.py nuance-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --choice adopt|reject --candidates-sha 69480bd19db102e6b9e2ca2f5a3987b12414efec6884caec4ec33dc943270b02 --by <名前> --user-ref <ユーザー発言のdelegation_logパス>`
+- CLI(KPを先に確定した場合など): `py er119_kp_human_review_cli_01.py nuance-select --run er019_output/family_x_audio_production_wiring_01/ai_chat_sponsored_persuasion__run_fx4_01 --level b1b --choice adopt|reject --candidates-sha 9ca48f908aeb6fef622beac0eed033bb0047cd57a87f495d3f7ba353bd3f4b10 --by <名前> --user-ref <ユーザー発言のdelegation_logパス>`
 

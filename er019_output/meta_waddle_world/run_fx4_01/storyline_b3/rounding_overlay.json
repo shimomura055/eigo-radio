@@ -1,17 +1,85 @@
 {
- "annotated_md_sha256": "f0c05ed462ff5084686059745b2dad3055535a88e60d032503d02a28ce3296f8",
- "core_concept_order": [],
- "entries": [],
- "error": null,
- "judge": null,
+ "annotated_md_sha256": "d72c4fa9afbeb9d7f5d3fdb00c5001cd5d3759eefa473af99442961f41a6e4bc",
+ "core_concept_order": [
+  "C1",
+  "C2"
+ ],
+ "entries": [
+  {
+   "approved_condition": "年齢レーティングや利用条件など、精度自体に意味がある数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "WW-08"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "WW-08"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "18+はAppleの年齢レーティングおよび各ストア説明文の利用条件を示す値で、丸めると表示内容が変わります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "18"
+    },
+    {
+     "approx": null,
+     "surface": "18歳以上"
+    }
+   ]
+  },
+  {
+   "approved_condition": "年齢レーティングなど、精度自体に意味がある数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "WW-08"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "WW-08"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "3+はGoogle Playのコンテンツ評価表示そのものを示す値で、丸めると表示内容が変わります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0f00bb79d7b7e8d0006ae348a7750c87d082ad39f76e8277c1",
+  "sec": 4.1,
+  "usage": {
+   "input_tokens": 3138,
+   "output_tokens": 271,
+   "reasoning_tokens": 33
+  },
+  "user_prompt_sha256": "0f8c7981e5315598826636353e8b8001a8374a92b5d6ba81397ad3f8fdb298ac"
+ },
  "n_approximate_ok": 0,
- "note": "NO_CORE_NUMBERS",
- "overlay_sha256": "6117b080894463589aad7189087a271cd9018b4a0466b41c94eb2ba575aea7bd",
+ "overlay_sha256": "ea53d20484ac1c098543e842b118a0fa2fa95d5185e439fc110b97fd3f4f1468",
  "requested_effort": "low",
  "requested_model": "gpt-6-luna",
  "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
  "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
- "sidecar_sha256": "fa382b6c9755fc718fc10664de46c2bec04d28c28c6c7cc95d7bcd51c9772b2b",
+ "sidecar_sha256": "03a3b1120df4b9578daf3814dae4799997d94fa29e8242714afcada120f02ce7",
  "status": "OK",
  "v8_max_relative_error": "0.10",
  "violations": []

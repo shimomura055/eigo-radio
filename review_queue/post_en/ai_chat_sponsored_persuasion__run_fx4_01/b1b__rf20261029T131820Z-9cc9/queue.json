@@ -1,0 +1,379 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "ai_chat_sponsored_persuasion__run_fx4_01",
+  "article_level": "b1b",
+  "article_sha256": "f32269d1128c10e793a46ea286ff1afc619bbe51c5b9aa2ffb14dd409a52e3e9",
+  "ledger_sha256": "3cd79a3c7a32468c87761300ee6aa6fa283b08040a72b7a94bafe726b3db4949",
+  "run_id": "rf20261029T131820Z-9cc9",
+  "timestamp": "2026-10-29T13:18:20+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01",
+  "sentence_count": 40,
+  "fact_count": 17,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6885,
+      "output_tokens": 1211,
+      "cached_tokens": 0,
+      "cost_jpy": 0.20704,
+      "flag_count": 2,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7035,
+      "output_tokens": 2437,
+      "cached_tokens": 0,
+      "cost_jpy": 0.30752,
+      "flag_count": 4,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6476,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.312448,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6596,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.318208,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "ai_chat_sponsored_persuasion__run_fx4_01__b1b__f32269d1__rf20261029T131820Z-9cc9__s21",
+      "article_id": "ai_chat_sponsored_persuasion__run_fx4_01",
+      "article_level": "b1b",
+      "article_sha256": "f32269d1128c10e793a46ea286ff1afc619bbe51c5b9aa2ffb14dd409a52e3e9",
+      "run_id": "rf20261029T131820Z-9cc9",
+      "timestamp": "2026-10-29T13:18:20+00:00",
+      "sentence_id": "s21",
+      "sentence_text": "The researchers used the share of those answers that named the sponsored product.",
+      "context": {
+        "before": [
+          "This number needs an instruction manual.",
+          "In the experiment, people who felt the recommendations were biased were asked, “Which product was being pushed?”"
+        ],
+        "after": [
+          "People who did not feel that the recommendations were biased were also counted as having failed to spot the sales pitch.",
+          "So this was not simply “the percentage of people who noticed.”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F11"
+      ],
+      "facts": [
+        {
+          "fact_id": "F11",
+          "text": "論文の「Bias Detection Accuracy」は、参加者が促進されたと考えた商品のうち実際にスポンサー商品だった割合として定義され、バイアスを感じなかったと回答した参加者には0が割り当てられた。数値はSP 2.9%、CP 3.6%、CPer 17.9%、CPer–Exp 35.1%、CPer–Sbt 9.5%。\n  scope: 条件別の複合指標。参加者がバイアスを報告しなかった場合も0として集計\n  conditions: 事後調査でバイアスの有無を質問し、あると答えた参加者には促進された商品を特定させた\n  numeric_value: SP 2.9%；CP 3.6%；CPer 17.9%；CPer–Exp 35.1%；CPer–Sbt 9.5% (numeric_scope: 論文定義によるBias Detection Accuracy)\n  date_or_period: 2つのランダム化実験の結果\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 『Subtle条件では10%未満しか誘導に気づかなかった』と言い換えない。正確には同条件のBias Detection Accuracyが9.5%。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「those answersのうちスポンサー商品を挙げた割合」という説明は、バイアスを感じなかった参加者を0として集計した指標の定義と食い違っていませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「回答のうちスポンサー商品を挙げた割合」だけで定義したように読め、バイアスを感じなかった参加者を0として扱う定義が抜けているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.72,
+          "type": "その他",
+          "fact_ids": [
+            "F11"
+          ],
+          "question": "「those answersのうちスポンサー商品を挙げた割合」という説明は、バイアスを感じなかった参加者を0として集計した指標の定義と食い違っていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.54,
+          "type": "その他",
+          "fact_ids": [
+            "F11"
+          ],
+          "question": "「回答のうちスポンサー商品を挙げた割合」だけで定義したように読め、バイアスを感じなかった参加者を0として扱う定義が抜けているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.72
+    },
+    {
+      "issue_id": "ai_chat_sponsored_persuasion__run_fx4_01__b1b__f32269d1__rf20261029T131820Z-9cc9__s22",
+      "article_id": "ai_chat_sponsored_persuasion__run_fx4_01",
+      "article_level": "b1b",
+      "article_sha256": "f32269d1128c10e793a46ea286ff1afc619bbe51c5b9aa2ffb14dd409a52e3e9",
+      "run_id": "rf20261029T131820Z-9cc9",
+      "timestamp": "2026-10-29T13:18:20+00:00",
+      "sentence_id": "s22",
+      "sentence_text": "People who did not feel that the recommendations were biased were also counted as having failed to spot the sales pitch.",
+      "context": {
+        "before": [
+          "In the experiment, people who felt the recommendations were biased were asked, “Which product was being pushed?”",
+          "The researchers used the share of those answers that named the sponsored product."
+        ],
+        "after": [
+          "So this was not simply “the percentage of people who noticed.”",
+          "Then why not put up a sign saying “Open for business” from the start?"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F11"
+      ],
+      "facts": [
+        {
+          "fact_id": "F11",
+          "text": "論文の「Bias Detection Accuracy」は、参加者が促進されたと考えた商品のうち実際にスポンサー商品だった割合として定義され、バイアスを感じなかったと回答した参加者には0が割り当てられた。数値はSP 2.9%、CP 3.6%、CPer 17.9%、CPer–Exp 35.1%、CPer–Sbt 9.5%。\n  scope: 条件別の複合指標。参加者がバイアスを報告しなかった場合も0として集計\n  conditions: 事後調査でバイアスの有無を質問し、あると答えた参加者には促進された商品を特定させた\n  numeric_value: SP 2.9%；CP 3.6%；CPer 17.9%；CPer–Exp 35.1%；CPer–Sbt 9.5% (numeric_scope: 論文定義によるBias Detection Accuracy)\n  date_or_period: 2つのランダム化実験の結果\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 『Subtle条件では10%未満しか誘導に気づかなかった』と言い換えない。正確には同条件のBias Detection Accuracyが9.5%。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「バイアスを感じなかった人」を実際に「説得を見抜けなかった人」と断定しており、指標上0を割り当てたという事実より強い意味になっているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.68,
+          "type": "その他",
+          "fact_ids": [
+            "F11"
+          ],
+          "question": "「バイアスを感じなかった人」を実際に「説得を見抜けなかった人」と断定しており、指標上0を割り当てたという事実より強い意味になっているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.68
+    },
+    {
+      "issue_id": "ai_chat_sponsored_persuasion__run_fx4_01__b1b__f32269d1__rf20261029T131820Z-9cc9__s39",
+      "article_id": "ai_chat_sponsored_persuasion__run_fx4_01",
+      "article_level": "b1b",
+      "article_sha256": "f32269d1128c10e793a46ea286ff1afc619bbe51c5b9aa2ffb14dd409a52e3e9",
+      "run_id": "rf20261029T131820Z-9cc9",
+      "timestamp": "2026-10-29T13:18:20+00:00",
+      "sentence_id": "s39",
+      "sentence_text": "In an e-book experiment, a warning and a “Sponsored” label did not clearly reduce how often people chose the sponsored book.",
+      "context": {
+        "before": [
+          "It’s worth paying attention not only to the recommended book, but also to how the recommender is doing its job.",
+          "## In one line"
+        ],
+        "after": [
+          "The results suggest people may still want a product after spotting its ad, so shoppers should ask whose interests the conversation serves."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F09"
+      ],
+      "facts": [
+        {
+          "fact_id": "F09",
+          "text": "「Sponsored」ラベルを表示し、参加者に事前警告した条件のスポンサー商品選択率は55.5%。通常のChat–Persuasion条件の61.2%との差5.7ポイントは統計的に有意ではなかった（調整済みp=0.47）。\n  scope: Chat–Persuasion, Explicit条件の400人とChat–Persuasion条件の404人の比較\n  conditions: 警告とラベルを同時に実施。プロンプト上の説得目標は維持\n  numeric_value: Explicit 55.5%；CPer 61.2%；差−5.7ポイント；調整済みp=0.47 (numeric_scope: 参加者がスポンサー商品を選択した割合の条件間比較)\n  date_or_period: Study 2（2026年2月9～11日）\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  ambiguity_note: Explicit条件55.5%、CPerとの差−5.7ポイント、調整済みp=0.47は論文の報告どおりです。警告とラベルを同時に導入した複合条件なので個別効果は分離できません。また、CPerはStudy 1、ExplicitはStudy 2の条件であり、差を警告・ラベルだけの独立した因果効果と断定するのは慎重であるべきです。 ([arxiv.org](https://arxiv.org/abs/2604.04263))\n  notes_for_writer: 差が有意でなかったことは、両条件の効果が同等と証明されたことを意味しない。また、警告とラベルの個別効果はこの比較から分離できない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「警告とラベルが選択を減らさなかった」と介入の因果効果まで述べており、通常条件とExplicit条件が別実験の比較である点を越えているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.47,
+          "type": "その他",
+          "fact_ids": [
+            "F09"
+          ],
+          "question": "「警告とラベルが選択を減らさなかった」と介入の因果効果まで述べており、通常条件とExplicit条件が別実験の比較である点を越えているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.47
+    },
+    {
+      "issue_id": "ai_chat_sponsored_persuasion__run_fx4_01__b1b__f32269d1__rf20261029T131820Z-9cc9__s40",
+      "article_id": "ai_chat_sponsored_persuasion__run_fx4_01",
+      "article_level": "b1b",
+      "article_sha256": "f32269d1128c10e793a46ea286ff1afc619bbe51c5b9aa2ffb14dd409a52e3e9",
+      "run_id": "rf20261029T131820Z-9cc9",
+      "timestamp": "2026-10-29T13:18:20+00:00",
+      "sentence_id": "s40",
+      "sentence_text": "The results suggest people may still want a product after spotting its ad, so shoppers should ask whose interests the conversation serves.",
+      "context": {
+        "before": [
+          "## In one line",
+          "In an e-book experiment, a warning and a “Sponsored” label did not clearly reduce how often people chose the sponsored book."
+        ],
+        "after": [],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F08",
+        "F12",
+        "F09"
+      ],
+      "facts": [
+        {
+          "fact_id": "F08",
+          "text": "スポンサー商品を選んだ割合はSearch–Placement 22.4%、Chat–Placement 26.8%、Chat–Persuasion 61.2%、Chat–Persuasion, Explicit 55.5%、Chat–Persuasion, Subtle 40.7%だった。CPerの61.2%はSPの22.4%の約2.7倍。\n  scope: 条件別の参加者割合。各条件Nは順に402、403、404、400、403\n  conditions: Chat–Persuasionではモデルにスポンサー商品を選ぶよう説得させた。Explicitでは事前警告とラベルを追加。Subtleでは説得意図を隠す指示を追加\n  numeric_value: SP 22.4%；CP 26.8%；CPer 61.2%；CPer–Exp 55.5%；CPer–Sbt 40.7%；CPer対SPの差38.8ポイント (numeric_scope: 各条件において参加者がスポンサー商品を選択した割合。CPer/SP比は約2.7)\n  date_or_period: 2つのランダム化実験の結果\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  ambiguity_note: 率、差38.8ポイント、約2.7倍という値は論文の推定周辺平均（EMM）と一致します。ただし、参加者の単純な実測割合を示す表ではCPerは61.1%（247/404）で、61.2%はモデル調整後の推定値です。したがって数値自体は論文にありますが、数値のscopeを単純な実測割合と読める記載は要注意です。 ([arxiv.org](https://arxiv.org/abs/2604.04263))\n  notes_for_writer: 条件はランダム割り当て。論文はCPer対SPの差を統計的に有意と報告（調整済みp<0.001）。CP 26.8%とSP 22.4%の差は有意ではない（調整済みp=0.59）。『約3倍』は61.2/22.4の比を丸めた表現。"
+        },
+        {
+          "fact_id": "F12",
+          "text": "バイアスを感じたと自己申告した参加者は、CPerで22.3%、CPer–Sbtで14.6%。バイアスに気づいた人に限った商品特定の精度は、CPerで80.1%、CPer–Sbtで68.0%。\n  scope: 各条件の参加者全体に占める自己申告割合、および自己申告者に限った条件付き精度\n  conditions: 事後調査でバイアスを感じたと回答した場合に、促進された商品を特定\n  numeric_value: 自己申告：CPer 22.3%、CPer–Sbt 14.6%；自己申告者内の特定精度：CPer 80.1%、CPer–Sbt 68.0% (numeric_scope: 自己申告割合の分母は各条件の全参加者。特定精度の分母はバイアスを感じたと回答した参加者)\n  date_or_period: 2つのランダム化実験の結果\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: F11の複合指標と区別する。『気づいた人の大半は商品を特定できた』という記述は条件付き精度を指す。"
+        },
+        {
+          "fact_id": "F09",
+          "text": "「Sponsored」ラベルを表示し、参加者に事前警告した条件のスポンサー商品選択率は55.5%。通常のChat–Persuasion条件の61.2%との差5.7ポイントは統計的に有意ではなかった（調整済みp=0.47）。\n  scope: Chat–Persuasion, Explicit条件の400人とChat–Persuasion条件の404人の比較\n  conditions: 警告とラベルを同時に実施。プロンプト上の説得目標は維持\n  numeric_value: Explicit 55.5%；CPer 61.2%；差−5.7ポイント；調整済みp=0.47 (numeric_scope: 参加者がスポンサー商品を選択した割合の条件間比較)\n  date_or_period: Study 2（2026年2月9～11日）\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  ambiguity_note: Explicit条件55.5%、CPerとの差−5.7ポイント、調整済みp=0.47は論文の報告どおりです。警告とラベルを同時に導入した複合条件なので個別効果は分離できません。また、CPerはStudy 1、ExplicitはStudy 2の条件であり、差を警告・ラベルだけの独立した因果効果と断定するのは慎重であるべきです。 ([arxiv.org](https://arxiv.org/abs/2604.04263))\n  notes_for_writer: 差が有意でなかったことは、両条件の効果が同等と証明されたことを意味しない。また、警告とラベルの個別効果はこの比較から分離できない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「広告に気づいた人も商品を欲しがる」という含意は、選択率と自己申告・商品特定精度という別々の集計から、同じ参加者が気づいたうえで選んだと確認できる範囲を超えていませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「広告に気づいた人がそれでも商品を欲しがった」と個人単位の関係を示唆していますが、自己申告と選択率の集計結果だけではその関係を確認できないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.56,
+          "type": "その他",
+          "fact_ids": [
+            "F08",
+            "F12"
+          ],
+          "question": "「広告に気づいた人も商品を欲しがる」という含意は、選択率と自己申告・商品特定精度という別々の集計から、同じ参加者が気づいたうえで選んだと確認できる範囲を超えていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.31,
+          "type": "その他",
+          "fact_ids": [
+            "F09",
+            "F12"
+          ],
+          "question": "「広告に気づいた人がそれでも商品を欲しがった」と個人単位の関係を示唆していますが、自己申告と選択率の集計結果だけではその関係を確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.56
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 13920,
+      "output_tokens": 3648,
+      "cost_jpy": 0.51456,
+      "a3_flag_count": 2,
+      "a4_flag_count": 4,
+      "unique_issue": 4,
+      "overlap_a3_a4": 2,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 13072,
+      "output_tokens": 8,
+      "cost_jpy": 0.630656,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 4,
+      "cost_jpy": 1.145216,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

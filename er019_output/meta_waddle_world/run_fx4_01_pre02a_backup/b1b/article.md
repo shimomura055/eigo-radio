@@ -1,0 +1,20 @@
+# Today's Diary Is Written by a Pet
+
+I opened my diary and picked up a pen. And yet no draft has arrived from today's version of me. “Did anything even happen worth writing about?” The editorial meeting has already hit a dead end before it has even begun. What if, at a moment like this, you could hand the writing job over to your pet?
+
+Meta’s Waddle World, offered in the Philippines, is a diary app for AI pets. According to its official app-store description, you can tell it what happened that day by voice or text, and it will create a diary told from the pet’s point of view, along with hand-drawn-style doodles. The human supplies the material, and the pet does the writing. It’s an interesting split of roles.
+
+Our job is to tell it what happened today. Then the pet, who had been listening just moments before, takes the storyteller’s seat. A day that felt too plain to write about ourselves becomes something else when we leave it to another storyteller. Suddenly, we want to read on: “So, how did you write it?”
+
+If I said, for example, “I was tired today,” would it become a sad little story? Or would it turn its attention to something I had missed? We don’t know what it actually produces. But there’s a little pleasure in waiting to see what kind of diary your day will become, like opening a package.
+
+To begin with, the hardest part of keeping a diary is before you start writing. “Is this worth keeping?” “Should I write it up properly?” Even though no one asked, the editor in my head starts judging it. But if you’re talking to your pet, you can just start with, “Well, about today...” You can start with a chat, not a finished piece of writing.
+
+And it comes with hand-drawn-style doodles. You could see them as extras alongside the writing, but if you imagine your pet showing you “today’s diary,” you start to wonder about the pictures too. It feels less like checking a record and more like opening a package when you don’t know what’s inside.
+
+Of course, you can’t judge the quality of the writing or pictures from the official description alone. There’s no guarantee that each one will be just what you hoped for. What makes it interesting isn’t a promise that each result will be good, but the idea of changing who tells the diary.
+
+A day that has nothing worth writing about if you write it yourself. But if your pet writes it, it’s a day you’d like to read about. The events are the same, but the reason to open the page changes. You’re the main character; your pet does the writing. For now, the human’s job is simply to bring in the story of the day.
+
+## In one line
+Meta’s Waddle World, offered in the Philippines, turns a person’s account of the day into an AI pet’s diary with hand-drawn-style doodles. A day too ordinary to write about yourself may become worth reading when your pet tells it.

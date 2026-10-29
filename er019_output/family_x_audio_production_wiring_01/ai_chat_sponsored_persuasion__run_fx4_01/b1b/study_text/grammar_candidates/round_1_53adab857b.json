@@ -1,0 +1,240 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "An AI That Says “This Is an Ad”—Would You Still Want It?",
+  "text_sha256": "165307a8e4421da22be56f9bbb17dd29d5a03181f2ff3e26ed7cee0f219114a6",
+  "n_paragraphs": 13,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "999464a3b18617a1718c8fd08baa96765708858da8aed915802ea762d2504ce6",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P2",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "複数の動名詞句がandで結ばれて主語となり、複数形の動詞に続くことを見分ける。",
+      "front_kind": "",
+      "sentence": "Spotting an ad and putting the brakes on wanting something seem to be two separate things.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P4",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "関係節を含む長い主語では、主語の中心となる名詞と主節の動詞を切り分ける。",
+      "front_kind": "",
+      "sentence": "The estimated rate at which participants chose the sponsored product was 40.7%.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P10",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "引用文がandで並列されて主語となる場合も、主節の動詞との対応を捉える。",
+      "front_kind": "",
+      "sentence": "“We couldn’t confirm a difference” and “there is no effect” do not mean the same thing.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P11",
+      "cls": "CLEFT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "What節の内部の動詞と主節の動詞を区別し、What節を主語として読む。",
+      "front_kind": "",
+      "sentence": "What’s more interesting is that the ad label and the effect of the conversation may work in different ways.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P3",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P12",
+    "P13"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "0d6048a12537bb1f155a368783acb181dd3e4d95468ee6e98b5ac7bfb47ebb36",
+    "response_ids": [
+      "resp_01db92224b535a10006ae34b7ddb2487d0bfe041e9c58c0f80"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3564,
+          "output_tokens": 4331,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 3106
+        },
+        "response_id": "resp_01db92224b535a10006ae34b7ddb2487d0bfe041e9c58c0f80",
+        "elapsed_sec": 49.84,
+        "cost_jpy": 0.4035
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.4035,
+    "generated_at": "2026-10-29T22:35:43+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g6f66e2d3d5",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CLEFT",
+      "para": "P11",
+      "sentence": "What’s more interesting is that the ad label and the effect of the conversation may work in different ways.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "What’s more interesting is",
+      "misread_ja": "What’sのisを主節の動詞と捉え、その後のisを見落とすおそれがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "What節の内部の動詞と主節の動詞を区別し、What節を主語として読む。",
+      "construct_ja": "What節を用いた疑似分裂文",
+      "points_ja": [
+        "What’s more interestingが主語となるWhat節。",
+        "主節の動詞は二つ目のisで、that節がその補語。"
+      ],
+      "context_ja": "広告ラベルと会話の効果は異なる形で働く可能性があると述べている。",
+      "prev": "“We couldn’t confirm a difference” and “there is no effect” do not mean the same thing.",
+      "next": "A salesperson can wear a name tag, but that does not mean the sales talk stops.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        0,
+        107
+      ]
+    },
+    {
+      "candidate_id": "g2981f58e59",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P2",
+      "sentence": "Spotting an ad and putting the brakes on wanting something seem to be two separate things.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "Spotting an ad and putting the brakes",
+      "misread_ja": "文頭の動名詞句を主語と取らず、somethingを主語と見てしまうおそれがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "複数の動名詞句がandで結ばれて主語となり、複数形の動詞に続くことを見分ける。",
+      "construct_ja": "並列した動名詞句を含む長い主語",
+      "points_ja": [
+        "Spotting an adとputting the brakes on wanting somethingが並列の主語を作る。",
+        "主節の動詞はseem。"
+      ],
+      "context_ja": "広告を見抜くことと、何かを欲しがる気持ちにブレーキをかけることが別のことだと述べている。",
+      "prev": "Or would you let it through, thinking, “But it’s just right for me…”?",
+      "next": "The setting is an experiment in choosing e-books.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        181,
+        271
+      ]
+    },
+    {
+      "candidate_id": "gdc6ad14eb0",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P4",
+      "sentence": "The estimated rate at which participants chose the sponsored product was 40.7%.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "The estimated rate at which participants",
+      "misread_ja": "関係節内のparticipantsを主節の主語と誤認し、主語の中心がrateであることを見落とすおそれがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "関係節を含む長い主語では、主語の中心となる名詞と主節の動詞を切り分ける。",
+      "construct_ja": "関係節を含む長い主語",
+      "points_ja": [
+        "at which participants chose the sponsored productはrateを修飾する。",
+        "主節の主語の中心はrateで、主節の動詞はwas。"
+      ],
+      "context_ja": "この条件でスポンサー商品を選んだ参加者の推定率を示している。",
+      "prev": "In another condition, the AI was told to hide its goal.",
+      "next": "Behind the question “Which book is right for me?”",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        56,
+        135
+      ]
+    },
+    {
+      "candidate_id": "g81e8e6a7c0",
+      "rank": 4,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P10",
+      "sentence": "“We couldn’t confirm a difference” and “there is no effect” do not mean the same thing.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "“We couldn’t confirm a difference” and",
+      "misread_ja": "引用された二つの文を例として切り離して読み、並列した引用文全体が主語であることを見落とすおそれがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "引用文がandで並列されて主語となる場合も、主節の動詞との対応を捉える。",
+      "construct_ja": "並列した引用文を主語とする文",
+      "points_ja": [
+        "二つの引用文がandで結ばれ、主語を作る。",
+        "主節の動詞はdo not mean。"
+      ],
+      "context_ja": "「差を確認できなかった」と「効果がない」は同じ意味ではないと述べている。",
+      "prev": "It’s too soon to shout, “Ad labels are powerless after all!”",
+      "next": "What’s more interesting is that the ad label and the effect of the conversation may work in different ways.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        61,
+        148
+      ]
+    }
+  ],
+  "top_ids": [
+    "g6f66e2d3d5",
+    "g2981f58e59"
+  ],
+  "n_eligible": 4,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "53adab857b1545293f05c2cfe77b301f8495b0745f8af70d480a8172b85d187b",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}
