@@ -22,6 +22,7 @@ from typing import Any, Iterable
 
 import er127_tts_block_policy_01 as er127
 import er129_lr_display_reflection_01 as er129
+import er103_proper_noun_alarm_policy_01 as er103
 
 PASS = "PASS"
 PASS_WITH_WARNING = "PASS_WITH_WARNING"
@@ -38,7 +39,8 @@ THIRD_STYLE_TO_KIND = {
 _DIRECT_KIND_RECORD_HOWS = frozenset({"dialogue_tts.final_mode", "english_lock_attempts_log.verified"})
 # 旧記録でshaが取れないがstandard段のverifiedかつfallback_used False(=role Style段)と直接記録されている経路
 _STANDARD_STAGE_HOWS = frozenset({"standard_attempts_log.verified(no fallback)"})
-_ASR_PASS_STATES = frozenset({"PASS", "PASS_WITH_WARNING"})
+# 承認済みPROPER-NOUN-PRONUNCIATION-ALARM-POLICY(er103.STATE_ALARM=Human Review・再生成なしで完成扱い。英語音声のみ、日本語音声は対象外=er103側の付与条件に委ねる)。
+_ASR_PASS_STATES = frozenset({"PASS", "PASS_WITH_WARNING", er103.STATE_ALARM})
 # attempt json上でrole Style(または既定Style)を送ったことを示すroute(instruction_textを保存しない旧attempt記録で、shaの代わりにrouteで確認する)。
 # driftはtestで固定(leaf source内に存在すること)。minimal/fallback/custom_*以外の既知routeだけを許す。
 _ROLE_STYLE_ROUTES = frozenset({"english_style_prefix_wide_margin", "english_style_prefix"})
