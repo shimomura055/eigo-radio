@@ -110,12 +110,12 @@ def write_unified_request(run_dir: str, pending: list) -> Optional[str]:
              "この宣言はKPと文法の両方に、このrunのこの候補roundだけ効きます)", ""]
     for p in pending:
         kind = p.get("kind") or "kp"
-        title = "文法(Part 2)" if kind == "grammar" else f"KP(level={p.get('level')})"
+        title = ("文法(Part 2)" if kind == "grammar" else (f"ニュアンス解説(level={p.get('level')})" if kind == "nuance" else f"KP(level={p.get('level')})"))
         lines += ["---", f"## {title}", f"(個別の依頼書: {p.get('request_md')})", ""]
         try:
             with open(p["request_md"], encoding="utf-8") as f:
                 body = f.read()
-        except (OSError, KeyError):
+        except (OSError, KeyError, TypeError):
             body = "(依頼書を読めません。`status`を実行してください)"
         lines += [body.rstrip(), ""]
     path = f"{run_dir}/{UNIFIED_REQUEST}"
@@ -131,11 +131,13 @@ def pending_banner(pending: list, *, restart_command: str, run_dir: Optional[str
     """rc=4時のstdout(KPと文法を1つのbannerにまとめ、正確な再開コマンドを1つだけ出す=M-3/M-4)。run_dirを渡すと統合依頼書 review_request.md も書く。"""
     unified = write_unified_request(run_dir, pending) if run_dir else None
     kinds = sorted({(p.get("kind") or "kp") for p in pending})
-    what = " + ".join({"kp": "KP", "grammar": "文法(Part 2)"}[k] for k in kinds) or "KP"
+    what = " + ".join({"kp": "KP", "grammar": "文法(Part 2)", "nuance": "ニュアンス解説"}[k] for k in kinds) or "KP"
     lines = [f"{rv.PENDING_MARKER} Human Review待ちです: {what}(失敗ではありません。有料の後続工程には進みません)。"]
     for p in pending:
         if (p.get("kind") or "kp") == "grammar":
             lines.append(f"  - 文法(Part 2): 依頼書 {p.get('request_md')}")
+        elif (p.get("kind") or "kp") == "nuance":
+            lines.append(f"  - ニュアンス解説(level={p.get('level')}): 依頼書 {p.get('request_md')}")
         else:
             lines.append(f"  - level={p.get('level')}: 依頼書 {p.get('request_md')}")
     if unified:

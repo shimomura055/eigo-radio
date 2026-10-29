@@ -789,6 +789,29 @@ def part2_next_command(source_dir: str, level: str = "b1b") -> str:
             "未確定なら `py er119_kp_human_review_cli_01.py grammar-select --run <out_dir> ...` で決めてから)")
 
 
+def _nx():
+    import er134_nuance_explanation_01 as nx
+    return nx
+
+
+def run_nuance_candidates_x(client, source_dir: str, out_dir: str, *, level: str, review_existed: bool, call_fn=None, judge_fn=None, budget_check=None) -> dict:
+    """ニュアンス解説(NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02C)のN0(spec発行)+N1(候補生成・重複判定)。KP review作成/再利用の**後**・HR提示前に各levelで1回(Opus M-1)。
+    X/Y/Zの契約は共通関数 er134.n1_stage 1つ。nuance_spec.jsonが無い(既存run=LEGACY)なら生成0・待機0。確定済みの採否があれば再生成しない。技術失敗は非ブロッキング。"""
+    paragraphs, label = _part2_inputs_x(source_dir, level)
+    guard = (lambda process, prompt, attempt: budget_check(f"nuance {process}")) if budget_check else None
+    with cl.logging_context(_slug_of(source_dir), f"nuance_cand_{level}"):
+        return _nx().n1_stage(family="x", run_dir=out_dir, kp_dir=f"{out_dir}/{level}/key_phrases", study_dir=_part2_study_dir(out_dir, level), level=level,
+                              article_id=f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}", title=label, paragraphs=paragraphs, review_existed=review_existed,
+                              client=client, call_fn=call_fn, judge_fn=judge_fn, budget_guard=guard)
+
+
+def finalize_nuance_x(source_dir: str, out_dir: str, *, level: str):
+    """ページ生成入口(player)でのニュアンス解説の確定(LLM 0・冪等。R-3)。None=LEGACY(従来出力と同一)。未確定=Part2NotConfirmed(rc=4)、不整合=Part2Stale(STOP)。"""
+    paragraphs, _label = _part2_inputs_x(source_dir, level)
+    return _p2w().finalize_nuance(_part2_study_dir(out_dir, level), paragraphs, level=level, kp_dir=f"{out_dir}/{level}/key_phrases", run_hint=out_dir,
+                                  next_command=part2_next_command(source_dir, level))
+
+
 def _part2_pool_x(out_dir: str, level: str):
     """Part 1訳との食い違い検査用pool。Part 1対象level(Advanced、およびマーク付きStandard)のみ。マーク無しStandardは空(検査対象なし)。"""
     if not part1_enabled(out_dir, level):
@@ -899,7 +922,7 @@ def _scaffold_part2_final(client, source_dir: str, out_dir: str, level: str, res
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                         scaffold_only: str | None = None, budget_check=None,
                         kp_backend: str = "fulltext_p2", part1_call_fn=None, part1_ja_call_fn=None,
-                        part2_extract_call_fn=None, part2_explain_call_fn=None) -> dict:
+                        part2_extract_call_fn=None, part2_explain_call_fn=None, nuance_call_fn=None, nuance_judge_fn=None, nuance_enabled: bool = True) -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
     既定構成をそのまま再利用する、本委任文の前提どおり)。
@@ -991,11 +1014,17 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # (下は変更なし: kp_dir定義は上へ移動済み)
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
+        _nz = None
         if kp_backend == "fulltext_p2":
             # KP Human Review(2026-10-25、ユーザーAPPROVED_FOR_PRODUCTION): 候補(最大8)生成→Human確認/明示の不在宣言→finalize。
             # 共有関数sc.run_key_phrasesは通らない(A/B/C・Y Trialは従来の3件経路のまま)。宣言なし=待機(rc=4)。
+            _review_existed = os.path.exists(_khr().paths(kp_dir)["review"])   # N0(ニュアンス解説のspec発行)は『この呼出でKP reviewが新規作成された』ときだけ(M-2。既存runはLEGACY)
             kp = _kpw().run_kp_with_review(text=article_text, kp_dir=kp_dir, run_dir=out_dir, family="x", slug=_slug_of(source_dir),
                                            level=level, article_id=article_id, stop_run_dir=out_dir, run_hint=out_dir)
+            if scaffold_only is None and nuance_enabled:   # N1: KP候補生成後・HR提示前(M-1)。KP候補docが無い/LEGACY/確定済み/AUTO採用は生成0
+                _nz = run_nuance_candidates_x(client, source_dir, out_dir, level=level, review_existed=_review_existed, call_fn=nuance_call_fn, judge_fn=nuance_judge_fn,
+                                              budget_check=budget_check)
+                print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: ニュアンス解説 state={_nz['state']} status={_nz['status']} api_calls={_nz['api_calls']} cost_jpy={_nz['cost_jpy']}")
         else:   # 非Production互換(test/Trial)。X Productionは常にfulltext_p2
             kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
                                      kp_backend=kp_backend, stop_run_dir=out_dir)
@@ -1009,6 +1038,10 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                              "kp_review_pending": _kr["pending"]}
             if _p2_pending is not None:
                 result[level]["part2_pending"] = _p2_pending
+            if _nz is not None:
+                result[level]["nuance"] = {k: _nz[k] for k in ("state", "status", "api_calls", "cost_jpy")}
+                if _nz["pending"] is not None:   # ニュアンス解説の候補もKP/文法と同じ待機点・同じ統合依頼書に載せる(rc=4は1回)
+                    result[level]["nuance_pending"] = _nz["pending"]
             print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: 待機中: Human確認待ち(依頼書: {_kr['pending'].get('request_md')})")
             continue
         # fail-closed(KPMP-03 委任_03): PASS系以外はstageを止める(Zと対称)。ただしsummary(kp_run_status/gloss HR event等、
@@ -1030,6 +1063,8 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
             result[level]["comment3_method"] = _comment3_method_of(level_out_dir, fresh=bool(support))
         if _kr:
             result[level]["kp_review"] = {k: _kr.get(k) for k in ("state", "status", "signature", "round")}
+        if _nz is not None:
+            result[level]["nuance"] = {k: _nz[k] for k in ("state", "status", "api_calls", "cost_jpy")}
         # KGCPW(OF-KGCPW-04/11/16): gloss再整合は無条件。KP段のtop-level status(kp_run_status)と
         # gloss停止(gloss_alignment_run_status)は別キーで記録する(NG_REVIEW_REQUIREDとHRが重なっても隠れない)。
         _canon = kp.get("canonicalization") or {}
@@ -3913,6 +3948,7 @@ def main() -> None:
             _kp_pending = {lv: (scaffold_result.get(lv) or {}).get("kp_review_pending") for lv in levels
                            if (scaffold_result.get(lv) or {}).get("kp_review_state") == "PENDING"}
             _p2_pend = [(scaffold_result.get(lv) or {}).get("part2_pending") for lv in levels if (scaffold_result.get(lv) or {}).get("part2_pending")]
+            _nz_pend = [(scaffold_result.get(lv) or {}).get("nuance_pending") for lv in levels if (scaffold_result.get(lv) or {}).get("nuance_pending")]
             if _kp_pending or _p2_pend:   # Human Review待ち(KP・文法。失敗ではない)。rc=4を1回。候補は生成済み。再開は同じコマンドを1つだけ再実行(support/選定/抽出は再生成されない)
                 _ep = f"{out_dir}/entry_point.json"
                 if os.path.exists(_ep):
@@ -3922,7 +3958,7 @@ def main() -> None:
                     if _p2_pend:
                         _epd["part2_review_status"] = _p2_pend[0].get("status")
                     save_json(_ep, _epd)
-                print(_kpw().pending_banner(list(_kp_pending.values()) + _p2_pend, restart_command="py " + " ".join(sys.argv), run_dir=out_dir))
+                print(_kpw().pending_banner(list(_kp_pending.values()) + _p2_pend + _nz_pend, restart_command="py " + " ".join(sys.argv), run_dir=out_dir))
                 sys.exit(_khr().EXIT_CODE_PENDING)
             # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
             # entry_point.jsonへlevelごとのkp_backend_usedを追記する
@@ -4071,6 +4107,7 @@ def main() -> None:
             _study_html_a2 = ""
             _part1_htmls = {}   # level -> Part 1 block(SLOT-23: Advanced、およびマーク付きStandard。訳欄の判断記録が無い間は空文字=従来とバイト同一)
             _p2_results = {}   # level -> Part 2結果(両levelの文法。player入口で存在・最新性・確定との一致を確認)
+            _nz_results = {}   # level -> ニュアンス解説の確定結果(None=LEGACY/ADOPTED/REJECTED/NONE。player入口で確定=R-3。LLM 0)
             for _lv1 in part1_levels(out_dir, levels):   # 委任_14: Part 1 study block
                 try:
                     _part1_htmls[_lv1] = part1_study_html_for_player(source_dir, out_dir, level=_lv1)
@@ -4082,6 +4119,7 @@ def main() -> None:
                 # Part 2(文法): Advancedは Part 1ブロック直後、Standardは a2節に同じテンプレートで連結(R-1/R-2: 共通builder compose_page_html 1つだけ)
                 try:
                     _p2_results[_lv] = _require_part2_fresh_x(source_dir, out_dir, "player", level=_lv)
+                    _nz_results[_lv] = finalize_nuance_x(source_dir, out_dir, level=_lv)   # 未確定=Part2NotConfirmed(rc=4)/不整合=Part2Stale(STOP)。採用時のみ表示される
                 except _p2w().Part2NotConfirmed as exc:
                     print(_kpw().pending_banner(exc.pending, restart_command="py " + " ".join(sys.argv), run_dir=out_dir) + f"\n  詳細: {exc}")
                     sys.exit(_khr().EXIT_CODE_PENDING)
@@ -4089,9 +4127,9 @@ def main() -> None:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
             if "b1b" in _p2_results:
-                _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"], nuance=_p2w().nuance_for_display(_part2_study_dir(out_dir, "b1b"), level="b1b"))
+                _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"], nuance=_nz_results["b1b"])
             if "a2" in _p2_results:
-                _study_html_a2 = _p2w().compose_page_html(_part1_htmls.get("a2", ""), _p2_results["a2"], nuance=_p2w().nuance_for_display(_part2_study_dir(out_dir, "a2"), level="a2"))   # Part 1: マーク付きStandardのみ(遡及なし)。Part 1→Part 2→ニュアンス解説の順
+                _study_html_a2 = _p2w().compose_page_html(_part1_htmls.get("a2", ""), _p2_results["a2"], nuance=_nz_results["a2"])   # Part 1: マーク付きStandardのみ(遡及なし)。Part 1→Part 2→ニュアンス解説の順
             # SLOT-23: 本文ハイライト(display_spec付きrun・levelだけ。無い=None=従来バイト同一)。解決不能(ISSUE)はplayer生成前にSTOP(fail-closed)
             try:
                 _hl_by_level = resolve_x_highlights_for_levels(out_dir, levels, source_dir=source_dir)

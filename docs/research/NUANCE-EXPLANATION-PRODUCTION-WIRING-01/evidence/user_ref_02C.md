@@ -1,0 +1,1 @@
+NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02C(Fable→Sonnet, 2026-10-29)の指示原文要旨: ニュアンス解説は2026-10-29にユーザー正式採用済み。X/Y/Z完了runのcopy-run上で N0->N1->HR->finalize->pages のruntime evidenceを取得する(TTS再生成なし・公開ページ/本番run不変・生成API費用上限3円)。このfileはcopy-run上のnuance-issue-specの根拠(user-ref)である。

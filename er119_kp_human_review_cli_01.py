@@ -21,6 +21,11 @@ Part 2(文法)の操作(kind="grammar"。**--level必須**[b1b=Advanced / a2=Sta
       (Part 1の訳とStep Bの【日本語訳】の食い違いISSUEを、ユーザー了承として記録して解消する。--user-ref必須・記録が残る・再送は冪等)
   py er119_kp_human_review_cli_01.py grammar-pregen --run <run_dir> --level b1b [--ids <id>[,<id>]] [--managed-id <ID>]
       (解説の事前生成。**有料**[Step B 約0.3円/件、AI評価Top1/Top2の2候補分だけ]。未生成分だけ作り、signature一致は再利用[API 0]。旧 --all-candidates[全候補opt-in]は2026-10-27撤去)
+ニュアンス解説(最大1件・採用/不採用。**--level必須**。API 0。V3フォームと同じ検証・保存。KP確定済み[live]のレコードにだけ後付けできる):
+  py er119_kp_human_review_cli_01.py nuance-show --run <run_dir> --level b1b
+  py er119_kp_human_review_cli_01.py nuance-select --run <run_dir> --level b1b --choice adopt|reject --candidates-sha <表示sha> --by <名前> --user-ref <delegation_logのpath>
+  py er119_kp_human_review_cli_01.py nuance-issue-spec --run <copy_run_dir> --level b1b --by <名前> --user-ref <path>   (copy-run限定のevidence用。EVIDENCE_COPY_RUN.jsonが無い実運用runは拒否)
+  py er119_kp_human_review_cli_01.py nuance-retry --run <run_dir> --level b1b --by <名前>   (技術失敗の候補docだけを退避。次回の制作コマンドで再試行。有効な候補の差替えはしない)
   (status は KP と文法の両方を表示。不在宣言 declare-absent はKPと文法の両方に効く[このrun・この候補round限り])
 
 番号=kp_human_review_request.mdの表の「番号」(ai_rank)。直接 kp_human_review.json を手編集すると署名不一致で全消費者がSTOPする。
@@ -142,6 +147,21 @@ def build_parser() -> argparse.ArgumentParser:
     gcommon(p)
     p.add_argument("--ids", default=None, help="対象の候補id(カンマ区切り)。核(pregen_stage)がids指定に未対応の版では拒否する(黙って全件生成しない)")
     p.add_argument("--managed-id", default="GRAMMAR-PREGEN-ALL-LEVELS-01", help="STOP適用範囲チェックの管理ID(有料操作の前に必ず確認する)")
+    p = sub.add_parser("nuance-show", help="ニュアンス解説(最大1件)の候補・採否の状態を表示(API 0)")
+    gcommon(p)
+    p = sub.add_parser("nuance-select", help="KP確定済みのレコードへニュアンス解説の採否だけを確定(V3フォームと同じ検証・同じ保存。API 0)")
+    gcommon(p)
+    p.add_argument("--choice", required=True, choices=("adopt", "reject"), help="adopt=採用 / reject=不採用(不採用でも代替候補は自動補充されない)")
+    p.add_argument("--candidates-sha", required=True, help="表示した候補のcandidate_sha256(古い候補への操作を拒否する)")
+    p.add_argument("--by", required=True)
+    p.add_argument("--user-ref", required=True, help="ユーザー発言の原文を保存したfile(delegation_logのpath)")
+    p = sub.add_parser("nuance-issue-spec", help="copy-run限定(evidence用): 既存runの複製にニュアンス解説の仕様マークを発行する。実運用runでは拒否(EVIDENCE_COPY_RUN.jsonが必要)")
+    gcommon(p)
+    p.add_argument("--by", required=True)
+    p.add_argument("--user-ref", required=True, help="ユーザー発言(委任文)の原文を保存したfile(delegation_logのpath)")
+    p = sub.add_parser("nuance-retry", help="技術失敗(FAILED_TECHNICAL)のニュアンス候補docだけを退避(削除しない)。次回の制作コマンドでN1が再実行される(有効な候補・本物の0件は拒否。確定後はrevoke必須)")
+    gcommon(p)
+    p.add_argument("--by", required=True)
     p = sub.add_parser("confirm", help="人間可読の選定結果(+照合コード)から復元して確定内容保護へ渡す(委任_07R。実体はer128_form_readable_restore_01)")
     p.add_argument("--from-readable", required=True, help="貼付テキストのfile。--dry-runで復元payloadと照合結果のみ出力")
     p.add_argument("--run", required=True)
@@ -188,6 +208,12 @@ def _stop_guard(run: str, managed_id: str) -> None:
         raise rv.KpReviewError(f"STOP適用中のため有料のgrammar-pregenを実行しません: {res['applicable']}。STOPの解除はFable/ユーザーのみです")
 
 
+def _nuance_cli_errors() -> tuple:
+    """nuance-*コマンドの拒否例外(er128のCliError・er134のNuanceError)。遅延import(他のコマンドのimport経路を変えない)。"""
+    import er134_nuance_explanation_01 as nx
+    return (rv._cc().CliError, nx.NuanceError)
+
+
 def _print(obj) -> None:
     print(json.dumps(obj, ensure_ascii=False, indent=2))
 
@@ -209,6 +235,23 @@ def run(argv=None) -> int:
             if a.data_dir is None:
                 a.data_dir = fr.DEFAULT_DATA_DIR
             return fr.run_confirm(a)
+        if a.cmd.startswith("nuance-"):   # ニュアンス解説(最大1件)。KP/文法と同じHuman Review面。実体はer128(フォーム経路と同じ検証・保存)とer134
+            cc = rv._cc()
+            if a.cmd == "nuance-show":
+                _print(cc.cmd_nuance_show(a.run, a.level))
+                return 0
+            if a.cmd == "nuance-select":
+                _print(cc.cmd_nuance_select(a.run, a.level, a.choice, a.candidates_sha, a.by, a.user_ref))
+                return 0
+            if a.cmd == "nuance-issue-spec":
+                _print(cc.cmd_nuance_issue_spec(a.run, a.level, a.by, a.user_ref))
+                return 0
+            if a.cmd == "nuance-retry":
+                import er134_nuance_explanation_01 as nx
+                sd = cc._nuance_context(a.run, a.level)["study_dir"]
+                _print({"archived": nx.retry_failed_candidate(sd, level=a.level), "by": a.by,
+                        "next": "制作コマンド(--stage kp / scaffold)を同じまま再実行するとニュアンス候補が再試行されます(有料: 約0.1-0.2円/level)"})
+                return 0
         if a.cmd.startswith("grammar-"):
             gd = _grammar_dir(a.run, a.level)
             if a.cmd == "grammar-show":
@@ -305,7 +348,7 @@ def run(argv=None) -> int:
             c = rv.op_resolve_gloss(kp_dir, rank=a.rank, gloss=a.gloss, by=a.by)
             _print({"resolved": c["candidate_id"], "japanese_gloss": c["japanese_gloss"]})
             return 0
-    except (rv.KpReviewError, rv.KpReviewPending, ValueError, g.Part2Error) as e:
+    except (rv.KpReviewError, rv.KpReviewPending, ValueError, g.Part2Error, *_nuance_cli_errors()) as e:
         print(f"[KP_REVIEW_CLI][REFUSED] {type(e).__name__}: {e}", file=sys.stderr)
         return 2
     return 2

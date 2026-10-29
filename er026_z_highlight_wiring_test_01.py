@@ -418,6 +418,7 @@ class StagePagesWiringTest(unittest.TestCase):
             es.enter_context(mock.patch.object(r, "_part1_items", side_effect=lambda c, lv="b1b": [{"lv": lv}]))
             es.enter_context(mock.patch.object(r, "_assemble_study_rows", side_effect=lambda c, items, lv="b1b": [{"lv": lv}]))
             es.enter_context(mock.patch.object(r, "_assert_part2_final", side_effect=lambda c, where, level: level.upper()))
+            es.enter_context(mock.patch.object(r, "_assert_nuance_final", side_effect=lambda c, where, level: None))   # ニュアンス解説の確定(R-3)。LEGACY(spec無し)=None=従来とバイト同一
             es.enter_context(mock.patch.object(r, "_p1", return_value=p1))
             es.enter_context(mock.patch.object(r, "_p2w", return_value=p2w))
             es.enter_context(mock.patch.object(r, "_m", return_value=m))
