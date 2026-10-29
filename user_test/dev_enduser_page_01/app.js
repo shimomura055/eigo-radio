@@ -148,6 +148,13 @@
     if (sync.length) highlight(findActive(gt()));
     window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src };
   }
+  function seekSentence(sid) {   // 文クリック: その文の先頭から再生(同一パート再生中はパート内シーク、それ以外は通し再生)
+    var r = sync.filter(function (x) { return x.sid === sid; })[0]; if (!r) return;
+    var key = sid.split('-')[0], pi = -1;
+    parts.forEach(function (p, i) { if (p.key === key) pi = i; });
+    if (mode === 'part' && curIdx === pi) { A.currentTime = Math.max(0, r.start - parts[pi].start); playNow(); tick(); }
+    else playFull(r.start);
+  }
   function loop() { tick(); raf = A.paused ? 0 : requestAnimationFrame(loop); }
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
 
@@ -161,7 +168,7 @@
     sync = []; syncKind = 'none'; highlight(null);
     var m = Q.get('sync'), url = null, kind = 'none';
     var done = function () {
-      $('syncState').textContent = { none: 'ハイライト: 同期データなし(委任_02で統合)', dummy: 'ハイライト: ダミー同期(確認用・精度未検証)', real: 'ハイライト: 同期データ使用' }[syncKind];
+      $('syncState').textContent = { none: 'ハイライト: OFF(同期データなし/?sync=off)', dummy: 'ハイライト: ダミー同期(確認用・精度未検証)', real: 'ハイライト: 実同期(ASR+無音スナップ・聴感未確認)' }[syncKind];
       tick();
     };
     if (m === 'dummy') { url = 'data/sync_dummy_' + art.id + '_' + lv + '.json'; kind = 'dummy'; }
@@ -201,6 +208,8 @@
 
   /* ---------- イベント ---------- */
   $('content').addEventListener('click', function (e) {
+    var se = e.target.closest('.sent');
+    if (se && !e.target.closest('button') && syncKind !== 'none') { seekSentence(se.dataset.sid); return; }
     var b = e.target.closest('button[data-act]'); if (!b) return;
     var i = Number(b.dataset.i);
     if (b.dataset.act === 'part') playPart(i); else playFull(parts[i].start);
