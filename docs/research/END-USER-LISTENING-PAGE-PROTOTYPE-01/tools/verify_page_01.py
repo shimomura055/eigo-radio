@@ -10,7 +10,8 @@ BASE = (sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8766').rstrip('/
 PAGE = BASE + '/user_test/dev_enduser_page_01/index.html'
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUTD = os.path.abspath(os.path.join(HERE, '..'))
-SHOTS = os.path.join(OUTD, 'shots')
+LIVE = BASE.startswith('https://')
+SHOTS = os.path.join(OUTD, 'shots_live' if LIVE else 'shots')
 os.makedirs(SHOTS, exist_ok=True)
 RES = {'base': BASE, 'runs': {}}
 
@@ -222,5 +223,5 @@ with sync_playwright() as p:
 
 ng = [(v, k) for v, r in RES['runs'].items() for k, c in r['checks'].items() if not c['ok']]
 RES['ng'] = ng
-json.dump(RES, open(os.path.join(OUTD, 'verify_result_01.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+json.dump(RES, open(os.path.join(OUTD, 'verify_result_live_01.json' if LIVE else 'verify_result_01.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 print('NG:', ng)
