@@ -58,6 +58,22 @@ def _fake_llm_factory(calls, fail_times=0):
     return fn
 
 
+@pytest.fixture(autouse=True)
+def hrq(monkeypatch):
+    """FZ-DIALOGUE-LR-ADOPTION-01: 3回NG後はLR段へ進む。このfile(2026-10-26の3回構成の配線test)は『LR不可=NO_CANDIDATE』の既存安全処理で終端させ、
+    LR LLM(実API)とHR queue(実file)に触れないよう隔離する。LRそのものの検証は er122_fz_ctx_policy_lr_test_01.py。"""
+    import er006_secondary_asr_01 as secondary_asr
+    import er020_tts_retry_local_rewrite_01 as er020
+    rows = []
+    monkeypatch.setattr(secondary_asr, "_log_human_review", lambda detail: rows.append(detail))
+
+    def no_candidate(**kw):
+        return {"status": "HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA", "segment_id": kw["segment_id"], "canonical_text": kw["canonical_text"],
+                "last_asr_text": kw["last_asr_text"], "ng_span": {"found": True}, "selection": {"selected": None}}
+    monkeypatch.setattr(er020, "run_local_rewrite_recovery", no_candidate)
+    return rows
+
+
 @pytest.fixture
 def env(tmp_path, monkeypatch):
     notes.reset_providers_for_test()
@@ -253,12 +269,14 @@ def test_w3c_std_ng_ng_cooldown_then_legacy_style_adopted_e2e(env):
     assert e3["style"]["fallback_used"] is False         # 既存のfallback_used(標準/fallback経路)の意味は変えない。3回目の方式はdialogue_ttsで記録
 
 
-def test_w3d_std_three_ng_stops_with_hr_lock_and_gate_blocks(env):
+def test_w3d_std_three_ng_stops_with_hr_lock_and_gate_blocks(env, hrq):
+    """3回NG後、LR不可(既存の安全処理=NO_CANDIDATE)なら従来どおりHR Lockで終端する(LR段で追加のTTSは回らない)。HRQは終端NG1行。"""
     w = world_for(env, [True, True, True, True], [OK, NG, NG, NG])
     run_stage(env, "a2", w)
     seg = results(env, "a2")
-    assert seg["full_story_part1_c3"]["status"] == "STOPPED" and w.tts_i == 4          # clip2: 1回 + clip3: 3回(4回目なし)
+    assert seg["full_story_part1_c3"]["status"] == "STOPPED" and w.tts_i == 4          # clip2: 1回 + clip3: 3回(LR不可なので追加TTSなし)
     assert seg["full_story_part1_c3"]["dialogue_tts"]["n_started"] == 3
+    assert seg["full_story_part1_c3"]["dialogue_tts"]["lr_state"] == "NOT_APPLICABLE" and len(hrq) == 1
     import er011_human_review_lock_01 as review_lock
     out3 = f"{env.run_dir}/a2/narration/full_story_part1_c3.wav"
     with w.patched():
@@ -412,21 +430,24 @@ def test_w5b_adv_three_ng_final_hr_lock_and_finalize(env, adv_post):
         assert review_lock.check_before_generation(out2, z._norm_for_tts(story_plan("b1b")[1]), "en")["proceed"] is False
 
 
-def test_w6_m3_ii_minimal_fallback_consumes_outer_budget_and_goes_to_hr_not_fourth(env, adv_post):
+def test_w6_m3_ii_minimal_fallback_consumes_outer_budget_and_goes_to_hr_not_fourth(env, adv_post, hrq):
     """Opus M-3 / Fable判断(ii): ctx試行でminimal_fallback(1周2行)が起き外側の行会計が先に尽きる稀ケースは、従来方式(3回目)に到達せず安全側でSTOPPED->HR Lock。"""
     adv_post["script"] = ["STOPPED", "STOPPED"]
     # c2: n=1 TTS技術失敗->minimal fallback OK->ASR OK (2行) -> post NG -> 外側残予算1 -> n=2 ctx(最終slot) ASR NG -> STOPPED
     w = world_for(env, [False, True, True, True], [OK, NG, OK])
     run_stage(env, "b1b", w)
     e2 = results(env, "b1b")["full_story_part1_c2"]
-    assert e2["status"] != "OK" and e2["dialogue_tts"]["n_started"] == 2
-    assert e2["dialogue_tts"]["terminal_before_fallback"] is True            # 開示用の記録名
-    assert e2["dialogue_tts"]["cooldown"] is None and e2["dialogue_tts"]["final_mode"] == "ctx"        # n=3(従来方式)に到達していない(cooldownなし)
+    # LR導入後(2026-10-29): 元ブロックが従来方式(③)に到達せず終わる場合は、未実施slot(③)を`skipped`で閉じてLR段へ進み、LR不可(NO_CANDIDATE)なら終端する
+    dt = e2["dialogue_tts"]
+    assert e2["status"] != "OK" and dt["n_started"] == 3 and [a["n"] for a in dt["attempts"] if not a.get("skipped")] == [1, 2] and dt["attempts"][2].get("skipped")
+    assert dt["terminal_before_fallback"] is True            # 開示用の記録名(⑥に到達していない)
+    assert dt["cooldown"] is None and dt["final_mode"] == "ctx" and dt["lr_state"] == "NOT_APPLICABLE"        # n=3(従来方式)に到達していない(cooldownなし)
     # 送信順: [0]=n=1のctx(技術失敗) [1]=n=1内のminimal fallback(既存の技術安全装置。CONTEXTなし) [2]=n=2のctx。従来方式(3回目)のpromptは送られていない
     assert "CONTEXT FOR THIS ONE LINE" in w.prompts[0] and "CONTEXT FOR THIS ONE LINE" not in w.prompts[1] and "CONTEXT FOR THIS ONE LINE" in w.prompts[2]
     legacy = legacy_prompt_for(story_plan("b1b")[1])
     assert legacy not in w.prompts[:3]
-    assert len(w.hr_queue) >= 1                                              # 最終slotのNGがHR queueへ
+    print("HRQ", [r["wav_path"][-30:] for r in hrq])
+    assert len([r for r in hrq if r["wav_path"].endswith("full_story_part1_c2.wav")]) == 1     # c2の終端NGはHR queue 1行(c3は評価scriptが尽きた別の終端)
 
 
 def test_w7_adv_resume_after_pass1_counted_does_not_double_count(env, adv_post, monkeypatch):
@@ -444,7 +465,9 @@ def test_w7_adv_resume_after_pass1_counted_does_not_double_count(env, adv_post, 
     with pytest.raises(Crash):
         run_stage(env, "b1b", w)
     st = json.load(open(f"{env.run_dir}/b1b/audit/dialogue_ctx_attempt_state.json", encoding="utf-8"))["clips"]["full_story_part1_c2"]
-    assert st["n_started"] == 1 and st["attempts"][0]["counted"] is True and st["attempts"][0]["rows"] == 1
+    # 外側guard化(FZ-DIALOGUE-LR-ADOPTION-01 M2): record_outcomeは論理生成の最後に1回。pass2で落ちた時点ではpass1の行は未計上(counted=False)で、
+    # 再開時にcarried_logとして1回だけ計上される(二重計上も取りこぼしもない)
+    assert st["n_started"] == 1 and st["attempts"][0]["counted"] is False and st["attempts"][0]["rows"] == 1
     monkeypatch.setattr(z, "_check_stop_sentinel", lambda run_dir, where: None)
     import er003_v1_n3_01_tts_generate as n3
     seen = {"priors": {}}
@@ -460,8 +483,11 @@ def test_w7_adv_resume_after_pass1_counted_does_not_double_count(env, adv_post, 
     w2 = world_for(env, [True, True], [OK, OK])
     run_stage(env, "b1b", w2)
     e2 = results(env, "b1b")["full_story_part1_c2"]
-    assert seen["priors"]["full_story_part1_c2"] == 1 and e2["status"] == "OK" and e2["dialogue_tts"]["n_started"] == 2 and e2["tts_generations_used"] == 2
+    assert seen["priors"]["full_story_part1_c2"] == 0 and e2["status"] == "OK" and e2["dialogue_tts"]["n_started"] == 2 and e2["tts_generations_used"] == 2
     assert w2.tts_i == 2 and all("CONTEXT FOR THIS ONE LINE" in p for p in w2.prompts[:1])
+    import er011_human_review_lock_01 as review_lock
+    lk = json.load(open(f"{env.run_dir}/b1b/audit/review_lock_state.json", encoding="utf-8"))["full_story_part1_c2"]
+    assert lk["cumulative_tts_attempts"] == 2 and lk["state"] == "RESOLVED"      # 実TTS 2回(1+1)がちょうど1回ずつ計上される
 
 
 # ---------------------------------------------------------------- X/Y/B/C/narrator不変
