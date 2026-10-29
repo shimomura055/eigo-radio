@@ -759,7 +759,7 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
                                 context_before_text: str | None = None,
                                 context_after_text: str | None = None,
                                 n_new_candidates: int = N_NEW_CANDIDATES_DEFAULT,
-                                client=None, depth: int = 0) -> dict:
+                                client=None, depth: int = 0, candidate_filter=None) -> dict:
     """Human Review Lockへ到達する直前に、Production呼び出し元(generate_
     charon_english/generate_news_narration_wide_margin)から呼ぶ唯一の
     回復経路。retts_fn(rewritten_text:str)->dict は、呼び出し元が既に
@@ -811,6 +811,10 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
 
     records = build_full_candidate_records(canonical_text, candidates, qa["evaluations"], problem_span_range,
                                            segment_id=segment_id)
+    if candidate_filter is not None:
+        # FZ-DIALOGUE-LR-ADOPTION-01(加算のみ。既定None=従来とバイト同一): 呼出元(Zセリフ)が、確定内容(KP/Word/Vocab/文法)と重なる候補を
+        # 候補選定の**前**に除外する(adoptable=False+理由。7 Gateのキー・件数・閾値は不変。select_final_candidateはadoptableだけを見る)。
+        records = candidate_filter(canonical_text, records)
     result["candidates"] = records
 
     selection = select_final_candidate(records)

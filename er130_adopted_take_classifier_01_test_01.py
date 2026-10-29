@@ -54,6 +54,9 @@ def test_01_normal_lr_pass_with_warning():
     ("JA_STD", m129.KIND_MINIMAL_JA, next(iter(AL["fallback"][m129.KIND_MINIMAL_JA])), 3),
     ("KP_EN", m129.KIND_ENGLISH_LOCK, LOCK, 4), ("KP_EN", m129.KIND_ENGLISH_LOCK, LOCK, 3),
     ("Z_DLG_CTX", m129.KIND_LEGACY_DIALOGUE, next(iter(AL["fallback"][m129.KIND_LEGACY_DIALOGUE])), 3),
+    # FZ-DIALOGUE-LR-ADOPTION-01: ZセリフもLRあり(Profile lr=True)=LR block ③'(通算6)の従来Dialogue Style採用も正常Fallback
+    ("Z_DLG_CTX", m129.KIND_LEGACY_DIALOGUE, next(iter(AL["fallback"][m129.KIND_LEGACY_DIALOGUE])), 6),
+    ("Z_DLG_CTX", m129.KIND_LEGACY_DIALOGUE, next(iter(AL["fallback"][m129.KIND_LEGACY_DIALOGUE])), "③'"),
     ("EN_LR_STD", m129.KIND_MINIMAL_EN, EN_MIN, "③'"), ("EN_LR_STD", m129.KIND_MINIMAL_EN, EN_MIN, 6)])
 def test_02_normal_fallback(pol, kind, sha, slot):
     r = run(clip(take(kind, sha, slot)), pol)
@@ -129,9 +132,14 @@ def test_10_overlap_blocks():
 
 
 # ---- 11 LRが非LR role
-@pytest.mark.parametrize("pol", ["JA_STD", "KP_EN", "KP_EXPL", "Z_DLG_CTX", "SHELL_EN"])
+@pytest.mark.parametrize("pol", ["JA_STD", "KP_EN", "KP_EXPL", "Z_DLG_LEGACY", "SHELL_EN"])      # Z_DLG_CTXはLR対象(2026-10-29。下のtest_11b)。Z_DLG_LEGACY(policy=legacy)は引き続き非対象
 def test_11_lr_on_non_lr_role(pol):
     assert "LR_ON_NON_LR_ROLE" in run(clip(take(), lr=True), pol).reasons
+
+
+def test_11b_z_dlg_ctx_is_an_lr_role_since_2026_10_29():
+    assert c.er127.PROFILES["Z_DLG_CTX"].lr is True
+    assert "LR_ON_NON_LR_ROLE" not in run(clip(take(), lr=True), "Z_DLG_CTX").reasons
 
 
 # ---- 12 allowlist drift

@@ -111,7 +111,9 @@ PROFILES = {
     "JA_STD":       Profile("JA_STD", 3, (3,), "FALLBACK_MINIMAL_JA", False, 3, 3, 1),
     "KP_EN":        Profile("KP_EN", 4, (3,), "ENGLISH_LOCK", False, 4, 4, 1),
     "KP_EXPL":      Profile("KP_EXPL", 3, (3,), "FALLBACK_MINIMAL_EN", False, 3, 3, 1),
-    "Z_DLG_CTX":    Profile("Z_DLG_CTX", 3, (3,), "LEGACY_DIALOGUE", False, 3, 3, 1),
+    # FZ-DIALOGUE-LR-ADOPTION-01(APPROVED_FOR_PRODUCTION 2026-10-29): Zセリフ(文脈・感情方式)にもLRを正式導入し、最大TTS6回・LR1回・待機2回へ統一
+    # (①②ctx→180秒→③従来Dialogue→LR→①'②'ctx→180秒→③'従来Dialogue→HR)。旧(LRなし・3/3/1)は 2026-10-26〜10-29 の履歴(UDR-TRA-1はsupersede)。
+    "Z_DLG_CTX":    Profile("Z_DLG_CTX", 3, (3,), "LEGACY_DIALOGUE", True, 6, 6, 2),
     "Z_DLG_LEGACY": Profile("Z_DLG_LEGACY", 3, (3,), "SAME", False, 3, 3, 1),
     "SHELL_EN":     Profile("SHELL_EN", 3, (), "SAME", False, 3, 3, 0, unified=False),
     "NO_TTS":       Profile("NO_TTS", 0, (), "NONE", False, 0, 0, 0, unified=False),
@@ -755,13 +757,18 @@ def last_attempt_of(result: dict | None) -> dict | None:
 
 # ---------------------------------------------------------------- LR共通ラッパ
 def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | None, block_call: Callable[[str, BlockCtx], dict],
-               merge: Callable[[dict, dict], dict], last_attempt: dict | None, retry_primitive=None, client=None) -> Optional[dict]:
+               merge: Callable[[dict, dict], dict], last_attempt: dict | None, retry_primitive=None, client=None,
+               candidate_filter=None) -> Optional[dict]:
     """③NG後のLocal Rewrite。回復成功時は merge(block_result, recovery) 済みの完全なresult(status=OK)を返す。回復不可はNone
     (呼出元は従来どおりSTOPPED/ASR_VALIDATION_UNCERTAINを返しLock+HRへ進む)。非RESOLVEDの終端は必ずHRQ1行にする(Opus M-4)。
 
     契約: (1)depth>=1(LR block内)から呼べない(LocalRewriteReentryError、OPEN-376) (2)外側guardの実行中でなければ呼べない
     (out_path in _ACTIVE_GUARDED_OUT_PATHS、Opus M-3a) (3)LR blockはblock_callが元と同じleaf・同じ引数で実行する(Style/Voice/速度/QA保持、OPEN-312)。
-    LR block内のctx: script_version='v1'、m1_anchor_text=元原稿、lock_text=元原稿、slot_offset=3、total_slots=policy.total_slots。"""
+    LR block内のctx: script_version='v1'、m1_anchor_text=元原稿、lock_text=元原稿、slot_offset=3、total_slots=policy.total_slots。
+
+    FZ-DIALOGUE-LR-ADOPTION-01(加算のみ): `candidate_filter`(既定None=従来と同一呼出)。Zセリフだけが、確定内容(KP/Word/Vocab/文法)と重なる候補を
+    候補選定**前**に`adoptable=False`にする既存T1-T3純関数(er129)の前倒しhookを渡す。blk契約はBlockRun本体またはer122.ZLrBlockAdapter
+    (読む属性は `LR_RECOVER_BLK_ATTRS` に固定し、ASTテストで検査)。"""
     import er011_human_review_lock_01 as review_lock
     if retry_primitive is None:
         import er020_tts_retry_local_rewrite_01 as retry_primitive
@@ -815,7 +822,8 @@ def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | 
         try:
             recovery = retry_primitive.run_local_rewrite_recovery(
                 segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text, retts_fn=_retts,
-                out_dir=f"er011_output/local_rewrite_recovery/{theme_id}/{level}", client=client)
+                out_dir=f"er011_output/local_rewrite_recovery/{theme_id}/{level}", client=client,
+                **({} if candidate_filter is None else {"candidate_filter": candidate_filter}))
         except Exception as exc:      # LLM段の例外=LR不可(終端HR)。設定不備([STOP]/init_logger)は握らない
             if "exc" not in holder:
                 if isinstance(exc, RuntimeError) and ("init_logger" in str(exc) or "[STOP]" in str(exc)):
@@ -839,6 +847,11 @@ def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | 
                          expected_source="local_rewrite_text" if term_text else None,
                          final_status=str(recovery.get("status")))
     return None
+
+
+# lr_recoverがblkから読む/書く属性の全集合(FZ-DIALOGUE-LR-ADOPTION-01 O6: er122.ZLrBlockAdapterはこの集合だけを満たせばよい。AST testで固定)
+LR_RECOVER_BLK_ATTRS = frozenset({"depth", "policy", "_open_ordinal", "done", "total_slots", "progress", "lr_outcome"})
+LR_RECOVER_PROGRESS_ATTRS = frozenset({"resumed", "lr_state", "save_lr_text", "save_lr_audit"})
 
 
 def lr_unresolved_rows(blk: BlockRun) -> tuple:

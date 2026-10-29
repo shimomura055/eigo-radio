@@ -591,7 +591,12 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer, detail_out=_aj,
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, max_len=max_len), **_seg_kw)  # AUW 委任_05/13
+            # FZ-DIALOGUE-LR-ADOPTION-01(加算のみ): hookが任意メソッド attempt_ctx_kwargs(attempt) を持つ場合だけ、通算slot/total_slots(6)/script_version/
+            # m1_anchor_textを渡す(無いと3回目が最終slot扱いになり、LR前に判定器がHRQ行を書く)。hook=None・メソッド無し(B/C等)は従来とバイト同一。
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
+                attempt, max_attempts, max_len=max_len,
+                **(attempt_hook.attempt_ctx_kwargs(attempt) if (attempt_hook is not None and hasattr(attempt_hook, "attempt_ctx_kwargs")) else {})),
+            **_seg_kw)  # AUW 委任_05/13
         final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
         verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=False)

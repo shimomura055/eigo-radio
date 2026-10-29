@@ -321,7 +321,7 @@ def count_tts_generations_in_result(result: dict) -> int:
     return max(n, 1)
 
 
-def finalize_a2_slowdown_final_ng(out_path: str, tts_input: str, result: dict, language: str = "en") -> dict:
+def finalize_a2_slowdown_final_ng(out_path: str, tts_input: str, result: dict, language: str = "en", *, record_lock: bool = True) -> dict:
     """AUW 委任_06e(F3、ユーザー原文L39-49「3回NGでLR/HR」の末端): A2外側ループが通算TTS予算(3回)または周回上限を使い切り、
     最終周回の**減速後再検証がNG**で終わったときだけ呼ぶ(内側が失敗した場合は内側のguarded_generateが既に
     STOPPEDをLockへ記録済みのため呼ばない)。内側のguarded関数は減速**前**の生成にOKを返してLockをRESOLVEDにするため、
@@ -332,12 +332,17 @@ def finalize_a2_slowdown_final_ng(out_path: str, tts_input: str, result: dict, l
           二重計上しないよう`attempts_log`は空で渡す)。→ Lock=HUMAN_REVIEW_REQUIRED。HR queueへの1行は
           `_post_slowdown_unified_judge(log_human_review=True)`が最終slotの減速後NGで既に書いている。
       (iii) Local Rewrite(LR)は本関数では新設・変更しない: A2外側ループ内にはLR配線が無く(06d `dlg_cap2`でもLLM呼出0)、
-          status!=OKのentryは従来どおりrunner側の既存処理に渡る。"""
+          status!=OKのentryは従来どおりrunner側の既存処理に渡る。
+    FZ-DIALOGUE-LR-ADOPTION-01(M1、加算のみ。既定record_lock=True=従来とバイト同一): Zセリフは外側guard(guarded_generate)の中でこの関数を呼ぶ。
+    外側guardが戻りで`record_outcome`を1回だけ行う(1論理生成=1記録、er011 `guarded_generate`)ため、ここで`record_outcome`を直接呼ぶと
+    Lock記録・累積TTS・attempt_historyが二重になる。record_lock=Falseは(i)のasr_judgement差替えと human_review_required のみ行い、Lock記録を省く。"""
     pre = result.get("asr_judgement")
     if pre is not None and "asr_judgement_pre_slowdown" not in result:
         result["asr_judgement_pre_slowdown"] = pre
     result["asr_judgement"] = result.get("asr_judgement_post_slowdown_ng")
     result["human_review_required"] = True
+    if not record_lock:
+        return result
     lock_result = {"status": "STOPPED", "reason": result.get("reason"), "attempts_log": []}
     result["review_lock_state_final"] = review_lock.record_outcome(out_path, tts_input, language, lock_result).get("state")
     return result
@@ -505,7 +510,14 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
                                          # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(Opus M-1): 前プロセスで既にrecord_outcome済み(計上済み)の生成行数。
                                          # 中断再開時に外側ループの通算TTS予算(3回)を実消費に合わせる(前例: generate_a2_segment_with_slowdown内のprior_generations)。
                                          # 既定0で既存の全呼出は不変。
-                                         *, prior_generations: int = 0) -> dict:
+                                         *, prior_generations: int = 0,
+                                         # FZ-DIALOGUE-LR-ADOPTION-01(Zセリフ6回+LR。すべて加算のkeyword専用・既定=従来とバイト同一[golden固定]):
+                                         # total_budget=このブロックの生成予算(None=PRODUCTION_MAX_TTS_ATTEMPTS=3)、slot_offset=通算slotの起点(None=slotを渡さない従来動作)、
+                                         # total_slots=通算の終端slot数(最終slot判定に使う)、final_block=False(LR前の元ブロック)は最終slot扱いにせず
+                                         # 最終NGでもfinalize(Lock/HRQ)しない(LRが続くため)、lock_text=Lock key/HRQ/M1 anchorの元原稿(LR blockでは送信文と異なる)、
+                                         # record_lock=False=外側guardが記録するためfinalizeでLock記録を省く(M1)。
+                                         total_budget: int | None = None, slot_offset: int | None = None, total_slots: int | None = None,
+                                         final_block: bool = True, lock_text: str | None = None, record_lock: bool = True) -> dict:
     """AUW 委任_06c(OF-AUW-C-08、ユーザー原文L204「最大3回のTTS生成フロー」): 外側ループを持たなかった
     Dialogue(Std)[`er063.dialogue` a2]/Voices A2[`er012_b_family_voices_a2_production_01`の`*_with_a2_slowdown`]向けの、
     `generate_a2_segment_with_slowdown`と同じ構造の外側ループ。`gen_fn(max_attempts)->result dict`(減速前の通常ペース生成。
@@ -513,7 +525,7 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
     残予算の範囲で**通常ペースから取り直す(旧: 減速後NGは再生成せずSTOPPED)。Prompt・Voice・A2 6%減速・Dialogue固有例外
     (話者帰属は呼出側)・閾値は不変。KP英語phraseの4回構成(2026-09-01ユーザー決定)は本関数の対象外(既存例外として維持)。"""
     narration_dir = out_path.rsplit("/", 1)[0]
-    total_budget = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS
+    total_budget = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS if total_budget is None else int(total_budget)
     generations_used = prior_generations
     slowdown_attempts_log = []
     result = None
@@ -527,10 +539,17 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
         generations_used += count_tts_generations_in_result(result)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(内側のstandard/fallback exhausted。既存のSTOPPED/Human Review経路)
+        _budget_last = (generations_used >= total_budget if (total_slots is None or slot_offset is None)
+                        else (slot_offset + generations_used >= total_slots))
+        _pp_kw = {} if slowdown_pct is None else {"slowdown_pct": slowdown_pct}
+        if lock_text is not None:
+            _pp_kw["lock_text"] = lock_text      # M3: LR block内でLock key/HRQ/M1 anchorを元原稿にする(送信文=書換え後は tts_input)
+        if slot_offset is not None:
+            _pp_kw["slot"] = slot_offset + generations_used
         result = apply_a2_slowdown_postprocess(
             name, narration_dir, tts_input, result,
-            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts),
-            log_human_review=True, **({} if slowdown_pct is None else {"slowdown_pct": slowdown_pct}))
+            is_last_slot=(final_block and (_budget_last or attempt >= max_slowdown_attempts)),
+            log_human_review=True, **_pp_kw)
         final_post_slowdown_ng = result.get("status") != "OK"
         slowdown_attempts_log.append({
             "attempt": attempt, "status": result.get("status"),
@@ -547,8 +566,9 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
     if result is not None:
         result["tts_generations_used"] = generations_used
         result["slowdown_attempts_log"] = slowdown_attempts_log
-        if final_post_slowdown_ng:
-            finalize_a2_slowdown_final_ng(out_path, tts_input, result)
+        if final_post_slowdown_ng and final_block:
+            finalize_a2_slowdown_final_ng(out_path, (tts_input if lock_text is None else lock_text), result,
+                                          **({} if record_lock else {"record_lock": False}))
     return result
 
 

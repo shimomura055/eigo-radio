@@ -1,5 +1,7 @@
 # ROW_MAPPING_01 — 棚卸し49行 → 新仕様の対応表(機械照合済み)
 
+> **履歴(2026-10-29)**: 正式一覧は`ROW_MAPPING_02.md/.json`(8区分・47行)へ更新された(FZ-DIALOGUE-LR-ADOPTION-01)。本書の`Z-*-DIALOGUE-LEGACY`2行は正式一覧の独立行から削除(互換定義は`er127.PROFILES["Z_DLG_LEGACY"]`と02のcompat_rows)、`Z-*-DIALOGUE-CTX`の「LRなし・3回・待機1回」は「LRあり・6回・待機2回」へ更新。以下は2026-10-26時点の履歴として残置する。
+
 管理ID: TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_01(設計・read-only)。入力=`docs/research/TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01/consolidated_01.json` `star_table_1`(49行)。構造化版=`ROW_MAPPING_01.json`。
 
 **漏れ0の機械確認**: 入力49行のIDと本表の対応IDが完全一致(生成スクリプトのassert: `set(入力ID)==set(対応ID) and len==49`。実行結果=PASS)。行数 X=16/Y=19/Z=14。

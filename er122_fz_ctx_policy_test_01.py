@@ -301,16 +301,35 @@ def test_m2_resume_final_slot_matches_overall_n_and_hr_queue_row_exists(env):
     w2 = make_world([True, True], [NG, NG], env.tmp)
     w2.out_path = w.out_path
     r, p = run_std(env, w2)
-    # 再開後: max_attempts=remaining=2。ループ内2番目=通算n=3=最終slot
-    assert [c["is_last_slot"] for c in w2.attempt_ctxs] == [False, True]
-    assert len(w2.hr_queue) == 1 and r["status"] == "STOPPED"            # 最終NGのHR queue行が欠落しない
+    # 再開後: max_attempts=remaining=2。ループ内2番目=通算n=3。FZ-DIALOGUE-LR-ADOPTION-01: 最終slotは通算n=6だけ(n=3はLR前の③=最終slotではない)なので、
+    # 判定器はこの時点でHR queue行を書かない(LR段を経た終端でdriverのregister_terminal_hrが1行を保証する。test_lr_* が固定)
+    assert [c["is_last_slot"] for c in w2.attempt_ctxs] == [False, False]
+    assert [c["slot"] for c in w2.attempt_ctxs] == [2, 3] and all(c["slot_offset"] if "slot_offset" in c else True for c in w2.attempt_ctxs)
+    assert len(w2.hr_queue) == 0 and r["status"] == "STOPPED"
     assert p.n_started == 3
 
 
-def test_m2_no_resume_last_slot_only_at_n3(env):
+def test_m2_no_resume_last_slot_only_at_n6_not_at_n3(env):
     w = make_world([True, True, True], [NG, NG, NG], env.tmp)
     run_std(env, w)
-    assert [c["is_last_slot"] for c in w.attempt_ctxs] == [False, False, True] and len(w.hr_queue) == 1
+    assert [c["is_last_slot"] for c in w.attempt_ctxs] == [False, False, False] and len(w.hr_queue) == 0     # n=3はLR前(最終slotではない)
+    assert [c["slot"] for c in w.attempt_ctxs] == [1, 2, 3]
+
+
+def test_attempt_ctx_slot_6_is_the_only_last_slot_and_lr_block_uses_v1_and_m1_anchor(env):
+    """B2(LR block)のattempt_ctx: slot=通算n(4〜6)、total_slots=6、script_version='v1'、m1_anchor_text=元原稿。is_last_slotはn=6のみ。"""
+    w = make_world([True] * 6, [NG] * 6, env.tmp)
+    p = open_policy(env, w)
+    with w.patched():
+        import er012_b_family_voices_production_01 as bv
+        bv.generate_voice_body_wide_margin(fk.TEXT, w.out_path, "Puck", max_attempts=p.remaining(), attempt_hook=p)
+        assert p.enter_lr_phase() is True
+        p.save_lr_text(fk.TEXT + " rewritten")
+        bv.generate_voice_body_wide_margin(fk.TEXT + " rewritten", w.out_path, "Puck", max_attempts=p.remaining(), attempt_hook=p)
+    assert [c["slot"] for c in w.attempt_ctxs] == [1, 2, 3, 4, 5, 6]
+    assert [c["is_last_slot"] for c in w.attempt_ctxs] == [False] * 5 + [True]
+    assert [c.get("script_version") for c in w.attempt_ctxs] == ["v0", "v0", "v0", "v1", "v1", "v1"]
+    assert [c.get("m1_anchor_text") for c in w.attempt_ctxs] == [None] * 3 + [fk.TEXT] * 3
 
 
 # ---------------------------------------------------------------- 技術失敗 / minimal_fallback の扱い
@@ -452,7 +471,8 @@ def test_before_attempt_3_returns_no_style_override(env):
     p.after_attempt(2, [], False, "x")
     d3 = p.before_attempt(3, 3, w.out_path)
     assert d1["style_prefix_override"] == CTX_STYLE and d2["style_prefix_override"] == CTX_STYLE and d3["style_prefix_override"] is None
-    assert p.before_attempt(4, 3, w.out_path) == {"stop": True, "reason": "ATTEMPT_BUDGET_EXHAUSTED(総試行3回を使い切り。4回目は存在しない)"}
+    stop = p.before_attempt(4, 3, w.out_path)      # B1の4回目はLR未実施では存在しない(fail-closed。LRを経てphase=B2になるまで開かない)
+    assert stop["stop"] is True and stop["reason"].startswith("ATTEMPT_BUDGET_EXHAUSTED(phase=B1")
 
 
 # ---------------------------------------------------------------- hook=None のparity(golden)

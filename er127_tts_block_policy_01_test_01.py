@@ -20,7 +20,8 @@ import er127_test_golden_01 as G
 import er127_tts_block_policy_01 as blk
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-ROW_MAPPING = os.path.join(ROOT, "docs", "research", "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01", "ROW_MAPPING_01.json")
+ROW_MAPPING = os.path.join(ROOT, "docs", "research", "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01", "ROW_MAPPING_02.json")      # FZ-DIALOGUE-LR-ADOPTION-01: 正式一覧(8区分・47行)
+ROW_MAPPING_01 = os.path.join(ROOT, "docs", "research", "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01", "ROW_MAPPING_01.json")   # 履歴(49行・2026-10-26)
 
 LEAF_CFG = {  # leaf -> (segment_id, level, scope)
     "L1": ("comment_1", "b1b", "X"), "L2": ("full_story_part1", "b1b", "X"), "L3": ("topic_intro", "a2", "X"),
@@ -150,9 +151,9 @@ ROW_REPR = {   # 行ID -> (leaf, segment_id, z_dialogue_policy)  ※policy解決
     "Y-B-02": ("L1", "topic_intro"), "Y-B-03": ("L1", "comment_1"), "Y-B-04": ("L2", "y_intro_2"), "Y-B-05": ("L2", "y_voice_3"),
     "Y-B-06": ("L2", "y_voice_1_k2"), "Y-B-07": ("L6", "kp1_en"), "Y-B-08": ("L5", "kp3_explanation_en"),
     "Z-A2-NARR": ("L4", "full_story_part2_c3"), "Z-A2-DIALOGUE-CTX": ("L8", "full_story_part1_c1", "fz_ctx_v1"),
-    "Z-A2-DIALOGUE-LEGACY": ("L8", "full_story_part1_c1", "legacy"), "Z-A2-TOPIC": ("L3", "topic_intro_en"), "Z-A2-JA": ("L7", "preview"),
+    "Z-A2-TOPIC": ("L3", "topic_intro_en"), "Z-A2-JA": ("L7", "preview"),
     "Z-A2-KPEN": ("L6", "kp1_en"), "Z-A2-KPJA": ("L7", "kp1_ja"), "Z-B1B-NARR": ("L2", "full_story_part1_c2_k1"),
-    "Z-B1B-DIALOGUE-CTX": ("L8", "full_story_part1_c1", "fz_ctx_v1"), "Z-B1B-DIALOGUE-LEGACY": ("L8", "full_story_part1_c1", "legacy"),
+    "Z-B1B-DIALOGUE-CTX": ("L8", "full_story_part1_c1", "fz_ctx_v1"),
     "Z-B1B-TOPIC": ("L1", "topic_intro_en"), "Z-B1B-PREVCOM": ("L1", "comment_2"), "Z-B1B-KPEN": ("L6", "kp2_en"), "Z-B1B-KPEXPL": ("L5", "kp2_explanation_en"),
 }
 NO_TTS_ROWS = {"Y-B-00"}
@@ -166,10 +167,11 @@ class MapTests(unittest.TestCase):
         d = json.load(open(ROW_MAPPING, encoding="utf-8"))
         cls.rows = d["rows"] if "rows" in d else d["profiles"]
 
-    def test_t_map_49_rows_cover_all_ids(self):
+    def test_t_map_47_rows_cover_all_ids(self):
         ids = {r["id"] for r in self.rows}
-        self.assertEqual(len(self.rows), 49)
+        self.assertEqual(len(self.rows), 47)
         self.assertEqual(ids, set(ROW_REPR) | NO_TTS_ROWS)
+        self.assertFalse([i for i in ids if i.endswith("DIALOGUE-LEGACY")], "Zセリフ従来方式の独立行は正式一覧(ROW_MAPPING_02)に出さない(2026-10-29)")
 
     def test_t_map_each_row_policy_matches_star_table(self):
         n = 0
@@ -189,16 +191,46 @@ class MapTests(unittest.TestCase):
                 self.assertEqual(pol.profile.name, r["policy"])
                 self.assertEqual(pol.profile.max_tts, r["max_tts"])
                 self.assertEqual(pol.profile.max_waits, r["max_waits"])
-                self.assertEqual(pol.profile.lr, r["policy"] in ("EN_LR_STD", "EN_LR_ADV"))
+                self.assertEqual(pol.profile.lr, r["policy"] in ("EN_LR_STD", "EN_LR_ADV", "Z_DLG_CTX"))
                 n += 1
-        self.assertEqual(n, 49)
+        self.assertEqual(n, 47)
 
     def test_t_map_counts_by_policy_and_family(self):
         from collections import Counter
         c = Counter(r["policy"] for r in self.rows)
         self.assertEqual(c["EN_LR_STD"] + c["EN_LR_ADV"], 24)
-        self.assertEqual({k: sum(1 for r in self.rows if r["family"] == k) for k in "XYZ"}, {"X": 16, "Y": 19, "Z": 14})
-        self.assertEqual(set(c), set(blk.PROFILES))
+        self.assertEqual(c["Z_DLG_CTX"], 2)
+        self.assertEqual({k: sum(1 for r in self.rows if r["family"] == k) for k in "XYZ"}, {"X": 16, "Y": 19, "Z": 12})
+        self.assertEqual(set(c), set(blk.PROFILES) - {"Z_DLG_LEGACY"})      # 正式8区分(Z_DLG_LEGACYは互換定義=下のcompatテスト)
+
+    def test_t_map_eight_categories_match_user_table(self):
+        d = json.load(open(ROW_MAPPING, encoding="utf-8"))
+        cats = d["categories"]
+        self.assertEqual([c["profile"] for c in cats], ["EN_LR_STD", "EN_LR_ADV", "Z_DLG_CTX", "JA_STD", "KP_EN", "KP_EXPL", "SHELL_EN", "NO_TTS"])
+        for c in cats:
+            p = blk.PROFILES[c["profile"]]
+            self.assertEqual(p.max_tts, c["max_tts"], c["profile"])
+            if c["lr"] is not None:
+                self.assertEqual(p.lr, c["lr"], c["profile"])
+        z = next(c for c in cats if c["profile"] == "Z_DLG_CTX")
+        self.assertEqual((z["third_style"], z["lr"], z["max_tts"]), ("従来Dialogue Style", True, 6))
+
+    def test_compat_z_dlg_legacy_is_kept_out_of_formal_list_but_still_defined(self):
+        """独立行の削除 != 従来Dialogue Styleの撤去。policy=legacy(既存run・承認済みロールバック)の互換定義はコード・compat_rowsに残る。"""
+        d = json.load(open(ROW_MAPPING, encoding="utf-8"))
+        self.assertEqual({r["policy"] for r in d["compat_rows"]}, {"Z_DLG_LEGACY"})
+        self.assertEqual(len(d["compat_rows"]), 2)
+        p = blk.PROFILES["Z_DLG_LEGACY"]
+        self.assertEqual((p.lr, p.max_tts, p.max_waits, p.total_slots), (False, 3, 1, 3))
+        from er109_xz_scope_01 import run_scope
+        with run_scope("Z"):
+            self.assertEqual(blk.block_policy_for("L8", "full_story_part1_c1", z_dialogue_policy="legacy").profile.name, "Z_DLG_LEGACY")
+            self.assertEqual(blk.block_policy_for("L8", "full_story_part1_c1", z_dialogue_policy="fz_ctx_v1").profile.name, "Z_DLG_CTX")
+
+    def test_row_mapping_01_is_history_with_49_rows(self):
+        d = json.load(open(ROW_MAPPING_01, encoding="utf-8"))
+        self.assertEqual(d["row_count"], 49)
+        self.assertEqual(len(d["rows"]), 49)
 
     def test_profile_table_invariants(self):
         for name, p in blk.PROFILES.items():

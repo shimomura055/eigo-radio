@@ -390,6 +390,87 @@ def check_confirmed_overlap(ledger_clip: dict, confirmed_selection: dict | None,
     return out
 
 
+# ----------------------------------------------------------------------------- 確定内容の事前保護(FZ-DIALOGUE-LR-ADOPTION-01、加算のみ)
+# 台帳(`_clip_ledger`)が事後に使う `check_confirmed_overlap`(T1/T2/T3)を、同一の純関数のまま**LR候補の選定前**とLR入力転写の選択に前倒しする
+# (新しいGate・基準ではない。台帳側の判定と不一致を作らないよう再実装しない)。Production(Zセリフ driver)は er063 経由でのみ呼ぶ。
+def precheck_candidate_overlap(before: str, after: str, confirmed_selection: dict | None, grammar: list | None = None,
+                               facts: dict | None = None) -> dict:
+    """LR候補(before->after)が確定内容と重なるかを、台帳と同一のT1-T3で判定する。戻り値 {"stop": bool, "stops": ["T1",..], "overlap": {...}}。
+    変更なし(ops空)は重ならない。confirmed_selectionがNone/空なら T1/T2 は SKIPPED(偽STOPにしない)。"""
+    ops = compute_ops(before, after)
+    clip = {"lr": {"before": before, "after": after, "adopted_in_final": True}, "_ops": ops}
+    ov = check_confirmed_overlap(clip, confirmed_selection, grammar, facts)
+    stops = [t for t in ("T1", "T2", "T3") if (ov.get(t) or {}).get("status") == "STOP"]
+    return {"stop": bool(stops), "stops": stops, "overlap": ov}
+
+
+def make_candidate_filter(confirmed_selection: dict | None, grammar: list | None = None, facts: dict | None = None):
+    """`er020.run_local_rewrite_recovery(candidate_filter=)` 用。確定内容と重なる候補を `adoptable=False` にし理由を付ける(7 Gateのキー・値は不変)。
+    重ならない候補・既にadoptable=Falseの候補は変更しない。"""
+    def _flt(canonical_text: str, records: list) -> list:
+        for r in records:
+            if not r.get("adoptable"):
+                continue
+            pc = precheck_candidate_overlap(canonical_text, r.get("rewritten_segment") or "", confirmed_selection, grammar, facts)
+            if pc["stop"]:
+                r["adoptable"] = False
+                r["candidate_filter_reject"] = {"reason": "LR_OVERLAPS_CONFIRMED_CONTENT", "stops": pc["stops"],
+                                                "hits": {t: (pc["overlap"].get(t) or {}).get("hits") for t in pc["stops"]}}
+        return records
+    return _flt
+
+
+def _apply_ops_to_text(text: str, ops: list) -> str:
+    """compute_opsのop(core範囲)だけを text に適用した文を返す(右から順に置換。insertは該当token直前、deleteは空文字へ)。"""
+    tb = tokens(text)
+    out = text
+    for op in sorted(ops, key=lambda o: o["core_i1"], reverse=True):
+        i1, i2 = op["core_i1"], op["core_i2"]
+        if i2 > i1:
+            s, e = tb[i1][1], tb[i2 - 1][2]
+        else:
+            s = e = tb[i1][1] if i1 < len(tb) else len(text)
+        out = out[:s] + op.get("core_after_text", "") + out[e:]
+    return out
+
+
+def input_overlaps_confirmed(canonical_text: str, ng_span: dict, asr_text: str, confirmed_selection: dict | None,
+                             facts: dict | None = None) -> dict:
+    """LR入力転写の候補を、NG span(`er020.identify_ng_span`の先頭diff)が確定内容(T1: 語句、T2: 出典文)と重なるかで判定する。
+    canonical->ASR転写のdiffのうちNG spanの語を含むopだけを、台帳と同一の `check_confirmed_overlap`(T1/T2のみ使用。T3は入力選択に使わない)へ渡す。
+    戻り値 {"protected": bool, "stops": [...], "hits": ...}。確定selectionが無ければ protected=False。"""
+    if not ng_span or not ng_span.get("found") or not confirmed_selection:
+        return {"protected": False, "stops": [], "hits": {}}
+    ops = compute_ops(canonical_text, asr_text)
+    ng_words = {str(w).lower() for w in (ng_span.get("canonical_changed_words") or [])}
+    ngset = {w for t in ng_words for w in _lw(t)} or ng_words
+    sel_ops = [o for o in ops if ngset & set(o.get("core_before_tokens") or [])] or ops[:1]
+    # T1(語句交差)は before/after 全文のdiffで再計算される純関数のため、NG span以外の差分(転写の他の表記ゆれ)が混ざらないよう、
+    # 選んだopだけをcanonicalへ適用した『仮のafter』を作って判定する(T2はopsを使うので同じopだけ)
+    after_sel = _apply_ops_to_text(canonical_text, sel_ops)
+    clip = {"lr": {"before": canonical_text, "after": after_sel, "adopted_in_final": True}, "_ops": compute_ops(canonical_text, after_sel)}
+    ov = check_confirmed_overlap(clip, confirmed_selection, None, facts)
+    stops = [t for t in ("T1", "T2") if (ov.get(t) or {}).get("status") == "STOP"]
+    return {"protected": bool(stops), "stops": stops, "hits": {t: (ov.get(t) or {}).get("hits") for t in stops}}
+
+
+def level_facts(level_dir: str, clip_text: str = "") -> dict:
+    """Zセリフの確定保護用 facts({"entities","level_text"})を台帳(`build_lr_ledger`)と同じ出典から組む。取れない項目は空(SKIPPED扱い)。"""
+    results = _jl(os.path.join(level_dir, "audit", "tts_generation_results.json")) or {}
+    texts = [e.get("canonical_text") for _, e, _ in _iter_entries(results) if isinstance(e.get("canonical_text"), str)]
+    level_text = " ".join(texts + ([clip_text] if clip_text else []))
+    parts = _jl(os.path.join(level_dir, "parts.json"))
+    if isinstance(parts, dict):
+        level_text += " " + " ".join(t for _, t in _string_leaves(parts))
+    return {"entities": _entities_from_run(level_dir), "level_text": level_text}
+
+
+def load_confirmed_selection(level_dir: str) -> dict | None:
+    """台帳と同じ出典(`<level_dir>/audit/confirmed_selection.json`)。無ければNone。"""
+    sel = _jl(os.path.join(level_dir, "audit", "confirmed_selection.json"))
+    return sel if isinstance(sel, dict) else None
+
+
 # ----------------------------------------------------------------------------- 採用take解決(OPUS (b)-1。「記録完全」の定義はここに一本化)
 def _style_kind(*, sha: str | None, route: str | None, language: str | None, is_kp_en: bool, legacy_dialogue: bool = False) -> str:
     if legacy_dialogue:

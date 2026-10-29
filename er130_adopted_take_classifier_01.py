@@ -270,7 +270,11 @@ def dialogue_legacy_fallback_direct(entry: dict, take: dict | None) -> bool:
     if not isinstance(dt, dict) or dt.get("final_mode") != "legacy_fallback" or str(dt.get("policy") or "").lower() == "legacy":
         return False
     n = dt.get("final_attempt_n")
-    if n is None or not isinstance(take, dict) or take.get("ordinal") != n:
+    # FZ-DIALOGUE-LR-ADOPTION-01: LR block採用(depth=1、ordinal=通算n-ブロック長)も同じ記録で確定する。通算n = ordinal + ブロック長*depth
+    # (ブロック長はProfile(Z_DLG_CTX.block_attempts)から取り数値を複製しない。depthキー無し=0=従来と同じ)。
+    if n is None or not isinstance(take, dict) or take.get("ordinal") is None:
+        return False
+    if take.get("ordinal") + er127.PROFILES["Z_DLG_CTX"].block_attempts * int(take.get("depth") or 0) != n:
         return False
     return any(isinstance(a, dict) and a.get("n") == n and a.get("mode") == "legacy_fallback" and a.get("verified") is True
                for a in dt.get("attempts") or [])

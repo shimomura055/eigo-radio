@@ -892,7 +892,8 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
 
 # ============================================================
 # 4-D. Z dialogue 文脈・感情付きTTS(FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01、OPEN-528、APPROVED_FOR_PRODUCTION 2026-10-26)
-#      ユーザー仕様: 1回目=文脈・感情付き、NG->即時2回目=文脈・感情付き、NG->180秒->3回目=従来方式(文脈・感情情報を完全除外)、総試行3回(待機は2026-10-26に旧600秒から180秒へ変更、er127.cooldown_core)。
+#      ユーザー仕様: 1回目=文脈・感情付き、NG->即時2回目=文脈・感情付き、NG->180秒->3回目=従来方式(文脈・感情情報を完全除外)(待機は2026-10-26に旧600秒から180秒へ変更、er127.cooldown_core)。
+#      FZ-DIALOGUE-LR-ADOPTION-01(APPROVED_FOR_PRODUCTION 2026-10-29): 3回目NG後にLR(最大1回)→書換え本文で同じ3回構成(①'②'ctx→180秒→③'従来)→HR。最大TTS6回・LR1回・待機2回。設計=docs/research/FZ-DIALOGUE-LR-ADOPTION-01/WIRING_DESIGN_01.md。
 #      設計=docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/DESIGN_02.md。X/Y/B/C/narrator/KPは一切変更しない(Zのdialogueだけ)。
 # ============================================================
 def prepare_dialogue_ctx(run_dir: str, level: str, plan: list, *, story_key: str = DEFAULT_SLUG, only_clips: set | None = None) -> dict:
@@ -917,15 +918,17 @@ def prepare_dialogue_ctx(run_dir: str, level: str, plan: list, *, story_key: str
 
 def generate_dialogue_ctx(spec: ClipSpec, out_path: str, text: str, dctx: dict) -> dict:
     """dialogue 1 clipの文脈・感情付きTTS。共有ループ(er012_b.generate_voice_body_wide_margin)は単一コピーのまま、attempt_hook(policy)で
-    『attempt番号->Style』と『試行前後の記録』だけを差し込む。Std=単一呼出、Adv=外側ループ(減速後ASR再検証つき、通算TTS3回を共有)。"""
-    import er003_v1_n3_01_tts_generate as n3_tts
+    『attempt番号->Style』と『試行前後の記録』だけを差し込む。Std=単一呼出、Adv=外側ループ(減速後ASR再検証つき、通算TTSを共有)。
+
+    FZ-DIALOGUE-LR-ADOPTION-01(APPROVED_FOR_PRODUCTION 2026-10-29): 最大TTS6回+LR1回+待機2回。①②ctx→180秒→③従来→LR→①'②'ctx→180秒→③'従来→HR。
+    全体を外側guard(`guarded_generate`)で包み、1論理生成=1 record_outcome(er011の再入規則)にする。policy生成と保存結果の採用(API 0)は外側guardの前
+    (保存結果の採用でrecord_outcomeを二重に走らせない)。"""
     import er011_human_review_lock_01 as review_lock
     import er012_b_family_voices_production_01 as bvoices
     import er122_fz_ctx_notes_01 as notes
     import er122_fz_ctx_policy_01 as pol
 
     run_dir, level_dir = dctx["run_dir"], dctx["level_dir"]
-    adv = spec.level == "b1b"
     chk = review_lock.check_before_generation(out_path, text, "en")
     if not chk.get("proceed"):
         # Human Review Lock済み(0 API): 既存のblock結果をそのまま返す。notes(LLM)もstateも触らない
@@ -939,42 +942,146 @@ def generate_dialogue_ctx(spec: ClipSpec, out_path: str, text: str, dctx: dict) 
     saved = policy.saved_result()
     if saved is not None:       # 確定直後〜checkpoint前に落ちた合格済みclip: 保存結果を採用(API 0。作り直さない)
         return saved
-    budget_left = min(policy.remaining(), pol.MAX_TOTAL_ATTEMPTS - policy.prior_generations())
-    if not adv:
-        r = bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice, max_attempts=policy.remaining(), attempt_hook=policy)
-        policy.mark_counted()
-    elif budget_left <= 0:
-        # 3回消費済み(または行会計で予算なし): 4回目を回さず、STOPPED+Review Lock(HR)で終える(0 API)
-        r = bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice, max_attempts=0, attempt_hook=policy)
-        policy.mark_counted()
-    else:
+    r = _dialogue_ctx_guarded_fn()(text, out_path, spec, dctx, policy, sty)
+    policy.mark_counted()       # record_outcome(外側guard)済み。終了済み試行を計上済みにする(以後のcarried_logに含めない)
+    return r
+
+
+_DIALOGUE_CTX_GUARDED = None
+
+
+def _dialogue_ctx_guarded_fn():
+    """`_dialogue_ctx_flow`を外側guardで包んだ関数(遅延生成。er011はこのmoduleの先頭でimportしない既存方針)。"""
+    global _DIALOGUE_CTX_GUARDED
+    if _DIALOGUE_CTX_GUARDED is None:
+        import er011_human_review_lock_01 as review_lock
+        _DIALOGUE_CTX_GUARDED = review_lock.guarded_generate("en")(_dialogue_ctx_flow)
+    return _DIALOGUE_CTX_GUARDED
+
+
+def _dialogue_ctx_flow(text: str, out_path: str, spec: ClipSpec, dctx: dict, policy, sty: dict) -> dict:
+    """外側guard内の本体(FZ-DIALOGUE-LR-ADOPTION-01)。戻り値のattempts_logは『このprocessで新規実行した全attempt行』(M2。移行済み・計上済みの行は含めない)。"""
+    import er003_v1_n3_01_tts_generate as n3_tts
+    import er012_b_family_voices_production_01 as bvoices
+    import er122_fz_ctx_notes_01 as notes
+    import er122_fz_ctx_policy_01 as pol
+
+    level_dir = dctx["level_dir"]
+    adv = spec.level == "b1b"
+    L = pol.block_attempts()
+    rows_all: list = []      # M2: 外側guardのrecord_outcomeが数える唯一の行集合
+
+    def run_block(block_text: str, depth: int, final_block: bool) -> dict:
+        """1ブロックの実行(depth0=元原稿・B1、depth1=LR後の書換え本文・B2)。Style/Voice/速度/QAはB1と同一(policyのhookが決める)。"""
+        if not adv:
+            r_ = bvoices.generate_voice_body_wide_margin(block_text, out_path, spec.voice, max_attempts=policy.remaining(), attempt_hook=policy)
+            rows_all.extend(r_.get("attempts_log") or [])
+            return r_
+        prior = policy.prior_generations()
+        if min(policy.remaining(), L - prior) <= 0:
+            # 予算消費済み(または行会計で予算なし): 追加TTSを回さず、STOPPED(0 API)で次のphaseへ
+            r_ = bvoices.generate_voice_body_wide_margin(block_text, out_path, spec.voice, max_attempts=0, attempt_hook=policy)
+            rows_all.extend(r_.get("attempts_log") or [])
+            return r_
         passes = {"n": 0}
+        pass_end_n: list = []
 
         def gen(max_attempts):
             if passes["n"] > 0:
                 policy.note_final_ng()      # 直前passが減速後検証でNG確定した時刻(cooldownの起点)
             passes["n"] += 1
-            # Opus M-2: ループ内の番号と通算nの最終slotを一致させる(外側の行会計の残りと、policyの通算残りの小さい方)
+            # Opus M-2: ループ内の番号と通算nの最終slotを一致させる(外側の行会計の残りと、policyのブロック内残りの小さい方)
             ma = min(max_attempts, policy.remaining())
-            r_ = bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice, max_attempts=ma, attempt_hook=policy)
-            policy.mark_counted()
-            return r_
-        r = n3_tts.generate_with_a2_slowdown_outer_loop(spec.clip_id, text, out_path, gen, slowdown_pct=Z_ADV_DIALOGUE_SLOWDOWN_PCT,
-                                                        prior_generations=policy.prior_generations())
-    if not isinstance(r, dict):
-        return r
-    extra = {"ctx_style_sha256": sty["style_sha256"], "context_input_sha256": sty["context_input_sha256"], "note_status": sty["note_status"],
-             "speaker_display_source": sty["speaker_display_source"], "emotion_prompt_sha256": sty["emotion_prompt_sha256"],
-             # Opus M-3(ii): 行会計で外側予算が先に尽きた/早期終了で従来方式(3回目)に到達せず終わった場合の記録(安全側=STOPPED->HR Lock)
-             "terminal_before_fallback": bool(r.get("status") != "OK" and policy.n_started < pol.MAX_TOTAL_ATTEMPTS)}
-    try:    # leakage検査は観測のみ(NG理由にしない。ASRの表記違いだけで再生成しない)
-        texts = [a.get("asr_text") for a in (r.get("attempts_log") or []) if isinstance(a, dict) and a.get("tts_mode") == "ctx"]
-        if policy.st["attempts"] and policy.st["attempts"][-1].get("mode") == "ctx":
-            extra["leakage"] = notes.leakage_all_attempts(texts, r.get("asr_text"), sty["ctx"], sty["note"])
-    except Exception as e:      # 観測の失敗で生成結果を失わない
-        extra["leakage"] = {"observation_only": True, "error": str(e)}
-    r["dialogue_tts"] = policy.evidence(extra)
-    return policy.finish(r)
+            r2 = bvoices.generate_voice_body_wide_margin(block_text, out_path, spec.voice, max_attempts=ma, attempt_hook=policy)
+            rows_all.extend(r2.get("attempts_log") or [])
+            pass_end_n.append(policy.n_started)
+            return r2
+        r_ = n3_tts.generate_with_a2_slowdown_outer_loop(
+            spec.clip_id, block_text, out_path, gen, slowdown_pct=Z_ADV_DIALOGUE_SLOWDOWN_PCT, prior_generations=prior,
+            total_budget=L, slot_offset=depth * L, total_slots=2 * L, final_block=final_block, lock_text=text, record_lock=False)
+        for i, ent in enumerate(r_.get("slowdown_attempts_log") or []):      # 減速後NGの転写=LR入力候補(M5。passとlogは同順)
+            if ent.get("status") != "OK" and i < len(pass_end_n):
+                policy.note_post_slowdown_ng(pass_end_n[i], ent.get("post_slowdown_asr_text"), ent.get("post_slowdown_classification"))
+        return r_
+
+    def finish(res: dict, *, technical_stop: bool = False) -> dict:
+        extra = {"ctx_style_sha256": sty["style_sha256"], "context_input_sha256": sty["context_input_sha256"], "note_status": sty["note_status"],
+                 "speaker_display_source": sty["speaker_display_source"], "emotion_prompt_sha256": sty["emotion_prompt_sha256"],
+                 # Opus M-3(ii): 6回目の従来方式(⑥)に到達せず終端した場合の記録(安全側=STOPPED->HR Lock)。技術STOP(再開可)は終端ではない
+                 "terminal_before_fallback": bool(res.get("status") != "OK" and not technical_stop and policy.n_started < pol.MAX_TOTAL_ATTEMPTS)}
+        try:    # leakage検査は観測のみ(NG理由にしない。ASRの表記違いだけで再生成しない)
+            texts = [a.get("asr_text") for a in rows_all if isinstance(a, dict) and a.get("tts_mode") == "ctx"]
+            real = [a for a in policy.st["attempts"] if not a.get("skipped")]
+            if real and real[-1].get("mode") == "ctx":
+                extra["leakage"] = notes.leakage_all_attempts(texts, res.get("asr_text"), sty["ctx"], sty["note"])
+        except Exception as e:      # 観測の失敗で生成結果を失わない
+            extra["leakage"] = {"observation_only": True, "error": str(e)}
+        res["attempts_log"] = rows_all
+        policy.settle_lr_state(res)
+        res["dialogue_tts"] = policy.evidence(extra)
+        return policy.finish(res, technical_stop=technical_stop)
+
+    def tech_stop(res) -> bool:
+        """技術STOP(Secondary/Whisper不能)。減速前の最終attemptだけでなく、Advの減速後再検証(asr_judgement_post_slowdown_ng)の技術STOPも含める。"""
+        if not isinstance(res, dict):
+            return False
+        return bool(er127._is_tech_stop(er127.last_attempt_of(res)) or er127._is_tech_stop({"asr_judgement": res.get("asr_judgement_post_slowdown_ng")}))
+
+    def stopped_from(base, reason_fallback: str | None = None) -> dict:
+        res = dict(base) if isinstance(base, dict) else {}
+        if res.get("status") in (None, "OK"):
+            res["status"] = "STOPPED"
+        res.setdefault("reason", reason_fallback or policy.final_reason(0))
+        res.setdefault("voice", spec.voice)
+        return res
+
+    # ---------------- B1: 元ブロック(①②ctx→180秒→③従来) ----------------
+    r = None
+    if policy.phase == pol.PHASE_B1:
+        if not policy.b1_exhausted():
+            r = run_block(text, 0, False)
+            if r.get("status") == "OK":
+                return finish(r)
+            if tech_stop(r):
+                return finish(r, technical_stop=True)         # 技術STOP(Secondary/Whisper不能)は品質NGではない: LR・HRに入れない(再開可)
+        elif er127._is_tech_stop(policy.last_attempt_row()):
+            return finish(stopped_from(None), technical_stop=True)
+        if not policy.enter_lr_phase(r):
+            return finish(stopped_from(r))                    # LR不可(Profile/既にLR使用済み)=従来どおり終端
+    # ---------------- LR + B2: LR(最大1回) → 書換え本文で①'②'ctx→180秒→③'従来 ----------------
+    import er129_lr_display_reflection_01 as er129      # 確定内容の事前保護(台帳と同一のT1-T3純関数を前倒し。B6と同様に遅延import)
+    adapter = pol.ZLrBlockAdapter(policy)
+    sel_conf = er129.load_confirmed_selection(level_dir)
+    facts = er129.level_facts(level_dir, text)
+    last_asr = None
+    if policy.phase == pol.PHASE_LR:
+        policy.stop_check(f"lr_llm:{spec.clip_id}")           # LR LLM呼出の前にもSTOP確認(D9)
+        sel = policy.select_lr_input(text, lambda span, asr: er129.input_overlaps_confirmed(text, span, asr, sel_conf, facts))
+        if not sel["found"]:
+            # LR不可(全転写がNO_NG_SPAN/確定内容と重なる): TTS 0・LR LLM 0で終端(既存の『LR不可は即HR』)
+            policy.mark_lr_not_applicable("NO_USABLE_LR_INPUT")
+            er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=(er127.last_attempt_of(r) if r else None) or policy.last_attempt_row(),
+                                       lock_text=text, final_status="LR_NOT_APPLICABLE")
+            return finish(stopped_from(r))
+        last_asr = sel["asr_text"]
+
+    def _block_call(rewritten: str, lr_ctx):
+        return run_block(rewritten, 1, True)
+
+    def _merge(res: dict, recovery: dict) -> dict:
+        res["local_rewrite_recovery"] = recovery
+        return res
+    recovered = er127.lr_recover(adapter, text=text, out_path=out_path, last_asr_text=last_asr, block_call=_block_call, merge=_merge,
+                                 last_attempt=(er127.last_attempt_of(r) if r else None) or policy.last_attempt_row(),
+                                 candidate_filter=er129.make_candidate_filter(sel_conf, None, facts))
+    if recovered is not None:
+        return finish(recovered)
+    lr_out = adapter.lr_outcome or {}
+    br = lr_out.get("block_result")
+    if br is not None and tech_stop(br):
+        return finish(stopped_from(br), technical_stop=True)   # LR block内の技術STOPは終端にしない(IN_PROGRESS=再開可)
+    policy.mark_lr_outcome((lr_out.get("recovery") or {}).get("status"))
+    return finish(stopped_from(br if br is not None else r))
 
 
 # ============================================================
