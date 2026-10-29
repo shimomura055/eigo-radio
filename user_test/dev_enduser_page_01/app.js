@@ -29,7 +29,7 @@
     }).join('');
   }
   function btns(p) {
-    return '<span class="btns"><button type="button" class="seek from" data-act="full" data-i="' + p.idx + '" aria-label="' + esc(p.label) + ' から再生">▶ ここから再生</button></span>';
+    return '<span class="btns"><button type="button" class="seek from" data-act="full" data-i="' + p.idx + '" aria-label="' + esc(p.label) + ' から再生">▶ ここから再生</button><button type="button" class="seek stop" data-act="stop" data-i="' + p.idx + '" aria-label="再生を停止">■ 停止</button></span>';
   }
   function trHtml(p) {   // 英語本文の直後に日本語訳(承認済み日本語原稿の対応段落 / DEV訳(未承認))
     if (!p.ja || !p.ja.length) return '';
@@ -39,7 +39,7 @@
   }
   function glossHtml(p) {   // 本文直下の意味一覧(下線対象 + Key Phrase/Word + Vocabulary。簡潔な日本語の意味のみ)
     if (!p.glossary || !p.glossary.length) return '';
-    return '<div class="gloss" data-gloss="' + p.idx + '"><div class="gh">この部分の表現</div><ul>' + p.glossary.map(function (g) {
+    return '<div class="gloss" data-gloss="' + p.idx + '"><div class="gh">覚えておきたい表現</div><ul>' + p.glossary.map(function (g) {
       return '<li><span class="ge">' + esc(g.en) + '</span><span class="gj">' + esc(g.ja) + '</span>' +
         (g.vi != null ? '<a class="glink" href="#vi-' + lv + '-' + g.vi + '" data-vi="' + g.vi + '">解説</a>' : '') + '</li>';
     }).join('') + '</ul></div>';
@@ -84,10 +84,10 @@
         if (p.kind === 'comment') {
           return '<div class="comment" data-part="' + p.idx + '"><div class="ch"><strong>' + esc(p.label) + '</strong>' + btns(p) + '</div>' + sentHtml(p) + trHtml(p) + '</div>';
         }
-        return '<div class="partblock" data-part="' + p.idx + '"><div class="ph"><b>' + esc(p.label) + '</b>' + btns(p) + '</div>' + sentHtml(p) + trHtml(p) + glossHtml(p) + '</div>';
+        return '<div class="partblock" data-part="' + p.idx + '"><div class="ph"><b>' + esc(p.label) + '</b>' + btns(p) + '</div>' + sentHtml(p) + glossHtml(p) + trHtml(p) + '</div>';
       }).join('');
       by('oneline').forEach(function (p) {
-        b += '<div class="partblock oneline" data-part="' + p.idx + '"><div class="ph"><h3>In One Line</h3>' + btns(p) + '</div>' + sentHtml(p) + trHtml(p) + glossHtml(p) + '</div>';
+        b += '<div class="partblock oneline" data-part="' + p.idx + '"><div class="ph"><h3>In One Line</h3>' + btns(p) + '</div>' + sentHtml(p) + glossHtml(p) + trHtml(p) + '</div>';
       });
       out += card('Full Story', b, { label: 'FULL STORY', id: 'fullstory' });
     }
@@ -100,9 +100,10 @@
       }).join(''), { label: 'WORDS', id: 'vocab' });
     }
     if (L.grammar && L.grammar.length) {   // 採用0件ならコーナーごと非表示
-      out += card('Grammar & Sentence Structure', L.grammar.map(function (it) {
+      var ph = L.grammar_source === 'placeholder_for_layout_check';   // rev01-c: 表示確認用の仮データ(DEVページのみ・本文と内容は無関係)
+      out += card('Grammar & Sentence Structure', (ph ? '<div class="phnote" data-grammar-source="placeholder_for_layout_check">【仮データ・表示確認用】他記事(月のしわ Advanced)の文法解説を流用しています。記事本文とは内容が対応しません。レイアウト・文字サイズ確認専用で、正式な文法解説ではありません。</div>' : '') + L.grammar.map(function (it) {
         return '<div class="gr"><dl>' + it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></div>';
-      }).join(''), { label: 'GRAMMAR', id: 'grammar' });
+      }).join(''), { label: ph ? 'GRAMMAR(仮)' : 'GRAMMAR', id: 'grammar' });
     }
     $('content').innerHTML = out;
     sentEls = {};
@@ -237,6 +238,7 @@
       return;
     }
     var b = e.target.closest('button[data-act]'); if (!b) return;
+    if (b.dataset.act === 'stop') { A.pause(); tick(); return; }   // rev01-c: 停止(連続再生中も)。位置は保持し、固定バー/ここから再生で再開
     var i = Number(b.dataset.i);
     if (b.dataset.act === 'kp') playKp(i, 0); else playFull(parts[i].start);
   });
