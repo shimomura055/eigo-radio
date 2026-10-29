@@ -52,3 +52,11 @@
 - 公開反映: live index.html に build-id rev01-b を確認(11:55:30頃、cache無効取得)。取得・検証時刻=2026-10-29T11:59+0900。
 - 公開検証(PC/スマホ、tools/verify_rev_01.py、cache無効): TOTAL 176 / NG 0。10項目すべてPASS(公開列: 全体再生移動/KP英語のみ/意味一覧+解説リンク/日本語訳/ここから再生/In One Line連結/解説拡大/凡例削除ほか)、Regression(ハイライト精度・文クリック再生・シーク・再生停止・レベル切替・横overflow無し・console error 0・4xx/5xx 0)PASS。未確認=実機iOS/Android。
 - 証跡: shots_rev_live/{pc,mobile}_01..10、verify_result_rev_live_01.json。NG是正: 無し。
+
+## § 追加4項目(rev01-c、委任_03、2026-10-29)
+URL=https://shimomura055.github.io/eigo-radio/user_test/dev_enduser_page_01/index.html (build-id `rev01-c`、live反映確認、cache無効取得)。原文=delegation_log/2026-10-29_END-USER-LISTENING-PAGE-DEV-REVISION-01_USER_02.md。API 0・Production変更0。
+- 実装: ①見出し=`app.js` glossHtml(`覚えておきたい表現`、全箇所) ②順序=app.js Full Story描画の `sentHtml+glossHtml+trHtml`(2箇所、内容・リンクは不変) ③停止=app.js btns()に`■ 停止`(`.seek.stop`、data-act=stop)追加+content clickハンドラで`A.pause()`、style.css末尾`.seek.stop` ④文法仮表示=app.js render()の`grammar_source==='placeholder_for_layout_check'`分岐で`.phnote`(「【仮データ・表示確認用】他記事(月のしわ Advanced)の文法解説を流用しています。…」、橙破線枠)+ラベル`GRAMMAR(仮)`。
+- 仮データ: 出典=`data/moon.json` levels.adv.grammar[0](月のしわAdv実データ)をdata/ai_island.json の std/adv へコピー。マーカー`grammar_source=placeholder_for_layout_check`・`grammar_placeholder_origin`をdataに付与。月Advの実データ(マーカー無し・注記無し)は不変。表示経路はDEVページ(user_test/dev_enduser_page_01)のみ。公開記事ページ・Production・生成物には未接続。
+- 公開検証(Playwright、PC1280/スマホ390x844、公開URL): 216チェック NG 0。①見出し文字列PASS ②DOM順(script→gloss→tr)・視覚順・「日本語訳」タグ・解説リンク維持PASS ③停止ボタンが各「ここから再生」の隣(11/10/10個)、停止で再生停止(currentTime固定)、パート境界を跨ぐ連続再生中の停止、停止後の再開(ここから再生/固定バー)・シーク・1文ハイライト、KP再生中の停止 PASS ④AI島Std/Advに仮コーナー+明示文言+data marker、横溢れなし、月Advは実データ表示のまま PASS。既存Regression(rev01-b 176チェック相当: KP英語のみ/意味一覧/リンク/日本語訳/連続再生/Full Story連結/ハイライト精度/シーク/タブ/overflow/console error 0/4xx 0)全PASS。
+- 検証スクリプト=tools/verify_rev_c_01.py(verify_rev_01.pyから順序・ボタン構成・仮文法に合わせ期待値を更新)。結果=verify_result_rev_c_live_01.json、shots_rev_c_live/。ローカル初回は期待値側の誤り6件(仮文法dt数を4と誤指定・月Advにリンク0件)のみNG→期待値修正し、公開で全件再実行しPASS(ローカル再実行は未実施)。
+- 未確認: 実機iOS/Androidの実機操作、ローカル再実行(修正後)。
