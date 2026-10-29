@@ -758,7 +758,7 @@ class StudyTextWiring(unittest.TestCase):
         self.assertEqual(std_part.count(r.PART2_MARKER), 1, "Standardの節にPart 2(文法)が1個ない")      # 全level化: Standardにも同じテンプレートで載る
         for mk in (r.PART1_MARKER, r.PART2_MARKER):
             self.assertEqual(adv_part.count(mk), 1, mk)
-        self.assertLess(adv_part.index(r.PART1_MARKER), adv_part.index(r.PART2_MARKER))      # Part 1の直後にPart 2
+        self.assertTrue(r._blocks_in_page_order(adv_part, "<h3>ニュアンス解説</h3>"))      # Part 1→文法→ニュアンス解説(存在するブロック同士の相対順。文法0件でも成立。M-5)
         p1 = json.load(open(f"{ctx.out_dir}/study_text/part1_vocabulary_expressions.json", encoding="utf-8"))
         rows = p1 if isinstance(p1, list) else (p1.get("rows") or p1.get("items") or [])
         self.assertLessEqual(len(rows), 5)
@@ -785,7 +785,10 @@ class StudyTextWiring(unittest.TestCase):
             r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"])
         rev = json.load(open(f"{self._grammar_dir(ctx)}/grammar_human_review.json", encoding="utf-8"))
         self.assertEqual(rev["status"], "NO_CANDIDATE_UNREVIEWED")                         # 適格0件=待たずに確定(REVIEWEDにしない)
-        self.assertEqual(_html(ctx).replace("&#x27;", "'").count(g.ZERO_P2), 2)             # 0件確定は両levelの節に固定文面(Std+Adv)
+        _h = _html(ctx).replace("&#x27;", "'")
+        self.assertNotIn("特に取り上げる難所", _h)                                          # 固定文面は撤去(0件確定はコーナー全体を非表示。2026-10-29 §2C)
+        self.assertEqual(_h.count(r.PART2_MARKER), 0)                                       # 見出し・空枠も出さない(Std+Adv)
+        self.assertEqual(_h.count("<section class='study'>"), 1)                            # Advanced の Part 1 のみ
         rev_std = json.load(open(f"{self._grammar_dir(ctx, 'a2')}/grammar_human_review.json", encoding="utf-8"))
         self.assertEqual(rev_std["status"], "NO_CANDIDATE_UNREVIEWED")
 

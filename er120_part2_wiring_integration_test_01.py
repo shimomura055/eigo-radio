@@ -222,7 +222,7 @@ class ZPart2Integration(zw.ZBase):
             with self.assertRaises(r.FamilyZE2EStop):
                 r._verify_part2_outputs(self.ctx)
 
-    def test_omit_renders_fixed_zero_text_in_both_sections_and_is_not_counted_as_reviewed(self):
+    def test_omit_renders_no_grammar_corner_in_both_sections_and_is_not_counted_as_reviewed(self):
         self._pend()
         self._select_kp()
         n_expl = self.explain_calls()
@@ -233,8 +233,13 @@ class ZPart2Integration(zw.ZBase):
         self.assertEqual(self.explain_calls(), n_expl)     # 0件確定はLLM 0
         self._run_rest()
         index = rd(f"{self.ctx.pages_dir}/index.html")
-        self.assertEqual(index.count(g2.ZERO_P2.replace("&", "&amp;")), 2)   # 両levelの節に固定文面
-        r._verify_part2_outputs(self.ctx)                   # 0件確定も節単位検査を通る
+        self.assertNotIn("特に取り上げる難所", index)                          # 固定文面は撤去(ユーザー正式決定2026-10-29 §2C: 0件はコーナー全体を非表示)
+        self.assertNotIn("Grammar &amp; Sentence Structure", index)          # 見出しも空枠も出さない
+        self.assertEqual(index.count("<section class='study'>"), 1)         # Advanced の Part 1 のみ(Standard は学習ブロックなし)
+        for lv in ("b1b", "a2"):
+            self.assertFalse(os.path.exists(f"{r._part2_dir(self.ctx, lv)}/{g2.PART2_FILE_STEM}.md"), lv)   # 0件=mdも書かない
+        pv = r._verify_part2_outputs(self.ctx)              # 0件確定も節単位検査を通る(期待ブロック数=0)
+        self.assertEqual((pv["b1b"]["part2_blocks"], pv["a2"]["part2_blocks"]), (0, 0))
 
     def test_one_item_picked_from_top2_renders_one_block_and_two_picks_are_rejected(self):
         """文法選定仕様(2026-10-27): 2件同時選択は拒否され(状態は待機のまま)、Top2の1件採用が節に1ブロック載り節単位検査を通る。"""
@@ -455,7 +460,7 @@ class XPart2Integration(unittest.TestCase):
             rc, *_ = self._main("player", client=ri.FakeClient(), level="both")
         self.assertEqual(rc, 3)
 
-    def test_both_levels_zero_candidate_path_renders_fixed_text_in_each_section(self):
+    def test_both_levels_zero_candidate_path_renders_no_grammar_corner_in_each_section(self):
         ri.decision_record(self, "T2")
         omit = lambda sd: gr.op_decide(sd, choice="omit", reason="今回は解説を出さない", candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by="human")   # noqa: E731
         self._both_to_confirmed(decide_b1b=omit, decide_a2=omit)
@@ -463,9 +468,10 @@ class XPart2Integration(unittest.TestCase):
             rc, tts, asm, log = self._main("player", client=ri.FakeClient(), level="both")
         self.assertIsNone(rc, log)
         page = rd(f"{self.out}/player.html")
-        zero = g2.ZERO_P2.replace("&", "&amp;")
-        self.assertEqual(page.count(zero), 2)                                   # 0件確定は両levelの節に固定文面
-        self.assertEqual(xr.player_level_section(page, "a2").count(zero), 1)
+        self.assertNotIn("特に取り上げる難所", page)                              # 固定文面は撤去(0件=コーナー全体を非表示)
+        self.assertNotIn("Grammar &amp; Sentence Structure", page)               # 見出し・空枠も出さない
+        self.assertEqual(page.count("<section class='study'>"), 1)              # Advanced の Part 1 のみ
+        self.assertNotIn("class='study'", xr.player_level_section(page, "a2"))
 
     def test_one_item_picked_in_standard_renders_in_one_block_and_two_picks_are_rejected(self):
         ri.decision_record(self, "T2")
@@ -506,7 +512,8 @@ class XPart2Integration(unittest.TestCase):
         self._both_to_confirmed_after_pending()
         html_adv = p2w.public_study_html(self.out, art_adv, level="b1b")
         self.assertEqual(html_adv.count("<section class='study'>"), 2)
-        self.assertLess(html_adv.index("Vocabulary &amp; Expressions"), html_adv.index("Grammar &amp; Sentence Structure"))
+        _pos = [html_adv.index(m) for m in ("Vocabulary &amp; Expressions", "Grammar &amp; Sentence Structure", "<h3>ニュアンス解説</h3>") if m in html_adv]
+        self.assertEqual(_pos, sorted(_pos))   # Part 1 → 文法 → ニュアンス解説(存在するブロック同士の相対順。M-5)
         html_std = p2w.public_study_html(self.out, art_std, level="a2")
         self.assertEqual(html_std.count("<section class='study'>"), 1)           # Standardは Part 2だけ
         self.assertNotIn("Vocabulary", html_std)

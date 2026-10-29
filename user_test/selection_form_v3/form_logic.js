@@ -50,6 +50,29 @@
   function hasGrammarSpec(d) { return !!(d && d.grammar_spec); }
   // 新仕様データ(grammar_spec有り)で提示候補があるのに未決定なら、送信/コピーを止める(0件は「適切な候補なし」の明示選択が必要。旧フォームの0件は引き継がない)
   function grammarBlocked(d, st) { return hasGrammarSpec(d) && grammarDecision(d, st) === 'undecided'; }
+  // ---- ニュアンス解説(2026-10-29ユーザー正式採用): 候補は最大1件。ラジオ「採用」「不採用」(候補がある間は未決定のまま送信/コピーできない)。
+  // nuance_spec が無いデータ(既存公開記事・LEGACY)は従来どおり(AIF1・出力バイト不変)。Python側(er128_form_readable_restore_01 / er128 cmd_from_form)が最終権威 ----
+  var MARK_N_BEGIN = '【ニュアンス全文】', MARK_N_END = '【ニュアンスここまで】';
+  function hasNuanceSpec(d) { return !!(d && d.nuance_spec); }
+  function nuanceOf(d) { return hasNuanceSpec(d) && d.nuance ? d.nuance : null; }
+  // 状態: 'adopt' | 'reject' | 'undecided'(候補あり・未回答) | 'n/a'(候補なし/仕様マークなし)。revoke後の再確定は旧採否(nuance.previous_decision)を既定表示(R-11。送信は明示操作が必須)
+  function nuanceDecision(d, st) {
+    var n = nuanceOf(d); if (!n) return 'n/a';
+    var own = st && st.nuance !== undefined && st.nuance !== null && st.nuance !== '' && (!st.nuance_sha || st.nuance_sha === n.candidate_sha256);   // 別の候補に対する旧回答は引き継がない
+    var v = own ? st.nuance : (n.previous_decision || '');
+    return v === 'adopt' ? 'adopt' : v === 'reject' ? 'reject' : 'undecided';
+  }
+  function chooseNuance(st, v, d) { if (v !== 'adopt' && v !== 'reject') return false; st.nuance = v; var n = nuanceOf(d); st.nuance_sha = n ? n.candidate_sha256 : ''; return true; }
+  // 採用時のみ: 選択中の①②(区分1・2)のうち、ニュアンス候補と焦点が重複するもの(pool_conflicts)の項目名。非空なら送信/コピーを止める(Python側N2が最終権威)
+  function nuanceConflicts(d, st) {
+    var n = nuanceOf(d); if (!n || nuanceDecision(d, st) !== 'adopt') return [];
+    var pc = n.pool_conflicts || [], ch = choicesOf(d, st), out = [];
+    allItems(d).forEach(function (it) { var c = ch[it.term]; if ((c === 1 || c === 2) && pc.indexOf(candIdOf(it)) >= 0) out.push(it.term); });
+    return out;
+  }
+  function nuanceBlocked(d, st) { return nuanceDecision(d, st) === 'undecided' || nuanceConflicts(d, st).length > 0; }
+  // 人間可読コピー内のニュアンス本文(候補本文の逐語。Python nuance_body_text と同一)
+  function nuanceBodyText(n) { return ['表現：' + n.expression, 'ポイント：' + n.focus, '解説：', n.explanation_ja, '本文の英文：' + n.quote_en, '日本語訳：' + n.quote_ja].join('\n'); }
   function chooseGrammar(st, gids, id) {            // ラジオ操作: 他を外して1件にする
     if (gids.indexOf(id) < 0) return false;
     gids.forEach(function (x) { st.grammar[x] = (x === id); }); st.grammar_zero = false; return true;
@@ -193,6 +216,12 @@
       production_connected: false
     };
     if (d.kp_confirmed) o.kp_confirmed = { status: d.kp_confirmed.status, locked: true, confirmed_at: d.kp_confirmed.confirmed_at || null, user_ref: d.kp_confirmed.user_ref || null, note_ja: 'Key Phrase／Key Word 10件はユーザー確定済み。この送信で再選定していない(selectionは確定内容の逐語)。' };
+    if (hasNuanceSpec(d)) {   // 仕様マークのあるデータだけ schema_minor=2 + selection.nuance(候補ありのときだけ。未回答はblockedで到達しない)
+      var nn = nuanceOf(d), nd = nuanceDecision(d, st);
+      o.schema_minor = 2;
+      o.nuance_status = nn ? nd : 'n/a';
+      if (nn && (nd === 'adopt' || nd === 'reject')) o.selection.nuance = { decision: nd, candidate_sha256: nn.candidate_sha256, id: nn.id };
+    }
     if (hasGrammarSpec(d)) {
       var pres = grammarPresented(d);
       o.grammar_decision = { state: grammarDecision(d, st), spec: 'top2_select1_v1', max_select: GRAMMAR_MAX, presented: pres.map(function (g) { return { rank: g.display_rank, candidate_id: g.candidate_id || g.id, title: g.title }; }),
@@ -262,12 +291,17 @@
   }
   function glossMark(status) { return status === 'official' ? '' : status === 'provisional' ? '（仮訳・未確定）' : '（日本語訳未生成）'; }
   // 照合コード AIF1-<stem>-<d6>-<c8>-<t8>-<s10>-<g10|0>-<m8|0>-<k4>(COPY_FORMAT_01 §3 / RESTORE_TOOL_SPEC_01)
-  function makeCode(stem, d6, d, selIds, gram, comment) {
+  //   ニュアンス仕様マーク付きデータ: AIF2-<stem>-<d6>-<c8>-<t8>-<s10>-<g10|0>-<m8|0>-<n8|0>-<k4>
+  function makeCode(stem, d6, d, selIds, gram, comment, nuanceSel) {
     var c8 = (d.candidates_sha256 || '00000000').slice(0, 8), t8 = ((d.source || {}).text_sha256 || '00000000').slice(0, 8);
     var s10 = sha256Hex('v1\n' + selIds.map(function (x) { return x[0] + ':' + x[1]; }).join('\n')).slice(0, 10);
     var g10 = gram.length ? sha256Hex('v1\n' + gram.map(function (x) { return x[0] + ':' + x[1]; }).join('\n')).slice(0, 10) : '0';
     var m8 = comment ? sha256Hex(comment).slice(0, 8) : '0';
     var body = 'AIF1-' + stem + '-' + d6 + '-' + c8 + '-' + t8 + '-' + s10 + '-' + g10 + '-' + m8;
+    if (nuanceSel !== undefined) {   // ニュアンス仕様マークのあるデータだけ AIF2(n8=ニュアンス候補shaと決定の組。候補なし=0)。無いデータは従来のAIF1のまま(バイト不変)
+      var n8 = nuanceSel ? sha256Hex('v1\n' + nuanceSel.decision + ':' + nuanceSel.sha).slice(0, 8) : '0';
+      body = 'AIF2-' + stem + '-' + d6 + '-' + c8 + '-' + t8 + '-' + s10 + '-' + g10 + '-' + m8 + '-' + n8;
+    }
     return body + '-' + sha256Hex(body).slice(0, 4);
   }
   // opts.stem(データJSONのファイル名、拡張子なし) / opts.file_sha256(fetchした生バイト列のsha256 hex)。無ければ d.__stem / d.__file_sha256
@@ -291,9 +325,19 @@
     if (!gs.length) L.push('文法：選定なし');
     gs.forEach(function (g) { L.push('文法：' + g.title, MARK_BEGIN, bodyView(g.body), MARK_END); });
     L.push('');
+    var nuanceSel;   // undefined=仕様マークなし(従来のAIF1・出力バイト不変) / null=候補なし / {decision, sha}
+    if (hasNuanceSpec(d)) {
+      var nn = nuanceOf(d), nd = nuanceDecision(d, st);
+      if (nn && nd === 'undecided') throw new Error('buildReadable: ニュアンス解説が未決定です');
+      if (nn) {
+        L.push('ニュアンス解説：' + (nd === 'adopt' ? '採用' : '不採用'), MARK_N_BEGIN, nuanceBodyText(nn), MARK_N_END);
+        nuanceSel = { decision: nd, sha: nn.candidate_sha256 };
+      } else { L.push('ニュアンス解説：候補なし'); nuanceSel = null; }
+      L.push('');
+    }
     var com = normalizeComment(st.comment);
     L.push('自由コメント：' + (com || 'なし'));
-    L.push('', '照合コード(変更しないでください)：' + makeCode(stem, d6, d, selIds, gs.map(function (g) { return [g.candidate_id || g.id, g.explanation_sha256 || '']; }), com));
+    L.push('', '照合コード(変更しないでください)：' + makeCode(stem, d6, d, selIds, gs.map(function (g) { return [g.candidate_id || g.id, g.explanation_sha256 || '']; }), com, nuanceSel));
     return L.join('\n');
   }
   // 「ChatGPTへ送信」: 送信文(PREFACE+人間可読)は常にクリップボードへ。URL(?q=)が閾値内なら本文入りURL、超過なら url=null(=chatgpt.comを開いて貼付案内。エラー扱いにしない)
@@ -327,6 +371,13 @@
         if (JSON.stringify((d.grammar_spec.presented_ids || [])) !== JSON.stringify(gp.map(function (g) { return g.candidate_id || g.id; }))) e.push('grammar_spec: presented_ids不一致');
         if (d.grammar_spec.max_select !== GRAMMAR_MAX) e.push('grammar_spec: max_select');
       }
+      if (d.nuance_spec) {   // ニュアンス解説: 候補は最大1件。必須項目が揃っていること(欠落データをフォームに出さない)
+        if (d.nuance_spec.max_select !== 1) e.push('nuance_spec: max_select');
+        if (d.nuance) {
+          ['id', 'candidate_sha256', 'expression', 'focus', 'explanation_ja', 'quote_en', 'quote_ja'].forEach(function (k) { if (!d.nuance[k]) e.push('nuance.' + k); });
+          ['pool_conflicts', 'grammar_conflicts', 'shared_terms'].forEach(function (k) { if (d.nuance[k] !== undefined && !Array.isArray(d.nuance[k])) e.push('nuance.' + k + ': 配列ではありません'); });
+        }
+      } else if (d.nuance) { e.push('nuance: nuance_specがありません'); }
       if (d.kp_confirmed) {   // ユーザー確定済みKP/KW: 候補データと逐語照合(不一致=fail-closed)
         var kc = d.kp_confirmed, byId = {};
         allItems(d).forEach(function (x) { byId[candIdOf(x)] = x; });
@@ -355,7 +406,8 @@
     });
     return e;
   }
-  return { LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
+  return { hasNuanceSpec: hasNuanceSpec, nuanceOf: nuanceOf, nuanceDecision: nuanceDecision, chooseNuance: chooseNuance, nuanceConflicts: nuanceConflicts, nuanceBlocked: nuanceBlocked, nuanceBodyText: nuanceBodyText, MARK_N_BEGIN: MARK_N_BEGIN, MARK_N_END: MARK_N_END,
+    LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
     buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex };

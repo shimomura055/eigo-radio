@@ -46,6 +46,11 @@ RECHECK_HINT = "フォームの『選定結果をコピー』をもう一度押�
 KP_CONFIRMED_NOTE = "Key Phrase／Key Word 10件はユーザー確定済み。この送信で再選定していない(selectionは確定内容の逐語)。"
 
 CODE_RE = re.compile(r"AIF1-([A-Za-z0-9_]+)-([0-9a-f]{6})-([0-9a-f]{8})-([0-9a-f]{8})-([0-9a-f]{10})-([0-9a-f]{10}|0)-([0-9a-f]{8}|0)-([0-9a-f]{4})")
+# ニュアンス解説の仕様マーク(nuance_spec)付きデータ専用の照合コード。n8=ニュアンス候補のcandidate_sha256と決定(adopt|reject)の組。候補なし=0。nuance_specの無いデータはAIF1のまま(バイト不変)
+CODE2_RE = re.compile(r"AIF2-([A-Za-z0-9_]+)-([0-9a-f]{6})-([0-9a-f]{8})-([0-9a-f]{8})-([0-9a-f]{10})-([0-9a-f]{10}|0)-([0-9a-f]{8}|0)-([0-9a-f]{8}|0)-([0-9a-f]{4})")
+MARK_N_BEGIN, MARK_N_END = "【ニュアンス全文】", "【ニュアンスここまで】"
+NUANCE_WORD = {"adopt": "採用", "reject": "不採用"}
+_NO_NUANCE = object()   # make_code: nuance_specなし(AIF1)
 FENCE_RE = re.compile(r"^\s*```[A-Za-z0-9_-]*\s*$")
 BULLET_RE = re.compile(r"^\s*(?:[-－‐–—・•*]|\d+[.)])\s*(.+)$")
 
@@ -109,6 +114,34 @@ def norm_body(s: str) -> str:
     return "\n".join(x.rstrip() for x in s.split("\n")).strip("\n")
 
 
+def has_nuance_spec(d: dict) -> bool:
+    return bool(d.get("nuance_spec"))
+
+
+def nuance_of(d: dict):
+    return d.get("nuance") if has_nuance_spec(d) and d.get("nuance") else None
+
+
+def nuance_decision(d: dict, st: dict) -> str:
+    """form_logic.js nuanceDecision と同じ: adopt|reject|undecided(候補あり・未回答)|n/a(候補なし/仕様マークなし)。revoke後の再確定は旧採否(previous_decision)を既定にする(R-11)。"""
+    n = nuance_of(d)
+    if not n:
+        return "n/a"
+    v = (st or {}).get("nuance")
+    if v in (None, ""):
+        v = n.get("previous_decision") or ""
+    return v if v in ("adopt", "reject") else "undecided"
+
+
+def nuance_body_text(n: dict) -> str:
+    """人間可読コピー内のニュアンス本文(候補本文の逐語。form_logic.js nuanceBodyText と同一)。"""
+    return "\n".join(["表現：" + n["expression"], "ポイント：" + n["focus"], "解説：", n["explanation_ja"], "本文の英文：" + n["quote_en"], "日本語訳：" + n["quote_ja"]])
+
+
+def nuance_n8(decision: str, candidate_sha256: str) -> str:
+    return sha("v1\n" + decision + ":" + candidate_sha256)[:8]
+
+
 def grammar_presented(d: dict) -> list:
     """フォーム(form_logic.js grammarPresented)と同じ: rank順に並べ、上位GRAMMAR_TOP_N件へdisplay_rankを付ける。"""
     gs = list(enumerate(d.get("grammar") or []))
@@ -132,7 +165,7 @@ def choices_of(d: dict, st: dict) -> dict:
 
 
 # ---------------------------------------------------------------- 照合コード / 人間可読コピー(契約の参照実装。フォームJSはこれとバイト一致する)
-def make_code(stem: str, d: dict, d6: str, sel_ids: list, gram: list, comment: str) -> str:
+def make_code(stem: str, d: dict, d6: str, sel_ids: list, gram: list, comment: str, nuance_sel=_NO_NUANCE) -> str:
     """sel_ids=[(cat, candidate_id)](フォーム表示順=区分①②③の順、各区分内はデータ順) / gram=[(candidate_id, explanation_sha256)]"""
     c8 = (d.get("candidates_sha256") or "0" * 8)[:8]
     t8 = ((d.get("source") or {}).get("text_sha256") or "0" * 8)[:8]
@@ -141,6 +174,9 @@ def make_code(stem: str, d: dict, d6: str, sel_ids: list, gram: list, comment: s
     com = normalize_comment(comment)
     m8 = sha(com)[:8] if com else "0"
     body = f"{CODE_VERSION}-{stem}-{d6}-{c8}-{t8}-{s10}-{g10}-{m8}"
+    if nuance_sel is not _NO_NUANCE:   # nuance_spec付きデータ: AIF2。nuance_sel=None(候補なし)|(decision, candidate_sha256)
+        n8 = nuance_n8(*nuance_sel) if nuance_sel else "0"
+        body = f"AIF2-{stem}-{d6}-{c8}-{t8}-{s10}-{g10}-{m8}-{n8}"
     return body + "-" + sha(body)[:4]
 
 
@@ -172,9 +208,21 @@ def build_readable(stem: str, d: dict, st: dict, d6: str, with_preface: bool = F
     for g in gs:
         lines += [f"文法：{g['title']}", MARK_BEGIN, body_view(g.get("body") or ""), MARK_END]
     lines.append("")
+    nuance_sel = _NO_NUANCE
+    if has_nuance_spec(d):
+        nn, nd = nuance_of(d), nuance_decision(d, st)
+        if nn and nd == "undecided":
+            raise ValueError("ニュアンス解説が未決定です(採用/不採用の明示選択が必要)")
+        if nn:
+            lines += [f"ニュアンス解説：{NUANCE_WORD[nd]}", MARK_N_BEGIN, nuance_body_text(nn), MARK_N_END]
+            nuance_sel = (nd, nn["candidate_sha256"])
+        else:
+            lines.append("ニュアンス解説：候補なし")
+            nuance_sel = None
+        lines.append("")
     com = normalize_comment(st.get("comment"))
     lines.append("自由コメント：" + (com if com else "なし"))
-    lines += ["", "照合コード(変更しないでください)：" + make_code(stem, d, d6, sel_ids, [_gram_pair(g) for g in gs], com)]
+    lines += ["", "照合コード(変更しないでください)：" + make_code(stem, d, d6, sel_ids, [_gram_pair(g) for g in gs], com, nuance_sel)]
     text = "\n".join(lines)
     return (PREFACE_NEW + text) if with_preface else text
 
@@ -217,6 +265,7 @@ def _parse_text(t: str, m: re.Match) -> dict:
     hdr = lines[0].strip()
     got = {1: [], 2: [], 3: []}
     grams = []
+    nuance_in = None
     comment_lines = None
     sec = None
     i = 1
@@ -253,6 +302,30 @@ def _parse_text(t: str, m: re.Match) -> dict:
                 continue
             i += 1
             continue
+        if s.startswith("ニュアンス解説"):
+            sec = "n"
+            name = (_split_pair(s)[1] or "").strip()
+            if nuance_in is not None:
+                raise RestoreError("『ニュアンス解説：』の行が複数あります。" + RECHECK_HINT)
+            if name in ("採用", "不採用"):
+                j = i + 1
+                if j >= len(lines) or lines[j].strip() != MARK_N_BEGIN:
+                    raise RestoreError(f"ニュアンス解説（{name}）の{MARK_N_BEGIN}がありません。" + RECHECK_HINT)
+                k = j + 1
+                buf = []
+                while k < len(lines) and lines[k].strip() != MARK_N_END:
+                    buf.append(lines[k])
+                    k += 1
+                if k >= len(lines):
+                    raise RestoreError(f"ニュアンス解説（{name}）の{MARK_N_END}がありません(途中で切れています)。" + RECHECK_HINT)
+                nuance_in = (name, "\n".join(buf))
+                i = k + 1
+                continue
+            if name == "候補なし":
+                nuance_in = ("候補なし", None)
+                i += 1
+                continue
+            raise RestoreError(f"ニュアンス解説の行を『採用|不採用|候補なし』として解釈できません: {s!r}。" + RECHECK_HINT)
         if s.startswith("自由コメント"):
             comment_lines = [(_split_pair(s)[1] or "").lstrip()]
             sec = "c"
@@ -274,7 +347,7 @@ def _parse_text(t: str, m: re.Match) -> dict:
         raise RestoreError("『自由コメント：』の行がありません。" + RECHECK_HINT)
     while comment_lines and FENCE_RE.match(comment_lines[-1]):   # コードブロックの閉じ(```)がコメント末尾に残る場合
         comment_lines.pop()
-    return {"hdr": hdr, "items": got, "grammar": grams, "comment_lines": comment_lines}
+    return {"hdr": hdr, "items": got, "grammar": grams, "comment_lines": comment_lines, "nuance": nuance_in}
 
 
 def _gloss_marker(gl_nfkc: str):
@@ -286,14 +359,22 @@ def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
     """貼付テキスト -> (payload v2, notes)。不一致は RestoreError(何も書かない)。
     git_lookup(stem, d6) -> bytes|None: 現在のデータ版がd6と異なるとき選定時の版を返す関数(None=履歴参照なし)。"""
     t = text.replace("\r\n", "\n").replace("\r", "\n")
-    m = None
-    for m in CODE_RE.finditer(t):
+    m1 = m2 = None
+    for m1 in CODE_RE.finditer(t):
         pass
+    for m2 in CODE2_RE.finditer(t):
+        pass
+    m = m2 if (m2 and (not m1 or m2.start() > m1.start())) else m1
     if not m:
-        if re.search(r"AIF\d+-", t) and not re.search(r"AIF1-", t):
-            raise RestoreError("未対応の形式バージョンの照合コードです(AIF1のみ対応)")
+        if re.search(r"AIF\d+-", t) and not re.search(r"AIF[12]-", t):
+            raise RestoreError("未対応の形式バージョンの照合コードです(AIF1・AIF2のみ対応)")
         raise RestoreError("照合コードが見つかりません。" + RECHECK_HINT)
-    stem, d6, c8, t8, s10, g10, m8, chk = m.groups()
+    ver = 2 if m is m2 else 1
+    if ver == 2:
+        stem, d6, c8, t8, s10, g10, m8, n8, chk = m.groups()
+    else:
+        stem, d6, c8, t8, s10, g10, m8, chk = m.groups()
+        n8 = None
     if sha(m.group(0)[:-5])[:4] != chk:
         raise RestoreError("照合コードが壊れています(チェック不一致)。" + RECHECK_HINT)
     notes = []
@@ -309,6 +390,11 @@ def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
     if (d.get("candidates_sha256") or "0" * 8)[:8] != c8 or ((d.get("source") or {}).get("text_sha256") or "0" * 8)[:8] != t8:
         raise RestoreError("候補集合sha/本文shaが照合コードと一致しません(別データ)。" + RECHECK_HINT)
 
+    spec = has_nuance_spec(d)
+    if spec and ver != 2:
+        raise RestoreError("このデータはニュアンス解説の仕様マーク付きですが、照合コードがAIF2ではありません(古い形式のコピー)。" + RECHECK_HINT)
+    if not spec and ver == 2:
+        raise RestoreError("照合コードはAIF2ですが、データにニュアンス解説の仕様マークがありません(別データ)。" + RECHECK_HINT)
     ps = _parse_text(t, m)
     hdr_body = _split_pair(ps["hdr"])[1] or ""
     if "｜" in hdr_body:
@@ -388,6 +474,28 @@ def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
     if (sha("v1\n" + "\n".join(f"{i}:{h}" for i, h in pairs))[:10] if pairs else "0") != g10:
         raise RestoreError("文法選択が照合コードと一致しません。" + RECHECK_HINT)
 
+    n_decision = None
+    n_in = ps.get("nuance")
+    if spec:
+        if n_in is None:
+            raise RestoreError("『ニュアンス解説：』の行がありません(欠落)。" + RECHECK_HINT)
+        nd0 = nuance_of(d)
+        if nd0:
+            if n_in[0] not in ("採用", "不採用"):
+                raise RestoreError("ニュアンス候補があるのに『候補なし』と書かれています(改変の疑い)。" + RECHECK_HINT)
+            if norm_body(n_in[1]) != norm_body(nuance_body_text(nd0)):
+                raise RestoreError("ニュアンス解説の全文が候補データと一致しません(省略・改変・追記の疑い)。" + RECHECK_HINT)
+            n_decision = "adopt" if n_in[0] == "採用" else "reject"
+            want_n8 = nuance_n8(n_decision, nd0["candidate_sha256"])
+        else:
+            if n_in[0] != "候補なし":
+                raise RestoreError("ニュアンス候補が無いのに採用/不採用が書かれています(改変の疑い)。" + RECHECK_HINT)
+            want_n8 = "0"
+        if want_n8 != n8:
+            raise RestoreError("ニュアンス解説の採否が照合コードと一致しません(採用/不採用の取り違え・改変の疑い)。" + RECHECK_HINT)
+    elif n_in is not None:
+        raise RestoreError("このデータにはニュアンス解説の仕様マークがありませんが、貼付に『ニュアンス解説：』があります。" + RECHECK_HINT)
+
     cm_ok = None
     for cand_c in (comment, "\n".join(x.rstrip() for x in comment.split("\n"))):   # 行末空白が付いただけの貼付はshaで元と同一と証明できる場合に限り吸収
         if ((sha(cand_c)[:8]) if cand_c else "0") == m8:
@@ -397,8 +505,8 @@ def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
         raise RestoreError("自由コメントが照合コードと一致しません(変更・追記・削除の疑い)。" + RECHECK_HINT)
     comment = cm_ok
 
-    payload = _build_payload(d, sel, gsel, comment, st_grammar_none=(not gsel))
-    payload["restore_meta"] = {"tool": TOOL_ID, "code_version": CODE_VERSION, "collation_code": m.group(0)}
+    payload = _build_payload(d, sel, gsel, comment, st_grammar_none=(not gsel), nuance_decision_=n_decision)
+    payload["restore_meta"] = {"tool": TOOL_ID, "code_version": ("AIF2" if ver == 2 else CODE_VERSION), "collation_code": m.group(0)}
     if d.get("kp_confirmed"):
         locked = _locked_selection(d, sel)
         payload["selection"]["key_phrase"] = locked[1]
@@ -444,7 +552,7 @@ def _grammar_record(g: dict) -> dict:
     return r
 
 
-def _build_payload(d: dict, sel: dict, gsel: list, comment: str, st_grammar_none: bool) -> dict:
+def _build_payload(d: dict, sel: dict, gsel: list, comment: str, st_grammar_none: bool, nuance_decision_=None) -> dict:
     pres = {g["id"]: g for g in grammar_presented(d)}
     gsel_p = [pres.get(g["id"], g) for g in gsel]   # display_rank付きの提示版(form_logic.jsはgrammarPresented由来のrecordを送る)
     sha_ = d.get("candidates_sha256") or None
@@ -459,6 +567,12 @@ def _build_payload(d: dict, sel: dict, gsel: list, comment: str, st_grammar_none
         "comment": comment,
     }
     presented = list(pres.values())
+    if has_nuance_spec(d):   # 仕様マーク付きデータだけ schema_minor=2 + selection.nuance(form_logic.js buildStructuredと同形)
+        nn = nuance_of(d)
+        payload["schema_minor"] = 2
+        payload["nuance_status"] = nuance_decision_ if nn else "n/a"
+        if nn and nuance_decision_:
+            payload["selection"]["nuance"] = {"decision": nuance_decision_, "candidate_sha256": nn["candidate_sha256"], "id": nn["id"]}
     if has_grammar_spec(d):
         state = "n/a" if not presented else ("selected" if gsel else "none")
         payload["grammar_status"] = {"selected": "user_selected_one", "none": "user_selected_none", "n/a": "no_candidates_found"}[state]

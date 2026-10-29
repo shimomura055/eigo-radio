@@ -409,7 +409,7 @@ class StagePagesWiringTest(unittest.TestCase):
         p1.TRANSLATION_DECISION_RECORD = "docs/pm/decisions/part1_translation_decision.json"
         p1.KpGeneralExplanationError = type("E", (Exception,), {})
         p2w = mock.MagicMock()
-        p2w.compose_page_html.side_effect = lambda part1, res: f"{part1}<P2:{res}>"
+        p2w.compose_page_html.side_effect = lambda part1, res, *, nuance: f"{part1}<P2:{res}>"
         ctx = fake_ctx("/o", pages_dir="/o/pages")
         with contextlib.ExitStack() as es:
             es.enter_context(mock.patch.object(r, "_assert_kp_review_consistent"))

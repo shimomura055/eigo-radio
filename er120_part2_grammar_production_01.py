@@ -158,7 +158,13 @@ Markdownのみ。前置き・後書きなし。英文ごとに、次の区切り
 
 STEPA_PROMPT_SHA256 = hashlib.sha256(STEPA_PROMPT.encode("utf-8")).hexdigest()
 STEPB_PROMPT_SHA256 = hashlib.sha256(STEPB_PROMPT.encode("utf-8")).hexdigest()
-ZERO_P2 = "今回の本文には、このPartで特に取り上げる難所となる構文はありませんでした。"   # Trial-04 ZERO_P2(0件時の文面)
+# 文法0件はコーナー全体を非表示にする(ユーザー正式決定2026-10-29 §2C。固定文面・見出し・空枠を出さない)。旧固定文面は『既存0件runの旧mdの退避判定(M-6)』専用の
+# 読取定数としてのみ残す(描画・出力には使わない)。
+_LEGACY_ZERO_GRAMMAR_BODY = "今回の本文には、このPartで特に取り上げる難所となる構文はありませんでした。"
+NUANCE_HEADING = "ニュアンス解説"                  # 独立コーナー名(ユーザー原文§2A-5。『Deeper Understanding』は不使用=Fable判断R-12)
+NUANCE_RESULT_FILENAME = "nuance_result.json"       # finalize(委任_02C/er134)が書く表示用の確定結果。無い=ニュアンス解説なし(LEGACY/未実施を含む)
+NUANCE_ADOPTED = "ADOPTED"                          # 表示するのはこのstatusのときだけ(REJECTED/NONE/LEGACY/FAILED_TECHNICAL等は空文字)
+LEGACY_ZERO_GRAMMAR_MD_SUFFIX = ".legacy_zero_p2.md"        # 旧0件md(固定文面入り)の退避先(削除しない)
 PAGE_FORBIDDEN_RE = re.compile(r"\(A2\)|\(B1\)|B1B|English:|英語:|EN:|日本語:|JA:")   # Part 1と同じ(ページ非表示語)
 EXPLANATION_HEADINGS = ["日本語訳", "文法・構文の仕組み", "通常の表現・語順との比較", "意味・ニュアンス・表現効果"]
 EXPLANATION_REQUIRED = ["日本語訳", "文法・構文の仕組み", "意味・ニュアンス・表現効果"]    # 比較は「不要なら出力しない」(Prompt)
@@ -1359,14 +1365,16 @@ def verify_selection_matches_outputs(*, kind: str = "grammar", paragraphs: list,
                                      where: str = "", ref_ja_pool: dict | None = None, frozen=None, explanations: dict | None = None,
                                      section_scoped: bool = False) -> None:
     """kind='grammar'のみ。不一致はPart2Stale。md_text/html_textを渡した場合は決定論の描画(render_markdown / render_html_block)と照合する。
-    html_textは『render_html_block(include_css=False)の出力を部分文字列として含む』ことを確認(ページbuilderが包む前提。包み方は呼出側)。"""
+    html_textは『render_html_block(include_css=False)の出力を部分文字列として含む』ことを確認(ページbuilderが包む前提。包み方は呼出側)。
+    0件(status!=SELECTED)の期待は『md不在(md_text="")・節内の文法ブロック0個』(固定文面なし)。"""
     if kind != "grammar":
         raise ValueError(f"このmoduleが検証できるのは kind='grammar' のみ: {kind!r}")
     require_fresh_part2(result, paragraphs, label, next_command=next_command, where=where, candidates_doc=candidates_doc,
                         grammar_review=grammar_review, ref_ja_pool=ref_ja_pool, frozen=frozen, explanations=explanations)
     w = f"[{where}] " if where else ""
-    if html_text is not None and section_scoped and count_grammar_blocks(html_text) != 1:   # O-6: 自levelの節に文法ブロックがちょうど1個(取り違え・欠落・重複を検出)
-        raise Part2Stale(f"{w}公開HTMLの当該levelの節に、Part 2文法ブロックがちょうど1個ありません(件数={count_grammar_blocks(html_text)})。次の一手: {next_command}")
+    if html_text is not None and section_scoped and count_grammar_blocks(html_text) != expected_grammar_blocks(result):   # O-6: 自levelの節の文法ブロック数=期待数(SELECTED=1 / 0件=0。取り違え・欠落・重複・0件なのに残存を検出)
+        raise Part2Stale(f"{w}公開HTMLの当該levelの節のPart 2文法ブロック数が期待と一致しません(件数={count_grammar_blocks(html_text)} / 期待={expected_grammar_blocks(result)}。"
+                         f"文法0件はコーナー全体が非表示)。次の一手: {next_command}")
     if md_text is not None and md_text != render_markdown(result):
         raise Part2Stale(f"{w}study_text/のPart 2 markdownが確定結果(part2_result.json)と一致しません。次の一手: {next_command}")
     if html_text is not None and render_html_block(result, include_css=False) not in html_text:
@@ -1398,10 +1406,37 @@ def write_artifacts(dir_path: str, doc: dict | None, result: dict | None) -> dic
         out["result"] = f"{dir_path}/{RESULT_FILENAME}"
         with open(out["result"], "w", encoding="utf-8", newline="\n") as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
-        out["md"] = f"{dir_path}/{PART2_FILE_STEM}.md"
-        with open(out["md"], "w", encoding="utf-8", newline="\n") as f:
-            f.write(render_markdown(result))
+        md_text = render_markdown(result)
+        if md_text:
+            out["md"] = f"{dir_path}/{PART2_FILE_STEM}.md"
+            with open(out["md"], "w", encoding="utf-8", newline="\n") as f:
+                f.write(md_text)
+        else:   # 0件=mdを書かない(内部artifactにも固定文面・プレースホルダーを残さない)。以前のmdが残っていれば退避(削除しない)
+            out["md_retired"] = retire_part2_md(dir_path)
     return out
+
+
+def retire_part2_md(dir_path: str, *, only_legacy: bool = False) -> str | None:
+    """0件結果なのに以前のPart 2 markdownが残っているとき、削除せず退避する(M-6)。旧固定文面とバイト一致=`.legacy_zero_p2.md`、それ以外(SELECTED時代の残骸)=
+    `.superseded_by_zero.md`。決定論(同入力で同じ退避先)・冪等(mdが無ければ何もしない)。戻り=退避先path|None。
+    only_legacy=True(検証側から呼ぶ場合): 旧固定文面と完全一致するmdだけ退避する。それ以外のmdは触らず、0件の期待(md不在)との不一致として検証がPart2Staleにする。"""
+    md = f"{dir_path}/{PART2_FILE_STEM}.md"
+    if not os.path.exists(md):
+        return None
+    with open(md, encoding="utf-8", newline="") as f:
+        cur = f.read()
+    is_legacy = cur == _legacy_zero_markdown()
+    if only_legacy and not is_legacy:
+        return None
+    suffix = LEGACY_ZERO_GRAMMAR_MD_SUFFIX if is_legacy else ".superseded_by_zero.md"
+    dst = f"{dir_path}/{PART2_FILE_STEM}{suffix}"
+    os.replace(md, dst)
+    return dst
+
+
+def _legacy_zero_markdown() -> str:
+    """旧仕様(2026-10-29以前)が0件のときに書いていたmarkdown(バイト列)。退避判定専用。"""
+    return "\n".join(["# Grammar & Sentence Structure", "", _LEGACY_ZERO_GRAMMAR_BODY, ""])
 
 
 def load_json(path: str) -> dict | None:
@@ -1413,11 +1448,11 @@ def load_json(path: str) -> dict | None:
 
 
 def render_markdown(result: dict) -> str:
-    """Part 1と同じく節見出しにPart番号を出さない(Part 3/4未採用の番号参照=Dangling防止)。0件はTrialと同じ固定文面。
+    """Part 1と同じく節見出しにPart番号を出さない(Part 3/4未採用の番号参照=Dangling防止)。**0件は空文字**(コーナー全体を出さない。ユーザー正式決定2026-10-29 §2C)。
     【日本語訳】はStep B自身の訳(Trial-07どおり。M-1)。"""
-    L = ["# Grammar & Sentence Structure", ""]
     if result.get("status") != "SELECTED":
-        return "\n".join(L + [ZERO_P2, ""])
+        return ""
+    L = ["# Grammar & Sentence Structure", ""]
     for it in result_items(result):   # 1件はv1とバイト同一。2件以上は同ブロックを(本文出現順の)item順に連結
         s, sec = it["selection"], it["sections"]
         L += ["## 対象となる本文英文", "", f"> {s['sentence']}", ""]
@@ -1428,28 +1463,120 @@ def render_markdown(result: dict) -> str:
 
 
 def render_html_block(result: dict, *, include_css: bool = True) -> str:
-    """ページ用のstudy block(Part 1の `<section class='study'>` と同じ規約。<table>/<h2>不使用)。0件は固定文面を載せる。
+    """ページ用のstudy block(Part 1の `<section class='study'>` と同じ規約。<table>/<h2>不使用)。**0件は空文字**(見出し・空枠・固定文面を出さない。CSSも出さない)。
     LLM出力はHTMLエスケープ後に**→<b>。Part 1ブロックの直後に連結する場合は compose_study_html を使う(R-1)。"""
     import er003_kp_general_explanation_01 as p1
-    parts = ["<section class='study'><h3>Grammar &amp; Sentence Structure</h3>"]
     if result.get("status") != "SELECTED":
-        parts.append(f"<div class='study-item'><p>{html.escape(ZERO_P2, quote=False)}</p></div>")
-    else:
-        for it in result_items(result):   # itemごと(新規確定は<=1。旧2件結果の読取互換)に<div class='study-item'>。<section>と<h3>は1つ
-            s, sec = it["selection"], it["sections"]
-            dl = [f"<dt>対象となる本文英文</dt><dd>{html.escape(s['sentence'], quote=False)}</dd>"]
-            for h in EXPLANATION_HEADINGS:
-                if h in sec:
-                    dl.append(f"<dt>{html.escape(h, quote=False)}</dt><dd>{p1._paragraphs_html(sec[h])}</dd>")
-            parts.append(f"<div class='study-item'><dl>{''.join(dl)}</dl></div>")
+        return ""
+    parts = ["<section class='study'><h3>Grammar &amp; Sentence Structure</h3>"]
+    for it in result_items(result):   # itemごと(新規確定は<=1。旧2件結果の読取互換)に<div class='study-item'>。<section>と<h3>は1つ
+        s, sec = it["selection"], it["sections"]
+        dl = [f"<dt>対象となる本文英文</dt><dd>{html.escape(s['sentence'], quote=False)}</dd>"]
+        for h in EXPLANATION_HEADINGS:
+            if h in sec:
+                dl.append(f"<dt>{html.escape(h, quote=False)}</dt><dd>{p1._paragraphs_html(sec[h])}</dd>")
+        parts.append(f"<div class='study-item'><dl>{''.join(dl)}</dl></div>")
     parts.append("</section>")
     return (p1.STUDY_CSS if include_css else "") + "".join(parts)
 
 
-def compose_study_html(part1_html: str, result: dict) -> str:
-    """R-1: Part 1ブロックの直後にPart 2を連結。Part 1が空(判断記録なし等)のときはCSSを含める(include_css = not part1_html)。"""
+# ------------------------------------------------------------
+# ニュアンス解説(独立コーナー。ユーザー正式決定2026-10-29 APPROVED_FOR_PRODUCTION)。表示は採用(ADOPTED)のときだけ。
+# nuance = 確定結果dict(`nuance_result.json`。finalizeはer134/委任_02C)。契約(表示側が読む最小キー):
+#   {"status": "ADOPTED"|"REJECTED"|"NONE"|..., "candidate": {"expression","focus","explanation_ja","quote_en","quote_ja"}}
+#   ADOPTED以外=空文字(見出し・空枠・プレースホルダーなし)。ADOPTEDなのに必須キー欠落=Part2Stale(黙って非表示にしない)。
+# ------------------------------------------------------------
+NUANCE_REQUIRED_FIELDS = ("expression", "focus", "explanation_ja", "quote_en", "quote_ja")
+
+
+def nuance_is_adopted(nuance) -> bool:
+    return isinstance(nuance, dict) and nuance.get("status") == NUANCE_ADOPTED
+
+
+def expected_grammar_blocks(result) -> int:
+    """節に出るべき文法ブロック数(SELECTED=1 / 0件=0)。検査側(verify_selection_matches_outputs・各runnerのpage_verify)はこの関数だけを期待値にする。"""
+    return 1 if (isinstance(result, dict) and result.get("status") == "SELECTED") else 0
+
+
+def expected_nuance_blocks(nuance) -> int:
+    return 1 if nuance_is_adopted(nuance) else 0
+
+
+def nuance_candidate_of(nuance: dict) -> dict:
+    """ADOPTED結果の候補本文(必須キーが無い/空はPart2Stale。fail-closed)。"""
+    cand = nuance.get("candidate")
+    miss = [k for k in NUANCE_REQUIRED_FIELDS if not isinstance(cand, dict) or not str(cand.get(k) or "").strip()]
+    if miss:
+        raise Part2Stale(f"ニュアンス解説の確定結果(status=ADOPTED)に必須項目がありません: {miss}。黙って非表示にはしません(nuance_result.jsonを確認してください)")
+    return cand
+
+
+def nuance_text_fields(nuance: dict) -> list:
+    """ページ非表示語の検査(M-7)対象=表示される全文字列。"""
+    cand = nuance_candidate_of(nuance)
+    return [str(cand[k]) for k in NUANCE_REQUIRED_FIELDS]
+
+
+def render_nuance_html_block(nuance, *, include_css: bool = True) -> str:
+    """独立コーナー『ニュアンス解説』(採用時のみ。他は空文字)。Part 1/文法と同じ規約(`<section class='study'>`・<h3>・<div class='study-item'>・<dl>、<table>/<h2>不使用)。
+    LLM出力はHTMLエスケープ後に**→<b>(`er003._paragraphs_html`)。LLM関数を取らない決定論の描画。"""
+    import er003_kp_general_explanation_01 as p1
+    if not nuance_is_adopted(nuance):
+        return ""
+    c = nuance_candidate_of(nuance)
+    dl = [f"<dt>ポイント</dt><dd>{html.escape(c['focus'], quote=False)}</dd>",
+          f"<dt>解説</dt><dd>{p1._paragraphs_html(c['explanation_ja'])}</dd>",
+          f"<dt>本文の英文</dt><dd>{html.escape(c['quote_en'], quote=False)}</dd>",
+          f"<dt>日本語訳</dt><dd>{html.escape(c['quote_ja'], quote=False)}</dd>"]
+    body = f"<div class='study-item'><h4>{html.escape(c['expression'], quote=False)}</h4><dl>{''.join(dl)}</dl></div>"
+    return (p1.STUDY_CSS if include_css else "") + f"<section class='study'><h3>{NUANCE_HEADING}</h3>{body}</section>"
+
+
+def compose_study_html(part1_html: str, result: dict, nuance=None) -> str:
+    """R-1: Part 1 -> 文法(Part 2) -> ニュアンス解説 の順に連結する唯一の合成関数。各ブロックは該当しなければ空文字(文法0件・不採用・候補なしはコーナー全体を出さない)。
+    CSS(STUDY_CSS)は『最初の非空ブロック』が持つ(Part 1はSTUDY_CSS込みで返る)。3ブロックとも空なら空文字(CSSも出さない)。
+    nuance=None(既定)は従来呼出との互換用(ニュアンス解説なし)。Production呼出元は`er120_part2_wiring_01.compose_page_html`が必須keywordで渡す(R-6)。"""
     part1_html = part1_html or ""
-    return part1_html + render_html_block(result, include_css=not part1_html)
+    gram_html = render_html_block(result, include_css=not part1_html)
+    nuance_html = render_nuance_html_block(nuance, include_css=not (part1_html or gram_html))
+    return part1_html + gram_html + nuance_html
+
+
+def count_nuance_blocks(html_text: str) -> int:
+    """HTML(または節)内のニュアンス解説ブロック(`<h3>ニュアンス解説</h3>`)の数。"""
+    return html_text.count(f"<h3>{NUANCE_HEADING}</h3>")
+
+
+_STUDY_SECTION_RE = re.compile(r"<section class='study'>(.*?)</section>", re.S)
+
+
+def count_empty_study_sections(html_text: str) -> int:
+    """見出しだけ・本文なしの`<section class='study'>`(空枠)の数。0件コーナーの固定文面撤去後は常に0であること(否定検査)。"""
+    n = 0
+    for m in _STUDY_SECTION_RE.finditer(html_text):
+        if not m.group(1).startswith("<h3>"):   # 見出し付きの学習ブロック(Part 1/文法/ニュアンス解説)だけが対象
+            continue
+        inner = re.sub(r"<h3>.*?</h3>", "", m.group(1), flags=re.S)
+        if "<div class='study-item'>" not in inner or not re.sub(r"<[^>]+>", "", inner).strip():
+            n += 1
+    return n
+
+
+def verify_nuance_in_section(nuance, html_text: str, *, next_command: str, where: str = "") -> None:
+    """M-7: 当該levelの節(html_text)のニュアンス解説を節単位で検証する(文法のO-6と同型)。(1)ブロック数=期待(ADOPTED=1 / 他=0) (2)ADOPTEDなら決定論の描画が節に含まれる
+    (Std/Advの取り違え・改変を検出) (3)表示される全文字列にページ非表示語(PAGE_FORBIDDEN_RE)がない (4)空の`<section class='study'>`がない。不一致=Part2Stale。"""
+    w = f"[{where}] " if where else ""
+    exp, got = expected_nuance_blocks(nuance), count_nuance_blocks(html_text)
+    if got != exp:
+        raise Part2Stale(f"{w}公開HTMLの当該levelの節のニュアンス解説ブロック数が期待と一致しません(件数={got} / 期待={exp}。採用以外は非表示)。次の一手: {next_command}")
+    if exp:
+        for t in nuance_text_fields(nuance):
+            if PAGE_FORBIDDEN_RE.search(t):
+                raise Part2Stale(f"{w}ニュアンス解説の表示文にページ非表示語が含まれます。次の一手: {next_command}")
+        if render_nuance_html_block(nuance, include_css=False) not in html_text:
+            raise Part2Stale(f"{w}公開HTMLのニュアンス解説ブロックが確定結果(nuance_result.json)と一致しません(levelの取り違え・改変の疑い)。次の一手: {next_command}")
+    if count_empty_study_sections(html_text):
+        raise Part2Stale(f"{w}公開HTMLの当該levelの節に空の学習ブロック(見出しだけ)があります。次の一手: {next_command}")
 
 
 # ============================================================

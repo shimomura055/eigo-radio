@@ -1025,12 +1025,18 @@ PART1_MARKER = "Vocabulary &amp; Expressions"
 PART2_MARKER = "Grammar &amp; Sentence Structure"
 
 
+def _blocks_in_page_order(section: str, nuance_marker: str) -> bool:
+    """節内の学習ブロックの相対順 Part 1 -> 文法 -> ニュアンス解説(M-5: 存在するブロック同士の順。文法0件でも例外にならない)。同一ブロックが複数あれば先頭位置で比較。"""
+    pos = [section.index(m) for m in (PART1_MARKER, PART2_MARKER, nuance_marker) if m in section]
+    return pos == sorted(pos)
+
+
 PAGE_SECTION_IDS = {"b1b": "advanced", "a2": "standard"}
 
 
 def _verify_part2_outputs(ctx) -> dict:
     """両levelについて 確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html)の**当該levelの節**を照合(節単位の4者一致、kind="grammar")。
-    各節に文法ブロックがちょうど1個(取り違え・欠落・重複はfail-closed)。Advancedの節はPart 1の直後にPart 2。"""
+    各節の文法ブロックは期待数(採用=1 / 0件=0。0件はコーナー全体が非表示)・ニュアンス解説は採用=1 / 他=0(取り違え・欠落・重複はfail-closed)。順序はPart 1→文法→ニュアンス解説。"""
     import er_user_listening_page_common_01 as cp
     p2w = _p2w()
     g = p2w.g
@@ -1042,20 +1048,25 @@ def _verify_part2_outputs(ctx) -> dict:
         paragraphs, label = _part2_inputs(ctx, lv)
         section = cp.level_section_html(idx_html, PAGE_SECTION_IDS[lv])
         try:
-            p2w.verify_outputs(_part2_dir(ctx, lv), paragraphs, label, level=lv, next_command=_part2_next(ctx, lv), where=f"stage_page_verify({lv})",
-                               ref_ja_pool=_part2_pool(ctx, lv), md_path=f"{_part2_dir(ctx, lv)}/{g.PART2_FILE_STEM}.md", html_text=section)
+            expect = p2w.verify_outputs(_part2_dir(ctx, lv), paragraphs, label, level=lv, next_command=_part2_next(ctx, lv), where=f"stage_page_verify({lv})",
+                                        ref_ja_pool=_part2_pool(ctx, lv), md_path=f"{_part2_dir(ctx, lv)}/{g.PART2_FILE_STEM}.md", html_text=section)
         except (g.Part2Error, g.Part2InputError) as e:
             raise YE2EStop(f"FAMILY_Y_PART2_OUTPUT_MISMATCH({lv}): {e}") from e
         n2 = g.count_grammar_blocks(section)
-        if n2 != 1:
-            raise YE2EStop(f"FAMILY_Y_PART2_OUTPUT_MISMATCH({lv}): {PAGE_SECTION_IDS[lv]}の節のPart 2ブロックが{n2}個です(ちょうど1個のはず)")
+        if n2 != expect["grammar_blocks"]:     # 文法0件はコーナー全体が非表示=期待0個(固定文面なし)
+            raise YE2EStop(f"FAMILY_Y_PART2_OUTPUT_MISMATCH({lv}): {PAGE_SECTION_IDS[lv]}の節のPart 2ブロックが{n2}個です(期待{expect['grammar_blocks']}個)")
+        nn = g.count_nuance_blocks(section)
+        if nn != expect["nuance_blocks"]:      # ニュアンス解説は採用時のみ1個
+            raise YE2EStop(f"FAMILY_Y_NUANCE_OUTPUT_MISMATCH({lv}): {PAGE_SECTION_IDS[lv]}の節のニュアンス解説ブロックが{nn}個です(期待{expect['nuance_blocks']}個)")
         n1 = section.count(PART1_MARKER)
-        if _part1_level_enabled(ctx, lv):      # vocab対象level(Advanced=常に / Standard=display_spec付き): Part 1がちょうど1個・Part 2の直前(0個・2個はSTOP。黙った欠落を許さない=M11)
-            if n1 != 1 or section.index(PART1_MARKER) > section.index(PART2_MARKER):
-                raise YE2EStop(f"FAMILY_Y_PART1_OUTPUT_MISMATCH({lv}): Part 1が{n1}個です(vocab対象levelではちょうど1個、かつPart 2の直前[Part 1→Part 2の順]のはず)")
+        if _part1_level_enabled(ctx, lv):      # vocab対象level(Advanced=常に / Standard=display_spec付き): Part 1がちょうど1個(0個・2個はSTOP。黙った欠落を許さない=M11)
+            if n1 != 1:
+                raise YE2EStop(f"FAMILY_Y_PART1_OUTPUT_MISMATCH({lv}): Part 1が{n1}個です(vocab対象levelではちょうど1個のはず)")
         elif n1:
             raise YE2EStop(f"FAMILY_Y_PART1_OUTPUT_MISMATCH({lv}): Part 1が{n1}個あります(display_specの無い旧Standardは従来どおりPart 1なし。遡及なし)")
-        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part1_blocks": n1, "part2_blocks": n2}
+        if not _blocks_in_page_order(section, f"<h3>{g.NUANCE_HEADING}</h3>"):   # M-5: 存在するブロック同士の相対順(Part 1→文法→ニュアンス解説。文法0件でも例外にならない)
+            raise YE2EStop(f"FAMILY_Y_PART_ORDER_MISMATCH({lv}): 学習ブロックの順序がPart 1→文法→ニュアンス解説ではありません")
+        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part1_blocks": n1, "part2_blocks": n2, "nuance_blocks": nn}
     return out
 
 
@@ -1247,17 +1258,6 @@ def _resolve_highlights_or_stop(ctx, where: str, levels: tuple = LEVELS) -> dict
     return out
 
 
-def stage_pages(ctx) -> dict:
-    import er_user_listening_page_common_01 as cp
-    ya = _ya()
-    audience = _page_audience(ctx)                              # 既定public(マーカーなし)。devはCLI --page-audience devの明示指定のみ(env/設定での暗黙ONなし)
-    show_notice = _page_notice_applies(ctx)
-    ja_segs = ys.split_y_article(_rd(_ja_path(ctx)))["segments"]
-    title = ys.split_y_article(_rd(_ja_path(ctx)))["title"]
-    _assert_kp_review_consistent(ctx, "a2", "stage_pages")
-    p2res = _assert_study_ready(ctx, "stage_pages")           # Part 1/Part 2(Advanced)の存在・最新性・確定との一致(未確定=rc=4、古い=STOP)
-    p2res_std = _assert_std_study_ready(ctx, "stage_pages")   # Standardの学習テキスト(Part 1[display_spec付きのみ]+Part 2)。ページ専用=ここ(pages/page_verify)だけで確認する
-    hl_results = _resolve_highlights_or_stop(ctx, "stage_pages")  # SLOT-23: display_spec付きlevelだけ。特定不能(ISSUE)はページ生成(mp3化)前にSTOP。マーク無しlevelは空=従来とバイト同一
 def _y_pww_aux_html(ctx, audience: str, cp) -> str:
     """JA-ASR-V2-BETA-PRODUCTION-WIRING-01 委任_02A(Opus OK-6): Y試聴ページに『事後試聴リスト(PASS_WITH_WARNING)』節を連結する(X/Zと同じ補助表示。従来はJSONのみで欠落)。
     日本語音声があるのはStandard(a2)のみ。公開(public)ページには出さない(内部の判定情報を公開物へ載せない。レポートはJSON/標準出力/dev試聴ページ)。
@@ -1279,6 +1279,17 @@ def _y_pww_aux_html(ctx, audience: str, cp) -> str:
     return "<h3>Standard</h3>" + pww.render_html_section(pww.load_listening_list(run_dir), href_fn=_href)
 
 
+def stage_pages(ctx) -> dict:
+    import er_user_listening_page_common_01 as cp
+    ya = _ya()
+    audience = _page_audience(ctx)                              # 既定public(マーカーなし)。devはCLI --page-audience devの明示指定のみ(env/設定での暗黙ONなし)
+    show_notice = _page_notice_applies(ctx)
+    ja_segs = ys.split_y_article(_rd(_ja_path(ctx)))["segments"]
+    title = ys.split_y_article(_rd(_ja_path(ctx)))["title"]
+    _assert_kp_review_consistent(ctx, "a2", "stage_pages")
+    p2res = _assert_study_ready(ctx, "stage_pages")           # Part 1/Part 2(Advanced)の存在・最新性・確定との一致(未確定=rc=4、古い=STOP)
+    p2res_std = _assert_std_study_ready(ctx, "stage_pages")   # Standardの学習テキスト(Part 1[display_spec付きのみ]+Part 2)。ページ専用=ここ(pages/page_verify)だけで確認する
+    hl_results = _resolve_highlights_or_stop(ctx, "stage_pages")  # SLOT-23: display_spec付きlevelだけ。特定不能(ISSUE)はページ生成(mp3化)前にSTOP。マーク無しlevelは空=従来とバイト同一
     study_by_level = {}
     for lv, p2r in ((ADV_LEVEL, p2res), (STD_LEVEL, p2res_std)):
         part1_html = ""
@@ -1288,7 +1299,7 @@ def _y_pww_aux_html(ctx, audience: str, cp) -> str:
                 part1_html = _p1().render_html_block(rows)
             except _p1().KpGeneralExplanationError as e:
                 raise YE2EStop(f"FAMILY_Y_KP_PART1_RENDER_NOT_OK({lv}): {e}") from e
-        study_by_level[lv] = _p2w().compose_page_html(part1_html, p2r)   # 共通builder1つ・同じテンプレート: Part 1ブロック直後にPart 2(0件は固定文面)。Part 1が無いlevelはPart 2のみ
+        study_by_level[lv] = _p2w().compose_page_html(part1_html, p2r, nuance=_p2w().nuance_for_display(_part2_dir(ctx, lv), level=lv))   # 共通builder1つ・同じテンプレート: Part 1→Part 2(文法0件は非表示)→ニュアンス解説(採用時のみ)
     study_html, study_html_std = study_by_level[ADV_LEVEL], study_by_level[STD_LEVEL]
     audio_dir = f"{ctx.pages_dir}/audio"
     os.makedirs(audio_dir, exist_ok=True)

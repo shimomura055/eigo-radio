@@ -103,8 +103,8 @@ class MarkedPipeline(unittest.TestCase):
         for lv in r.LEVELS:
             sec = _sec(page, lv)
             self.assertEqual(sec.count(r.PART1_MARKER), 1, lv)
-            self.assertEqual(sec.count(r.PART2_MARKER), 1, lv)
-            self.assertLess(sec.index(r.PART1_MARKER), sec.index(r.PART2_MARKER), lv)       # Part 1 → Part 2
+            self.assertEqual(sec.count(r.PART2_MARKER), 1, lv)                              # この記事は文法採用(0件記事は文法ブロック0個=別test)
+            self.assertTrue(r._blocks_in_page_order(sec, "<h3>ニュアンス解説</h3>"), lv)       # Part 1 → 文法 → ニュアンス解説(存在するブロック同士の相対順。M-5)
         v = json.load(open(f"{self.out}/page_verify_local.json", encoding="utf-8"))
         self.assertTrue(v["ok"])
         self.assertEqual(v["part2_verified"]["a2"]["part1_blocks"], 1)
@@ -202,6 +202,56 @@ class MarkedPipeline(unittest.TestCase):
                 self.assertTrue(head in orig)
         finally:
             open(idx, "w", encoding="utf-8").write(orig)
+        r._verify_part2_outputs(self.ctx)
+
+    def test_adopted_nuance_is_verified_per_section_by_the_real_validator(self):
+        """委任_02B: 実validator(r._verify_part2_outputs)が、ニュアンス解説の採用結果とページの節を節単位で照合する(採用=1個/取違え・欠落・重複・順序違いはSTOP)。"""
+        import er120_part2_grammar_production_01 as g
+        idx = f"{self.out}/pages/index.html"
+        orig = open(idx, encoding="utf-8").read()
+        res_path = {lv: f"{r._part2_dir(self.ctx, lv)}/{g.NUANCE_RESULT_FILENAME}" for lv in r.LEVELS}
+        cand = {"expression": "at least", "focus": "at least が示す『最低限』の語感", "explanation_ja": "**at least** は『少なくとも』を示します。", "quote_en": "At least she was safe.", "quote_ja": "少なくとも彼女は無事だった。"}
+        block = g.render_nuance_html_block({"status": "ADOPTED", "candidate": cand}, include_css=False)
+
+        def put(lv, status):
+            with open(res_path[lv], "w", encoding="utf-8") as f:
+                json.dump({"schema": "nuance_result_v1", "level_key": lv, "status": status, "candidate": cand if status in ("ADOPTED", "REJECTED") else None}, f, ensure_ascii=False)
+
+        def with_block(lv, html_in=None):
+            page = html_in or orig
+            sec = _sec(page, lv)
+            return page.replace(sec, sec + block)
+        try:
+            for lv in r.LEVELS:
+                self.assertFalse(os.path.exists(res_path[lv]))
+                self.assertEqual(r._verify_part2_outputs(self.ctx)[lv]["nuance_blocks"], 0)          # 結果ファイル無し=従来どおり(ニュアンスなし)
+            put("a2", "ADOPTED")
+            open(idx, "w", encoding="utf-8").write(with_block("a2"))
+            out = r._verify_part2_outputs(self.ctx)
+            self.assertEqual((out["a2"]["nuance_blocks"], out["b1b"]["nuance_blocks"]), (1, 0))      # 節単位: Standardに載り、Advancedには載らない
+            open(idx, "w", encoding="utf-8").write(with_block("b1b"))                                # 取違え(Advancedの節に載せた)
+            with self.assertRaises(r.YE2EStop) as e:
+                r._verify_part2_outputs(self.ctx)
+            self.assertRegex(str(e.exception), r"FAMILY_Y_(NUANCE|PART2)_OUTPUT_MISMATCH.*ニュアンス")      # 節単位の検査(verify_outputsまたはrunnerの件数検査のどちらで止まってもよい)
+            open(idx, "w", encoding="utf-8").write(orig)                                             # 欠落(採用済みなのに載っていない)
+            with self.assertRaises(r.YE2EStop) as e:
+                r._verify_part2_outputs(self.ctx)
+            self.assertRegex(str(e.exception), r"FAMILY_Y_(NUANCE|PART2)_OUTPUT_MISMATCH.*ニュアンス")      # 節単位の検査(verify_outputsまたはrunnerの件数検査のどちらで止まってもよい)
+            open(idx, "w", encoding="utf-8").write(with_block("a2", with_block("a2")))               # 重複
+            with self.assertRaises(r.YE2EStop):
+                r._verify_part2_outputs(self.ctx)
+            put("a2", "REJECTED")                                                                    # 不採用なのに載っている
+            open(idx, "w", encoding="utf-8").write(with_block("a2"))
+            with self.assertRaises(r.YE2EStop) as e:
+                r._verify_part2_outputs(self.ctx)
+            self.assertRegex(str(e.exception), r"FAMILY_Y_(NUANCE|PART2)_OUTPUT_MISMATCH.*ニュアンス")      # 節単位の検査(verify_outputsまたはrunnerの件数検査のどちらで止まってもよい)
+            open(idx, "w", encoding="utf-8").write(orig)                                             # 不採用でページに無い=PASS
+            self.assertEqual(r._verify_part2_outputs(self.ctx)["a2"]["nuance_blocks"], 0)
+        finally:
+            open(idx, "w", encoding="utf-8").write(orig)
+            for pth in res_path.values():
+                if os.path.exists(pth):
+                    os.remove(pth)
         r._verify_part2_outputs(self.ctx)
 
     def test_g3_detects_missing_extra_and_wrong_kind_decoration(self):

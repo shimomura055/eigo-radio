@@ -368,7 +368,8 @@ class StandardBuilder(_Tmp):
             self.assertEqual(sec.count(R.PART1_HEADING_MARK), 1)
             self.assertIn("lk1", sec)
             self.assertIn("lk-meaning", sec)
-            self.assertLess(sec.index(R.PART1_HEADING_MARK), sec.index("Grammar &amp; Sentence Structure"))   # Part 1 → Part 2
+            _pos = [sec.index(m) for m in (R.PART1_HEADING_MARK, "Grammar &amp; Sentence Structure", "<h3>ニュアンス解説</h3>") if m in sec]
+            self.assertEqual(_pos, sorted(_pos))   # Part 1 → Part 2 → ニュアンス解説(存在するブロック同士の相対順。文法0件でもValueErrorにならない。M-5)
         self.assertIn(hl.HIGHLIGHT_CSS, page)
         self.assertEqual(uc.check_page(page, base_dir=web)["overall"], "PASS")
         self.assertNotIn("後続反映予定", page)                        # AI島固有文言なし

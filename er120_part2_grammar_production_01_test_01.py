@@ -105,7 +105,7 @@ def test_A4_constants_equal_trial():
     _, t7, t4 = _trial()
     assert (m.STRONG, m.MID, m.PRIORITY, m.TARGETS, m.FRONT_OK) == (t7.STRONG, t7.MID, t7.PRIORITY, t7.TARGETS, t7.FRONT_OK)
     assert (m.MAXOUT_EXTRACT, m.MAXOUT_EXPLAIN) == (t7.MAXOUT_A, t7.MAXOUT_B)
-    assert m.ZERO_P2 == t4.ZERO_P2
+    assert not hasattr(m, "ZERO_P2")     # 文法0件の固定文面は撤去(コーナー全体を非表示。R-13: Trial定数との一致assertは削除)
 
 
 # ============================================================
@@ -395,7 +395,7 @@ def test_D5_pending_review_makes_no_paid_downstream_call(routed):
 def test_D6_zero_candidates_no_downstream_calls(routed):
     r, ex, xp, tr = _run(routed, ex=LLM(_stepa_json(_feat("P1", PARAS[0], "INV", tv="LOW"))))
     assert r["status"] == "ZERO" and r["result"]["status"] == "ZERO" and r["result"]["zero_reason"] == "no_candidate" and (tr.n, xp.n) == (0, 0)
-    assert m.render_markdown(r["result"]).strip().endswith(m.ZERO_P2)
+    assert m.render_markdown(r["result"]) == "" and m.render_html_block(r["result"]) == ""                  # 0件=コーナー全体を出さない(固定文面なし)
     _fresh(r)
     assert r["review_record"]["status"] == "NO_CANDIDATE_UNREVIEWED"                                       # M-6: REVIEWEDではない
 
@@ -502,8 +502,8 @@ def test_E4_render_markdown_and_html_conventions(routed):
     assert "<b>It was</b>" in h and PARAS[1] in h and "<style>" in h
     assert "<style>" not in m.render_html_block(r["result"], include_css=False)                             # Part 1直後に連結する場合
     assert not m.PAGE_FORBIDDEN_RE.search(h)
-    z = m.render_html_block(m.zero_result(r["candidates"], "no_candidate"))
-    assert m.ZERO_P2 in z
+    z0 = m.zero_result(r["candidates"], "no_candidate")
+    assert m.render_html_block(z0) == "" and m.render_markdown(z0) == "" and m.expected_grammar_blocks(z0) == 0 and m.expected_grammar_blocks(r["result"]) == 1
 
 
 def test_E5_write_and_load_artifacts(routed, tmp_path):
@@ -572,7 +572,8 @@ def test_P3_only_wiring_and_review_modules_import_the_module():
     me = os.path.basename(__file__)
     allowed = {"er119_grammar_review_01.py", "er119_kp_human_review_01.py", "er119_kp_human_review_cli_01.py",
                "er120_part2_wiring_01.py", "er120_part2_mock_01.py",
-               "er128_kp_confirmed_content_01.py"}   # KCP(確定内容保護)M6がfreeze_from_sidecarでPart 2の構造検査(split_sections)を遅延importする。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02で許可リストへ追加(KCP 02B導入時から失敗していた既存の取りこぼし)
+               "er128_kp_confirmed_content_01.py",
+               "er134_nuance_explanation_01.py"}   # ニュアンス解説(2026-10-29): Part 2の定数(ページ非表示語・level名等)を読む共通module   # KCP(確定内容保護)M6がfreeze_from_sidecarでPart 2の構造検査(split_sections)を遅延importする。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02で許可リストへ追加(KCP 02B導入時から失敗していた既存の取りこぼし)
     offenders = []
     for f in glob.glob(os.path.join(HERE, "*.py")):
         b = os.path.basename(f)
@@ -926,6 +927,7 @@ def test_R1_compose_includes_css_when_part1_is_empty(routed):
     import er003_kp_general_explanation_01 as p1
     r, *_ = _run(routed)
     assert m.compose_study_html("", r["result"]).count(p1.STUDY_CSS) == 1 and m.compose_study_html(None, r["result"]).startswith(p1.STUDY_CSS)
+    assert m.compose_study_html("", r["result"], None) == m.compose_study_html("", r["result"])             # nuance未指定=従来呼出と同一(ニュアンス解説なし)
     part1 = p1.STUDY_CSS + "<section class='study'><h3>Vocabulary &amp; Expressions</h3></section>"
     out = m.compose_study_html(part1, r["result"])
     assert out.startswith(part1) and out.count(p1.STUDY_CSS) == 1                                           # CSSは1回だけ・Part 1の直後

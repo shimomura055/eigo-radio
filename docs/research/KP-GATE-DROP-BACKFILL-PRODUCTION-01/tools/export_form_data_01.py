@@ -9,6 +9,8 @@ grammar[]は正式Part 2候補が無い限り空(仮データを入れない)。
 実行: .venv\\Scripts\\python.exe docs\\research\\KP-GATE-DROP-BACKFILL-PRODUCTION-01\\tools\\export_form_data_01.py
         --cand <kp_candidates.json> --slug <slug> --level <a2|b1b> --name <表示名> --family <X|Y|Z> --out <out.json>
         [--grammar <grammar_candidates.json>] [--source-kind PRODUCTION_FORMAL_PATH|REPLAY_FROZEN_INITIAL_REAL_BACKFILL] [--run <run名>] [--note-ja <注記>]
+        [--nuance-study-dir <study_dir>]    (ニュアンス解説[2026-10-29正式採用]: nuance_spec.json があるstudy dirから nuance_spec / nuance を出力。仕様マーク無し=キーを出さない[従来とバイト同一]。
+                                             候補docが古い/比較pool不一致/重複判定がpassでない場合はデータを出さずrc=4。--grammar-study-dir と同じdirを指定してよい)
         [--grammar-study-dir <study_dir>]   (Production: 文法のstudy dirから form_grammar_bundle(level) を直接読む。提示=AI評価Top1/Top2の最大2件(rank順)・
                                              grammar_max_select=1・grammar_presented_ids・grammar_candidates_sha256/grammar_text_sha256を出力する。事前生成が不完全/失敗/sha不整合ならデータを出さずエラー[rc=4]。
                                              --grammar-bundle[保存済みbundle json]とは同時に指定できない)
@@ -229,9 +231,17 @@ def grammar_bundle_from_study_dir(study_dir: str, level: str) -> dict:
     return p2w.form_grammar_bundle(study_dir, level=level)
 
 
+def nuance_bundle_from_study_dir(study_dir: str, level: str, kp_cands: dict):
+    """Production経路: `er120_part2_wiring_01.form_nuance_bundle`を直接読む。仕様マーク無し=None。不整合はデータを出さずに例外(Part2Error)。"""
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+    import er120_part2_wiring_01 as p2w
+    return p2w.form_nuance_bundle(study_dir, level=level, kp_cands=kp_cands)
+
+
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
             grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None,
-            grammar_meta: dict | None = None) -> dict:
+            grammar_meta: dict | None = None, nuance_bundle: dict | None = None) -> dict:
     cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
     es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
@@ -257,6 +267,12 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
         "grammar_max_select": GRAMMAR_MAX_SELECT, "grammar_present_max": GRAMMAR_PRESENT_MAX,
         "grammar_presented_ids": [g["id"] for g in (grammar or [])],
     }
+    if nuance_bundle:                             # ニュアンス解説(仕様マークのあるrunだけ。無い=キー自体を出さない=従来とバイト同一)
+        out["nuance_spec"] = nuance_bundle["nuance_spec"]
+        if nuance_bundle.get("nuance"):
+            out["nuance"] = nuance_bundle["nuance"]
+        else:
+            out["nuance_note_ja"] = nuance_bundle.get("nuance_note_ja") or "ニュアンス解説の候補はありません"
     if grammar_meta:                              # 文法候補docのsha(KCPの照合・AI島Std/Advの確認に使う。文法側のsha=KP候補docのcandidates_sha256とは別)
         out["grammar_candidates_sha256"] = grammar_meta.get("candidates_sha256")
         out["grammar_text_sha256"] = grammar_meta.get("text_sha256")
@@ -292,6 +308,7 @@ def main(argv=None) -> int:
     ap.add_argument("--text-sha256", default=None)
     ap.add_argument("--grammar-bundle", default=None, help="form_grammar_bundle.json(SCHEMA_CONTRACT_01 §5)。文法候補+解説全文をフォームデータへ取り込む")
     ap.add_argument("--grammar-study-dir", default=None, help="文法のstudy dir(Production経路)。form_grammar_bundleを直接読む。不完全/失敗/不整合はデータを出さずrc=4で終了")
+    ap.add_argument("--nuance-study-dir", default=None, help="ニュアンス解説のstudy dir(nuance_spec.jsonがあるときだけ nuance_spec/nuance を出力)。不整合はデータを出さずrc=4で終了")
     ap.add_argument("--grammar-source-json", default=None, help="文法の出所(summary_<level>.json等)から grammar_source に入れるJSON")
     a = ap.parse_args(argv)
     with open(a.cand, encoding="utf-8") as f:
@@ -321,8 +338,16 @@ def main(argv=None) -> int:
         if a.grammar_source_json:
             with open(a.grammar_source_json, encoding="utf-8") as f:
                 gsrc = json.load(f)
+    nbundle = None
+    if a.nuance_study_dir:
+        try:
+            nbundle = nuance_bundle_from_study_dir(a.nuance_study_dir, a.level, doc)
+        except (RuntimeError, ValueError, OSError) as e:   # Part2Error(Part2Stale等)。出力ファイルは作らない
+            print(json.dumps({"status": "NUANCE_NOT_READY", "out": None, "data_warnings": [{"kind": "nuance_candidate_missing_or_inconsistent", "error": f"{type(e).__name__}: {e}"}],
+                              "next": "制作コマンドを同じまま再実行してニュアンス候補を作り直してから、フォームデータを再出力してください"}, ensure_ascii=False), file=sys.stderr)
+            return 4
     out = convert(doc, slug=a.slug, level=a.level, name=a.name, family=a.family, run=a.run or os.path.dirname(a.cand), source_kind=a.source_kind,
-                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc, grammar_meta=gmeta)
+                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc, grammar_meta=gmeta, nuance_bundle=nbundle)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     print(json.dumps({"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "grammar": len(out["grammar"]), "shortfall_note_ja": out["shortfall_note_ja"]}, ensure_ascii=False))

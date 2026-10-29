@@ -344,8 +344,10 @@ def finalize_stage(study_dir: str, *, level: str, paragraphs: list, label: str, 
         res = out["result"]
         if not out["reused"] or not os.path.exists(RESULT_PATH(study_dir)):
             g.write_artifacts(study_dir, None, res)
-        elif not os.path.exists(f"{study_dir}/{g.PART2_FILE_STEM}.md"):
+        elif g.render_markdown(res) and not os.path.exists(f"{study_dir}/{g.PART2_FILE_STEM}.md"):   # 0件=mdを書かない(固定文面なし)。mdが必要な結果だけ補完
             g.write_artifacts(study_dir, None, res)
+        elif not g.render_markdown(res):
+            g.retire_part2_md(study_dir)   # 0件なのに以前のmd(旧固定文面など)が残っていれば退避(削除しない。M-6)
     return out
 
 
@@ -373,11 +375,16 @@ def _finalize_legacy_v1(study_dir, doc, review, dec, mode, cached_result, *, lev
 
 
 def write_md(study_dir: str, result: dict) -> str:
-    """study_text/ のPart 2 markdown(決定論の描画)。Zはresult JSONをensure_stageが書くため、mdだけここで書く。"""
+    """study_text/ のPart 2 markdown(決定論の描画)。Zはresult JSONをensure_stageが書くため、mdだけここで書く。
+    0件(描画が空)はmdを書かない(固定文面・プレースホルダーを残さない)。以前のmdが残っていれば退避する(削除しない)。戻り=mdのpath(0件はNone)。"""
     os.makedirs(study_dir, exist_ok=True)
     path = f"{study_dir}/{g.PART2_FILE_STEM}.md"
+    text = g.render_markdown(result)
+    if not text:
+        g.retire_part2_md(study_dir)
+        return None
     with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(g.render_markdown(result))
+        f.write(text)
     return path
 
 
@@ -429,17 +436,64 @@ def require_final(study_dir: str, paragraphs: list, label: str, *, level: str, n
     return result
 
 
+_LOAD_NUANCE = object()   # verify_outputsのnuance既定=study_dirのnuance_result.jsonを読む(ページ合成と同じ入力を検証する)
+
+
+def nuance_for_display(study_dir: str, *, level: Optional[str] = None) -> Optional[dict]:
+    """ページ合成・検証が読むニュアンス解説の確定結果(`<study_dir>/nuance_result.json`)。ファイルが無い=None(LEGACY/未実施=ニュアンス解説なし)。
+    読めない(壊れたJSON)・dictでない・levelキーが当該levelと食い違う=Part2Stale(採用済みの人間判断を黙って非表示にしない)。
+    finalize(結果ファイルを作る工程。LLM 0)と、HR未確定時の待機(rc=4)はer134/runner接続(委任_02C)の責務。本関数は読むだけ。"""
+    path = f"{study_dir}/{g.NUANCE_RESULT_FILENAME}"
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, encoding="utf-8") as f:
+            res = json.load(f)
+    except (OSError, ValueError) as e:
+        raise g.Part2Stale(f"ニュアンス解説の確定結果({path})を読めません: {e}。次の一手: 結果ファイルを確認/finalizeを再実行") from e
+    if not isinstance(res, dict):
+        raise g.Part2Stale(f"ニュアンス解説の確定結果({path})がオブジェクトではありません")
+    lk = res.get("level_key")
+    if level is not None and lk is not None and lk != level:
+        raise g.Part2Stale(f"ニュアンス解説の確定結果({path})のlevel_key={lk!r}が当該level({level})と一致しません(Std/Advの取り違え)")
+    return res
+
+
+def expected_block_counts(study_dir: str, *, level: Optional[str] = None) -> dict:
+    """節に出るべきブロック数(runnerのpage_verifyが使う単一の期待値。文法=0または1 / ニュアンス=0または1)。"""
+    result = g.load_json(RESULT_PATH(study_dir))
+    nuance = nuance_for_display(study_dir, level=level)
+    return {"grammar_blocks": g.expected_grammar_blocks(result), "nuance_blocks": g.expected_nuance_blocks(nuance)}
+
+
 def verify_outputs(study_dir: str, paragraphs: list, label: str, *, level: str, next_command: str, where: str = "", ref_ja_pool: Optional[dict] = None,
-                   md_path: Optional[str] = None, html_text: Optional[str] = None) -> None:
+                   md_path: Optional[str] = None, html_text: Optional[str] = None, nuance=_LOAD_NUANCE) -> dict:
     """R-3/O-6: 確定 <-> part2_result.json <-> study_text/*.md <-> **当該levelの節のHTML** の4者一致(kind="grammar")。
-    html_textは共有builderの『当該levelの<section>』だけを渡す(ページ全体ではない)。節内にPart 2文法ブロックがちょうど1個で、決定論の描画と一致すること。
-    levelを取り違えたブロック(Std結果がAdv節にある等)は描画不一致でPart2Staleになる。"""
+    html_textは共有builderの『当該levelの<section>』だけを渡す(ページ全体ではない)。節内の文法ブロックが期待数(SELECTED=1 / 0件=0)で、決定論の描画と一致すること。
+    levelを取り違えたブロック(Std結果がAdv節にある等)は描画不一致でPart2Staleになる。
+    0件の期待は『md不在』(M-6: 旧固定文面の0件mdは先に`.legacy_zero_p2.md`へ退避して検証する)。ニュアンス解説は節単位で検証する(M-7: 件数・描画一致・ページ非表示語)。
+    戻り値=節の期待ブロック数 {"grammar_blocks","nuance_blocks"}(runnerのpage_verifyが数えた件数と突き合わせる)。"""
     doc, review, result = load_state(study_dir)
     g.check_doc_level(doc, level)
+    if nuance is _LOAD_NUANCE:
+        nuance = nuance_for_display(study_dir, level=level)
     md_text = None
     if md_path is not None:
-        with open(md_path, encoding="utf-8") as f:
-            md_text = f.read()
+        if result is not None and result.get("status") != "SELECTED" and os.path.normpath(md_path) == os.path.normpath(f"{study_dir}/{g.PART2_FILE_STEM}.md"):
+            g.retire_part2_md(study_dir, only_legacy=True)   # M-6: 既存0件runの旧md(旧固定文面とバイト一致するものだけ)を決定論で退避してから検証(削除しない)
+        if os.path.exists(md_path):
+            with open(md_path, encoding="utf-8") as f:
+                md_text = f.read()
+        else:
+            md_text = ""   # md不在=空(0件の期待。SELECTEDで不在なら描画不一致でPart2Stale)
+    _verify_grammar_outputs(study_dir, doc, review, result, paragraphs, label, level=level, next_command=next_command, where=where,
+                            ref_ja_pool=ref_ja_pool, md_text=md_text, html_text=html_text)
+    if html_text is not None:
+        g.verify_nuance_in_section(nuance, html_text, next_command=next_command, where=where)
+    return {"grammar_blocks": g.expected_grammar_blocks(result), "nuance_blocks": g.expected_nuance_blocks(nuance)}
+
+
+def _verify_grammar_outputs(study_dir, doc, review, result, paragraphs, label, *, level, next_command, where, ref_ja_pool, md_text, html_text) -> None:
     cc = _cc()
     legacy = review is not None and _is_legacy_postselect(review, result)
     ex = gr.load_explanations(study_dir)
@@ -483,6 +537,56 @@ def form_grammar_bundle(study_dir: str, *, level: str) -> dict:
     return {"level": level, "grammar_status": "candidates_available", "n_not_generated": max(0, len(doc["candidates"]) - len(cands)), "items": items}
 
 
+def form_nuance_bundle(study_dir: str, *, level: str, kp_cands: dict) -> Optional[dict]:
+    """フォームexporter用のニュアンス解説データ(API 0・read-only)。仕様マーク(nuance_spec.json)なし=None(既存記事・LEGACY: フォームデータにnuance関連キーを出さない=従来とバイト同一)。
+    マークあり: nuance_candidate.json(N1がHR提示前に書く)から{"nuance_spec","nuance"|"nuance_note_ja"}を返す。
+    **データを出さずエラー(Part2Stale)**: 候補docが無い/level不一致/(候補ありで)提示poolまたはKP候補doc(candidates_sha256。HR提示時の鮮度のみ)が現在と不一致/重複判定がpassでない。
+    FAILED_TECHNICAL(技術失敗)は本物の0件と区別して表示する(R-5)。revoke後の再確定時は旧採否を previous_decision に載せる(R-11。フォームの既定表示のみ。明示送信は必須)。"""
+    g.level_name(level)
+    cc = _cc()
+    if not os.path.exists(f"{study_dir}/{cc.FILE_NUANCE_SPEC}"):
+        return None
+    doc = g.load_json(f"{study_dir}/{cc.FILE_NUANCE_CANDIDATE}")
+    if doc is None:
+        raise g.Part2Stale("ニュアンス解説の仕様マークはありますが候補doc(nuance_candidate.json)がありません(N1未実行)。フォームのニュアンスデータを作れません")
+    if doc.get("level_key") not in (None, level):
+        raise g.Part2Stale(f"nuance_candidate.json のlevel_key={doc.get('level_key')!r} が --level {level} と一致しません")
+    status = doc.get("status")
+    spec = {"version": "nuance_v1", "max_select": 1, "allow_zero": True, "presented": False, "candidate_status": status}
+    if status != "CANDIDATE":
+        if status == "FAILED_TECHNICAL":
+            kind = (doc.get("failed_technical") or {}).get("kind") or "unknown"
+            note = (f"ニュアンス解説の候補なし（技術失敗: {kind}）。本物の0件ではありません。制作コマンドを同じまま再実行するとHR送信前に1回だけ自動で再試行されます"
+                    f"（それでも失敗する場合は --regenerate-stage nuance_cand_{level}）。このまま送信するとニュアンス解説なしで確定します")
+        else:
+            note = "ニュアンス解説の候補はありません"
+        return {"nuance_spec": spec, "nuance_note_ja": note}
+    cand = doc.get("candidate")
+    need = ("expression", "focus", "explanation_ja", "quote_en", "quote_ja", "candidate_sha256")
+    if not isinstance(cand, dict) or any(not str(cand.get(k) or "").strip() for k in need):
+        raise g.Part2Stale("nuance_candidate.json の候補本文が不完全です(必須項目の欠落)。フォームに出しません")
+    basis = doc.get("kp_word_basis") or {}
+    if basis.get("candidates_sha256") != kp_cands.get("candidates_sha256"):
+        raise g.Part2Stale("ニュアンス候補が、現在のKP/Word候補docとは別の候補集合に対して作られています(candidates_sha256不一致。HR提示時の鮮度確認)。ニュアンス候補を作り直してください")
+    if basis.get("pool_identity_sha") != cc.nuance_pool_identity_sha(kp_cands):
+        raise g.Part2Stale("ニュアンス候補の比較pool(pool_identity_sha)が現在のKP/Word提示poolと一致しません。ニュアンス候補を作り直してください")
+    gts = cc._nuance_text_sha_of_grammar(study_dir)
+    if gts is not None and doc.get("text_sha256") not in (None, gts):
+        raise g.Part2Stale("ニュアンス候補の本文sha(text_sha256)が現在の本文と一致しません。ニュアンス候補を作り直してください")
+    oc = cand.get("overlap_check") or {}
+    if oc.get("verdict") != "pass":
+        raise g.Part2Stale(f"ニュアンス候補の重複判定がpassではありません(verdict={oc.get('verdict')!r})。HRに出せません")
+    nuance = {"id": cc.nuance_id_of(cand), "candidate_sha256": cand["candidate_sha256"], "expression": cand["expression"], "focus": cand["focus"],
+              "explanation_ja": cand["explanation_ja"], "quote_en": cand["quote_en"], "quote_ja": cand["quote_ja"],
+              "pool_conflicts": list(cand.get("pool_conflicts") or []), "shared_terms": list(cand.get("shared_terms") or []),
+              "grammar_conflicts": list(cand.get("grammar_conflicts") or []), "overlap_summary_ja": oc.get("reason") or ""}
+    prev = cc.previous_nuance_decision(study_dir)
+    if prev and prev.get("candidate_sha256") == cand["candidate_sha256"]:
+        nuance["previous_decision"] = {"adopted": "adopt", "rejected": "reject"}[prev["decision"]]
+    spec["presented"] = True
+    return {"nuance_spec": spec, "nuance": nuance}
+
+
 def form_grammar_items(study_dir: str, *, level: str) -> list:
     return form_grammar_bundle(study_dir, level=level)["items"]
 
@@ -504,9 +608,11 @@ def part1_ref_ja_pool(vocab_items: list, ja_doc: Optional[dict]) -> dict:
     return pool
 
 
-def compose_page_html(part1_html: str, result: dict) -> str:
-    """ページに載せるstudy HTML(Part 1ブロック直後にPart 2)。X player・X公開builder・Y/Z build_pagesの全てがこの関数だけを通る(R-2)。"""
-    return g.compose_study_html(part1_html, result)
+def compose_page_html(part1_html: str, result: dict, *, nuance) -> str:
+    """ページに載せるstudy HTML(Part 1 -> Part 2文法 -> ニュアンス解説。該当しないブロックは出さない)。X player・X公開builder・Y/Z build_pagesの全てがこの関数だけを通る(R-2)。
+    **nuanceは既定値なしの必須keyword**(R-6: 渡し漏れによる黙った欠落を構造で防ぐ)。ニュアンス解説なし(LEGACY/未実施)は明示的に`nuance=None`、通常は
+    `nuance_for_display(study_dir, level=…)`の戻りを渡す。"""
+    return g.compose_study_html(part1_html, result, nuance)
 
 
 def _part1_enabled(audio_dir: str, level: str) -> bool:
@@ -536,7 +642,7 @@ def public_study_html(audio_dir: str, article_text: str, *, level: str, next_com
         part1_html = p1.study_html_for_audio_dir(audio_dir, items=items, level=level)
     else:
         part1_html = ""
-    return compose_page_html(part1_html, result)
+    return compose_page_html(part1_html, result, nuance=nuance_for_display(f"{b}/study_text", level=level))
 
 
 # ============================================================

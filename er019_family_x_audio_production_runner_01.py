@@ -4089,9 +4089,9 @@ def main() -> None:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
             if "b1b" in _p2_results:
-                _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"])
+                _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"], nuance=_p2w().nuance_for_display(_part2_study_dir(out_dir, "b1b"), level="b1b"))
             if "a2" in _p2_results:
-                _study_html_a2 = _p2w().compose_page_html(_part1_htmls.get("a2", ""), _p2_results["a2"])   # Part 1: マーク付きStandardのみ(遡及なし)。Part 1→Part 2の順
+                _study_html_a2 = _p2w().compose_page_html(_part1_htmls.get("a2", ""), _p2_results["a2"], nuance=_p2w().nuance_for_display(_part2_study_dir(out_dir, "a2"), level="a2"))   # Part 1: マーク付きStandardのみ(遡及なし)。Part 1→Part 2→ニュアンス解説の順
             # SLOT-23: 本文ハイライト(display_spec付きrun・levelだけ。無い=None=従来バイト同一)。解決不能(ISSUE)はplayer生成前にSTOP(fail-closed)
             try:
                 _hl_by_level = resolve_x_highlights_for_levels(out_dir, levels, source_dir=source_dir)

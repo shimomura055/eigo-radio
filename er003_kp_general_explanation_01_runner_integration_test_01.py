@@ -252,8 +252,8 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         self.assertEqual(index.count("Grammar &amp; Sentence Structure"), 2)
         self.assertNotIn("Vocabulary", index)
         # Part 1の判断記録なし=『Part 2だけを渡して直接buildしたもの』とバイト同一
-        p2 = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test", level="b1b"))
-        p2_std = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test", level="a2"))
+        p2 = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test", level="b1b"), nuance=None)
+        p2_std = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test", level="a2"), nuance=None)
         a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=zr.STORY_REGISTRY[ctx.story_key]["page_title_ja"],
                         audio_file_prefix=zr.STORY_REGISTRY[ctx.story_key]["audio_file_prefix"], reuse_existing_audio=True,
                         study_html_by_level={"b1b": p2, "a2": p2_std})

@@ -1842,7 +1842,8 @@ def _assert_part2_final(ctx, where: str, *, level: str) -> dict:
 
 def _verify_part2_outputs(ctx) -> dict:
     """R-3: 両levelについて 確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html)の**当該levelの節** を照合(節単位の4者一致、kind="grammar")。
-    各節に文法ブロックがちょうど1個(取り違え・欠落・重複はfail-closed)。開発確認用の個別ページ(standard.html/advanced.html)には出ていないこと(文法はindex.htmlの各節にだけ)も確認する。"""
+    各節の文法ブロックは期待数(採用=1 / 0件=0。0件はコーナー全体が非表示)・ニュアンス解説は採用=1 / 他=0(取り違え・欠落・重複はfail-closed)。開発確認用の個別ページ(standard.html/advanced.html)には
+    出ていないこと(文法・ニュアンス解説はindex.htmlの各節にだけ)も確認する。"""
     import er_user_listening_page_common_01 as cp
     p2w = _p2w()
     g = p2w.g
@@ -1854,21 +1855,26 @@ def _verify_part2_outputs(ctx) -> dict:
         paragraphs, label = _part2_inputs(ctx, lv)
         section = cp.level_section_html(idx_html, PAGE_SECTION_IDS[lv])
         try:
-            p2w.verify_outputs(_part2_dir(ctx, lv), paragraphs, label, level=lv, next_command=_part2_next(ctx, lv), where=f"stage_page_verify({lv})",
-                               ref_ja_pool=_part2_pool(ctx, lv), md_path=f"{_part2_dir(ctx, lv)}/{g.PART2_FILE_STEM}.md", html_text=section)
+            expect = p2w.verify_outputs(_part2_dir(ctx, lv), paragraphs, label, level=lv, next_command=_part2_next(ctx, lv), where=f"stage_page_verify({lv})",
+                                        ref_ja_pool=_part2_pool(ctx, lv), md_path=f"{_part2_dir(ctx, lv)}/{g.PART2_FILE_STEM}.md", html_text=section)
         except (g.Part2Error, g.Part2InputError) as e:
             raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH({lv}): {e}") from e
         n2 = g.count_grammar_blocks(section)
-        if n2 != 1:
-            raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のPart 2ブロックが{n2}個です(ちょうど1個のはず)")
-        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part2_blocks": n2}
+        if n2 != expect["grammar_blocks"]:   # 文法0件はコーナー全体が非表示=期待0個(固定文面なし)
+            raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のPart 2ブロックが{n2}個です(期待{expect['grammar_blocks']}個)")
+        nn = g.count_nuance_blocks(section)
+        if nn != expect["nuance_blocks"]:    # ニュアンス解説は採用時のみ1個
+            raise FamilyZE2EStop(f"FAMILY_Z_NUANCE_OUTPUT_MISMATCH({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のニュアンス解説ブロックが{nn}個です(期待{expect['nuance_blocks']}個)")
+        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part2_blocks": n2, "nuance_blocks": nn}
     marker = "Grammar &amp; Sentence Structure"
+    nuance_marker = f"<h3>{g.NUANCE_HEADING}</h3>"
     for fn in ("standard.html", "advanced.html"):
         p = f"{ctx.pages_dir}/{fn}"
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
-                if marker in f.read():
-                    raise FamilyZE2EStop(f"FAMILY_Z_PART2_ON_DEV_DETAIL_PAGE: {fn}にPart 2が載っています(文法は試聴ページ index.html の各levelの節だけ)")
+                _txt = f.read()
+                if marker in _txt or nuance_marker in _txt:
+                    raise FamilyZE2EStop(f"FAMILY_Z_PART2_ON_DEV_DETAIL_PAGE: {fn}にPart 2/ニュアンス解説が載っています(文法・ニュアンス解説は試聴ページ index.html の各levelの節だけ)")
     return out
 
 
@@ -2635,8 +2641,8 @@ def stage_pages(ctx) -> dict:
                                  f"(訳欄の判断記録 {_p1().TRANSLATION_DECISION_RECORD} が無い)。黙って欠落させない")
     _p2res = _assert_part2_final(ctx, "stage_pages", level=ADV_LEVEL)   # Part 2(文法)の存在・最新性・確定との一致(Advanced)
     _p2res_std = _assert_part2_final(ctx, "stage_pages", level="a2")   # Standard(文法はページ専用=pages/page_verifyだけで確認する)
-    study_html = _p2w().compose_page_html(p1_html.get(ADV_LEVEL, ""), _p2res)   # R-1/R-2: Part 1ブロック直後にPart 2(共通builder1つ)
-    study_html_std = _p2w().compose_page_html(p1_html.get("a2", ""), _p2res_std)   # 同じ共通builder。Standardは display_spec付きのときだけPart 1が先(Part 1→Part 2)
+    study_html = _p2w().compose_page_html(p1_html.get(ADV_LEVEL, ""), _p2res, nuance=_p2w().nuance_for_display(_part2_dir(ctx, ADV_LEVEL), level=ADV_LEVEL))   # R-1/R-2: Part 1→Part 2→ニュアンス解説(共通builder1つ)
+    study_html_std = _p2w().compose_page_html(p1_html.get("a2", ""), _p2res_std, nuance=_p2w().nuance_for_display(_part2_dir(ctx, "a2"), level="a2"))   # 同じ共通builder。Standardは display_spec付きのときだけPart 1が先(Part 1→Part 2)
     extra = {"study_html_by_level": {ADV_LEVEL: study_html, "a2": study_html_std}}
     if hl_by_level:
         extra["highlights_by_level"] = hl_by_level   # 無い(旧run)=キー自体を渡さない=従来とバイト同一

@@ -396,7 +396,7 @@ class T8_ReviewV2(PCase):
         self.assertEqual(r0b["revision"], r0["revision"])
         out = self.final()
         self.assertEqual((out["result"]["status"], out["result"]["zero_reason"], out["result"]["items"]), ("ZERO", "form_submission_no_grammar", []))
-        self.assertIn(g.ZERO_P2, g.render_markdown(out["result"]))
+        self.assertEqual((g.render_markdown(out["result"]), g.render_html_block(out["result"])), ("", ""))   # 0件=コーナー全体を出さない(固定文面なし)
         self.req()
         r1 = gr.apply_form_selection(self.sd, ids=[ids[1]], by="u", user_ref="ref")         # 事後の選び直し(保護なし環境): pick 1件(Top2)
         self.assertEqual(r1["selection"]["candidate_ids"], [ids[1]])

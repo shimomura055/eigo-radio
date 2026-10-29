@@ -457,7 +457,7 @@ class TestTamperDetection(_Base):
         self.assert_refused(t, frag="壊れています")
 
     def test_extra_unknown_version(self):
-        self.assert_refused(self.base_plain().replace("AIF1-", "AIF2-"), frag="未対応の形式バージョン")
+        self.assert_refused(self.base_plain().replace("AIF1-", "AIF3-"), frag="未対応の形式バージョン")   # AIF2はニュアンス仕様マーク付きデータ専用として対応済み(委任_02B)。AIF3以降が未対応
 
     def test_extra_item_added_in_other_category(self):
         b = self.base_plain()

@@ -60,11 +60,16 @@ SCHEMA = "eigo_radio_confirmed_selection_v1"
 SCHEMA_GRAMMAR = "eigo_radio_confirmed_grammar_v1"
 SCHEMA_GRAMMAR_V2 = "eigo_radio_confirmed_grammar_v2"   # level別sidecar(level・explanation_sha_by_id付き。新規書込みはv2、v1は読取互換)
 GRAMMAR_MAX = 1                                         # 文法の確定上限(er120.GRAMMAR_MAXと同値。突合test。2026-10-27ユーザー正式決定: 原則1件・0件可・2件同時選択禁止。旧2=撤去)
+SCHEMA_NUANCE = "eigo_radio_confirmed_nuance_v1"
+NUANCE_FORM_DECISIONS = {"adopt": "adopted", "reject": "rejected"}   # フォームpayload selection.nuance.decision -> sidecar decision
 GRAMMAR_PENDING = "pending"                             # 文法の選定待ち(KPだけ先行確定。0件確定とは別。grammar_state=None=文法の保護なし)
 VALID_LEVELS = ("a2", "b1b")
 FLAG_NAME = "EIGO_KP_CONFIRMED_PROTECTION"
 FILE_RECORD = "confirmed_selection.json"
 FILE_GRAMMAR = "confirmed_grammar.json"
+FILE_NUANCE = "confirmed_nuance.json"                  # ニュアンス解説の採否sidecar(level別。<study_dir>に文法sidecarと同じ規約で置く。NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02B)
+FILE_NUANCE_SPEC = "nuance_spec.json"                  # 新規run(新規KP review作成時)に発行されるマーク。無い=LEGACY(ニュアンス解説の全工程を無効)
+FILE_NUANCE_CANDIDATE = "nuance_candidate.json"        # N1(HR提示前)が書く候補doc(er134)
 DIR_SOURCE = "confirmed_selection_source"
 FILE_ISSUE_JSON = "confirmed_content_issue.json"
 FILE_ISSUE_MD = "confirmed_content_issue.md"
@@ -293,6 +298,8 @@ def _new_record(*, kp_dir: str, review: dict, cands: dict, items: list, actor: s
            "content_sha256": content_sha256(items), "history": list((prev or {}).get("history") or [])}
     if (prev or {}).get("grammar"):
         rec["grammar"] = prev["grammar"]
+    if (prev or {}).get("nuance"):   # revise/rebind等で同じconfirmation_idの新版を作るときもニュアンス採否の印を引き継ぐ(確定後の保持。M-3)
+        rec["nuance"] = prev["nuance"]
     spec = display_spec if display_spec is not None else _display_spec_for_new(prev, review)
     if spec:   # マーク無しのレコードにはキーを作らない(旧レコードのrecord_sha256・バイトを変えない)
         rec["display_spec"] = spec
@@ -515,6 +522,24 @@ def _grammar_problems(kp_dir: str, level: str, rec: dict) -> list:
     return out
 
 
+def _nuance_problems(kp_dir: str, level: str, rec: dict) -> list:
+    """確定レコードのニュアンス印(rec["nuance"])とsidecar(confirmed_nuance.json)の整合。印が無いレコード(LEGACY・フォームにニュアンスが無かった確定)は何もしない。"""
+    n = rec.get("nuance")
+    if not n:
+        return []
+    run = _run_dir_of(kp_dir)
+    p = os.path.join(run, n.get("path_rel") or "")
+    if not n.get("path_rel") or not os.path.exists(p):
+        return [f"{FILE_NUANCE} が消えています({n.get('path_rel')})"]
+    doc = _read(p)
+    out = []
+    if _jsha({k: v for k, v in doc.items() if k != "sidecar_sha256"}) != doc.get("sidecar_sha256") or doc.get("sidecar_sha256") != n.get("sidecar_sha256"):
+        out.append(f"{FILE_NUANCE} のshaが不一致(ニュアンス解説の採否が書換えられた疑い)")
+    if doc.get("confirmation_id") != rec.get("confirmation_id"):
+        out.append(f"{FILE_NUANCE} の confirmation_id が確定レコードと一致しません")
+    return out
+
+
 def _form_source_problems(kp_dir: str, rec: dict) -> list:
     o = rec.get("origin") or {}
     if o.get("kind") != "form_submission":
@@ -544,6 +569,7 @@ def verify_g1(kp_dir: str, level: str, review: dict, cands: dict, *, assets_json
         problems.append("ミラー(audit/confirmed_selection.json)が欠落または正本と不一致")
     problems += _form_source_problems(kp_dir, rec)
     problems += _grammar_problems(kp_dir, level, rec)
+    problems += _nuance_problems(kp_dir, level, rec)
     if problems:
         raise_integrity(kp_dir, level, [{"candidate_id": None, "field": "record", "confirmed": "(自己整合)", "observed": x, "where": "confirmed_selection.json"} for x in problems],
                         "確定レコード自体の整合が崩れています。")
@@ -762,6 +788,19 @@ def _grammar_sentences(kp_dir: str, rec: dict) -> list:
     return out
 
 
+def _nuance_quotes(kp_dir: str, rec: dict) -> list:
+    """確定レコードにニュアンス解説の採用(adopted)があれば [("nuance", 引用英文)]。採用以外・sidecar読取不可は []。"""
+    n = rec.get("nuance")
+    if not n or n.get("decision") != "adopted" or not n.get("path_rel"):
+        return []
+    try:
+        side = _read(os.path.join(_run_dir_of(kp_dir), n["path_rel"]))
+    except (OSError, ValueError):
+        return []
+    q = ((side.get("candidate") or {}).get("quote_en") or "").strip()
+    return [("nuance", q)] if q else []
+
+
 def stale_or_rebind(kp_dir: str, text: str, new_text_sha: str) -> Optional[str]:
     """本文が変わった(text_sha256不一致)場面の入口。ユーザー確定レコードが無ければ None(従来のSTALE再生成)。
     各確定itemの出典文(と文法の選定文)が新本文に逐語で存在 → 候補doc.text_sha256→candidates_sha256→review署名→レコードを API 0 で連鎖更新して "REBOUND"。
@@ -786,6 +825,9 @@ def stale_or_rebind(kp_dir: str, text: str, new_text_sha: str) -> Optional[str]:
         for gid, sent in _grammar_sentences(kp_dir, rec):
             if _norm_ws(sent) not in ntext:
                 missing.append({"candidate_id": gid, "field": "grammar.sentence", "confirmed": sent, "observed": "(新本文に逐語で存在しない)", "where": "text_sha256変更"})
+        for nid, quote in _nuance_quotes(kp_dir, rec):   # 採用したニュアンス解説の本文引用(quote_en)も新本文に逐語で残ること(残らない=確定を黙って捨てずISSUE)
+            if _norm_ws(quote) not in ntext:
+                missing.append({"candidate_id": nid, "field": "nuance.quote_en", "confirmed": quote, "observed": "(新本文に逐語で存在しない)", "where": "text_sha256変更"})
     if missing:
         msg = (f"本文(text_sha256)が変わり({str((rec['article'] or {}).get('text_sha256'))[:12]}→{new_text_sha[:12]})、ユーザー確定済みの出典文が新本文に逐語で残っていない項目があります。"
                "確定内容を黙って破棄/再選定しません。")
@@ -1453,6 +1495,9 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
         raise_issue(kp_dir, level, "フォームで確定された表現/日本語訳が、候補docの正式値と一致しない、または正式訳ではありません。黙って採用・置換しません。", diffs,
                     proposal=["候補docの正式な値(日本語訳を含む)を確認し、フォームを作り直すか、訳の修正を明示して `confirm-revise` で確定してください"],
                     next_steps=["候補docの値でフォームを作り直して再送信(または gloss HR 解消後に再確認)"])
+    # ニュアンス解説の採否(N2。何も書かない。不一致・未回答=ISSUE rc=4)。文法とは独立(--grammar-pendingとも結合しない=R-1)。確定した①②のidは検証済みのcat1+cat2
+    nv = _validate_form_nuance(run, kp_dir, level, gv.get("study_dir"), groups.get("nuance"), confirmed_ids=list(ids["cat1"]) + list(ids["cat2"]), cands=cands,
+                               grammar_ids=[i["id"] for i in gv.get("items") or []])
     kp_ids = ids["cat1"]
     vocab_ids = (ids["cat1"] + ids["cat2"]) if vocab_on else None
     by_rank = {cid: cm[cid]["ai_rank"] for cid in seen}
@@ -1480,17 +1525,21 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
                           comment=payload.get("comment") or "", unconsumed=unconsumed, prev=prev, event="confirmed",
                           confirmation_id="cf_" + hashlib.sha256(raw).hexdigest()[:16])
         rec.pop("grammar", None)
+        rec.pop("nuance", None)
         if gv.get("pending"):
             rec["grammar"] = _pending_grammar_mark(run, rec, kp_dir, study_dir=gv["study_dir"], level=level, ignored=gv["ignored"])
             _append_history_note(rec, "grammar_pending", by, user_ref, {"grammar_payload_ignored": gv["ignored"]})
         elif gv["study_dir"] is not None:
             rec["grammar"] = _write_grammar_sidecar(run, rec, gv["items"], kp_dir, study_dir=gv["study_dir"], level=level, presented_ids=gv.get("presented_ids"))   # 0件も記録(文法なしの確定)
+        if nv is not None:   # 文法sidecarの直後(commit点=save_recordは不変)。ニュアンス仕様マークのあるrunだけ(LEGACYは何も書かない)
+            rec["nuance"] = _write_nuance_sidecar(run, rec, nv, kp_dir, level=level, by=by, user_ref=user_ref)
         save_record(kp_dir, rec)   # 確定点(ここまで失敗なら確定レコードは作られない。同じ入力の再送は冪等)
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in items],
             "unconsumed": [(u["candidate_id"], u["reason"]) for u in unconsumed], "grammar": len(gv["items"]),
             "grammar_review": grammar_review,
             "grammar_status": GRAMMAR_PENDING if gv.get("pending") else "confirmed",
             "grammar_payload_ignored": gv.get("ignored", 0),
+            "nuance": (None if nv is None else nv["decision"]),
             "next": ("KP/KWを確定しました。文法は選定待ちです(0件確定ではありません)。文法の選定後に `confirm --grammar-from-form <payload>` で文法だけを確定してください"
                      if gv.get("pending") else "制作コマンドを同じまま再実行してください(finalize→後続が進みます)")}
 
@@ -1624,6 +1673,200 @@ def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: str, *, s
     _write(p, doc)
     return {"path_rel": os.path.relpath(p, run).replace(os.sep, "/"), "sidecar_sha256": doc["sidecar_sha256"], "count": len(items), "level": level, "schema": SCHEMA_GRAMMAR_V2,
             "explanation_source": ["form_displayed" for _ in items]}
+
+
+# ============================================================
+# ニュアンス解説の採否(NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02B。ユーザー正式決定2026-10-29 APPROVED_FOR_PRODUCTION。設計=WIRING_DESIGN_01 §5/§6・Opus M-3/M-4/R-1/R-4/R-11)
+# 候補はN1(er134。HR提示前)が<study_dir>/nuance_candidate.jsonに書く。採否はKP/文法と同じフォーム→confirm --from-readable→cmd_from_formで確定し、
+# <study_dir>/confirmed_nuance.json(sidecar)に保存する。API 0。LLM再判定はしない(N1が提示pool全件の判定を持っている=against[])。
+# ============================================================
+def nuance_id_of(cand: dict) -> str:
+    """フォーム/payload上の識別子。候補本文のsha(candidate_sha256)から決定論で導く(候補が1件だけなのでidはshaの短縮)。"""
+    return "nuance_" + str((cand or {}).get("candidate_sha256") or "")[:16]
+
+
+def nuance_pool_identity_sha(kp_cands: dict) -> str:
+    """現在のKP/Word候補docの『提示pool』の同一性sha(M-3: candidate_id+used_form/display_phrase/key_phrase+kind。gloss/gatesは含めない=confirm-reviseで変わらない)。
+    N1(er134)がkp_word_basis.pool_identity_shaに記録する値と同一関数で算出する(提示pool=exporterと同じ算出)。"""
+    import er134_nuance_explanation_01 as nx   # 遅延import(循環回避)
+    return nx.pool_identity_sha([nx._pool_entry(c, False) for c in nx.presented_pool(kp_cands)])
+
+
+def nuance_presented_ids(kp_cands: dict) -> list:
+    """現在のKP/Word候補docの提示pool(HRで人間が選べる集合)のcandidate_id。exporterの提示集合と同じ算出(M-4)。"""
+    import er134_nuance_explanation_01 as nx
+    return [c["candidate_id"] for c in nx.presented_pool(kp_cands)]
+
+
+def _nuance_text_sha_of_grammar(study_dir: str) -> Optional[str]:
+    """同じstudy_dirの文法候補doc(grammar_candidates.json)のtext_sha256(ニュアンス候補docと同じ算式=er120.text_sha256)。無ければNone。"""
+    p = os.path.join(study_dir, "grammar_candidates.json")
+    try:
+        return (_read(p) or {}).get("text_sha256") if os.path.exists(p) else None
+    except (OSError, ValueError):
+        return None
+
+
+def _validate_form_nuance(run: str, kp_dir: str, level: str, study_dir: Optional[str], nuance: Any, *, confirmed_ids: list, cands: dict,
+                          grammar_ids: Optional[list] = None) -> Optional[dict]:
+    """フォームのニュアンス採否(payload selection.nuance)を、候補doc(nuance_candidate.json)と照合する(N2。何も書かない。ISSUE記録を除く)。
+    戻り: None=仕様マーク(nuance_spec.json)なし=LEGACY(ニュアンス解説の扱いなし。payloadにnuanceがあれば拒否) / dict=確定内容{"study_dir","decision":adopted|rejected|none,...}。
+    照合(M-3/M-4): 提示した候補のcandidate_sha256==現在の候補doc / 候補docの比較pool同一性(pool_identity_sha)==現在のKP候補docの提示pool /
+      採用時のみ: overlap_check.verdict==pass・確定した①②の全idが比較済み集合(against[])に含まれる(被覆。欠ければISSUE)・pool_conflictsと確定①②の交差が空。
+    不採用は『見た候補と同じ』ことだけを確認して常に受理(人間判断を覆す検査はしない)。候補ありで未回答=ISSUE(黙って不採用にしない)。SUPPRESSEDは廃止(R-4。人間の採用を自動で覆さない)。"""
+    spec = bool(study_dir) and os.path.exists(os.path.join(study_dir, FILE_NUANCE_SPEC))
+    if not spec:
+        if nuance is not None:
+            raise CliError("payloadにニュアンス解説の採否がありますが、このrun/levelにはニュアンス解説の仕様マーク(nuance_spec.json)がありません(既存記事=遡及なし)")
+        return None
+    if nuance is not None and not isinstance(nuance, dict):
+        raise CliError("payloadの selection.nuance はオブジェクトである必要があります")
+    cp = os.path.join(study_dir, FILE_NUANCE_CANDIDATE)
+    diffs, proposal = [], []
+
+    def d(field, confirmed, observed, where="payload.selection.nuance vs nuance_candidate.json"):
+        diffs.append({"candidate_id": None, "field": field, "confirmed": confirmed, "observed": observed, "where": where})
+
+    if not os.path.exists(cp):
+        raise_issue(kp_dir, level, "ニュアンス解説の仕様マークはありますが、候補doc(nuance_candidate.json)がありません(N1が未実行)。黙って『候補なし』にはしません。",
+                    [{"candidate_id": None, "field": "nuance_candidate.json", "confirmed": "(HR提示前に生成された候補doc)", "observed": "(なし)", "where": study_dir}],
+                    proposal=["制作コマンドを同じまま再実行して候補を生成してから、フォームを作り直して再送信してください"], next_steps=["制作コマンドを再実行→フォームを作り直して再送信"])
+    doc = _read(cp)
+    status = doc.get("status")
+    cand = doc.get("candidate") if status == "CANDIDATE" else None
+    if doc.get("level_key") not in (None, level):
+        d("level_key", level, doc.get("level_key"), FILE_NUANCE_CANDIDATE)
+    cur_pool_sha = nuance_pool_identity_sha(cands)
+    if status == "CANDIDATE":
+        if not isinstance(cand, dict):
+            d("candidate", "(候補本文)", "(なし)", FILE_NUANCE_CANDIDATE)
+        else:
+            basis = doc.get("kp_word_basis") or {}
+            if basis.get("pool_identity_sha") != cur_pool_sha:   # reselect等で提示poolが変わった(ニュアンス候補は別のpoolに対して作られた)。confirm-reviseではpool同一性は変わらない
+                d("kp_word_basis.pool_identity_sha", str(basis.get("pool_identity_sha"))[:16], cur_pool_sha[:16], "nuance_candidate.json vs kp_candidates.json(提示pool)")
+                proposal.append("KP/Word候補の提示集合が変わったため、ニュアンス候補を作り直してください(制作コマンドを再実行→フォームを作り直して再送信)")
+            gts = _nuance_text_sha_of_grammar(study_dir)
+            if gts is not None and doc.get("text_sha256") not in (None, gts):
+                d("text_sha256", str(doc.get("text_sha256"))[:16], str(gts)[:16], "nuance_candidate.json vs grammar_candidates.json(本文)")
+    if nuance is None:
+        if status == "CANDIDATE":
+            d("selection.nuance", "(採用/不採用の回答)", "未回答", "payload")
+            proposal.append("ニュアンス解説の採用/不採用を選んでから再送信してください(黙って不採用にはしません)")
+        decision = "none"
+    else:
+        if status != "CANDIDATE":
+            d("selection.nuance", "(候補なし)", str(nuance.get("decision")), f"nuance_candidate.json status={status}")
+            proposal.append("現在の候補docには提示できるニュアンス候補がありません。フォームを現在の候補docから作り直して再送信してください")
+            decision = "none"
+        else:
+            dec = nuance.get("decision")
+            decision = NUANCE_FORM_DECISIONS.get(dec)
+            if decision is None:
+                d("selection.nuance.decision", "adopt|reject", dec)
+            if isinstance(cand, dict):
+                if nuance.get("candidate_sha256") != cand.get("candidate_sha256"):
+                    d("selection.nuance.candidate_sha256", str(nuance.get("candidate_sha256"))[:16], str(cand.get("candidate_sha256"))[:16])
+                    proposal.append("フォームが古い(別のニュアンス候補を見て選んだ)ため、現在の候補でフォームを作り直して再送信してください")
+                if nuance.get("id") not in (None, nuance_id_of(cand)):
+                    d("selection.nuance.id", nuance.get("id"), nuance_id_of(cand))
+                if decision == "adopted":
+                    oc = cand.get("overlap_check") or {}
+                    if oc.get("verdict") != "pass":
+                        d("overlap_check.verdict", "pass", oc.get("verdict"), FILE_NUANCE_CANDIDATE)
+                    covered = {a.get("item_id") for a in (oc.get("against") or []) if a.get("kind") != "grammar"}
+                    missing = sorted(i for i in confirmed_ids if i not in covered)
+                    if missing:   # M-4: 判定済み集合(against[])に無いidを人間が選んだ場合に素通りさせない
+                        d("coverage(against[])", "確定したKey Phrase・Wordの全idが重複判定済み", f"判定されていないid: {missing}")
+                        proposal.append("確定した項目の一部が、ニュアンス候補の重複判定の対象に含まれていません。ニュアンス候補を作り直すか、ニュアンス解説を不採用にして再送信してください")
+                    hit = sorted(set(confirmed_ids) & set(cand.get("pool_conflicts") or []))
+                    if hit:
+                        d("pool_conflicts", "確定①②と焦点が重複しない", f"重複: {hit}")
+                        proposal.append("このニュアンス解説は選択した項目と学習上の焦点が重複します。該当項目を外すか、ニュアンス解説を不採用にして再送信してください")
+    if diffs:
+        raise_issue(kp_dir, level, "フォームのニュアンス解説の採否が、現在のニュアンス候補doc/KP・Word候補と一致しない、または未回答です(重複の表示・黙った不採用を防ぐため確定しません)。", diffs,
+                    proposal=proposal or ["現在のニュアンス候補でフォームを作り直して再送信してください"], next_steps=["現在の候補docでフォームを作り直して再送信"])
+    return {"study_dir": study_dir, "decision": decision, "doc": doc, "cand": cand if decision != "none" else None, "doc_sha256": _jsha(doc), "pool_identity_sha": cur_pool_sha,
+            "kp_word_ids": sorted(confirmed_ids), "grammar_ids": sorted(grammar_ids or [])}
+
+
+def _archive_prior_nuance_files(study_dir: str) -> None:
+    """再確認(revoke後)の上書き前に、前のsidecarを退避する(削除しない。R-11: revoke後の再確定時にexporterが旧採否を既定表示するために、退避は再確定の直前まで行わない)。"""
+    rv.archive_if_exists(os.path.join(study_dir, FILE_NUANCE), "RECONFIRM_SUPERSEDED")
+
+
+def _write_nuance_sidecar(run: str, rec: dict, nv: dict, kp_dir: str, *, level: str, by: str, user_ref: str) -> dict:
+    """level別sidecar `<study_dir>/confirmed_nuance.json`。採用/不採用は候補本文を逐語コピー(改変検出用)、候補なし/技術失敗はdecision=noneと候補docの状態を記録する
+    (後から候補が現れても人間の判断なしに採用しないための基準)。confirmation_id(確定レコードと同一)・kp_dir_relで確定レコードに結び付ける。"""
+    sd = nv["study_dir"]
+    _archive_prior_nuance_files(sd)
+    cand, doc = nv["cand"], nv["doc"]
+    side = {"schema": SCHEMA_NUANCE, "level": level, "decision": nv["decision"], "confirmation_id": rec["confirmation_id"],
+            "nuance_id": nuance_id_of(cand) if cand else None, "candidate_sha256": (cand or {}).get("candidate_sha256"), "candidate": copy.deepcopy(cand) if cand else None,
+            "confirmed_against": {"kp_word": list(nv["kp_word_ids"]), "grammar": list(nv["grammar_ids"])},
+            "pool_identity_sha": nv["pool_identity_sha"], "nuance_doc_status": doc.get("status"), "no_candidate_reason": doc.get("no_candidate_reason"),
+            "nuance_doc_sha256": nv["doc_sha256"], "text_sha256_at_confirm": doc.get("text_sha256"), "by": by, "user_ref": user_ref, "decided_at": rv._now()}
+    side["kp_dir_rel"] = os.path.relpath(os.path.abspath(kp_dir), os.path.abspath(sd)).replace(os.sep, "/")   # 文法側(study_dir)から確定レコードを辿る相対path(runごとコピーしても有効)
+    side["content_sha256"] = _jsha({"decision": side["decision"], "candidate_sha256": side["candidate_sha256"], "candidate": side["candidate"]})
+    side["sidecar_sha256"] = _jsha({k: v for k, v in side.items() if k != "sidecar_sha256"})
+    p = os.path.join(sd, FILE_NUANCE)
+    _write(p, side)
+    return {"path_rel": os.path.relpath(p, run).replace(os.sep, "/"), "sidecar_sha256": side["sidecar_sha256"], "decision": side["decision"], "level": level, "schema": SCHEMA_NUANCE}
+
+
+def nuance_state(study_dir: str) -> Optional[dict]:
+    """sidecar(confirmed_nuance.json)+ユーザー確定レコード(live)。無い/保護OFF/取消済み/確定レコードに印が無い(=leftover)=None。sidecar自己整合違反=INTEGRITY。
+    bindingは confirmation_id・sidecar sha・level(M-3: KP候補docのcandidates_sha256には結び付けない=confirm-reviseで誤STALEにならない)。"""
+    if not protection_enabled():
+        return None
+    sp = os.path.join(study_dir, FILE_NUANCE)
+    if not os.path.exists(sp):
+        return None
+    side = _read(sp)
+    rel = side.get("kp_dir_rel")
+    if not rel:
+        return None
+    kp_dir = os.path.normpath(os.path.join(study_dir, rel))
+    rec = load_record(kp_dir)
+    if rec is None or rec.get("state") != STATE_LIVE or not rec.get("nuance"):
+        return None
+    level = _rec_level(rec)
+    bad = []
+    if _jsha({k: v for k, v in side.items() if k != "sidecar_sha256"}) != side.get("sidecar_sha256") or side.get("sidecar_sha256") != rec["nuance"].get("sidecar_sha256"):
+        bad.append(f"{FILE_NUANCE} のshaが不一致(ニュアンス解説の採否が書換えられた疑い)")
+    if side.get("confirmation_id") != rec.get("confirmation_id"):
+        bad.append(f"{FILE_NUANCE} の confirmation_id が確定レコードと一致しません")
+    if side.get("level") != level:
+        bad.append(f"{FILE_NUANCE} のlevel({side.get('level')!r})が確定レコードのlevel({level!r})と一致しません(別levelのsidecarの混入)")
+    if side.get("content_sha256") != _jsha({"decision": side.get("decision"), "candidate_sha256": side.get("candidate_sha256"), "candidate": side.get("candidate")}):
+        bad.append(f"{FILE_NUANCE} の内容shaが不一致")
+    if bad:
+        raise_integrity(kp_dir, level, [{"candidate_id": None, "field": "nuance", "confirmed": "(自己整合)", "observed": x, "where": FILE_NUANCE} for x in bad],
+                        "ニュアンス解説の確定内容(sidecar)の整合が崩れています。")
+    return {"sidecar": side, "rec": rec, "kp_dir": kp_dir, "level": level}
+
+
+def previous_nuance_decision(study_dir: str) -> Optional[dict]:
+    """R-11: revoke後の再確定フォームで旧採否を既定表示するための読取(確定レコードがliveでなくても読む。表示の既定値にのみ使い、確定には使わない)。
+    戻り: {"decision": adopted|rejected, "candidate_sha256": …} | None(sidecar無し・none・読取不可)。"""
+    sp = os.path.join(study_dir, FILE_NUANCE)
+    try:
+        side = _read(sp) if os.path.exists(sp) else None
+    except (OSError, ValueError):
+        return None
+    if not side or side.get("decision") not in ("adopted", "rejected"):
+        return None
+    return {"decision": side["decision"], "candidate_sha256": side.get("candidate_sha256")}
+
+
+def guard_nuance(study_dir: str, op: str) -> None:
+    """確定したニュアンス採否(sidecar)がある間は、候補の再生成(--regenerate-stage nuance_cand_<lv>)を拒否する(revoke必須。文法のguard_grammarと同型)。"""
+    st = nuance_state(study_dir)
+    if st is None:
+        return
+    lv = st["level"]
+    raise rv.ConfirmedContentLocked(
+        f"CONFIRMED_CONTENT_LOCKED: ニュアンス解説の {op} は拒否されました。ユーザー確定済みの採否があります(decision={st['sidecar'].get('decision')})。"
+        f"変更は `{_cli(st['kp_dir'], 'revoke')} --level {lv} --by <名> --user-ref <ユーザー発言> --reason ...`(確定の取消→選び直し)のみ(ユーザー確認済みの操作)。")
 
 
 def _append_history_note(rec: dict, event: str, by: str, user_ref: str, extra: Optional[dict] = None) -> None:
@@ -1959,7 +2202,7 @@ def cmd_status(run: str) -> dict:
         rec = load_record(d)
         row = {"kp_dir": d, "level": (review or {}).get("level"), "review_status": (review or {}).get("status"),
                "record": None if rec is None else {"state": rec.get("state"), "revision": rec.get("revision"), "actor": (rec.get("confirmed_by") or {}).get("actor"),
-                                                   "origin": (rec.get("origin") or {}).get("kind"), "display_spec": rec.get("display_spec"), "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in rec["items"]],
+                                                   "origin": (rec.get("origin") or {}).get("kind"), "display_spec": rec.get("display_spec"), "nuance": (rec.get("nuance") or {}).get("decision"), "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in rec["items"]],
                                                    "unconsumed": [(u["candidate_id"], u["reason"]) for u in rec.get("unconsumed") or []],
                                                    "self_problems": _problems_self(rec)},
                "legacy_drift_file": os.path.exists(paths_of(d)["legacy"]), "issue_file": os.path.exists(paths_of(d)["issue_json"])}
