@@ -1,0 +1,8 @@
+# Fable受入記録 委任_01(2026-10-29)
+受入記録:
+(1)当初目的・要求された最終状態: ユーザー原文`docs/pm/delegation_log/2026-10-29_FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01_USER.md`「Family Yの人物紹介一般化方式 B+E を正式採用」「対象：Family Y Standard／Advancedの両レベル」「到達目標：PRODUCTION_WIRED」「Trialで不採用とした、属性を過度に抽象化するA方式へ戻さない」「『元情報にない時期語を含む』という形式的な理由だけでNGにする決定論検査は追加しません」「Family Y Standard／Advancedの両レベルで、正式初回Production経路からB+E方式が発火した証拠を取得」「Family X／Zの人物紹介仕様には適用しません」「既存の完成記事…を、今回の共通仕様変更だけを理由に再生成・差し替えないでください」。
+(2)実際に生成・残存した最終成果物: `er121_prompts/persona_intro_01.txt`(B+E 2箇条、:12「属性がそのまま立場のとき」)、`er121_family_y_text_core_01.py:1066`(Prompt sha a5da099a…)・:1655-1656(person_blockに「話題との関わり」行)、新test `er121_family_y_intro_be_test_01.py`(13件)、copy-run `er121_output/family_y_production_01/redelivery_fee/run_fybe_ev_01`(text/translate、音声なし)、commit 5f4f2a2dc・b9a4acecf。失敗経路=既存check_intro/補助Gate(luna)/HRのまま(新Gateなし)。自己起因RESTART_STORMのSTOPは使い捨てcopy-runに残置(本体影響なし)。
+(3)証拠: persona_intro_01.txt:12・text_core:1066/1655-1656(Fable Grep)、`run_fybe_ev_01/text/text_records.json`に prompt_sha a5da099a・routing FAMILY_Y_PERSONA_INTRO・model gpt-6.1-sol(Fable Grep 7件)、生成紹介文V1「毎日荷物を配る宅配ドライバー…」(一致型で職業維持)、check_intro違反0・luna PASS、英訳Adv/Std両方生成(Std/Advは同一text stageから英訳stageで分岐)、test 169件OK、resume cache keyにPrompt sha(旧sha生成物は再利用されない)、X/Z不参照(test/grep)、費用¥4.29。
+(4)目的要件との一致: B+E実装=一致 / Std・Adv両レベル=一致(生成は記事単位1回、両レベルの英訳へ) / A方式へ戻らない=一致(golden) / 時期語検査なし=一致 / 正式経路runtime発火=一致(一致型1記事。乖離型・中間型はTrial出力goldenで代替=未確認として明記) / X/Z不適用=一致 / 既存記事不変=一致 / 英訳の性別表現=誤りなし・中立表現(they)で情報は減る(採用後最初の正式記事で再確認) / 姓記事は別承認の固定V1文で是正=一致。
+(5)最終受入判定と理由: ACCEPTED=PRODUCTION_WIRED(Family Y Std/Adv)。ユーザー承認仕様と実装の一致、正式runner経路での発火証拠、Regression PASS、SSOT反映を確認。未確認=乖離型・中間型の正式runtime(golden代替)、性別表現の実記事確認(次回正式記事)。
+判定整合: 重大NG=なし

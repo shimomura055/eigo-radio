@@ -38,4 +38,4 @@
 STOP条件: Production採用はユーザーのみ/公開差替えは記事単位承認/承認記録注入はユーザー回答後/予算 日次1,000円。
 (S追記 2026-10-29 委任_03B)Adv(b1b)/Std(a2)HR確定済み(Std old-fashionedはrequalify全PASS)。kp finalize〜pages完了、gate PASS(全PASS)。**page_verifyでSTOP: FAMILY_Y_KP_SELECTION_OUTPUT_MISMATCH(a2) TTS記録text『old fashioned』(ハイフン→空白、er003_v1_n3_01_tts_generate.py:1105)vs確定『old-fashioned』(er119_kp_human_review_01.py:1385-1392)**=コード修正待ち(03B編集禁止)。候補ページ未公開。詳細=docs/pm/RESULT_PACKET_YSC03B.md
 (FYIT)FY-SPEAKER-INTRO-GENERALIZATION-TRIAL-01=委任_02完了(2026-10-29): 追加2記事(redelivery_fee/sns_age_limit)Trial、RESULT_02.md、VALIDATED判定案(可)。一般化方式の正式採用=ユーザー判断待ち(UDR新規はFable提示)。API費用約¥54〜58(Cap¥30超過報告)。音声0・Production未変更。
-(Y2)FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01=委任_01完了: B+E Std/Adv正式配線(persona_intro_01.txt sha a5da099a…+person_block接点行)、copy-run正式runner evidence(¥4.29)、test 13+既存169 OK。Status=PRODUCTION_WIRED_PENDING_FABLE、Fable独立受入待ち。RESULT_PACKET_FYBE01.md。
+(Y2)FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01=委任_01完了: B+E Std/Adv正式配線(persona_intro_01.txt sha a5da099a…+person_block接点行)、copy-run正式runner evidence(¥4.29)、test 13+既存169 OK。Status=PRODUCTION_WIRED。Fable受入ACCEPTED=PRODUCTION_WIRED。RESULT_PACKET_FYBE01.md。
