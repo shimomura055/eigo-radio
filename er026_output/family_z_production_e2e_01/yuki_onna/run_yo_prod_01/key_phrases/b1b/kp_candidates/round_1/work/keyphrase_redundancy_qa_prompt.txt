@@ -1,0 +1,122 @@
+以下は、同じ記事から選ばれた10件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。10件から作れる全てのペア(45組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず45組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+One winter night in Japan, two woodcutters struggled through a snowstorm. Minokichi was eighteen; the old man was his master. When they could go no farther, they took shelter in a hut beside a river. They barred the door and lay under their straw coats. Soon the old man slept.
+
+Minokichi woke with snow brushing his face. The door stood open. A woman dressed in white was bending over his master. In the pale light, her breath flowed across the old man’s face like white smoke.
+
+Then she turned. Minokichi tried to rise, but his body would not move. Her beautiful face came close to his.
+
+“I meant to kill you too,” she whispered. “But you are young, so you may live. Tell anyone what you saw tonight—even your own mother—and I will know. Then I will kill you. Remember.”
+
+She stepped out into the storm. Minokichi barred the door and touched his master’s face. It was icy cold. The old man was dead.
+
+After that night, Minokichi told nobody what had happened. He kept silent even about his master’s death.
+
+The next winter, on the road home, he met a beautiful girl called Yuki. Her skin was white, and her voice was gentle. He took her home to his widowed mother, who welcomed the girl and persuaded her to stay.
+
+Minokichi and Yuki married. In time they had ten fair-skinned children. The children grew, but Yuki seemed never to grow old.
+
+Years later, one evening in their home, Minokichi watched his wife sewing by the lamp. Their children were asleep, and the light lay softly on Yuki’s face.
+
+“I once saw a woman who looked very like you,” he said.
+
+“Where did you see her?” Yuki asked.
+
+Minokichi told her the whole story: the hut, his master’s death, the woman’s white breath, and the warning that had kept him silent.
+
+Yuki let her sewing fall. She stood and bent over him.
+
+“It was me!” she cried. “I told you I would kill you if you ever said one word about it! Only those sleeping children keep me from killing you now. Take very good care of them. If they ever have reason to complain of you, I will treat you as you deserve!”
+
+Her voice grew thin, like the crying of the wind. She melted into white mist, rose towards the roof beams, and slipped away through the smoke-hole.
+
+She was never seen again.
+
+【Key Phrase 10件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "slip away",
+    "japanese_gloss": "そっと立ち去る",
+    "source_sentence": "She melted into white mist, rose towards the roof beams, and slipped away through the smoke-hole"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "have reason to complain",
+    "japanese_gloss": "不満を言う理由がある",
+    "source_sentence": "If they ever have reason to complain of you, I will treat you as you deserve"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "keep silent",
+    "japanese_gloss": "黙っている",
+    "source_sentence": "He kept silent even about his master's death"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "take shelter",
+    "japanese_gloss": "避難する",
+    "source_sentence": "When they could go no farther, they took shelter in a hut beside a river"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "as you deserve",
+    "japanese_gloss": "あなたにふさわしいように",
+    "source_sentence": "If they ever have reason to complain of you, I will treat you as you deserve"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "go no farther",
+    "japanese_gloss": "それ以上先へ進まない",
+    "source_sentence": "When they could go no farther, they took shelter in a hut beside a river"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "persuade",
+    "japanese_gloss": "説得する",
+    "source_sentence": "He took her home to his widowed mother, who welcomed the girl and persuaded her to stay"
+  },
+  {
+    "rank": 8,
+    "key_phrase": "widowed",
+    "japanese_gloss": "配偶者を亡くした",
+    "source_sentence": "He took her home to his widowed mother, who welcomed the girl and persuaded her to stay"
+  },
+  {
+    "rank": 9,
+    "key_phrase": "bar",
+    "japanese_gloss": "通れないようにふさぐ",
+    "source_sentence": "They barred the door and lay under their straw coats"
+  },
+  {
+    "rank": 10,
+    "key_phrase": "struggle",
+    "japanese_gloss": "苦労する",
+    "source_sentence": "One winter night in Japan, two woodcutters struggled through a snowstorm"
+  }
+]
