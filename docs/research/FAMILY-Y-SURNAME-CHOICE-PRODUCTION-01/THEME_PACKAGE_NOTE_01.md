@@ -49,3 +49,8 @@
 ## 8. 委任_03 タイトル確定・V1重み付け(2026-10-29)
 - 確定title_ja=「夫が妻の姓を選ぶとき、それぞれの声」(Std/Adv共通、runnerは単一title_jaを使用: text_core:2075)。理由: Family Y先例は全て「<争点>、それぞれの声」(SNS=Package title_ja・宅配=REVISION_SCRIPT_01:103・TRIAL_03/WORLD_SETTING_01:104・規則文=er110_family_y_persona_pipeline_01.py:237「25字以内・争点が分かる・『それぞれの声』で終わる」)。Fable案「夫が妻の姓を選ぶとき」を保ち末尾のみ先例体裁に合わせた最小調整(17字、疑問形/制度論なし)。
 - V1(sheets.voice_1)のpersona_sketch_ja/arc_ja/claim_core_jaを調整: 語りの中心=苗字が変わることへの本人・双方の親の受け止めと周囲の反応、婿養子は明示、同居は背景(experiences追加・変更なし)。Package sha256 d5a0c983...→d1bc9fe2...、validate_theme_package=[]。
+
+## 9. 委任_04 リード矛盾の是正(2026-10-29)
+- 是正理由: 旧リード第2文「妻の姓を選ぶのは…養子縁組は伴わない」は制度定義であり(ユーザー原文§4「中心テーマを制度解説に置き換えない」に反する)、直後のV1が「婿養子として妻の姓を名乗る」と語る矛盾を聞き手に与えた。
+- 変更: Packageの`lead_premise_ja`(「妻の姓を選ぶ」→「妻の姓を名乗る」)・`lead_scope_lines`(定義文を撤去し「婚姻届で妻の姓を選ぶ場合も婿養子になる場合も両方を自然に含める・定義説明はしない」)・`distinctions`2件(「養子縁組は伴わない」を撤去し、婿養子も妻の姓を名乗る形の一つと明記)。Voice sheets/experiences/sourcesは不変。Package sha d1bc9fe2...→fa2c7a58...、validate=[]。
+- 再生成経路: runnerにlead単体再生成が無いため、`--reuse-manifest`(y_reuse_v1: Voice R0=run_01の確定Voice 3本、人物紹介3本)を指定して新run_02へ。Voice本文・人物紹介は逐語同一で再利用(Gate PASS記録再利用)、Lead新規生成。Closingはキャッシュ鍵にPackage shaを含むため再生成され本文が変わった(案Bの固定注入は本件非登録)。以降translate/support/kpも新runで再実行(run_01は旧版の記録として残置)。

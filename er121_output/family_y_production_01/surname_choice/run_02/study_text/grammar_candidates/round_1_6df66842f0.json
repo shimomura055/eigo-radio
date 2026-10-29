@@ -1,0 +1,235 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "When a Husband Chooses His Wife’s Last Name: Their Voices",
+  "text_sha256": "975c98267084cebd0fc701f474213639d75cd409c038c516b70fe4e353e4115b",
+  "n_paragraphs": 5,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "636cc81797b9b8edc8b32ebee265664c54d46e2e6b44bd04e3fca6309020e700",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P1",
+      "cls": "FRONT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い文頭のWhether節と主節を区別し、主節の主語を探す。",
+      "front_kind": "NESTED_OR_LONG",
+      "sentence": "Whether a husband chooses his wife’s last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P1",
+      "cls": "INV",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "TV=LOW"
+      ],
+      "tv": "LOW",
+      "tv_ja": "",
+      "front_kind": "",
+      "sentence": "Here are the voices of three people with different situations and lives.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P2",
+      "cls": "CLEFT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "It is/was ... whoの形では、who節の中の動詞と焦点となる人物を対応させる。",
+      "front_kind": "",
+      "sentence": "It was my wife’s parents who worried, asking me again and again if I was really sure.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P2",
+      "cls": "SPEC",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "mid_cond"
+      ],
+      "tv": "HIGH",
+      "tv_ja": "find it + 形容詞 + that節では、itを形式目的語、形容詞を目的格補語として捉える。",
+      "front_kind": "",
+      "sentence": "I still find it a little hard that I don’t get much time to myself while living at my wife’s parents’ home, but adjusting to the way each family does things was harder than changing my last name.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P3",
+      "cls": "CLEFT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "疑問文のIt-cleftでは、that節の中で焦点となる要素が何かを確かめる。",
+      "front_kind": "",
+      "sentence": "But was it only the change of last name that I didn’t like?",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P4",
+      "cls": "APPOS",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "TV=LOW"
+      ],
+      "tv": "LOW",
+      "tv_ja": "",
+      "front_kind": "",
+      "sentence": "He took his wife’s last name without discussing it with his parents, and I know that his mother, my aunt, was so shocked that she became ill.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P5"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "8eb0dbe5653a060c44da8fc62f487be9e93e10dc6b793e4bbcdd77f9cd663b1d",
+    "response_ids": [
+      "resp_05549de2bad94410006ae2b3f2a94c87d0aa07aa2aed01194c"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3780,
+          "output_tokens": 5608,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 3977
+        },
+        "response_id": "resp_05549de2bad94410006ae2b3f2a94c87d0aa07aa2aed01194c",
+        "elapsed_sec": 49.73,
+        "cost_jpy": 0.5091
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.5091,
+    "generated_at": "2026-10-29T11:49:08+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g0f6b706ff3",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CLEFT",
+      "para": "P2",
+      "sentence": "It was my wife’s parents who worried, asking me again and again if I was really sure.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "It was my wife’s parents who worried",
+      "misread_ja": "Itを内容を指す主語と捉え、my wife’s parentsをworriedの主語ではなく補語のように読んでしまうことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "It is/was ... whoの形では、who節の中の動詞と焦点となる人物を対応させる。",
+      "construct_ja": "It-cleft（強調構文）",
+      "points_ja": [
+        "my wife’s parentsが強調されている",
+        "worriedの主語はmy wife’s parents"
+      ],
+      "context_ja": "話し手は、本人の決断を心配して何度も確かめたのは妻の両親だったと述べている。",
+      "prev": "They weren’t old-fashioned about it.",
+      "next": "I was grateful that both sets of parents accepted my decision without taking offense.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        400,
+        485
+      ]
+    },
+    {
+      "candidate_id": "gfb5fe09043",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "CLEFT",
+      "para": "P3",
+      "sentence": "But was it only the change of last name that I didn’t like?",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "it only the change of last name",
+      "misread_ja": "itを通常の主語として読み、the change of last nameが強調される部分であることを捉え損ねることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "疑問文のIt-cleftでは、that節の中で焦点となる要素が何かを確かめる。",
+      "construct_ja": "疑問文のIt-cleft（強調構文）",
+      "points_ja": [
+        "the change of last nameが焦点",
+        "that節の主語はI"
+      ],
+      "context_ja": "話し手は、嫌だったのが姓の変更そのものだけだったのかを問い直している。",
+      "prev": "When he said he would change his last name too, I felt like my son was moving away, and I got very upset.",
+      "next": "I think the truth is that I wanted him to stay close.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        419,
+        478
+      ]
+    },
+    {
+      "candidate_id": "g91d826d90f",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "FRONT",
+      "para": "P1",
+      "sentence": "Whether a husband chooses his wife’s last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings.",
+      "front_kind": "NESTED_OR_LONG",
+      "misread_target": "SUBJECT",
+      "misread_quote": "Whether a husband chooses his wife’s last name",
+      "misread_ja": "文頭のWhether節の中のa husbandを主節の主語と取り、主節の主語he and each of their familiesを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い文頭のWhether節と主節を区別し、主節の主語を探す。",
+      "construct_ja": "文頭の長いWhether節",
+      "points_ja": [
+        "Whether節の中ではa husbandが主語",
+        "主節はhe and each of their familiesが主語"
+      ],
+      "context_ja": "夫が妻の姓を選ぶ場合と、養子として妻の家族に入る場合について述べている。",
+      "prev": "If your last name changed when you got married, how would you feel?",
+      "next": "When they care about different things, how can they choose something they can both accept?",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        68,
+        242
+      ]
+    }
+  ],
+  "top_ids": [
+    "g0f6b706ff3",
+    "gfb5fe09043"
+  ],
+  "n_eligible": 3,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "6df66842f0a53aac2a486d30e31c31352666e05b7abd9902b906aa4e24a0e6b7",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

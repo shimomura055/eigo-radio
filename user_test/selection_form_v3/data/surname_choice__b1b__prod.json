@@ -5,14 +5,14 @@
  "level_label": "Advanced",
  "name": "夫が妻の姓を選ぶとき、それぞれの声",
  "family": "Y",
- "candidates_sha256": "a891b830b2b97a040d1beb08c4f87227e5c4ffacf94249dfddc5097519f6940c",
+ "candidates_sha256": "df69c2469a1585cb5e532a8a8a7f9a745b26be29a60e3831149514f16c99a51f",
  "candidates_sha256_source": "candidate_doc_field",
- "source_kp_candidates_path": "er121_output/family_y_production_01/surname_choice/run_01/key_phrases/b1b/kp_candidates.json",
+ "source_kp_candidates_path": "er121_output/family_y_production_01/surname_choice/run_02/key_phrases/b1b/kp_candidates.json",
  "source": {
   "kind": "PRODUCTION_FORMAL_PATH",
   "trial": "KP-GATE-DROP-BACKFILL-PRODUCTION-01",
-  "run": "er121_output/family_y_production_01/surname_choice/run_01",
-  "text_sha256": "821e940c27380e3423834d707fd1fa1a5c39a773968a802ee5b794cec61193ca",
+  "run": "er121_output/family_y_production_01/surname_choice/run_02",
+  "text_sha256": "975c98267084cebd0fc701f474213639d75cd409c038c516b70fe4e353e4115b",
   "model_id": {
    "kp": {
     "call1": "gpt-6-luna",
@@ -33,37 +33,49 @@
  "cap_source": "candidate_doc",
  "phrases": [
   {
-   "id": "p_38cbf7ce53",
-   "candidate_id": "p_38cbf7ce53",
+   "id": "p_85cbe0223d",
+   "candidate_id": "p_85cbe0223d",
    "kind_source": "candidate_doc",
-   "term": "go in opposite directions",
-   "meaning_ja": "正反対の方向を向いている",
-   "excerpt": "Thanks for accepting his decision and thanks for changing his last name go in opposite directions",
-   "ja_gloss": "正反対の方向を向いている",
+   "term": "taking offense",
+   "meaning_ja": "気を悪くする",
+   "excerpt": "I was grateful that both sets of parents accepted my decision without taking offense",
+   "ja_gloss": "気を悪くする",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 1,
-   "auto_eligible": true,
+   "auto_eligible": false,
    "human_selectable": true,
-   "reason_ja": "意見や利害が正反対であることを比喩的に表す。",
+   "reason_ja": "「気分を害する」という意味の慣用表現。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
-    "redundant_with": []
-   }
+    "redundant_with": [],
+    "rescued": true,
+    "rescue_codes": [
+     "REVERT_SURFACE"
+    ]
+   },
+   "rescue": {
+    "codes": [
+     "REVERT_SURFACE"
+    ],
+    "note": "修正済み(元: taking offense / REVERT_SURFACE)"
+   },
+   "flag": "候補の注記",
+   "flag_note_ja": "KP救済済み(REVERT_SURFACE) / AUTO採用不可(人間のみ採用可)"
   },
   {
-   "id": "p_bb5820f386",
-   "candidate_id": "p_bb5820f386",
+   "id": "p_6714fc2917",
+   "candidate_id": "p_6714fc2917",
    "kind_source": "candidate_doc",
-   "term": "hold one's son back",
-   "meaning_ja": "人の息子の足を引っ張る",
-   "excerpt": "Even so, I don't want my feelings as a parent to hold my son back",
-   "ja_gloss": "人の息子の足を引っ張る",
+   "term": "let go of",
+   "meaning_ja": "手放す",
+   "excerpt": "I need to let go of my son, don't I",
+   "ja_gloss": "手放す",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call1",
@@ -72,23 +84,27 @@
    "ai_rank": 2,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "人の行動や前進を妨げる句動詞の用法を学べる。",
+   "reason_ja": "人や物への執着を手放す句動詞。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
-    "redundant_with": []
+    "redundant_with": [
+     "p_bb5820f386",
+     "p_224027b3ab"
+    ]
    },
-   "selection_phrase": "hold my son back"
+   "flag": "候補の注記",
+   "flag_note_ja": "他候補と重複の可能性"
   },
   {
-   "id": "p_ad9e388f65",
-   "candidate_id": "p_ad9e388f65",
+   "id": "p_bb5820f386",
+   "candidate_id": "p_bb5820f386",
    "kind_source": "candidate_doc",
-   "term": "talk it over",
-   "meaning_ja": "それについてよく話し合う",
-   "excerpt": "I know a relative who took his wife's last name without first talking it over with his parents",
-   "ja_gloss": "それについてよく話し合う",
+   "term": "hold one's son back",
+   "meaning_ja": "人の息子の足を引っ張る",
+   "excerpt": "Even so, I don't want to hold my son back because of my feelings as a parent",
+   "ja_gloss": "人の息子の足を引っ張る",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call1",
@@ -97,23 +113,27 @@
    "ai_rank": 3,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "相談して決めることを表す自然な口語表現。",
+   "reason_ja": "人の行動を妨げる句動詞の用例。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
-    "redundant_with": []
+    "redundant_with": [
+     "p_6714fc2917"
+    ]
    },
-   "selection_phrase": "talking it over"
+   "selection_phrase": "hold my son back",
+   "flag": "候補の注記",
+   "flag_note_ja": "他候補と重複の可能性"
   },
   {
-   "id": "p_f2efadbdd6",
-   "candidate_id": "p_f2efadbdd6",
+   "id": "p_07ed712929",
+   "candidate_id": "p_07ed712929",
    "kind_source": "candidate_doc",
-   "term": "time to oneself",
-   "meaning_ja": "自分だけの時間",
-   "excerpt": "Living at my wife's parents' home, I still find it a little hard that I have so little time to myself",
-   "ja_gloss": "自分だけの時間",
+   "term": "at ease",
+   "meaning_ja": "気持ちが楽で",
+   "excerpt": "Once I could accept that of course we were different, I felt much more at ease",
+   "ja_gloss": "気持ちが楽で",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call1",
@@ -122,23 +142,22 @@
    "ai_rank": 4,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "一人で過ごす時間を表す定着した言い回し。",
+   "reason_ja": "安心してくつろいだ状態を表す表現。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
-   },
-   "selection_phrase": "time to myself"
+   }
   },
   {
-   "id": "p_be39c95a7f",
-   "candidate_id": "p_be39c95a7f",
+   "id": "p_74789f7c2d",
+   "candidate_id": "p_74789f7c2d",
    "kind_source": "candidate_doc",
-   "term": "only natural",
-   "meaning_ja": "ごく当然のこと",
-   "excerpt": "But if it were my son, it would still bother me if his partner's parents thought it was only natural",
-   "ja_gloss": "ごく当然のこと",
+   "term": "way out in the country",
+   "meaning_ja": "かなり田舎のほうに",
+   "excerpt": "My parents accepted it easily, even though my hometown is way out in the country",
+   "ja_gloss": "かなり田舎のほうに",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call1",
@@ -147,7 +166,7 @@
    "ai_rank": 5,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「当然のこと」という意味になる自然な組み合わせ。",
+   "reason_ja": "「かなり田舎に」を表す口語的な表現。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -156,13 +175,13 @@
    }
   },
   {
-   "id": "p_07ed712929",
-   "candidate_id": "p_07ed712929",
+   "id": "p_224027b3ab",
+   "candidate_id": "p_224027b3ab",
    "kind_source": "candidate_doc",
-   "term": "at ease",
-   "meaning_ja": "気が楽な",
-   "excerpt": "Once I could accept that it was normal for things to be different, I felt much more at ease",
-   "ja_gloss": "気が楽な",
+   "term": "give something up",
+   "meaning_ja": "何かをあきらめる",
+   "excerpt": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+   "ja_gloss": "何かをあきらめる",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call1",
@@ -171,48 +190,54 @@
    "ai_rank": 6,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "安心してくつろいだ状態を表す慣用表現。",
+   "reason_ja": "何かを手放すことを表す句動詞。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": [
+     "p_6714fc2917"
+    ]
+   },
+   "selection_phrase": "giving something up",
+   "flag": "候補の注記",
+   "flag_note_ja": "他候補と重複の可能性"
+  },
+  {
+   "id": "p_edb2175ddf",
+   "candidate_id": "p_edb2175ddf",
+   "kind_source": "candidate_doc",
+   "term": "overlap with",
+   "meaning_ja": "〜と重なり合う",
+   "excerpt": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+   "ja_gloss": "〜と重なり合う",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 7,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "考えや感情が重なることを表す動詞表現。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
-   }
+   },
+   "selection_phrase": "overlaps with"
   }
  ],
  "words": [
   {
-   "id": "p_126be0b6c9",
-   "candidate_id": "p_126be0b6c9",
+   "id": "p_5b0df6a8b9",
+   "candidate_id": "p_5b0df6a8b9",
    "kind_source": "candidate_doc",
-   "term": "hesitation",
-   "meaning_ja": "ためらい",
-   "excerpt": "I had no hesitation at all about changing my last name",
-   "ja_gloss": "ためらい",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "word",
-   "origin": "call2",
-   "ai_rank": 7,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "ためらいや迷いを表す名詞で、幅広い場面で使えます。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
-  {
-   "id": "p_9ba97332d1",
-   "candidate_id": "p_9ba97332d1",
-   "kind_source": "candidate_doc",
-   "term": "rural",
-   "meaning_ja": "田舎の",
-   "excerpt": "My parents' home is in a pretty rural place, but they don't have old-fashioned views, and they accepted it easily",
-   "ja_gloss": "田舎の",
+   "term": "registration",
+   "meaning_ja": "届け出",
+   "excerpt": "Whether a husband chooses his wife's last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings",
+   "ja_gloss": "届け出",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call2",
@@ -221,55 +246,7 @@
    "ai_rank": 8,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「田舎の」を表す語で、地域や暮らしの描写に役立ちます。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
-  {
-   "id": "p_0ff071e979",
-   "candidate_id": "p_0ff071e979",
-   "kind_source": "candidate_doc",
-   "term": "adoption",
-   "meaning_ja": "養子縁組",
-   "excerpt": "It does not involve adoption",
-   "ja_gloss": "養子縁組",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "word",
-   "origin": "call2",
-   "ai_rank": 9,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "「養子縁組」を表す名詞で、制度や家族の話題で使えます。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
-  {
-   "id": "p_cd738ebdb1",
-   "candidate_id": "p_cd738ebdb1",
-   "kind_source": "candidate_doc",
-   "term": "generation",
-   "meaning_ja": "世代",
-   "excerpt": "Last is someone from the parents' generation whose relative chose his wife's last name",
-   "ja_gloss": "世代",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "word",
-   "origin": "call2",
-   "ai_rank": 10,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "「世代」を表し、社会や家族の変化を論じる際に使えます。",
+   "reason_ja": "公的な登録手続きに関わる語で、幅広く使えます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -282,9 +259,57 @@
    "candidate_id": "p_54bb9bd5dd",
    "kind_source": "candidate_doc",
    "term": "grateful",
-   "meaning_ja": "感謝している",
-   "excerpt": "I was grateful that both sets of parents accepted my decision without being upset",
-   "ja_gloss": "感謝している",
+   "meaning_ja": "ありがたく思う",
+   "excerpt": "I was grateful that both sets of parents accepted my decision without taking offense",
+   "ja_gloss": "ありがたく思う",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 9,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "感謝の気持ちを表す、汎用性の高い形容詞です。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_54c1c68edd",
+   "candidate_id": "p_54c1c68edd",
+   "kind_source": "candidate_doc",
+   "term": "Alongside",
+   "meaning_ja": "〜に加えて",
+   "excerpt": "Alongside the couple's decision about their last name, there are feelings that parents want to share with the other parents",
+   "ja_gloss": "〜に加えて",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 10,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "「〜と並んで」を表し、文章で使いやすい語です。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_f932b7703a",
+   "candidate_id": "p_f932b7703a",
+   "kind_source": "candidate_doc",
+   "term": "adopted",
+   "meaning_ja": "養子になった",
+   "excerpt": "Whether a husband chooses his wife's last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings",
+   "ja_gloss": "養子になった",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call2",
@@ -293,13 +318,38 @@
    "ai_rank": 11,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "感謝している状態を表す形容詞で、気持ちを的確に伝えます。",
+   "reason_ja": "養子縁組など、文脈に応じた意味を学べます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
    }
+  },
+  {
+   "id": "p_22a7567030",
+   "candidate_id": "p_22a7567030",
+   "kind_source": "candidate_doc",
+   "term": "adjust",
+   "meaning_ja": "慣れる",
+   "excerpt": "I still find it a little hard that I don't get much time to myself while living at my wife's parents' home, but adjusting to the way each family does things was harder than changing my last name",
+   "ja_gloss": "慣れる",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 12,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "状況や環境に順応することを表す語です。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   },
+   "selection_phrase": "adjusting"
   }
  ],
  "backfill": {
@@ -312,49 +362,49 @@
   "added": [],
   "dropped_by_stage": {}
  },
- "shortfall": true,
+ "shortfall": false,
  "shortfall_detail": {
-  "n_candidates": 11,
+  "n_candidates": 12,
   "cap": 12,
-  "missing": 1,
+  "missing": 0,
   "cap_by_kind": {
    "phrase": 7,
    "word": 5
   },
   "missing_by_kind": {
-   "phrase": 1,
+   "phrase": 0,
    "word": 0
   },
   "E_total": 0,
   "backfilled": 0,
   "unfilled_by_kind": null
  },
- "shortfall_note_ja": "候補11件/上限12件(フレーズ最大7・単語最大5)、Gate除外が無いため補完なし(AIの返答が上限未満。数合わせはしません)",
+ "shortfall_note_ja": "",
  "grammar": [
   {
-   "id": "gfb5fe09043",
-   "candidate_id": "gfb5fe09043",
-   "title": "疑問文のit-cleft",
-   "body": "【日本語訳】\nでも、私が嫌だったのは姓が変わることだけだったのだろうか。\n\n【文法・構文の仕組み】\nこれは、**it + be動詞 + 強調したい部分 + that以下**の形を使った疑問文です。`was it only the change of last name that I didn’t like?`では、`only the change of last name`（姓が変わることだけ）が強調されています。`that I didn’t like`は「私が嫌だったもの」を表し、強調された部分と結びついています。\n\n疑問文なので、`it was`ではなく`was it`の語順になっています。\n\n【通常の表現・語順との比較】\n比較用：`But did I dislike only the change of last name?`\n\nこちらは「姓が変わることだけを嫌ったのだろうか」と、通常の語順で尋ねる表現です。元の文はit-cleftを使うことで、「嫌だったものは姓の変更だけなのか」という点に焦点を当てています。\n\n【意味・ニュアンス・表現効果】\n前の文の`I got really upset.`を受けて、話者は、自分が嫌だったのは姓が変わることだけだったのかと問い直しています。疑問の形にすることで、姓の変更だけでは気持ちを説明しきれない可能性が示されます。続く`I think what I really felt was that I wanted him to stay close.`では、話者が本当に感じていたことについて述べています。\n=====",
-   "example": "But was it only the change of last name that I didn’t like?",
-   "explanation_full": "【日本語訳】\nでも、私が嫌だったのは姓が変わることだけだったのだろうか。\n\n【文法・構文の仕組み】\nこれは、**it + be動詞 + 強調したい部分 + that以下**の形を使った疑問文です。`was it only the change of last name that I didn’t like?`では、`only the change of last name`（姓が変わることだけ）が強調されています。`that I didn’t like`は「私が嫌だったもの」を表し、強調された部分と結びついています。\n\n疑問文なので、`it was`ではなく`was it`の語順になっています。\n\n【通常の表現・語順との比較】\n比較用：`But did I dislike only the change of last name?`\n\nこちらは「姓が変わることだけを嫌ったのだろうか」と、通常の語順で尋ねる表現です。元の文はit-cleftを使うことで、「嫌だったものは姓の変更だけなのか」という点に焦点を当てています。\n\n【意味・ニュアンス・表現効果】\n前の文の`I got really upset.`を受けて、話者は、自分が嫌だったのは姓が変わることだけだったのかと問い直しています。疑問の形にすることで、姓の変更だけでは気持ちを説明しきれない可能性が示されます。続く`I think what I really felt was that I wanted him to stay close.`では、話者が本当に感じていたことについて述べています。\n=====",
+   "id": "g0f6b706ff3",
+   "candidate_id": "g0f6b706ff3",
+   "title": "It-cleft（強調構文）",
+   "body": "【日本語訳】\n私が本当にそれでいいのかと何度も尋ねて心配していたのは、妻の両親だった。\n\n【文法・構文の仕組み】\n“It was my wife’s parents who worried” は、強調したい部分を “It was ... who ...” の形で示す強調構文です。ここでは “my wife’s parents” が強調されています。“who worried” は「心配していた人」を説明する部分で、“worried” の主語は “who” が指す “my wife’s parents” です。\n\n文末の “asking me again and again if I was really sure” は、両親がどのように心配していたかを補足しています。“asking ...” の動作をするのも両親です。“if I was really sure” は「私が本当に確信しているのか」という内容を表します。\n\n【通常の表現・語順との比較】\n比較用：My wife’s parents worried, asking me again and again if I was really sure.\n\nこの語順でも「妻の両親が心配して、私に何度も尋ねた」という意味です。本文の文では “It was my wife’s parents who ...” とすることで、「心配していたのは誰か」に焦点を当てています。\n\n【意味・ニュアンス・表現効果】\n話し手は、自分の決断を心配して何度も確かめたのは妻の両親だった、と相手を特定しています。続く文では両方の親が決断を受け入れたと述べられており、この文は、その中でも妻の両親が心配していたことに焦点を当てています。\n=====",
+   "example": "It was my wife’s parents who worried, asking me again and again if I was really sure.",
+   "explanation_full": "【日本語訳】\n私が本当にそれでいいのかと何度も尋ねて心配していたのは、妻の両親だった。\n\n【文法・構文の仕組み】\n“It was my wife’s parents who worried” は、強調したい部分を “It was ... who ...” の形で示す強調構文です。ここでは “my wife’s parents” が強調されています。“who worried” は「心配していた人」を説明する部分で、“worried” の主語は “who” が指す “my wife’s parents” です。\n\n文末の “asking me again and again if I was really sure” は、両親がどのように心配していたかを補足しています。“asking ...” の動作をするのも両親です。“if I was really sure” は「私が本当に確信しているのか」という内容を表します。\n\n【通常の表現・語順との比較】\n比較用：My wife’s parents worried, asking me again and again if I was really sure.\n\nこの語順でも「妻の両親が心配して、私に何度も尋ねた」という意味です。本文の文では “It was my wife’s parents who ...” とすることで、「心配していたのは誰か」に焦点を当てています。\n\n【意味・ニュアンス・表現効果】\n話し手は、自分の決断を心配して何度も確かめたのは妻の両親だった、と相手を特定しています。続く文では両方の親が決断を受け入れたと述べられており、この文は、その中でも妻の両親が心配していたことに焦点を当てています。\n=====",
    "explanation_status": "provided",
-   "explanation_sha256": "2ac44771150253f83717aabdd413d1146c8acf38a685d7a31c0d8f021f4c5f3a",
+   "explanation_sha256": "4075e5bd8160978d2e7847f0a6673165aa95b29a7ad7f6b8818ae8bfc05db04d",
    "level": "Advanced",
    "rank": 1,
    "ai_recommended": true,
-   "para": "P3",
+   "para": "P2",
    "feature_class": "CLEFT"
   },
   {
-   "id": "gb7c6a9b87f",
-   "candidate_id": "gb7c6a9b87f",
-   "title": "疑似分裂文",
-   "body": "【日本語訳】\n私が本当に感じていたのは、息子にそばにいてほしいということだったのだと思います。\n\n【文法・構文の仕組み】\nこの文は、**what節を主語にし、be動詞の後ろでその内容を説明する「疑似分裂文」**です。\n\n`what I really felt` が `was` の主語です。ここでの `what` は「私が感じていたこと」という意味で、`what I really felt` 全体が名詞のように働いています。`was` の後ろの `that I wanted him to stay close` は、その「感じていたこと」の内容を示します。\n\nまた、`I wanted him to stay close` では、`him` が `to stay close` の動作をする人です。つまり「彼に近くにいてほしい」という意味になります。\n\n【通常の表現・語順との比較】\n**比較用：** `I really felt that I wanted him to stay close.`  \nこちらは「私は、彼に近くにいてほしいと本当に感じていた」という通常の語順です。元の文は「私が本当に感じていたのは何だったのか」を先に示し、`that`節で答える形になっています。\n\n【意味・ニュアンス・表現効果】\n前の文では、話者は嫌だったのが名字の変更だけだったのかと問いかけています。この文では、それだけでなく、本当に感じていたのは息子にそばにいてほしいということだったのだと振り返っています。疑似分裂文によって、「何を感じていたのか」という問いへの答えに焦点が当たっています。=====",
-   "example": "I think what I really felt was that I wanted him to stay close.",
-   "explanation_full": "【日本語訳】\n私が本当に感じていたのは、息子にそばにいてほしいということだったのだと思います。\n\n【文法・構文の仕組み】\nこの文は、**what節を主語にし、be動詞の後ろでその内容を説明する「疑似分裂文」**です。\n\n`what I really felt` が `was` の主語です。ここでの `what` は「私が感じていたこと」という意味で、`what I really felt` 全体が名詞のように働いています。`was` の後ろの `that I wanted him to stay close` は、その「感じていたこと」の内容を示します。\n\nまた、`I wanted him to stay close` では、`him` が `to stay close` の動作をする人です。つまり「彼に近くにいてほしい」という意味になります。\n\n【通常の表現・語順との比較】\n**比較用：** `I really felt that I wanted him to stay close.`  \nこちらは「私は、彼に近くにいてほしいと本当に感じていた」という通常の語順です。元の文は「私が本当に感じていたのは何だったのか」を先に示し、`that`節で答える形になっています。\n\n【意味・ニュアンス・表現効果】\n前の文では、話者は嫌だったのが名字の変更だけだったのかと問いかけています。この文では、それだけでなく、本当に感じていたのは息子にそばにいてほしいということだったのだと振り返っています。疑似分裂文によって、「何を感じていたのか」という問いへの答えに焦点が当たっています。=====",
+   "id": "gfb5fe09043",
+   "candidate_id": "gfb5fe09043",
+   "title": "疑問文のIt-cleft（強調構文）",
+   "body": "【日本語訳】\nでも、私が嫌だったのは姓が変わることだけだったのだろうか。\n\n【文法・構文の仕組み】\nこれは疑問文のIt-cleft（強調構文）です。`it` と `was` の後に置かれた `the change of last name` が、焦点として示されています。続く `that I didn’t like` は、そのことについて説明する節です。この節では `I` が主語で、`didn’t like` の目的語に当たる部分は、焦点の `the change of last name` と結びついています。\n\n疑問文なので、`was` が主語の `it` の前に出て `was it` となっています。\n\n【通常の表現・語順との比較】\n比較用：`But did I dislike only the change of last name?`\n\nこちらは「私は姓の変更だけを嫌ったのか」と直接尋ねる形です。元の文ではIt-cleftを使うことで、「嫌だったのは姓の変更だけなのか」という点に焦点が当たります。\n\n【意味・ニュアンス・表現効果】\n前の文では、息子も姓を変えると言ったとき、話し手は息子が遠ざかっていくように感じ、ひどく動揺したと述べています。この文では、話し手は自分が嫌だったのは姓の変更そのものだけだったのか、と問い直しています。後の文の「本当は息子に近くにいてほしかった」という気持ちへつながる問いです。\n=====",
+   "example": "But was it only the change of last name that I didn’t like?",
+   "explanation_full": "【日本語訳】\nでも、私が嫌だったのは姓が変わることだけだったのだろうか。\n\n【文法・構文の仕組み】\nこれは疑問文のIt-cleft（強調構文）です。`it` と `was` の後に置かれた `the change of last name` が、焦点として示されています。続く `that I didn’t like` は、そのことについて説明する節です。この節では `I` が主語で、`didn’t like` の目的語に当たる部分は、焦点の `the change of last name` と結びついています。\n\n疑問文なので、`was` が主語の `it` の前に出て `was it` となっています。\n\n【通常の表現・語順との比較】\n比較用：`But did I dislike only the change of last name?`\n\nこちらは「私は姓の変更だけを嫌ったのか」と直接尋ねる形です。元の文ではIt-cleftを使うことで、「嫌だったのは姓の変更だけなのか」という点に焦点が当たります。\n\n【意味・ニュアンス・表現効果】\n前の文では、息子も姓を変えると言ったとき、話し手は息子が遠ざかっていくように感じ、ひどく動揺したと述べています。この文では、話し手は自分が嫌だったのは姓の変更そのものだけだったのか、と問い直しています。後の文の「本当は息子に近くにいてほしかった」という気持ちへつながる問いです。\n=====",
    "explanation_status": "provided",
-   "explanation_sha256": "4506b5378e5828658311c6357f43237cd720f4814b5a92ac5a2144cfaf008c59",
+   "explanation_sha256": "ba7c87dd375f881bbcfd2fd3bb364eba448b49ec14e31596c0d001a02e874b95",
    "level": "Advanced",
    "rank": 2,
    "ai_recommended": false,
@@ -365,10 +415,10 @@
  "grammar_max_select": 1,
  "grammar_present_max": 2,
  "grammar_presented_ids": [
-  "gfb5fe09043",
-  "gb7c6a9b87f"
+  "g0f6b706ff3",
+  "gfb5fe09043"
  ],
- "grammar_candidates_sha256": "b1070b97318a163fa9a970c9cd86c36b19c470c099a7769536b509e6444240a2",
- "grammar_text_sha256": "821e940c27380e3423834d707fd1fa1a5c39a773968a802ee5b794cec61193ca",
+ "grammar_candidates_sha256": "6df66842f0a53aac2a486d30e31c31352666e05b7abd9902b906aa4e24a0e6b7",
+ "grammar_text_sha256": "975c98267084cebd0fc701f474213639d75cd409c038c516b70fe4e353e4115b",
  "grammar_status": "candidates_available"
 }

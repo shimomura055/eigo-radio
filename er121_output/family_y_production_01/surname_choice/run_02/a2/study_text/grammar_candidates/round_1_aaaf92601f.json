@@ -1,0 +1,247 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "When a Husband Chooses His Wife’s Last Name: Their Voices",
+  "text_sha256": "4e31c2d632915882647ef57fee20a05d0f2e3c9935e843391f41bc120a54fb00",
+  "n_paragraphs": 5,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "5c3a2e9ee6a849ff0d4c2e82fb9087c31f0a1fc05168d5c7f92df7e037c61aa1",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P1",
+      "cls": "INV",
+      "tier": "T2",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "場所を表す語が文頭に出る倒置では、動詞の後ろに主語が置かれることがある。",
+      "front_kind": "",
+      "sentence": "Here are three people with different lives and situations.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P2",
+      "cls": "SPEC",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "mid_cond"
+      ],
+      "tv": "HIGH",
+      "tv_ja": "find it＋形容詞＋to不定詞では、itが形式目的語で、to不定詞が内容を表すと読む。",
+      "front_kind": "",
+      "sentence": "I still find it a little hard to have little time by myself at my wife’s parents’ home.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P4",
+      "cls": "APPOS",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "主語の後ろに同格表現が挿入されても、挿入部分を除いて主語と動詞のつながりを確認する。",
+      "front_kind": "",
+      "sentence": "I know his mother, my aunt, was so shocked that she became ill.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "関係節を含む長い主語では、主語の中心を確認してから主節の動詞を探す。",
+      "front_kind": "",
+      "sentence": "The man who joined his wife’s family as an adopted son said he was thankful that both families accepted him.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "関係節を含む主語では、主語を修飾する動詞と主節の動詞を区別する。",
+      "front_kind": "",
+      "sentence": "A parent who respects a son’s choice said they wanted the other parents to feel at least a little thankful to their son.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P3"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "25d823ff0f4592c121db3ff064122e93e9830aa90a88c2e3e8cb17f5e2184bae",
+    "response_ids": [
+      "resp_07327628c61fe047006ae2b431b93087d0ae3e43cee29e6593"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3737,
+          "output_tokens": 4034,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2588
+        },
+        "response_id": "resp_07327628c61fe047006ae2b431b93087d0ae3e43cee29e6593",
+        "elapsed_sec": 44.29,
+        "cost_jpy": 0.3825
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.3825,
+    "generated_at": "2026-10-29T11:50:05+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g983a1a42cd",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "The man who joined his wife’s family as an adopted son said he was thankful that both families accepted him.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "as an adopted son said",
+      "misread_ja": "関係節内のjoinedを主節の動詞と捉え、主節の動詞saidを見落とす可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "関係節を含む長い主語では、主語の中心を確認してから主節の動詞を探す。",
+      "construct_ja": "関係節を含む長い主語",
+      "points_ja": [
+        "who joined ... as an adopted sonはmanを修飾する関係節。",
+        "主節の動詞はsaid。"
+      ],
+      "context_ja": "妻の家に養子として入り、両家が自分を受け入れてくれたことに感謝していた男性について述べている。",
+      "prev": "I hope I could have that kind of talk with his partner’s parents as well.",
+      "next": "A parent who respects a son’s choice said they wanted the other parents to feel at least a little thankful to their son.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        0,
+        108
+      ]
+    },
+    {
+      "candidate_id": "g20b0a2fe81",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "A parent who respects a son’s choice said they wanted the other parents to feel at least a little thankful to their son.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "A parent who respects a son’s choice said",
+      "misread_ja": "主語内のrespectsを主節の動詞と捉え、主節の動詞saidを見つけにくくなる可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "関係節を含む主語では、主語を修飾する動詞と主節の動詞を区別する。",
+      "construct_ja": "関係節を含む長い主語",
+      "points_ja": [
+        "who respects a son’s choiceはparentを修飾する関係節。",
+        "主節の動詞はsaid。"
+      ],
+      "context_ja": "息子の選択を尊重する親が、相手の親にも息子への感謝を感じてほしいと述べている。",
+      "prev": "The man who joined his wife’s family as an adopted son said he was thankful that both families accepted him.",
+      "next": "In a talk about last names, perhaps a person’s choice meets a parent’s feeling that they are giving something up.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        109,
+        229
+      ]
+    },
+    {
+      "candidate_id": "g0a0737c66b",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "APPOS",
+      "para": "P4",
+      "sentence": "I know his mother, my aunt, was so shocked that she became ill.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "his mother, my aunt, was",
+      "misread_ja": "コンマで挟まれたmy auntを別の主語と捉え、文の主語とwasのつながりを取り違える可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "主語の後ろに同格表現が挿入されても、挿入部分を除いて主語と動詞のつながりを確認する。",
+      "construct_ja": "同格表現の挿入",
+      "points_ja": [
+        "主語の中心はhis mother。",
+        "my auntはhis motherを言い換える同格表現。"
+      ],
+      "context_ja": "親に相談せず妻の姓を選んだ親戚について、その母親がひどく驚いて病気になったと述べている。",
+      "prev": "He took his wife’s last name without talking to his parents.",
+      "next": "But if it were my son, I would still feel bothered if his partner’s parents thought it was only natural.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        325,
+        388
+      ]
+    },
+    {
+      "candidate_id": "gab6e63660b",
+      "rank": 4,
+      "tier": "T2",
+      "feature_class": "INV",
+      "para": "P1",
+      "sentence": "Here are three people with different lives and situations.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "Here are three people",
+      "misread_ja": "Hereを主語、three peopleを目的語のように取り違える可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "場所を表す語が文頭に出る倒置では、動詞の後ろに主語が置かれることがある。",
+      "construct_ja": "場所を表す語句による倒置",
+      "points_ja": [
+        "Hereは場所を表し、主語ではない。",
+        "areの後ろにあるthree peopleが主語。"
+      ],
+      "context_ja": "異なる暮らしや状況を持つ三人を紹介している。",
+      "prev": "How can they choose something they can all accept?",
+      "next": "The first speaker is a father.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        308,
+        366
+      ]
+    }
+  ],
+  "top_ids": [
+    "g983a1a42cd",
+    "g20b0a2fe81"
+  ],
+  "n_eligible": 4,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "aaaf92601fb36b2bb942c81a5c2d4b7ec2fb771656b95a2984efbdd0c015907b",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

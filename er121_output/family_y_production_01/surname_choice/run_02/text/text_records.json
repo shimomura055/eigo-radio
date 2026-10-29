@@ -1,0 +1,234 @@
+{
+  "closing_record": {
+    "source": "general_prompt_02",
+    "general_method_used": true,
+    "slug": "surname_choice",
+    "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+    "model_id": "gpt-6.1-sol",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "prompt_version": "02",
+    "prompt_sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07",
+    "user_sha256": "e964e941f7115e4238313250b1f6795e30da747ae7b6c59f5410eeff11ecb78e",
+    "selected_id": "B",
+    "gen_calls": 1,
+    "generation_sha256": "7a5aa820c6eda0809cd06190f9e607bec4afc5abfb281febbbf6d002659e5c09",
+    "final_sha256": "7a5aa820c6eda0809cd06190f9e607bec4afc5abfb281febbbf6d002659e5c09",
+    "rewritten": false,
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1
+    },
+    "gate_history_dir": "er121_output/family_y_production_01/surname_choice/run_02/text\\closing\\gate",
+    "theme_package_sha256": "fa2c7a58128a757e761b88e52a92214c83dbbf6f1b9c68c5f80c1324fd6e2db1",
+    "voice_r0_sha256": "ba1e5e38242228cb44be9a4f3ac49e3503f5426b2988f2cefae2436a80faeb10",
+    "entry": {
+      "module": "er121_family_y_text_core_01.py",
+      "status": "FAMILY_Y_PRODUCTION",
+      "module_sha256": "c96557c62c9ec72b38856f0dc4737884a34d3d91979b6f4167d96eb16c2214bc"
+    }
+  },
+  "records": {
+    "management_id": "FAMILY-Y-PRODUCTION-LAUNCH-01",
+    "status": "FAMILY_Y_PRODUCTION",
+    "slug": "surname_choice",
+    "theme_id": "surname_choice",
+    "title": "夫が妻の姓を選ぶとき、それぞれの声",
+    "theme_package_sha256": "fa2c7a58128a757e761b88e52a92214c83dbbf6f1b9c68c5f80c1324fd6e2db1",
+    "theme_package_sha_method": "file_bytes",
+    "theme_package_path": "docs/research/FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01/theme_packages/surname_choice_package_01.json",
+    "mode": "reused_r0",
+    "routes_preflighted": [
+      {
+        "routing_key": "FAMILY_Y_LEAK_JUDGE",
+        "model": "gpt-6-luna",
+        "effort": "high"
+      },
+      {
+        "routing_key": "FAMILY_Y_LEAD_GENERATE",
+        "model": "gpt-6.1-sol",
+        "effort": "high"
+      },
+      {
+        "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+        "model": "gpt-6.1-sol",
+        "effort": "high"
+      },
+      {
+        "routing_key": "FAMILY_Y_CLOSING_REWRITE",
+        "model": "gpt-6.1-sol",
+        "effort": "medium"
+      }
+    ],
+    "stages_done": [
+      "voices",
+      "lead_intro",
+      "closing"
+    ],
+    "voices": {
+      "source": "reused_r0",
+      "voice_generation_used": false,
+      "routing_key": null,
+      "model_id": null,
+      "prompt_sha256": null,
+      "voice_r0_article": "er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/article_r0.md",
+      "voice_r0_sha256": "ba1e5e38242228cb44be9a4f3ac49e3503f5426b2988f2cefae2436a80faeb10",
+      "gate": {
+        "status": "PASS",
+        "n_judgements": 1,
+        "rewritten": false,
+        "source": "reused_prior_pass_record",
+        "reused_from": "er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/gate_voices"
+      },
+      "final_sha256": {
+        "voice_1": "7259c2abca33711a5596aab25d3f0cd5dae27209570b73fb02d0452a12713e40",
+        "voice_2": "c21df1012f322191054a063fb66c270ce6b72cb82ac1aea206a968fbb310137e",
+        "voice_3": "814263bf36670118705cb52ffc8e57be697ba51386e63c7a572b2e99d5d22beb"
+      },
+      "voices_sha256": "0c55b01d01bd3feed91c505a33789e442db058dab1c0dc3e5fe4a5958fa3091c",
+      "note": "既存R0(Trial生成・Gate PASS・byte一致検証済み)を採用。Voice生成のProduction runtime evidenceではない(E-3 voices段で別途取得)"
+    },
+    "lead": {
+      "source": "generated",
+      "routing_key": "FAMILY_Y_LEAD_GENERATE",
+      "expected_model": "gpt-6.1-sol",
+      "effort": "high",
+      "model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "prompt_file": "lead_generate_01.txt",
+      "prompt_sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21",
+      "user_prompt_sha256": "0d0d05c7377e4903e2c09bcb5c8472424e44169a61a3232781e6071aaaf1413f",
+      "inputs_source": "package",
+      "n_calls": 1,
+      "sha256": "ebb8a04c8b62595525c99e6bb5dd1852c1da187b2501ad31d0d0e9448e35c321"
+    },
+    "intros": {
+      "source": "reused",
+      "file": "er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/intros_final.json",
+      "file_sha256": "a91653b8b1c1e6ba99f962e0b384a6119d3f51989cfe59a4212959b17ca26bce",
+      "check_mode": "derived",
+      "sha256": {
+        "voice_1": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+        "voice_2": "8e3ba6194b4ec83be2a55b889fa0265640dcc0dd7679b650ecda17587cd665aa",
+        "voice_3": "d599f1786c15551f7a2a9ee8ad230e6bf5935ba57dd058558d7ed2edf6bace11"
+      }
+    },
+    "leadintro_gate": {
+      "text_sha256": "58a6116d363f69bc52d9ede6188b2984fde2b50d462abfbff4342d96add51fc7",
+      "na_fields": [
+        "leak_tension_reverts_to_research",
+        "leak_binary_camp_split",
+        "leak_evidence_memorable"
+      ],
+      "applicable_flagged": [],
+      "not_applicable_flagged": [],
+      "any_flagged_raw": false,
+      "prompt_sha256": "3a0a9c9163f020985b90c713d4f3c390a7e58a1f442126cb166a11f3c80bdf1e",
+      "model": "gpt-6-luna",
+      "meta": {
+        "response_id": "resp_0f0980ef9e59a49a006ae2b2be8b5887d0b8634fa83574be40",
+        "model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 1110,
+          "output_tokens": 547
+        }
+      },
+      "status": "PASS"
+    },
+    "closing": {
+      "source": "general_prompt_02",
+      "general_method_used": true,
+      "slug": "surname_choice",
+      "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+      "model_id": "gpt-6.1-sol",
+      "expected_model": "gpt-6.1-sol",
+      "effort": "high",
+      "prompt_version": "02",
+      "prompt_sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07",
+      "user_sha256": "e964e941f7115e4238313250b1f6795e30da747ae7b6c59f5410eeff11ecb78e",
+      "selected_id": "B",
+      "gen_calls": 1,
+      "generation_sha256": "7a5aa820c6eda0809cd06190f9e607bec4afc5abfb281febbbf6d002659e5c09",
+      "final_sha256": "7a5aa820c6eda0809cd06190f9e607bec4afc5abfb281febbbf6d002659e5c09",
+      "rewritten": false,
+      "gate": {
+        "status": "PASS",
+        "n_judgements": 1
+      },
+      "gate_history_dir": "er121_output/family_y_production_01/surname_choice/run_02/text\\closing\\gate",
+      "theme_package_sha256": "fa2c7a58128a757e761b88e52a92214c83dbbf6f1b9c68c5f80c1324fd6e2db1",
+      "voice_r0_sha256": "ba1e5e38242228cb44be9a4f3ac49e3503f5426b2988f2cefae2436a80faeb10",
+      "entry": {
+        "module": "er121_family_y_text_core_01.py",
+        "status": "FAMILY_Y_PRODUCTION",
+        "module_sha256": "c96557c62c9ec72b38856f0dc4737884a34d3d91979b6f4167d96eb16c2214bc"
+      }
+    },
+    "verbatim": {
+      "checked": true,
+      "source_dir": "er121_output/family_y_production_01/surname_choice/source_raw",
+      "n_source_files": 3,
+      "n_hits": 0,
+      "hits": {}
+    },
+    "part_sha256": {
+      "lead": "ebb8a04c8b62595525c99e6bb5dd1852c1da187b2501ad31d0d0e9448e35c321",
+      "closing": "7a5aa820c6eda0809cd06190f9e607bec4afc5abfb281febbbf6d002659e5c09",
+      "intro_voice_1": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+      "intro_voice_2": "8e3ba6194b4ec83be2a55b889fa0265640dcc0dd7679b650ecda17587cd665aa",
+      "intro_voice_3": "d599f1786c15551f7a2a9ee8ad230e6bf5935ba57dd058558d7ed2edf6bace11",
+      "voice_voice_1": "7259c2abca33711a5596aab25d3f0cd5dae27209570b73fb02d0452a12713e40",
+      "voice_voice_2": "c21df1012f322191054a063fb66c270ce6b72cb82ac1aea206a968fbb310137e",
+      "voice_voice_3": "814263bf36670118705cb52ffc8e57be697ba51386e63c7a572b2e99d5d22beb"
+    },
+    "article_sha256": "7f5fe4c8dd6b319a9005dbb718a99444f44b923cecf43e6131501292466a4f0e",
+    "prompt_files": {
+      "closing": {
+        "file": "closing_general_02.txt",
+        "sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07"
+      },
+      "voice": {
+        "file": "voice_generate_02.txt",
+        "sha256": "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e"
+      },
+      "lead": {
+        "file": "lead_generate_01.txt",
+        "sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21"
+      },
+      "intro": {
+        "file": "persona_intro_01.txt",
+        "sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4"
+      }
+    },
+    "module": {
+      "file": "er121_family_y_text_core_01.py",
+      "sha256": "c96557c62c9ec72b38856f0dc4737884a34d3d91979b6f4167d96eb16c2214bc"
+    },
+    "voice_generate": {
+      "source": "reused_r0",
+      "voice_generation_used": false,
+      "routing_key": null,
+      "model_id": null,
+      "prompt_sha256": null,
+      "voice_r0_article": "er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/article_r0.md",
+      "voice_r0_sha256": "ba1e5e38242228cb44be9a4f3ac49e3503f5426b2988f2cefae2436a80faeb10",
+      "gate": {
+        "status": "PASS",
+        "n_judgements": 1,
+        "rewritten": false,
+        "source": "reused_prior_pass_record",
+        "reused_from": "er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/gate_voices"
+      },
+      "final_sha256": {
+        "voice_1": "7259c2abca33711a5596aab25d3f0cd5dae27209570b73fb02d0452a12713e40",
+        "voice_2": "c21df1012f322191054a063fb66c270ce6b72cb82ac1aea206a968fbb310137e",
+        "voice_3": "814263bf36670118705cb52ffc8e57be697ba51386e63c7a572b2e99d5d22beb"
+      },
+      "voices_sha256": "0c55b01d01bd3feed91c505a33789e442db058dab1c0dc3e5fe4a5958fa3091c",
+      "note": "既存R0(Trial生成・Gate PASS・byte一致検証済み)を採用。Voice生成のProduction runtime evidenceではない(E-3 voices段で別途取得)"
+    }
+  },
+  "theme_package_sha256": "fa2c7a58128a757e761b88e52a92214c83dbbf6f1b9c68c5f80c1324fd6e2db1",
+  "entry_status": "FAMILY_Y_PRODUCTION"
+}
