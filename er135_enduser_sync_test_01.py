@@ -201,35 +201,36 @@ class TestTwoStage(Base):
 class TestThresholds(Base):
     def test_short_row_tolerates_one_miss_long_row_does_not(self):
         # short: 6 tokens, 1 dropped -> 5/6=0.83 < 0.90 but short rule (<=20 tokens, <=2 misses, ratio>=0.75) passes
-        row, _ = self.mk_row('sh', ['Welcome to English Your Way now.'], drop={(0, 2)})
+        row, _ = self.mk_row('sh', ['Welcome to English.', 'Your Way now.'], drop={(0, 2)})
         out = S.sync_level(self.d, [row], cache_dir=self.cache)
         self.assertTrue(out['gate']['token_match']['rows']['sh']['pass'])
         # short: 2 dropped -> STOP
-        row2, _ = self.mk_row('sh2', ['Welcome to English Your Way now.'], drop={(0, 2), (0, 3)})
+        row2, _ = self.mk_row('sh2', ['Welcome to English.', 'Your Way now.'], drop={(0, 2), (1, 0)})
         with self.assertRaises(S.EnduserSyncError) as cm:
             S.sync_level(self.d, [row2], cache_dir=self.cache)
         self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_TOKEN_MATCH')
         # long: 20 tokens, 3 dropped -> 17/20=0.85 -> STOP (short rule does not apply)
         txt = 'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty'
         long_words = 'alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa quebec romeo sierra tango'
-        row3, _ = self.mk_row('lg', [long_words + '.'], drop={(0, 2), (0, 7), (0, 12)})
+        lw = long_words.split()
+        row3, _ = self.mk_row('lg', [' '.join(lw[:10]) + '.', ' '.join(lw[10:]) + '.'], drop={(0, 2), (0, 7), (1, 2)})
         with self.assertRaises(S.EnduserSyncError) as cm:
             S.sync_level(self.d, [row3], cache_dir=self.cache)
         self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_TOKEN_MATCH')
         # long: 2 dropped -> 18/20 = 0.90 -> PASS
-        row4, _ = self.mk_row('lg2', [long_words + '.'], drop={(0, 2), (0, 7)})
+        row4, _ = self.mk_row('lg2', [' '.join(lw[:10]) + '.', ' '.join(lw[10:]) + '.'], drop={(0, 2), (0, 7)})
         out = S.sync_level(self.d, [row4], cache_dir=self.cache)
         self.assertTrue(out['gate']['token_match']['rows']['lg2']['pass'])
         del txt
 
     def test_real_phase0_case_17_tokens_2_misses_passes_but_3_misses_in_24_fails(self):
         words17 = 'today topic is more than eight thousand nine hundred wrinkles on the moon the secret of its hidden coat'.split()
-        row, _ = self.mk_row('p17', [' '.join(words17) + '.'], drop={(0, 6), (0, 7)})        # 15/17 = 0.882 (Phase-0: moon Std Topic intro)
+        row, _ = self.mk_row('p17', [' '.join(words17[:8]) + '.', ' '.join(words17[8:]) + '.'], drop={(0, 6), (0, 7)})        # 15/17 = 0.882 (Phase-0: moon Std Topic intro)
         out = S.sync_level(self.d, [row], cache_dir=self.cache)
         self.assertTrue(out['gate']['token_match']['rows']['p17']['pass'])
         words24 = ('alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa quebec romeo sierra tango '
                    'uniform victor whiskey xray').split()
-        row2, _ = self.mk_row('p24', [' '.join(words24) + '.'], drop={(0, 1), (0, 9), (0, 15)})   # 21/24 = 0.875 > 2 misses and > 20 tokens
+        row2, _ = self.mk_row('p24', [' '.join(words24[:12]) + '.', ' '.join(words24[12:]) + '.'], drop={(0, 1), (0, 9), (1, 3)})   # 21/24 = 0.875 > 2 misses and > 20 tokens
         with self.assertRaises(S.EnduserSyncError) as cm:
             S.sync_level(self.d, [row2], cache_dir=self.cache)
         self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_TOKEN_MATCH')
@@ -242,7 +243,7 @@ class TestThresholds(Base):
         self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_TOKEN_MATCH')
 
     def test_threshold_override_is_explicit(self):
-        row, _ = self.mk_row('ov', ['alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima.'], drop={(0, 1), (0, 5), (0, 9)})
+        row, _ = self.mk_row('ov', ['alpha bravo charlie delta echo foxtrot.', 'golf hotel india juliet kilo lima.'], drop={(0, 1), (0, 5), (1, 3)})
         with self.assertRaises(S.EnduserSyncError):
             S.sync_level(self.d, [row], cache_dir=self.cache)
         out = S.sync_level(self.d, [row], cache_dir=self.cache, thresholds={'en': {'min_ratio': 0.7}})
@@ -261,6 +262,39 @@ class TestThresholds(Base):
         self.assertEqual(out['gate']['token_match']['rows']['ja']['lang'], 'ja')
         self.assertEqual(len(out['rows'][0]['sentences']), 2)
         del chars
+
+
+class TestSingleSentenceRow(Base):
+    """Fable case B (FZ-DIALOGUE-LR-ADOPTION-01): one-sentence rows are structure-checked only; token ratio is recorded as a warning."""
+
+    def test_single_sentence_row_passes_despite_token_mismatch_and_records_warning(self):
+        row, _ = self.mk_row('one', ['alpha bravo charlie.'], drop={(0, 0), (0, 2)})   # 1/3 matched
+        out = S.sync_level(self.d, [row], cache_dir=self.cache)
+        self.assertTrue(out['gate']['token_match']['rows']['one']['pass'])
+        w = [x for x in out['gate']['warnings'] if x.get('single_sentence_row_structural_only')]
+        self.assertEqual(len(w), 1)
+        self.assertEqual(w[0]['row_id'], 'one')
+        self.assertAlmostEqual(w[0]['token_match_ratio'], 0.3333, places=3)
+        r = out['rows'][0]['sentences'][0]
+        self.assertGreater(r['end'], r['start'])
+
+    def test_two_sentence_row_still_stops(self):
+        row, _ = self.mk_row('two', ['alpha bravo charlie.', 'delta echo foxtrot.'], drop={(0, 0), (0, 2), (1, 1), (1, 2)})
+        with self.assertRaises(S.EnduserSyncError) as cm:
+            S.sync_level(self.d, [row], cache_dir=self.cache)
+        self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_TOKEN_MATCH')
+
+    def test_single_sentence_structure_check_still_applies(self):
+        with self.assertRaises(S.EnduserSyncError) as cm:
+            S.check_structure('x', [{'sid': 'x1', 'start': 0.0, 'end': 9.0}], 2.0, 0.05)
+        self.assertEqual(cm.exception.code, 'ENDUSER_SYNC_STRUCT')
+
+
+class TestKanaFold(unittest.TestCase):
+    def test_katakana_and_hiragana_same_reading_compare_equal(self):
+        self.assertEqual(S.ja_chars('タジョマル'), S.ja_chars('たじょまる'))
+        self.assertEqual(S.ja_chars('ー'), ['ー'])      # long-vowel mark unchanged
+        self.assertNotEqual(S.ja_chars('真砂'), S.ja_chars('まさ'))   # kanji vs kana is NOT folded
 
 
 class TestSnapMonotone(Base):
@@ -350,7 +384,7 @@ class TestFailure(Base):
         self.assertFalse(os.path.exists(os.path.join(self.cache, S.LOCK_NAME)), 'lock released on failure')
 
     def test_cli_failure_writes_no_output(self):
-        row, _ = self.mk_row('f3', ['The cat sat on the mat now.'], drop={(0, 1), (0, 2), (0, 3)})
+        row, _ = self.mk_row('f3', ['The cat sat.', 'on the mat now.'], drop={(0, 1), (0, 2), (1, 0)})
         rows_json = os.path.join(self.d, 'rows.json')
         json.dump([row], open(rows_json, 'w', encoding='utf-8'))
         out = os.path.join(self.d, 'sync.json')

@@ -121,8 +121,14 @@ def tokens(s):
     return out
 
 
+def _kata_to_hira(c):
+    # katakana (U+30A1-30F6) -> hiragana: ASR renders a katakana proper noun (タジョマル) in hiragana (たじょまる); same reading = same char.
+    o = ord(c)
+    return chr(o - 0x60) if 0x30A1 <= o <= 0x30F6 else c
+
+
 def ja_chars(s):
-    return [c for c in unicodedata.normalize('NFKC', s) if re.match(r'[0-9A-Za-z぀-ヿ一-鿿]', c)]
+    return [_kata_to_hira(c) for c in unicodedata.normalize('NFKC', s) if re.match(r'[0-9A-Za-z぀-ヿ一-鿿]', c)]
 
 
 def has_cjk(s):
@@ -771,7 +777,17 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
         else:
             sents, st = sync_row(r, raw, audio, th, align_mode)
             check_structure(r['row_id'], sents, audur, th['audio_len_tol_s'])
-            st['pass'] = token_gate(st, th)
+            st['n_sentences'] = len(sents)
+            if len(sents) == 1:
+                # FZ-DIALOGUE-LR-ADOPTION-01 (Fable case B, Opus M3 row-length rule): a one-sentence row has its sync boundary equal to the
+                # row boundary, so the token ratio cannot affect highlight quality. Structure checks above still apply (not a threshold relaxation).
+                st['pass'] = True
+                st['single_sentence_row'] = True
+                warnings.append({'row_id': r['row_id'], 'single_sentence_row_structural_only': True,
+                                 'token_match_ratio': round(st['n_match'] / st['n_tok'], 4) if st['n_tok'] else None,
+                                 'n_tok': st['n_tok'], 'n_match': st['n_match']})
+            else:
+                st['pass'] = token_gate(st, th)
             stats[r['row_id']] = st
             if not st['pass']:
                 raise EnduserSyncError("ENDUSER_SYNC_TOKEN_MATCH",
