@@ -16,6 +16,7 @@
 (N)FX-PAYCHECK-PERSONALITY-FINAL-PUBLISH-01=ユーザー2026-10-29: Paycheck Personality Std/Adv最終試聴PASS・記事単位公開承認(UDR #144回答)。委任_01=正式公開・検証・SSOT/Git(API 0)。公開・検証完了(e2e_02、live 52/52)、commit待ち/報告=RESULT_PACKET_FXPP1。
 (O)NUANCE-EXPLANATION-PRODUCTION-WIRING-01=ユーザー2026-10-29: ニュアンス解説をX/Y/Z全レベル共通で正式採用(APPROVED_FOR_PRODUCTION、最大1件・KP/Wordとの主題重複NG・HR採否・不採用/0件はコーナー非表示・文法0件も非表示・retry/fallback/resume整合)。到達目標=PRODUCTION_WIRED。委任_01a=調査・設計/01b=Prompt品質Trial(並行)→Opus条件A→委任_02実装。原文=delegation_log/2026-10-29_NUANCE-EXPLANATION-PRODUCTION-WIRING-01_USER.md / 委任_01a=完了(CURRENT_STATE_01/WIRING_DESIGN_01/TEST_PLAN_01=docs/research/NUANCE-EXPLANATION-PRODUCTION-WIRING-01/、RESULT_PACKET_NXW1.md。API 0・Production変更0。ユーザー判断候補なし・Opus条件Aレビュー待ち)
 (P)FAMILY-Y-SOURCE-FINAL-SHORTLIST-01=ユーザー2026-10-29: Family Y情報源探索の再実施(Debate偏重の是正=掲示板型・生活密着型も維持、AI発想の新領域探索、既存候補の同一基準再評価)→国内/海外別・最大20件の比較一覧(商用AI利用◎/○、テーマ選定性、ペルソナ性、概要)。調査のみ・Production採用はユーザー判断。委任_01a(既存統合再評価)/01b(国内+AI発想新領域)/01c(海外+公的意見募集系)並行→委任_02統合。原文=delegation_log/2026-10-29_FAMILY-Y-SOURCE-FINAL-SHORTLIST-01_USER.md
+(Q)END-USER-LISTENING-PAGE-PROTOTYPE-01=ユーザー2026-10-29: End User向け記事視聴ページ Phase1(現状調査・仕様整理)+Phase2(動作する試作、Family X完成記事1件、1文単位の音声連動ハイライト)。旧unified/articles_2026_0918のシンプルさを継承。DEV隔離・最大VALIDATED・Production採用なし。委任_01a(Phase1調査+同期データ方式)/01b(ページ試作)並行→委任_02(ハイライト統合・ブラウザ検証)。原文=delegation_log/2026-10-29_END-USER-LISTENING-PAGE-PROTOTYPE-01_USER.md
 
 **(F)受入条件表(2026-10-28 A1、ユーザー原文`docs/pm/delegation_log/2026-10-28_JA-ASR-FALSE-NG-ROOT-FIX-02_USER.md` §3・§6から逐語抜粋。各受入で更新。未達行が残る間は『完了』『一区切り』『進行中なし』を使わない)**
 | 条件 | 達成/部分/未達 | 担当手段 |
