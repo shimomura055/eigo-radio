@@ -95,3 +95,29 @@ set PYTHONUTF8=1
 (Z完成段の`provision_shell`指定(OPEN-480)はY runnerのSTAGESに存在しない: Yのstageは`seed_check,text,translate,support,kp,tts_b1b,tts_a2,gate,assemble,pages,page_verify`。上記が1起動で完結する。)
 04C検査項目: (1) tool report: `result=APPLIED`、`tts_regeneration_plan`=A後{b1b:[y_intro_1],a2:[y_intro_1]}・B後はb1bに`kp1_english`が加わる (2) 全segmentの`canonical_text`==現本文/KP確定、差替えsegment(b1b: y_intro_1, kp1_english / a2: y_intro_1)以外の**wav sha一致**(退避前後比較) (3) `gate`(Y style gate+Std減速確認+G2: TTS英語・phrase_repeat==used_form)・`assemble`(Audio Validation)通過 (4) `page_verify`: G3ハイライト(HL_SENTENCE_MISMATCHなし)、Part 1 rowの`take offense`、ページのV1紹介行(新)、`father/父親`/`taking offense`(KP見出し・解説・Part 1行)のGrep0(本文`without taking offense`は残る) (5) 本文(Voice発言・Lead・Closing・V2/V3紹介)のsha不変、KP2・3/Part 1他行/文法の不変(tool report `retained_items_check`・`finals_equal_ignoring_sha`) (6) `final_manifest.json`のstage_entries、cost_log加算(≈¥5〜7)。
 撤回: 各toolは失敗時に退避から全復元。成功後に戻す場合は`_backup_<tool>_<日時>`(run_02の親dir)から領域ごと復元(cost_logは追記のみ=戻さない)。
+
+---
+# 委任_05(2026-10-29。ユーザー原文=`docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md`): `hold one's son back`→`hold someone back`+ニュアンス解説の適用 実施記録
+
+## 事実関係の訂正(委任文の前提との差)
+- `hold one's son back`は**Key Phrase①(音声あり・3件=take offense/let go of/adopted)ではなく、確定区分②追加解説(slot=vocab, category=2, candidate p_bb5820f386, ai_rank=3)**。Part 1第3項目(Advページ「Vocabulary & Expressions」5件=take offense/let go of/hold one's son back/way out in the country/adopted)として表示され、本文ではハイライト+glossary。**音声segmentを持たない**ため、KP音声(kp2_english等)・KP英語解説の再生成は不要(tts_regeneration_plan b1b/a2とも空、公開版との音声52ファイルsha一致)。
+- 『最終Adv KP一覧=take offense / hold someone back / give something up』は実体と異なる。実際=①take offense/let go of/adopted、②hold someone back/way out in the country、③at ease/give something up/overlap with/registration/grateful/Alongside/adjust(`give something up`は③本文意味表示)。
+
+## 1. 変更(tool=`tools/apply_user_decision_surname_choice_03.py`、閉じた定数ペア、証跡=`apply_03_report_01.json`)
+- 順序: dry-run(LLM0)→run_02の複製(scratch/rr1、RUN_LOCK除去)でリハーサル(APPLIED、費用¥1.43)→本番apply(費用¥1.358)。
+- revoke→requalify[Rule7免除は`my son→someone`の1句限定で記録・gloss再整合ALIGN_PASS→`人の足を引っ張る`・QA 12項目全PASS・候補全体Redundancy QA(再判定の結果、hold someone backはlet go ofとの重複が解消し重複なし)・presentation_blockers再適用]→confirm[rev4原本payloadの当該termとja_glossのみ差替え、他の差分0、attestation=user_instruction_transcription]→kp_b1b来歴付替え(署名のみ)→**Part 1第3行のみ部分再生成**(kp_part1_b1b、他4行保持)→part2_b1b再finalize(LLM0)。
+- 検査: keywords_canonicalized(items)・kp_explanations・kp_part1_ja不変/Part 1他4行同一/文法確定内容同一(confirmation_idとfrozen_atのみ変更)/downstream_stale空/本文(translate)不変/TTS再生成0。
+- 成果: ページ見出し`hold someone back`・本文の意味`人の足を引っ張る`・解説(hold someone back from doing something、prevent someone from doing somethingとの違い、hold a student back)・本文`hold my son back`は原表現のままハイライト。Adv重複アラームは2→3件(確定集合のRedundancy QAを再判定した結果、③ overlap with×Alongsideが新規に検出。LLM判定の揺れ。非ブロッキング・記録/表示のみ)。
+- 実行: gate b1b 15/15・a2 18/18 PASS、assemble、pages、page_verify(ok、violations空、Playwright TOTAL 170 NG 0)。公開: devのindex.htmlを公開dirへcopy→`er135 publish-copy`(OPEN-606是正版)でok(consistency ok、browser_rc 0)。
+
+## 2. ニュアンス未表示の原因(結論=承認済み仕様どおりの未適用[制作時期]、不具合ではない)
+- 本run_02のKP review作成=2026-10-29 11:54(kp_human_review.jsonの最初のat)、run_launch_log初回=11:42。ニュアンスrunner配線commit 1f7bf405a=13:18。
+- `er121_family_y_runner_01.py` `stage_kp`が`_review_existed`(その呼出でKP reviewが既存か)を`_nuance_cand_step`→`er134.n1_stage(review_existed=…)`→`ensure_spec(new_review=not review_existed)`へ渡す。既存review=LEGACY=spec発行0・生成0・待機0・表示0(CURRENT_SPECニュアンス節・TRACK_AC_EVIDENCE_01 §5「全runがLEGACY扱い」・FABLE_ACCEPTANCE_01「既存run=LEGACY」)。runner/対象判定/組立の配線不具合ではない。
+- 既存runへ後から適用する承認済み経路: `er119_kp_human_review_cli_01.py nuance-issue-spec`は**copy-run限定**(`er128 cmd_nuance_issue_spec`、EVIDENCE_COPY_RUN.json必須、「公開済み・進行中の本番runには遡及しない」)。よってUSER_03 §3の明示指示に基づく単発tool`tools/issue_nuance_spec_surname_01.py`を新設(`ensure_spec(new_review=True)`→runner `_nuance_cand_step`の既存関数呼出順のみ。Prompt・閾値・Gate・対象条件は不変。KP確定(live)必須・採否確定済みは拒否・失敗時は新規作成したnuance_*のみ削除)。
+
+## 3. ニュアンス候補(確定せず。証跡=`issue_nuance_spec_report_01.json`)
+- リハーサル(複製)で両level候補生成を確認(¥0.48)→本番(¥0.429、LLM各level2 call: 生成+重複judge)。KP/Word重複判定は提示前除外の経路(両level pass、pool_conflicts/grammar_conflicts 0)。
+- Adv=`at least`(sha 556c7939fe499c8c7bfd009a9c82d77773d72be9d19d53e397f89635cebbae02)、Std=`at least a little`(sha d5f1052cb688c57aeeccb7601af934711714ff7e79169b980ea24fb07c2b6887)。HR依頼書=`run_02/study_text/nuance_human_review_request.md`(Adv)・`run_02/a2/study_text/nuance_human_review_request.md`(Std)、状態=`run_02/hr/nuance_show_{b1b,a2}.json`、V3形式データ=`run_02/hr/nuance_formdata_{b1b,a2}.json`(exporter `--nuance-study-dir`、nuance_spec/nuance付き)。
+- 確定経路: KPは確定済み(live)のため、仕様上の経路は`nuance-select`(CLI。V3フォームと同じ検証・保存)。V3フォーム(ブラウザ)は『KP未確定の記事にKP・文法と一緒に送信』用で、確定済みKPを含む本runでは`kp_confirmed`付きデータ(AI島先例の個別tool)が別途必要になるためフォームは公開していない(公開フォームの既存surname_choiceデータは旧KP選定時のもので現在のcandidates_sha256と不一致)。
+- 検証(実測): `--stages pages`は候補ありで未確定→**rc=4**(`NuanceNotConfirmed`、設計どおり)、pages/index.htmlとenduser/data/article.jsonのshaは実行前後で不変。
+- 順序の判断: 候補ページの再提出(hold someone back反映)はニュアンスspec発行**より前**に完了させた(spec発行後はpagesがrc=4で止まるため)。ニュアンス解説は未表示の状態で提出し、採否確定後にpages+publish-copy(API 0)で反映する。

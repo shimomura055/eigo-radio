@@ -1,0 +1,578 @@
+{
+ "tool": "apply_user_decision_surname_choice_03",
+ "cmd": "apply",
+ "run_dir": "er121_output/family_y_production_01\\surname_choice\\run_02",
+ "rehearsal": false,
+ "at": "2026-10-29T10:56:57+00:00",
+ "deterministic_gates": {
+  "exemption": {
+   "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+   "reasons": [
+    "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+   ],
+   "pair": [
+    "hold one's son back",
+    "hold someone back"
+   ],
+   "candidate_id": "p_bb5820f386",
+   "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+   "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+   "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)"
+  },
+  "normalization_reason": "generalize_person_dependent_reference",
+  "changed_from_display_phrase": true,
+  "validate": {
+   "ok": false,
+   "reasons": [
+    "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+   ]
+  }
+ },
+ "payload_diff": [
+  "/selection/extra_explanation[0]/ja_gloss",
+  "/selection/extra_explanation[0]/term"
+ ],
+ "part1_rank": 3,
+ "is_audio_kp": false,
+ "backup": {
+  "dir": "er121_output/family_y_production_01/surname_choice/_backup_apply_user_decision_surname_choice_03_20261029_195702",
+  "n_files": 132
+ },
+ "budget_cap_jpy": 9.0,
+ "revoke": {
+  "revoked": true,
+  "revision": 5,
+  "next": "選び直しは `py er119_kp_human_review_cli_01.py select|reselect ...`(レコードは履歴として残ります)"
+ },
+ "model_used": {
+  "process": "B1_SUPPORT",
+  "model": "gpt-6-luna",
+  "note": "Production同一route(B1_SUPPORT)。評価用途ではない"
+ },
+ "requalify": {
+  "candidate_id": "p_bb5820f386",
+  "from": "hold one's son back",
+  "to": "hold someone back",
+  "gates": {
+   "preconditions": "PASS",
+   "surface_in_text": "PASS",
+   "cmu": "PASS",
+   "symbol": "PASS",
+   "human_ng": "PASS",
+   "validate_canonicalization_item": "EXEMPT(Rule7のみ・閉じた定数ペア)",
+   "gloss_realign": "ALIGN_PASS",
+   "qa_rejudge": "PASS"
+  },
+  "exemption": {
+   "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+   "reasons": [
+    "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+   ],
+   "pair": [
+    "hold one's son back",
+    "hold someone back"
+   ],
+   "candidate_id": "p_bb5820f386",
+   "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+   "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+   "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)"
+  },
+  "gloss_after": "人の足を引っ張る",
+  "qa_model_id": "gpt-6-luna",
+  "qa_response_id": "resp_035c5cf92d45f3fd006ae32686bb3887d08d25e12674516005",
+  "qa_fields": {
+   "qa_standalone_natural_unit": "PASS",
+   "qa_no_residual_context_word": "PASS",
+   "qa_meaning_or_usage_unchanged": "PASS",
+   "qa_reusable_other_context": "PASS",
+   "qa_traceable_contiguous_span": "PASS",
+   "qa_listening_blocker_value_preserved": "PASS",
+   "qa_standalone_comprehensibility": "PASS",
+   "qa_not_over_minimized": "PASS",
+   "qa_context_sufficiency": "PASS",
+   "qa_core_meaning_preserved": "PASS",
+   "qa_no_semantic_role_loss": "PASS",
+   "qa_person_reference_generalized": "PASS"
+  },
+  "redundant_with_changed": {
+   "p_edb2175ddf": {
+    "old": [],
+    "new": [
+     "p_54c1c68edd"
+    ]
+   },
+   "p_54c1c68edd": {
+    "old": [],
+    "new": [
+     "p_edb2175ddf"
+    ]
+   }
+  },
+  "candidates_sha256": "475560d874ae6ee5c06671ba201b99c66aee0c56712623d641c30015bb3388b7",
+  "new_kind": "phrase",
+  "new_gloss": "人の足を引っ張る",
+  "applied": true
+ },
+ "spent_after_requalify_jpy": 1.0248,
+ "confirm": {
+  "confirmed": {
+   "record": "er121_output/family_y_production_01\\surname_choice\\run_02/key_phrases/b1b\\confirmed_selection.json",
+   "revision": 6,
+   "items": [
+    [
+     "p_85cbe0223d",
+     1,
+     "take offense"
+    ],
+    [
+     "p_6714fc2917",
+     1,
+     "let go of"
+    ],
+    [
+     "p_f932b7703a",
+     1,
+     "adopted"
+    ],
+    [
+     "p_bb5820f386",
+     2,
+     "hold someone back"
+    ],
+    [
+     "p_74789f7c2d",
+     2,
+     "way out in the country"
+    ]
+   ],
+   "redundancy_alarms": [
+    {
+     "candidate_id_a": "p_6714fc2917",
+     "candidate_id_b": "p_bb5820f386",
+     "used_form_a": "let go of",
+     "used_form_b": "hold someone back",
+     "ai_rank_a": 2,
+     "ai_rank_b": 3,
+     "slot_a": "key_phrase",
+     "slot_b": "extra_explanation",
+     "slot_label_a": "Key Phrase(①)",
+     "slot_label_b": "追加解説(②)",
+     "aspects": {
+      "meaning_overlap": "FAIL",
+      "usage_context_overlap": "FAIL",
+      "grammatical_teaching_value_overlap": "PASS",
+      "conceptual_role_overlap": "FAIL"
+     },
+     "reasoning": "「息子を手放す」は親が執着をやめること、「息子の足を引っ張らない」は行動を妨げないことですが、この記事ではどちらも息子の選択を受け入れる方向を表しています。句動詞の型は異なります。",
+     "source": "candidate_qa"
+    },
+    {
+     "candidate_id_a": "p_6714fc2917",
+     "candidate_id_b": "p_224027b3ab",
+     "used_form_a": "let go of",
+     "used_form_b": "give something up",
+     "ai_rank_a": 2,
+     "ai_rank_b": 6,
+     "slot_a": "key_phrase",
+     "slot_b": "meaning_display",
+     "slot_label_a": "Key Phrase(①)",
+     "slot_label_b": "本文意味(③)",
+     "aspects": {
+      "meaning_overlap": "FAIL",
+      "usage_context_overlap": "FAIL",
+      "grammatical_teaching_value_overlap": "PASS",
+      "conceptual_role_overlap": "FAIL"
+     },
+     "reasoning": "どちらもこの記事では親が息子との距離や関係を受け入れ、何かを手放す感覚に関わります。ただし前者は人への執着を手放すこと、後者は何かをあきらめることを表し、構文上の学習価値は異なります。",
+     "source": "candidate_qa"
+    },
+    {
+     "candidate_id_a": "p_edb2175ddf",
+     "candidate_id_b": "p_54c1c68edd",
+     "used_form_a": "overlap with",
+     "used_form_b": "Alongside",
+     "ai_rank_a": 7,
+     "ai_rank_b": 10,
+     "slot_a": "meaning_display",
+     "slot_b": "meaning_display",
+     "slot_label_a": "本文意味(③)",
+     "slot_label_b": "本文意味(③)",
+     "aspects": {
+      "meaning_overlap": "PASS",
+      "usage_context_overlap": "FAIL",
+      "grammatical_teaching_value_overlap": "PASS",
+      "conceptual_role_overlap": "FAIL"
+     },
+     "reasoning": "「overlap with」は部分的に重なること、「alongside」は〜に加えて・並行して存在することを表し、意味そのものは同じではありません。ただし本文ではどちらも、夫婦の選択と親の気持ちが併存する関係を説明する役割を担っています。",
+     "source": "candidate_qa"
+    }
+   ],
+   "redundancy_alarm_nonblocking": true,
+   "unconsumed": [
+    [
+     "p_07ed712929",
+     "CATEGORY3_HIGHLIGHT"
+    ],
+    [
+     "p_224027b3ab",
+     "CATEGORY3_HIGHLIGHT"
+    ],
+    [
+     "p_edb2175ddf",
+     "CATEGORY3_HIGHLIGHT"
+    ],
+    [
+     "p_5b0df6a8b9",
+     "CATEGORY3_HIGHLIGHT"
+    ],
+    [
+     "p_54bb9bd5dd",
+     "CATEGORY3_HIGHLIGHT"
+    ],
+    [
+     "p_54c1c68edd",
+     "CATEGORY3_HIGHLIGHT"
+    ],
+    [
+     "p_22a7567030",
+     "CATEGORY3_HIGHLIGHT"
+    ]
+   ],
+   "grammar": 1,
+   "grammar_review": "REVIEWED",
+   "grammar_status": "confirmed",
+   "grammar_payload_ignored": 0,
+   "nuance": null,
+   "nuance_redundancy_alarms": [],
+   "next": "制作コマンドを同じまま再実行してください(finalize→後続が進みます)"
+  },
+  "provenance": {
+   "tool": "apply_user_decision_surname_choice_03",
+   "source_payload": {
+    "path": "key_phrases/b1b/confirmed_selection_source/rev4_payload.json",
+    "sha256": "bb809e8b4dfc9ce907c04ec39134ded358fd7e368e95261577fe0c77f4e5615e"
+   },
+   "differences": [
+    "/article/candidates_sha256",
+    "/selection/extra_explanation[0]/ja_gloss",
+    "/selection/extra_explanation[0]/term"
+   ],
+   "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+   "user_ref_sha256": "30fd4011ca6d6f7a131025e5497f03c7f2193ea132c8c59982ac2da3cbffd5ab",
+   "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)",
+   "form_data_regenerated": false,
+   "cap_recomputed": false,
+   "new_candidates_sha256": "475560d874ae6ee5c06671ba201b99c66aee0c56712623d641c30015bb3388b7",
+   "exemption": {
+    "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+    "reasons": [
+     "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+    ],
+    "pair": [
+     "hold one's son back",
+     "hold someone back"
+    ],
+    "candidate_id": "p_bb5820f386",
+    "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+    "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+    "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)"
+   }
+  }
+ },
+ "kp_prepare": {
+  "signature": "2f2fec76dc11fbdbeafa65825abb989a11241ea1b45a7eac785777e0f2757ff1",
+  "input_sha_from": "5747aec7ae5d63ee9531a4d0d45890b0bc42652acaefdfb1de12a83906de2024",
+  "input_sha_to": "cea087ffc9c80335388b4ab8e9a212a2bf67805eed37b9a3f94613fc889056d5",
+  "rebind_event": {
+   "at": "2026-10-29T10:59:13+00:00",
+   "reason": "confirmation_signature_changed",
+   "from_input_sha256": "5747aec7ae5d63ee9531a4d0d45890b0bc42652acaefdfb1de12a83906de2024",
+   "from_signature": "e5879eb7d73f40a478614d677b479b9ed8a367319a0be05c9ca0306da7d40ba8",
+   "to_signature": "2f2fec76dc11fbdbeafa65825abb989a11241ea1b45a7eac785777e0f2757ff1",
+   "api_calls": 0
+  }
+ },
+ "partial_regen": {
+  "tool": "apply_user_decision_surname_choice_03",
+  "regenerated_ranks": [
+   3
+  ],
+  "retained_ranks": [
+   1,
+   2,
+   4,
+   5
+  ],
+  "reason": "ユーザー原文USER_03 §2: 変更と無関係な学習項目は再生成しない",
+  "retained_audit": {
+   "management_id": "FAMILY-Z-STUDY-TEXT-TRIAL-01",
+   "process": "KEY_PHRASE_GENERAL_EXPLANATION",
+   "model": "gpt-6-luna",
+   "requested_model": "gpt-6-luna",
+   "prompt_sha256": "af3adf9bafb4d776bc7f8da48d9bc9c6a62f216e9f8e1d8bacdba095d6820008",
+   "prompt_template_sha256": "4d7ae557190650650592ae5e6df09e1946d87c582e32187bb8dfd6d32cfaf694",
+   "input_sha256": "88861ca27e6a580f56637b6a0f0498384281aafffcd3630b89e9b4469e01e3fb",
+   "phrases": [
+    "take offense"
+   ],
+   "response_ids": [
+    "resp_00c0a8a69e2315c2006ae30fafefa887d0a8d32fc255fba685"
+   ],
+   "calls": [
+    {
+     "attempt": 1,
+     "response_model": "gpt-6-luna",
+     "usage": {
+      "input_tokens": 664,
+      "output_tokens": 564,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 263
+     },
+     "response_id": "resp_00c0a8a69e2315c2006ae30fafefa887d0a8d32fc255fba685",
+     "elapsed_sec": 7.24,
+     "cost_jpy": 0.0557
+    }
+   ],
+   "retried_for_parse": false,
+   "reused_from_previous_run": false,
+   "total_cost_jpy": 0.0557,
+   "generated_at": "2026-10-29T18:19:50+0900",
+   "partial_regeneration": {
+    "tool": "apply_user_decision_surname_choice_02",
+    "regenerated_ranks": [
+     1
+    ],
+    "retained_ranks": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "reason": "ユーザー原文§5: 他のKey Phrase・学習項目は変更しない",
+    "retained_audit": {
+     "management_id": "FAMILY-Z-STUDY-TEXT-TRIAL-01",
+     "process": "KEY_PHRASE_GENERAL_EXPLANATION",
+     "model": "gpt-6-luna",
+     "requested_model": "gpt-6-luna",
+     "prompt_sha256": "45056a426337d1c7643fdf183faa6a828651c969ffe4c309ff64cff4202a8487",
+     "prompt_template_sha256": "4d7ae557190650650592ae5e6df09e1946d87c582e32187bb8dfd6d32cfaf694",
+     "input_sha256": "e2d7bd4fcc7cba2feac12cce3c55259678a0e5fb388b948133284801875c59d4",
+     "phrases": [
+      "taking offense",
+      "let go of",
+      "hold one's son back",
+      "way out in the country",
+      "adopted"
+     ],
+     "response_ids": [
+      "resp_0567e5775b1542e0006ae2e4e05b3c87d0ab466ed5577b1334"
+     ],
+     "calls": [
+      {
+       "attempt": 1,
+       "response_model": "gpt-6-luna",
+       "usage": {
+        "input_tokens": 709,
+        "output_tokens": 1134,
+        "cached_input_tokens": 0,
+        "reasoning_tokens": 399
+       },
+       "response_id": "resp_0567e5775b1542e0006ae2e4e05b3c87d0ab466ed5577b1334",
+       "elapsed_sec": 9.47,
+       "cost_jpy": 0.1021
+      }
+     ],
+     "retried_for_parse": false,
+     "reused_from_previous_run": false,
+     "total_cost_jpy": 0.1021,
+     "generated_at": "2026-10-29T15:17:13+0900"
+    }
+   }
+  }
+ },
+ "regen": [
+  {
+   "regenerate": "kp_part1_b1b",
+   "result": "completed",
+   "summary": {
+    "part2_cand_b1b": {
+     "state": "READY",
+     "status": "REVIEWED",
+     "generated": false,
+     "pregen_generated": [],
+     "pregen_reused": [
+      "g0f6b706ff3"
+     ]
+    },
+    "part2_cand_a2": {
+     "state": "READY",
+     "status": "REVIEWED",
+     "generated": false,
+     "pregen_generated": [],
+     "pregen_reused": []
+    },
+    "nuance_cand_b1b": {
+     "state": "LEGACY",
+     "status": null,
+     "api_calls": 0,
+     "cost_jpy": 0.0
+    },
+    "b1b": {
+     "status": "reused"
+    },
+    "nuance_cand_a2": {
+     "state": "LEGACY",
+     "status": null,
+     "api_calls": 0,
+     "cost_jpy": 0.0
+    },
+    "a2": {
+     "status": "reused"
+    },
+    "kp_explanations_b1b": "reused",
+    "kp_part1_b1b": "generated",
+    "kp_part1_ja_b1b": "reused",
+    "kp_part1_a2": "reused",
+    "kp_part1_ja_a2": "reused",
+    "part2_b1b": "reused",
+    "part2_a2": "reused"
+   }
+  },
+  {
+   "regenerate": "part2_b1b",
+   "result": "completed",
+   "summary": {
+    "part2_cand_b1b": {
+     "state": "READY",
+     "status": "REVIEWED",
+     "generated": false,
+     "pregen_generated": [],
+     "pregen_reused": [
+      "g0f6b706ff3"
+     ]
+    },
+    "part2_cand_a2": {
+     "state": "READY",
+     "status": "REVIEWED",
+     "generated": false,
+     "pregen_generated": [],
+     "pregen_reused": []
+    },
+    "nuance_cand_b1b": {
+     "state": "LEGACY",
+     "status": null,
+     "api_calls": 0,
+     "cost_jpy": 0.0
+    },
+    "b1b": {
+     "status": "reused"
+    },
+    "nuance_cand_a2": {
+     "state": "LEGACY",
+     "status": null,
+     "api_calls": 0,
+     "cost_jpy": 0.0
+    },
+    "a2": {
+     "status": "reused"
+    },
+    "kp_explanations_b1b": "reused",
+    "kp_part1_b1b": "reused",
+    "kp_part1_ja_b1b": "reused",
+    "kp_part1_a2": "reused",
+    "kp_part1_ja_a2": "reused",
+    "part2_b1b": "generated",
+    "part2_a2": "reused"
+   }
+  },
+  {
+   "regenerate": null,
+   "result": "completed(all reused expected)",
+   "summary": {
+    "part2_cand_b1b": {
+     "state": "READY",
+     "status": "REVIEWED",
+     "generated": false,
+     "pregen_generated": [],
+     "pregen_reused": []
+    },
+    "part2_cand_a2": {
+     "state": "READY",
+     "status": "REVIEWED",
+     "generated": false,
+     "pregen_generated": [],
+     "pregen_reused": []
+    },
+    "nuance_cand_b1b": {
+     "state": "LEGACY",
+     "status": null,
+     "api_calls": 0,
+     "cost_jpy": 0.0
+    },
+    "b1b": {
+     "status": "reused"
+    },
+    "nuance_cand_a2": {
+     "state": "LEGACY",
+     "status": null,
+     "api_calls": 0,
+     "cost_jpy": 0.0
+    },
+    "a2": {
+     "status": "reused"
+    },
+    "kp_explanations_b1b": "reused",
+    "kp_part1_b1b": "reused",
+    "kp_part1_ja_b1b": "reused",
+    "kp_part1_a2": "reused",
+    "kp_part1_ja_a2": "reused",
+    "part2_b1b": "reused",
+    "part2_a2": "reused"
+   }
+  }
+ ],
+ "part2_ready": {
+  "b1b": true,
+  "a2": true,
+  "frozen_grammar_present": true
+ },
+ "spent_total_jpy": 1.3583,
+ "retained_items_check": {
+  "part1_other_rows_identical": true,
+  "part1_changed_row_phrase": "hold someone back",
+  "part1_changed_row_changed": true,
+  "keywords_canonicalized_unchanged": true,
+  "kp_explanations_unchanged": true,
+  "part1_ja_unchanged": true
+ },
+ "grammar_frozen_unchanged": false,
+ "grammar_frozen_sha": {
+  "before": {
+   "study_text/confirmed_grammar.json": "b40e6d76a42be636b15d25b2cdea0bf731ac2440957351a19563b38ce390b099",
+   "study_text/confirmed_grammar_frozen.json": "d7bc649dbd99baca9bdec50fb0d7a54bb25bb5a695512de4a93b623766142100"
+  },
+  "after": {
+   "study_text/confirmed_grammar.json": "569e5fde308df698e62d0df1b14b67108f4e232ac7cfe07e03c64c1646487566",
+   "study_text/confirmed_grammar_frozen.json": "56f7501c628e668530137e70e415cf045c801aed05195014157083df67e29b48"
+  }
+ },
+ "provenance_changes": [
+  "kp_b1b",
+  "kp_part1_b1b",
+  "part2_b1b"
+ ],
+ "downstream_stale": [],
+ "highlight_resolution_b1b": {
+  "returned": "dict"
+ },
+ "tts_regeneration_plan": {
+  "b1b": [],
+  "a2": []
+ },
+ "cost_log_append_only": true,
+ "changed_files": {
+  "n": 27,
+  "outside_mutable_area": []
+ },
+ "result": "APPLIED"
+}

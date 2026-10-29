@@ -377,11 +377,11 @@
     {
       "candidate_id": "p_bb5820f386",
       "selection_phrase": "hold my son back",
-      "used_form": "hold one's son back",
-      "japanese_gloss": "人の息子の足を引っ張る",
+      "used_form": "hold someone back",
+      "japanese_gloss": "人の足を引っ張る",
       "source_sentence": "Even so, I don't want to hold my son back because of my feelings as a parent",
       "source_sentence_id": "S35",
-      "word_count": 4,
+      "word_count": 3,
       "reason_ja": "人の行動を妨げる句動詞の用例。",
       "origin": "call1",
       "raw_rank": 3,
@@ -390,10 +390,10 @@
         "source_span": "hold my son back",
         "source_sentence": "Even so, I don't want to hold my son back because of my feelings as a parent",
         "display_phrase": "hold my son back",
-        "key_phrase": "hold one's son back",
-        "used_form": "hold one's son back",
-        "japanese_gloss": "人の息子の足を引っ張る",
-        "japanese_gloss_tts": "人の息子の足を引っ張る",
+        "key_phrase": "hold someone back",
+        "used_form": "hold someone back",
+        "japanese_gloss": "人の足を引っ張る",
+        "japanese_gloss_tts": "人の足を引っ張る",
         "changed_from_display_phrase": true,
         "normalization_reason": "generalize_person_dependent_reference",
         "qa": {
@@ -439,9 +439,9 @@
         "gloss_alignment": {
           "version": "ER-003-KP-GLOSS-ALIGN-02",
           "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
+          "original_japanese_gloss": "人の息子の足を引っ張る",
           "current_gloss_consistent_verdict": false,
-          "reasoning": "親の気持ちを理由に息子の選択や進みを妨げる意味です。不定の人称は「人の」としています。",
+          "reasoning": "「人の息子」ではkey phraseにない「息子」を加えており、不定の someone を具体的な人の関係に置き換えています。「人の足を引っ張る」なら、不定の人を妨げる意味が表れています。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -454,16 +454,41 @@
             "pass": true,
             "note": "必須内容語なし(機械検査対象外)"
           },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "To hinder a person's son or prevent him from moving forward.",
-          "naive_ja": "人の息子を後ろに持つ",
-          "naive_ja_conveys": "no",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
+          "attempts_count": 1
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "schema": "kp_rescue_v1",
+          "gloss": {
+            "status": "REALIGNED",
+            "by": "apply_user_decision_surname_choice_03"
+          },
+          "qa": {
+            "status": "PASS",
+            "by": "apply_user_decision_surname_choice_03",
+            "model_id": "gpt-6-luna"
+          },
+          "user_instruction": {
+            "tool": "apply_user_decision_surname_choice_03",
+            "from": "hold one's son back",
+            "to": "hold someone back",
+            "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+            "exemption": {
+              "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+              "reasons": [
+                "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ],
+              "pair": [
+                "hold one's son back",
+                "hold someone back"
+              ],
+              "candidate_id": "p_bb5820f386",
+              "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+              "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+              "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)"
+            }
+          }
+        }
       },
       "kind": "phrase",
       "flags": {
@@ -477,14 +502,76 @@
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "PASS",
+        "canonicalization": "USER_INSTRUCTED_QA_REJUDGED_PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
       "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 3
+      "ai_rank": 3,
+      "rescue": {
+        "schema": "kp_rescue_v1",
+        "gloss": {
+          "status": "REALIGNED",
+          "by": "apply_user_decision_surname_choice_03"
+        },
+        "qa": {
+          "status": "PASS",
+          "by": "apply_user_decision_surname_choice_03",
+          "model_id": "gpt-6-luna"
+        },
+        "user_instruction": {
+          "tool": "apply_user_decision_surname_choice_03",
+          "from": "hold one's son back",
+          "to": "hold someone back",
+          "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+          "exemption": {
+            "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+            "reasons": [
+              "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            ],
+            "pair": [
+              "hold one's son back",
+              "hold someone back"
+            ],
+            "candidate_id": "p_bb5820f386",
+            "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+            "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+            "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)"
+          }
+        }
+      },
+      "rescue_note": "ユーザー指示USER_03 §2で `hold one's son back` -> `hold someone back`(gloss再整合・QA再判定済み)",
+      "requalified": {
+        "tool": "apply_user_decision_surname_choice_03",
+        "from": "hold one's son back",
+        "to": "hold someone back",
+        "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+        "user_ref_sha256": "30fd4011ca6d6f7a131025e5497f03c7f2193ea132c8c59982ac2da3cbffd5ab",
+        "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)",
+        "by": "sonnet-ysc05",
+        "exemption": {
+          "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+          "reasons": [
+            "key_phrase('hold someone back')がdisplay_phraseと一致せず、source_span('hold my son back')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ],
+          "pair": [
+            "hold one's son back",
+            "hold someone back"
+          ],
+          "candidate_id": "p_bb5820f386",
+          "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+          "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+          "user_spec": "§2 Advanced学習表現の修正(`hold one's son back` -> `hold someone back`。本文の原表現は不変、見出し・意味・解説を一般形に整合)"
+        },
+        "old_item_sha256": "eaea489c5035ac9f6fd01b0c8c0d9793e880478e636782b75b50e6263b027171",
+        "old_kind": "phrase",
+        "new_kind": "phrase",
+        "old_gloss": "人の息子の足を引っ張る",
+        "display_phrase_kept": "hold my son back",
+        "source_span_kept": "hold my son back"
+      }
     },
     {
       "candidate_id": "p_07ed712929",
@@ -894,7 +981,9 @@
         "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
-        "redundant_with": []
+        "redundant_with": [
+          "p_54c1c68edd"
+        ]
       },
       "gates": {
         "validate": "PASS",
@@ -1212,7 +1301,9 @@
         "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
-        "redundant_with": []
+        "redundant_with": [
+          "p_edb2175ddf"
+        ]
       },
       "gates": {
         "validate": "PASS",
@@ -1453,7 +1544,7 @@
         "usage_context_overlap": "FAIL",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "記事ではどちらも、親が息子の選択を受け入れ、独立を妨げないという内容に結びついています。「手放す」と「引き止めない」は別の言い方ながら、この文脈では親が息子を自分のもとに留めないという点で実質的に重なります。"
+        "reasoning": "「息子を手放す」は親が執着をやめること、「息子の足を引っ張らない」は行動を妨げないことですが、この記事ではどちらも息子の選択を受け入れる方向を表しています。句動詞の型は異なります。"
       },
       {
         "rank_a": 2,
@@ -1462,7 +1553,16 @@
         "usage_context_overlap": "FAIL",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "記事では「息子を手放す」と「親が何かをあきらめる」が、親が息子の独立に伴って relinquish するものという内容で結びついています。表現の構文は異なりますが、この文脈では親の手放し・断念を表す点が実質的に重なります。"
+        "reasoning": "どちらもこの記事では親が息子との距離や関係を受け入れ、何かを手放す感覚に関わります。ただし前者は人への執着を手放すこと、後者は何かをあきらめることを表し、構文上の学習価値は異なります。"
+      },
+      {
+        "rank_a": 7,
+        "rank_b": 10,
+        "meaning_overlap": "PASS",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL",
+        "reasoning": "「overlap with」は部分的に重なること、「alongside」は〜に加えて・並行して存在することを表し、意味そのものは同じではありません。ただし本文ではどちらも、夫婦の選択と親の気持ちが併存する関係を説明する役割を担っています。"
       }
     ],
     "model_id": "gpt-6-luna"
@@ -1537,14 +1637,14 @@
   "text_sha256": "6142b462984cdeba2e9bed820e8559e8d62aadbc2afd432c522d9a070dc356ee",
   "schema": "kp_candidates_v1",
   "kind": "kp",
-  "candidates_sha256": "9f241f2e23e289ca64135f1b14b647a6a198e58b72dce8d733228b3914173663",
+  "candidates_sha256": "475560d874ae6ee5c06671ba201b99c66aee0c56712623d641c30015bb3388b7",
   "requalify_provenance": {
-    "tool": "apply_user_decision_surname_choice_02",
-    "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
-    "candidate_id": "p_85cbe0223d",
-    "from": "taking offense",
-    "to": "take offense",
-    "previous_candidates_sha256": "2b1ffdb7cc2991c38d8d42dfd1e5c6cb9a91065f97b2c2685b8743069cb465db",
+    "tool": "apply_user_decision_surname_choice_03",
+    "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_03.md",
+    "candidate_id": "p_bb5820f386",
+    "from": "hold one's son back",
+    "to": "hold someone back",
+    "previous_candidates_sha256": "9f241f2e23e289ca64135f1b14b647a6a198e58b72dce8d733228b3914173663",
     "previous_redundancy_qa": {
       "status": "REDUNDANCY_NG",
       "duplicate_pairs": [
@@ -1555,7 +1655,7 @@
           "usage_context_overlap": "FAIL",
           "grammatical_teaching_value_overlap": "PASS",
           "conceptual_role_overlap": "FAIL",
-          "reasoning": "厳密には「手放す」は執着を弱めること、「hold back」は妨げることですが、本文ではどちらも息子の選択を受け入れ、親が干渉しない姿勢を表しています。"
+          "reasoning": "記事ではどちらも、親が息子の選択を受け入れ、独立を妨げないという内容に結びついています。「手放す」と「引き止めない」は別の言い方ながら、この文脈では親が息子を自分のもとに留めないという点で実質的に重なります。"
         },
         {
           "rank_a": 2,
@@ -1564,7 +1664,7 @@
           "usage_context_overlap": "FAIL",
           "grammatical_teaching_value_overlap": "PASS",
           "conceptual_role_overlap": "FAIL",
-          "reasoning": "「息子を手放す」と「何かをあきらめる」は、本文では親が息子の独立に伴って何かを手放す・譲る感覚を表す点で実質的に重なります。句動詞の型や具体的な意味の焦点は異なります。"
+          "reasoning": "記事では「息子を手放す」と「親が何かをあきらめる」が、親が息子の独立に伴って relinquish するものという内容で結びついています。表現の構文は異なりますが、この文脈では親の手放し・断念を表す点が実質的に重なります。"
         }
       ],
       "model_id": "gpt-6-luna"
