@@ -99,6 +99,13 @@ STORY_VOICE_ROSTER = {
         {"speaker": "masago", "gender": "female", "order": 6, "first_appearance": "6番目の証言者(清水寺に来れる女=真砂の懺悔)。女性Poolの2番目"},
         {"speaker": "takehiro", "gender": "male", "order": 7, "first_appearance": "最後の証言者(巫女の口を借りて語る夫・武弘の死霊)"},
     ),
+    # 『雪女』(Lafcadio Hearn、FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_01、data表の値追加のみ)。三人称語り。会話話者は2名のみ(巳之吉=男、お雪=女)。
+    # 吹雪の夜の白い女と後年の妻お雪は同一人物=同一話者(yuki、同一Voice)。老人(茂作)・母・子どもは台詞なし。初出順は小屋の場面(白い女の囁き=yuki)が先。
+    # Writer出力の初出順確認後にplan前に訂正し得る(男女独立のため、初出順が入れ替わっても各性別1名で割当は不変)。
+    "yuki_onna": (
+        {"speaker": "yuki", "gender": "female", "order": 1, "first_appearance": "吹雪の夜の小屋で若者に囁く白い女(後年の妻お雪と同一人物・同一Voice)。女性Poolの1番目"},
+        {"speaker": "minokichi", "gender": "male", "order": 2, "first_appearance": "最後の場面でランプの下、妻に小屋の夜を語る巳之吉(男性Poolの1番目)"},
+    ),
 }
 # 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
 # 変更しない(pin値=受入済みfamily_z_melos_02の実使用値。規則適用値との差分は仕様差分として報告済み・変更はユーザー承認事項)。
@@ -407,6 +414,31 @@ STORY_SPEAKER_CONFIG = {
         "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("in_a_grove"),
         "speaker_aliases": {"woodcutter": "woodcutter", "monk": "monk", "constable": "constable", "old_woman": "old_woman", "tajomaru": "tajomaru",
                             "masago": "masago", "takehiro": "takehiro", "narrator": "narrator"},
+    },
+    # 『雪女』(Lafcadio Hearn、FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_01、data表の値追加のみ)。三人称語り(narrator=Aoede)+会話話者2名(お雪=白い女と同一、巳之吉)。
+    # 決定論は明示的な呼称のみ(挿入順=判定優先順: yuki->minokichi)。「she/he」等の代名詞は決定論の対象外(LLM判定)。
+    "yuki_onna": {
+        "speakers": ("yuki", "minokichi", "other", "narrator"),
+        "z_voice_keywords": {
+            "yuki": ["yuki said", "said yuki", "yuki asked", "asked yuki", "yuki replied", "replied yuki", "yuki answered", "answered yuki", "yuki cried", "cried yuki", "yuki whispered", "whispered yuki", "yuki added", "added yuki", "yuki shouted", "shouted yuki", "yuki screamed", "screamed yuki", "yuki shrieked", "shrieked yuki", "yuki called", "called yuki", "yuki murmured", "murmured yuki", "o-yuki said", "said o-yuki", "o-yuki asked", "asked o-yuki", "o-yuki replied", "replied o-yuki", "o-yuki answered", "answered o-yuki", "o-yuki cried", "cried o-yuki", "o-yuki whispered", "whispered o-yuki", "o-yuki added", "added o-yuki", "o-yuki shouted", "shouted o-yuki", "o-yuki screamed", "screamed o-yuki", "o-yuki shrieked", "shrieked o-yuki", "o-yuki called", "called o-yuki", "o-yuki murmured", "murmured o-yuki", "the woman in white said", "said the woman in white", "the woman in white asked", "asked the woman in white", "the woman in white replied", "replied the woman in white", "the woman in white answered", "answered the woman in white", "the woman in white cried", "cried the woman in white", "the woman in white whispered", "whispered the woman in white", "the woman in white added", "added the woman in white", "the woman in white shouted", "shouted the woman in white", "the woman in white screamed", "screamed the woman in white", "the woman in white shrieked", "shrieked the woman in white", "the woman in white called", "called the woman in white", "the woman in white murmured", "murmured the woman in white", "the white woman said", "said the white woman", "the white woman asked", "asked the white woman", "the white woman replied", "replied the white woman", "the white woman answered", "answered the white woman", "the white woman cried", "cried the white woman", "the white woman whispered", "whispered the white woman", "the white woman added", "added the white woman", "the white woman shouted", "shouted the white woman", "the white woman screamed", "screamed the white woman", "the white woman shrieked", "shrieked the white woman", "the white woman called", "called the white woman", "the white woman murmured", "murmured the white woman", "the snow woman said", "said the snow woman", "the snow woman asked", "asked the snow woman", "the snow woman replied", "replied the snow woman", "the snow woman answered", "answered the snow woman", "the snow woman cried", "cried the snow woman", "the snow woman whispered", "whispered the snow woman", "the snow woman added", "added the snow woman", "the snow woman shouted", "shouted the snow woman", "the snow woman screamed", "screamed the snow woman", "the snow woman shrieked", "shrieked the snow woman", "the snow woman called", "called the snow woman", "the snow woman murmured", "murmured the snow woman", "his wife said", "said his wife", "his wife asked", "asked his wife", "his wife replied", "replied his wife", "his wife answered", "answered his wife", "his wife cried", "cried his wife", "his wife whispered", "whispered his wife", "his wife added", "added his wife", "his wife shouted", "shouted his wife", "his wife screamed", "screamed his wife", "his wife shrieked", "shrieked his wife", "his wife called", "called his wife", "his wife murmured", "murmured his wife"],
+            "minokichi": ["minokichi said", "said minokichi", "minokichi asked", "asked minokichi", "minokichi replied", "replied minokichi", "minokichi answered", "answered minokichi", "minokichi cried", "cried minokichi", "minokichi whispered", "whispered minokichi", "minokichi added", "added minokichi", "minokichi shouted", "shouted minokichi", "minokichi screamed", "screamed minokichi", "minokichi shrieked", "shrieked minokichi", "minokichi called", "called minokichi", "minokichi murmured", "murmured minokichi"],
+        },
+        "attr_roster_text": (
+            "- \"yuki\": Yuki, the woman who becomes Minokichi's wife; she is also the woman in white (the snow woman) who spoke to him in the hut, the same speaker in every scene (also 'O-Yuki', 'his wife', 'the woman', 'the white woman')\n"
+            "- \"minokichi\": Minokichi, the young woodcutter (also 'the young man', 'her husband')\n"
+            "- \"other\": any other speaker (the old woodcutter, Minokichi's mother, a child, etc.)\n"
+            "- \"narrator\": the storyteller; any line not spoken by a character"),
+        "attr_caution_text": (
+            "Be careful: the woman in white in the hut and Yuki the wife are the same speaker (yuki); in the last scene Yuki and Minokichi take turns speaking, so decide by who is speaking, "
+            "not by who is named nearby (for example, in '\"Tell me about her,\" said Yuki.' the speaker is yuki; in '\"She was very like you,\" said Minokichi.' the speaker is minokichi, "
+            "who is speaking ABOUT the woman); a name or role that appears NEAR a quote is not always the speaker."),
+        "dialogue_voice_keywords": {
+            "yuki": ["yuki said", "said yuki", "yuki asked", "asked yuki", "yuki replied", "replied yuki", "yuki answered", "answered yuki", "yuki cried", "cried yuki", "yuki whispered", "whispered yuki", "yuki added", "added yuki", "yuki shouted", "shouted yuki", "yuki screamed", "screamed yuki", "yuki shrieked", "shrieked yuki", "yuki called", "called yuki", "yuki murmured", "murmured yuki", "o-yuki said", "said o-yuki", "o-yuki asked", "asked o-yuki", "o-yuki replied", "replied o-yuki", "o-yuki answered", "answered o-yuki", "o-yuki cried", "cried o-yuki", "o-yuki whispered", "whispered o-yuki", "o-yuki added", "added o-yuki", "o-yuki shouted", "shouted o-yuki", "o-yuki screamed", "screamed o-yuki", "o-yuki shrieked", "shrieked o-yuki", "o-yuki called", "called o-yuki", "o-yuki murmured", "murmured o-yuki", "the woman in white said", "said the woman in white", "the woman in white asked", "asked the woman in white", "the woman in white replied", "replied the woman in white", "the woman in white answered", "answered the woman in white", "the woman in white cried", "cried the woman in white", "the woman in white whispered", "whispered the woman in white", "the woman in white added", "added the woman in white", "the woman in white shouted", "shouted the woman in white", "the woman in white screamed", "screamed the woman in white", "the woman in white shrieked", "shrieked the woman in white", "the woman in white called", "called the woman in white", "the woman in white murmured", "murmured the woman in white", "the white woman said", "said the white woman", "the white woman asked", "asked the white woman", "the white woman replied", "replied the white woman", "the white woman answered", "answered the white woman", "the white woman cried", "cried the white woman", "the white woman whispered", "whispered the white woman", "the white woman added", "added the white woman", "the white woman shouted", "shouted the white woman", "the white woman screamed", "screamed the white woman", "the white woman shrieked", "shrieked the white woman", "the white woman called", "called the white woman", "the white woman murmured", "murmured the white woman", "the snow woman said", "said the snow woman", "the snow woman asked", "asked the snow woman", "the snow woman replied", "replied the snow woman", "the snow woman answered", "answered the snow woman", "the snow woman cried", "cried the snow woman", "the snow woman whispered", "whispered the snow woman", "the snow woman added", "added the snow woman", "the snow woman shouted", "shouted the snow woman", "the snow woman screamed", "screamed the snow woman", "the snow woman shrieked", "shrieked the snow woman", "the snow woman called", "called the snow woman", "the snow woman murmured", "murmured the snow woman", "his wife said", "said his wife", "his wife asked", "asked his wife", "his wife replied", "replied his wife", "his wife answered", "answered his wife", "his wife cried", "cried his wife", "his wife whispered", "whispered his wife", "his wife added", "added his wife", "his wife shouted", "shouted his wife", "his wife screamed", "screamed his wife", "his wife shrieked", "shrieked his wife", "his wife called", "called his wife", "his wife murmured", "murmured his wife"],
+            "minokichi": ["minokichi said", "said minokichi", "minokichi asked", "asked minokichi", "minokichi replied", "replied minokichi", "minokichi answered", "answered minokichi", "minokichi cried", "cried minokichi", "minokichi whispered", "whispered minokichi", "minokichi added", "added minokichi", "minokichi shouted", "shouted minokichi", "minokichi screamed", "screamed minokichi", "minokichi shrieked", "shrieked minokichi", "minokichi called", "called minokichi", "minokichi murmured", "murmured minokichi"],
+        },
+        # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("yuki_onna"),
+        "speaker_aliases": {"yuki": "yuki", "minokichi": "minokichi", "narrator": "narrator"},
     },
 }
 
@@ -1110,6 +1142,18 @@ STORY_LINT_CONFIG = {
         "spoiler_en": ["killed himself", "kills himself", "stabbed himself", "stabs himself", "suicide", "took his own life", "unseen hand", "invisible hand",
                        "pulled the dagger", "drew the dagger", "the real killer", "the true killer", "the real murderer", "the true murderer",
                        "the truth is", "turns out", "the twist", "the irony"],
+    },
+    # 『雪女』(FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_01): 同一機構(story_key別config)の値。
+    # forbidden_names=主要人物2名(Minokichi・Yuki、Seed key_roles keep_name)以外の人名(老いた木こりMosaku。原作の人名だがSeedではkeep_name=false=役割名で扱う)。
+    # spoiler_*=結末(妻お雪=白い女の正体・約束を破ったこと・溶けて消えること)を先回りする語(一般語は入れない)。Comment2/3は『すでに聞いた部分』を踏まえる設計のため、
+    # 吹雪の夜の白い女・約束の内容自体は後半Commentに現れ得る(正体と結末のみ禁止)。
+    "yuki_onna": {
+        "forbidden_names": ["Mosaku", "モサク", "茂作"],
+        "spoiler_ja": ["正体", "妻が雪女", "妻は雪女", "お雪が雪女", "お雪は雪女", "雪女だった", "雪女だと", "約束を破", "約束を守れ", "溶けて消", "霧になって",
+                       "二度と姿を見せ", "皮肉な結末", "種明かし"],
+        "spoiler_en": ["true identity", "real identity", "reveals herself", "is the snow woman", "was the snow woman", "wife is the snow", "breaks the promise",
+                       "broke the promise", "breaks his promise", "broke his promise", "melts away", "melted into", "melts into", "into mist", "never seen again", "the twist",
+                       "turns out", "the irony"],
     },
 }
 

@@ -396,8 +396,37 @@ IN_A_GROVE_RIGHTS_BLOCK = {
 }
 
 
+# 『雪女』(Lafcadio Hearn『怪談(Kwaidan)』所収"Yuki-Onna"、FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_01、2026-10-30確認、data表の値追加のみ)。
+# 英語原作(Hearnの英語原文を直接使う。翻訳を使わないため訳者の権利は無関係)。著者は1904-09-26没(英国籍出身・日本帰化 小泉八雲)。
+# 計算根拠は『二十年後』『賢者の贈り物』『猿の手』『告げ口心臓』と同形式(没年+50年+戦時加算3,794日、連合国民と仮定する保守的上限)。
+# legal_use_basisは『開いた窓』と同じユーザー決定(2026-09-26、REPORT §6)の(1)〜(5)と採用文の逐語転記。
+YUKI_ONNA_RIGHTS_BLOCK = {
+    "author": "Lafcadio Hearn / 小泉八雲 (ラフカディオ・ハーン)",
+    "author_death_date": "1904-09-26",
+    "jp_public_domain_basis": (
+        "日本の著作権保護期間は、2018年末のTPP11整備法による70年化以前は死後50年だった。Lafcadio Hearn(小泉八雲)は1904-09-26没"
+        "(en.wikipedia.org/wiki/Lafcadio_Hearn、確認2026-10-30)。死後50年は没年の翌年から起算し1954-12-31に満了。"
+        "連合国民(英国籍出身)の著作権と仮定した場合でも、連合国及び連合国民の著作権の特例に関する法律(昭和27年法律第302号)の戦時加算3,794日を"
+        "加算した1954-12-31+3,794日=1965-05-21に日本での保護は満了(計算値、保守的な上限)。本作は『怪談(Kwaidan)』(1904)所収で、"
+        "取得時期は1941-12-07以前。2018年末の70年化は、1999〜2018-12-29に満了済みの作品には遡及しない"
+        "(en.wikipedia.org/wiki/Copyright_law_of_Japan、確認2026-10-24、HTTP 200)ため、日本において1965-05-21以降パブリックドメイン。"
+        "Project Gutenberg(#1210、'Kwaidan: Stories and Studies of Strange Things')が全文を公開している。最終的な法的判断ではない。"
+    ),
+    "source_url": "https://www.gutenberg.org/cache/epub/1210/pg1210.txt",
+    "source_card_url": "https://www.gutenberg.org/ebooks/1210",
+    "confirmed_date": "2026-10-30",
+    "us_copyright_status_record_only": (
+        "記録事項(必須条件ではない、日本国内向けサービスのため)。1904年発表の作品は1931年より前の出版であり、Cornell University Library "
+        "\"Copyright Term and the Public Domain in the United States\" チャート(https://copyright.cornell.edu/publicdomain、『二十年後』で確認2026-10-23)で"
+        "「Before 1931: In the public domain」に該当し米国PD。最終的な法的判断ではない。"
+    ),
+    "legal_use_basis": OPEN_WINDOW_RIGHTS_BLOCK["legal_use_basis"],
+    "gate_reference": "FICTION-FAMILY-Z-RIGHTS-RECHECK-01_REPORT.md §6 (2026-09-26); FAMILY-Z-YUKI-ONNA-PRODUCTION-01 (2026-10-30)",
+}
+
+
 # ============================================================
-# Story Registry ("melos" / "the_open_window" / "after_twenty_years" / "the_gift_of_the_magi" / "the_monkeys_paw" / "the_tell_tale_heart" / "in_a_grove")
+# Story Registry ("melos" / "the_open_window" / "after_twenty_years" / "the_gift_of_the_magi" / "the_monkeys_paw" / "the_tell_tale_heart" / "in_a_grove" / "yuki_onna")
 # ============================================================
 TRIAL_SEED_DIR = (
     "er018_output/fiction_external_seed_selection_criteria_trial_02/"
@@ -573,6 +602,28 @@ STORY_REGISTRY = {
         },
         # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
         "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("in_a_grove"),
+    },
+    # 『雪女』(Lafcadio Hearn、FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_01、data表の値追加のみ)。三人称の語り手(narrator=Aoede)。会話話者は巳之吉(minokichi・男)と
+    # お雪(yuki・女。吹雪の夜の白い女と妻お雪は同一人物=同一Voice)の2名のみ。Voiceは正式Voice表+決定的割当規則から導出(女性は新順位でLeda、男性はAlgieba)。
+    "yuki_onna": {
+        "e2e_management_id": "FAMILY-Z-YUKI-ONNA-PRODUCTION-01",
+        "e2e_theme_tag": "FAMILY_Z_YUKI_ONNA_PRODUCTION_01",
+        "e2e_pages_dir": "user_test/family_z_yuki_onna_01",
+        "page_title_ja": "雪女",
+        "audio_file_prefix": "YukiOnna",
+        "story_type": "literature",
+        "topic_title": "Yuki-Onna",
+        "japanese_title_text": "雪女(Yuki-Onna)",
+        "japanese_title_tts": "雪女",
+        "trial_seed_dir": "er026_seeds/yuki_onna",
+        "rights_block": YUKI_ONNA_RIGHTS_BLOCK,
+        "speaker_config": _st062.STORY_SPEAKER_CONFIG["yuki_onna"],
+        "voice_keywords": {
+            "yuki": ["yuki said", "said yuki", "yuki asked", "asked yuki", "yuki replied", "replied yuki", "yuki answered", "answered yuki", "yuki cried", "cried yuki", "yuki whispered", "whispered yuki", "yuki added", "added yuki", "yuki shouted", "shouted yuki", "yuki screamed", "screamed yuki", "yuki shrieked", "shrieked yuki", "yuki called", "called yuki", "yuki murmured", "murmured yuki", "o-yuki said", "said o-yuki", "o-yuki asked", "asked o-yuki", "o-yuki replied", "replied o-yuki", "o-yuki answered", "answered o-yuki", "o-yuki cried", "cried o-yuki", "o-yuki whispered", "whispered o-yuki", "o-yuki added", "added o-yuki", "o-yuki shouted", "shouted o-yuki", "o-yuki screamed", "screamed o-yuki", "o-yuki shrieked", "shrieked o-yuki", "o-yuki called", "called o-yuki", "o-yuki murmured", "murmured o-yuki", "the woman in white said", "said the woman in white", "the woman in white asked", "asked the woman in white", "the woman in white replied", "replied the woman in white", "the woman in white answered", "answered the woman in white", "the woman in white cried", "cried the woman in white", "the woman in white whispered", "whispered the woman in white", "the woman in white added", "added the woman in white", "the woman in white shouted", "shouted the woman in white", "the woman in white screamed", "screamed the woman in white", "the woman in white shrieked", "shrieked the woman in white", "the woman in white called", "called the woman in white", "the woman in white murmured", "murmured the woman in white", "the white woman said", "said the white woman", "the white woman asked", "asked the white woman", "the white woman replied", "replied the white woman", "the white woman answered", "answered the white woman", "the white woman cried", "cried the white woman", "the white woman whispered", "whispered the white woman", "the white woman added", "added the white woman", "the white woman shouted", "shouted the white woman", "the white woman screamed", "screamed the white woman", "the white woman shrieked", "shrieked the white woman", "the white woman called", "called the white woman", "the white woman murmured", "murmured the white woman", "the snow woman said", "said the snow woman", "the snow woman asked", "asked the snow woman", "the snow woman replied", "replied the snow woman", "the snow woman answered", "answered the snow woman", "the snow woman cried", "cried the snow woman", "the snow woman whispered", "whispered the snow woman", "the snow woman added", "added the snow woman", "the snow woman shouted", "shouted the snow woman", "the snow woman screamed", "screamed the snow woman", "the snow woman shrieked", "shrieked the snow woman", "the snow woman called", "called the snow woman", "the snow woman murmured", "murmured the snow woman", "his wife said", "said his wife", "his wife asked", "asked his wife", "his wife replied", "replied his wife", "his wife answered", "answered his wife", "his wife cried", "cried his wife", "his wife whispered", "whispered his wife", "his wife added", "added his wife", "his wife shouted", "shouted his wife", "his wife screamed", "screamed his wife", "his wife shrieked", "shrieked his wife", "his wife called", "called his wife", "his wife murmured", "murmured his wife"],
+            "minokichi": ["minokichi said", "said minokichi", "minokichi asked", "asked minokichi", "minokichi replied", "replied minokichi", "minokichi answered", "answered minokichi", "minokichi cried", "cried minokichi", "minokichi whispered", "whispered minokichi", "minokichi added", "added minokichi", "minokichi shouted", "shouted minokichi", "minokichi screamed", "screamed minokichi", "minokichi shrieked", "shrieked minokichi", "minokichi called", "called minokichi", "minokichi murmured", "murmured minokichi"],
+        },
+        # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
+        "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("yuki_onna"),
     },
 }
 

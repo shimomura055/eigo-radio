@@ -547,7 +547,9 @@ STORY_MAIN_CHARACTER = {"melos": "Melos", "the_open_window": "Framton", "after_t
                        "the_tell_tale_heart": "the narrator (who stays unnamed, as in the original)",
                        # 『藪の中』: 語り手不在の証言集で単一の主人公はいない。「only <値> may have a personal name」の<値>には3名の主要人物(Seed keep_name)の一人Tajomaruを置く
                        # (Takehiro・Masagoはkeep_name=trueで同文に加わる)。証言者(木樵り・旅法師・放免・媼)は役割名のまま。
-                       "in_a_grove": "Tajomaru"}
+                       "in_a_grove": "Tajomaru",
+                       # 『雪女』(FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_01、data値追加のみ): 主人公は若い木こりの巳之吉。もう一人の主要人物Yukiはkeep_name=trueで同文に加わる。
+                       "yuki_onna": "Minokichi"}
 
 
 def build_revise_prompt(body: str, story_key: str = "melos", essentials: "Essentials | None" = None) -> str:
