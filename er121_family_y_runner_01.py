@@ -1159,7 +1159,7 @@ def _tts_input_sha(ctx, lv) -> str:
     kp = f"{_kp_assets_dir(ctx, lv)}/keywords_canonicalized.json"
     ex = f"{ctx.out_dir}/key_phrases/b1b/kp_explanations.json"
     parts = [_sha(_rd(_level_text_path(ctx, lv))), _sha(_rd(f"{ctx.out_dir}/support/{lv}_support.json")), _m().w62.file_sha(kp),
-             _m().w62.file_sha(ex) if lv == "b1b" else "", json.dumps(ya.segment_voice_map(), sort_keys=True), _sha(_rd(_ja_path(ctx))) if lv == "a2" else "",
+             _m().w62.file_sha(ex) if lv == "b1b" else "", json.dumps(ya.segment_voice_map(ctx.out_dir, lv), sort_keys=True), _sha(_rd(_ja_path(ctx))) if lv == "a2" else "",
              ya.TTS_BACKEND, _style_profile(ctx)]
     return _sha("|".join(parts))
 
@@ -1188,7 +1188,7 @@ def stage_tts(ctx, lv: str) -> dict:
                 s = ya.generate_y_a2_segments(ctx.out_dir, ja_title, style_profile=_style_profile(ctx), guard=guard)
         res_path = f"{ctx.out_dir}/{lv}/audit/tts_generation_results.json"
         return json.dumps({"summary": s, "results_sha256": w62.file_sha(res_path)}, ensure_ascii=False, indent=2), \
-            {"tts_backend": ya.TTS_BACKEND, "narrator_voice": ya.narrator_voice(), "voices": ya.segment_voice_map(), "chunk_tts": CHUNK_TTS_MANIFEST}
+            {"tts_backend": ya.TTS_BACKEND, "narrator_voice": ya.narrator_voice(), "voices": ya.segment_voice_map(ctx.out_dir, lv), "chunk_tts": CHUNK_TTS_MANIFEST}
 
     r = _ensure(ctx, prov, unit, _tts_input_sha(ctx, lv), f"{ctx.out_dir}/tts_{lv}_stage.json", runner)
     return {"status": r["status"], "unit": unit}
@@ -1749,7 +1749,7 @@ def main(argv=None):
         ctx.only_segments, ctx.regenerate_stage = ya_only, args.regenerate_stage
         ctx.page_audience = args.page_audience
         os.makedirs(ctx.out_dir, exist_ok=True)
-        _wj(f"{ctx.out_dir}/voice_assignment.json", ys.verify_voice_assignment())
+        _wj(f"{ctx.out_dir}/voice_assignment.json", ys.voice_assignment_record(ctx.out_dir))
         if args.kp_review == "auto":
             import er119_kp_wiring_01 as kw
             if not (args.kp_review_by and args.kp_review_reason):

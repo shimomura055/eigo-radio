@@ -211,9 +211,9 @@ class TestGenerateAndAssemble(Base):
         for cid in ("y_voice_2_k1", "y_voice_2_k2", "y_closing_k1", "y_closing_k2", "y_closing_k3"):
             e = segs[cid]
             self.assertEqual(e["status"], "OK", cid)
-            self.assertEqual(e["y_tts_voice_requested"], vm[ys.parse_y_chunk_id(cid)[0]], cid)       # voice_2=Zephyr / closing=ナレーター
+            self.assertEqual(e["y_tts_voice_requested"], vm[ys.parse_y_chunk_id(cid)[0]], cid)       # voice_2=Leda(新規runの既定=女性1位。FY-FZ-FEMALE-VOICE-RANK-01) / closing=ナレーター
             self.assertEqual(e["chunk_tts"]["parent_id"], ys.parse_y_chunk_id(cid)[0])
-        self.assertEqual(segs["y_voice_2_k1"]["y_tts_voice_requested"], "Zephyr")
+        self.assertEqual(segs["y_voice_2_k1"]["y_tts_voice_requested"], "Leda")
         for pid in ("y_voice_2", "y_closing"):
             p = segs[pid]
             self.assertEqual(p["status"], "OK")
@@ -320,7 +320,7 @@ class TestGenerateAndAssemble(Base):
         self.assertTrue("FAMILY_Y_CHUNK_INTEGRITY" in str(e.exception) or "ASSET_HASH_MISMATCH" in str(e.exception), str(e.exception)[:300])
 
     def test_voice_mismatch_drops_chunk_cache(self):
-        cached = {"segments": {"y_voice_2_k1": {"y_tts_voice_requested": "Algieba"}, "y_voice_2_k2": {"y_tts_voice_requested": "Zephyr"},
+        cached = {"segments": {"y_voice_2_k1": {"y_tts_voice_requested": "Algieba"}, "y_voice_2_k2": {"y_tts_voice_requested": "Leda"},
                                "y_closing_k1": {}}}
         out = ya.voice_guard_cached(cached)
         self.assertEqual(sorted(out["segments"]), ["y_voice_2_k2"])

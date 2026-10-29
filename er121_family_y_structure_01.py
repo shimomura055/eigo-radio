@@ -18,6 +18,8 @@
 # ============================================================
 from __future__ import annotations
 
+import json
+import os
 import re
 
 MANAGEMENT_ID = "FAMILY-Y-PRODUCTION-LAUNCH-01"
@@ -55,9 +57,11 @@ PAGE_LABEL = {
 #   (ユーザーがY/Z候補差分を明示許容した承認済みFamily固有仕様。共通仕様統一を理由にZ側をPuckへ変えない/Y側をAlgiebaへ戻さない)。
 Y_DIALOGUE_VOICE_POOL = {
     "male": ("Puck", "Schedar", "Fenrir", "Orus", "Iapetus"),
-    "female": ("Zephyr", "Kore", "Leda", "Sulafat", "Erinome"),
+    "female": ("Leda", "Erinome", "Sulafat", "Kore", "Zephyr"),   # FY-FZ-FEMALE-VOICE-RANK-01(2026-10-29ユーザー正式決定 APPROVED_FOR_PRODUCTION、OPEN-606): 旧 Zephyr/Kore/Leda/Sulafat/Erinome。男性表は不変
 }
-FIXED_VOICE_SLOTS = {"voice_1": "Puck", "voice_2": "Zephyr", "voice_3": "Schedar"}
+# 新規制作の既定割当(Y候補表を決定的割当関数に適用した結果。verify_voice_assignmentが一致を強制)。
+# 既存run(完了記事)は run dirの voice_assignment.json の記録値を優先する(resolve_voice_slots)ため、順位変更で既存記事のVoiceは再割当されない。
+FIXED_VOICE_SLOTS = {"voice_1": "Puck", "voice_2": "Leda", "voice_3": "Schedar"}
 ROSTER = (
     {"speaker": "voice_1", "gender": "male", "order": 1, "first_appearance": "Voice 1"},
     {"speaker": "voice_2", "gender": "female", "order": 2, "first_appearance": "Voice 2"},
@@ -83,10 +87,60 @@ def verify_voice_assignment() -> dict:
     return {"z_rule_assignment": got, "y_fixed_slots": dict(FIXED_VOICE_SLOTS), "match": True}
 
 
-def voice_of_segment(segment_id: str, narrator_voice: str) -> str:
-    """segmentのTTS Voice。voice_n=固定割当、それ以外=ナレーター(呼出側が既存Full Story設定から読んだ値)。"""
+_FEMALE_SLOTS = tuple(r["speaker"] for r in ROSTER if r["gender"] == "female")
+
+
+def _apply_recorded_female_slots(recorded) -> dict:
+    """記録割当のうち**女性slot**だけを既定FIXED_VOICE_SLOTSへ重ねる(男性slotは常に現行の既定=Puck/Schedar。男性候補・割当は今回の順位変更の対象外で
+    不変。除外済みの旧男性Voice記録は従来どおり現行既定へ解決され、記録値では上書きしない)。女性slotの記録値が女性候補表に無ければSTOP。"""
+    slots = dict(FIXED_VOICE_SLOTS)
+    if not isinstance(recorded, dict):
+        raise FamilyYStop(f"FAMILY_Y_VOICE_ASSIGNMENT_RECORD_INVALID: y_fixed_slotsがdictではありません: {recorded!r}")
+    for k in _FEMALE_SLOTS:
+        if k in recorded:
+            v = recorded[k]
+            if not isinstance(v, str) or v not in Y_DIALOGUE_VOICE_POOL["female"]:
+                raise FamilyYStop(f"FAMILY_Y_VOICE_ASSIGNMENT_RECORD_INVALID: {k}={v!r} は女性候補表{Y_DIALOGUE_VOICE_POOL['female']}にありません")
+            slots[k] = v
+    return slots
+
+
+def resolve_voice_slots(out_dir: str | None = None, level: str | None = None) -> dict:
+    """このrunのvoice_n割当。run dirの voice_assignment.json に記録があれば**女性slot**はその値(level別 `y_fixed_slots_by_level[level]` > `y_fixed_slots`)、
+    無ければ現行の既定 FIXED_VOICE_SLOTS(新順位)。候補順位を変えても既存記事の記録済み女性Voiceは再割当されない(FY-FZ-FEMALE-VOICE-RANK-01)。
+    男性slotは常に既定(男性は不変)。記録が不正(読めない/女性候補表に無い)ならSTOP(黙って既定へ戻さない)。"""
+    if out_dir:
+        path = os.path.join(out_dir, "voice_assignment.json")
+        if os.path.exists(path):
+            try:
+                with open(path, encoding="utf-8") as f:
+                    rec = json.load(f)
+            except (OSError, ValueError) as e:
+                raise FamilyYStop(f"FAMILY_Y_VOICE_ASSIGNMENT_RECORD_UNREADABLE: {path}: {e}")
+            by_level = rec.get("y_fixed_slots_by_level") or {}
+            slots = by_level.get(level) if level and level in by_level else rec.get("y_fixed_slots")
+            if slots is not None:
+                return _apply_recorded_female_slots(slots)
+    return dict(FIXED_VOICE_SLOTS)
+
+
+def voice_assignment_record(out_dir: str | None = None) -> dict:
+    """runnerが `voice_assignment.json` に書く記録。既存記録(y_fixed_slots)があれば保持(上書きしない=既存記事不変)、無ければ現行の既定割当を検証して新規記録。"""
+    if out_dir:
+        path = os.path.join(out_dir, "voice_assignment.json")
+        if os.path.exists(path):
+            resolve_voice_slots(out_dir)   # 不正ならSTOP
+            with open(path, encoding="utf-8") as f:
+                rec = json.load(f)
+            if rec.get("y_fixed_slots") is not None:
+                return rec
+    return verify_voice_assignment()
+
+
+def voice_of_segment(segment_id: str, narrator_voice: str, slots: dict | None = None) -> str:
+    """segmentのTTS Voice。voice_n=割当(slots省略時は既定FIXED_VOICE_SLOTS)、それ以外=ナレーター(呼出側が既存Full Story設定から読んだ値)。"""
     if segment_id in Y_VOICE_IDS:
-        return FIXED_VOICE_SLOTS[SLOT_OF_ID[segment_id]]
+        return (slots or FIXED_VOICE_SLOTS)[SLOT_OF_ID[segment_id]]
     if segment_id in Y_NARRATOR_IDS:
         if not narrator_voice:
             raise FamilyYStop("FAMILY_Y_NARRATOR_VOICE_MISSING: ナレーターVoiceが未解決(既存Full Story設定を読めていません)")

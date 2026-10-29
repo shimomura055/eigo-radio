@@ -48,7 +48,7 @@ FAMILY_Z_NARRATOR_VOICE = "Aoede"
 FAMILY_Z_ADVANCED_AUX_VOICE = "Charon"
 FAMILY_Z_DIALOGUE_VOICE_POOL = {
     "male": ("Algieba", "Schedar", "Fenrir", "Orus", "Puck"),
-    "female": ("Zephyr", "Kore", "Leda", "Sulafat", "Erinome"),
+    "female": ("Leda", "Erinome", "Sulafat", "Kore", "Zephyr"),   # FY-FZ-FEMALE-VOICE-RANK-01(2026-10-29ユーザー正式決定 APPROVED_FOR_PRODUCTION、OPEN-606): 旧 Zephyr/Kore/Leda/Sulafat/Erinome。男性表は不変
 }
 FAMILY_Z_VOICE_STATUS = "APPROVED_FOR_PRODUCTION(2026-10-23ユーザー最終決定)"
 
@@ -102,12 +102,18 @@ STORY_VOICE_ROSTER = {
 }
 # 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
 # 変更しない(pin値=受入済みfamily_z_melos_02の実使用値。規則適用値との差分は仕様差分として報告済み・変更はユーザー承認事項)。
+# FY-FZ-FEMALE-VOICE-RANK-01(2026-10-29): 女性Voice候補順位変更(Leda/Erinome/Sulafat/Kore/Zephyr)を理由に、制作済み・制作中の作品の女性Voiceを差し替えない。
+# 以下4作品の女性話者は変更前順位(Zephyr/Kore)の実使用値でpin(原文§4『既存の完成音声・承認済みVoice割当は無断変更しない』)。新規作品(roster追加)にはpin無し=新順位が適用される。
 STORY_VOICE_PINS = {
     "melos": {
         "melos": "Algieba",
         "selinuntius": "Erinome",
         "dionysius": "Charon",
     },
+    "the_open_window": {"vera": "Zephyr", "mrs_sappleton": "Kore"},
+    "the_gift_of_the_magi": {"della": "Zephyr", "madame": "Kore"},
+    "the_monkeys_paw": {"mrs_white": "Zephyr"},
+    "in_a_grove": {"old_woman": "Zephyr", "masago": "Kore"},
 }
 # 作品限定のNarrator(本文を語る声)Voice pin(FZ-TELL-TALE-HEART-NARRATOR-VOICE-01、2026-10-28ユーザー正式決定APPROVED_FOR_PRODUCTION。Schedar→Fenrirへ修正[警官役Schedarと重複回避。USER_02]、
 # 原文=docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_02.md §2 + 2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_02.md)。Family Z共通Voiceルール化しない(他storyは従来のAoede)。
@@ -123,6 +129,10 @@ def narrator_voice_for(story_key: str) -> str:
 
 STORY_VOICE_PIN_REASON = {
     "melos": "2026-10-21 U:§7 メロス完成版(受入済みpage family_z_melos_02)のVoiceは変更しない",
+    "the_open_window": "FY-FZ-FEMALE-VOICE-RANK-01: 女性順位変更前の制作済みVoice(Zephyr/Kore)を維持(既存の完成音声・承認済み割当は無断変更しない)",
+    "the_gift_of_the_magi": "FY-FZ-FEMALE-VOICE-RANK-01: 女性順位変更前の制作済みVoice(Zephyr/Kore)を維持(既存の完成音声・承認済み割当は無断変更しない)",
+    "the_monkeys_paw": "FY-FZ-FEMALE-VOICE-RANK-01: 女性順位変更前の制作済みVoice(Zephyr)を維持(既存の完成音声・承認済み割当は無断変更しない)",
+    "in_a_grove": "FY-FZ-FEMALE-VOICE-RANK-01: 女性順位変更前に制作済み/制作中(run_sf_prod_01、ZセリフLR再開中)のVoice(Zephyr/Kore)を維持(同一run内のVoice混在を防ぐ)",
 }
 
 

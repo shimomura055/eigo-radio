@@ -22,11 +22,11 @@ import er121_family_y_structure_01 as ys  # noqa: E402
 
 APPROVED_Y = {
     "male": ("Puck", "Schedar", "Fenrir", "Orus", "Iapetus"),
-    "female": ("Zephyr", "Kore", "Leda", "Sulafat", "Erinome"),
+    "female": ("Leda", "Erinome", "Sulafat", "Kore", "Zephyr"),   # FY-FZ-FEMALE-VOICE-RANK-01(2026-10-29)
 }
 APPROVED_Z = {
     "male": ("Algieba", "Schedar", "Fenrir", "Orus", "Puck"),
-    "female": ("Zephyr", "Kore", "Leda", "Sulafat", "Erinome"),
+    "female": ("Leda", "Erinome", "Sulafat", "Kore", "Zephyr"),   # FY-FZ-FEMALE-VOICE-RANK-01(2026-10-29)
 }
 INTENT = "Y/Z候補差分(Y男性1=Puck・男性5=Iapetus / Z男性1=Algieba・男性5=Puck)はユーザーが2026-10-26に明示許容した承認済みFamily固有仕様。共通仕様統一を理由に変更しない"
 
@@ -43,16 +43,16 @@ class YVoiceTable(unittest.TestCase):
         self.assertNotIn("Algieba", ys.FIXED_VOICE_SLOTS.values())
 
     def test_voice_1_is_puck_and_2_3_unchanged(self):
-        self.assertEqual(ys.FIXED_VOICE_SLOTS, {"voice_1": "Puck", "voice_2": "Zephyr", "voice_3": "Schedar"})
+        self.assertEqual(ys.FIXED_VOICE_SLOTS, {"voice_1": "Puck", "voice_2": "Leda", "voice_3": "Schedar"})   # 新規制作の既定(女性1位=Leda)
 
     def test_fixed_slots_match_pool_rule(self):
         rec = ys.verify_voice_assignment()
         self.assertTrue(rec["match"])
-        self.assertEqual(rec["y_fixed_slots"], {"voice_1": "Puck", "voice_2": "Zephyr", "voice_3": "Schedar"})
+        self.assertEqual(rec["y_fixed_slots"], {"voice_1": "Puck", "voice_2": "Leda", "voice_3": "Schedar"})
 
     def test_segment_voices(self):
         self.assertEqual(ys.voice_of_segment("y_voice_1", "Aoede"), "Puck")
-        self.assertEqual(ys.voice_of_segment("y_voice_2", "Aoede"), "Zephyr")
+        self.assertEqual(ys.voice_of_segment("y_voice_2", "Aoede"), "Leda")
         self.assertEqual(ys.voice_of_segment("y_voice_3", "Aoede"), "Schedar")
         self.assertEqual(ys.voice_of_segment("y_lead", "Aoede"), "Aoede")
 

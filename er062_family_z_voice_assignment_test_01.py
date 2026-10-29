@@ -9,7 +9,7 @@ import er062_family_z_structure_01 as st
 import er026_family_z_fiction_production_runner_01 as r26
 
 MALE = ["Algieba", "Schedar", "Fenrir", "Orus", "Puck"]
-FEMALE = ["Zephyr", "Kore", "Leda", "Sulafat", "Erinome"]
+FEMALE = ["Leda", "Erinome", "Sulafat", "Kore", "Zephyr"]   # FY-FZ-FEMALE-VOICE-RANK-01(2026-10-29)
 
 
 def _roster(genders):
@@ -30,12 +30,12 @@ class AssignmentRuleTest(unittest.TestCase):
     def test_order_not_list_position(self):
         r = [{"speaker": "b", "gender": "female", "order": 2}, {"speaker": "a", "gender": "female", "order": 1}]
         out = st.assign_dialogue_voices(r)
-        self.assertEqual((out["a"], out["b"]), ("Zephyr", "Kore"))
+        self.assertEqual((out["a"], out["b"]), ("Leda", "Erinome"))
 
     def test_mixed_gender_independent_ranks(self):
         out = st.assign_dialogue_voices(_roster(["male", "female", "female", "male"]))
         self.assertEqual((out["s0"], out["s3"]), ("Algieba", "Schedar"))
-        self.assertEqual((out["s1"], out["s2"]), ("Zephyr", "Kore"))
+        self.assertEqual((out["s1"], out["s2"]), ("Leda", "Erinome"))
 
     def test_narrator_and_charon_never_in_pool(self):
         allv = set(MALE + FEMALE)
@@ -64,8 +64,13 @@ class OpenWindowTest(unittest.TestCase):
         self.assertNotIn(None, n.values())
         self.assertNotIn("Charon", n.values())
         a = st.derive_voice_assignment("the_open_window")
-        self.assertFalse(any(row["pinned"] for row in a["speakers"]))
-        self.assertTrue(all(row["voice"] == row["rule_voice"] for row in a["speakers"]))
+        # 女性順位変更(FY-FZ-FEMALE-VOICE-RANK-01)後も制作済みの女性Voiceはpinで維持。男性はrule値のまま
+        for row in a["speakers"]:
+            self.assertEqual(row["pinned"], row["gender"] == "female")
+            if row["gender"] == "male":
+                self.assertEqual(row["voice"], row["rule_voice"])
+            else:
+                self.assertEqual(row["rule_voice"], {"vera": "Leda", "mrs_sappleton": "Erinome"}[row["speaker"]])
 
     def test_roster_covers_speakers(self):
         c = st.STORY_SPEAKER_CONFIG["the_open_window"]

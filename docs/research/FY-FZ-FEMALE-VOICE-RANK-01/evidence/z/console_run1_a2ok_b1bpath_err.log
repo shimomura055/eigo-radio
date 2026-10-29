@@ -1,0 +1,29 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+resolved heroine: Leda  hero: Algieba
+a2 {'status': 'OK', 'voice_planned': 'Leda', 'voice_result': 'Leda', 'path': 'C:\\Users\\tensh\\eigo-radio\\docs/research/FY-FZ-FEMALE-VOICE-RANK-01/evidence/z\\a2_heroine.wav', 'attempts': 1, 'asr_text': 'I will wait for you here until the sun goes down.'}
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\docs\research\FY-FZ-FEMALE-VOICE-RANK-01\tools\z_voice_evidence_01.py", line 44, in <module>
+    r = gens["dialogue"](spec, path)
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 1154, in dialogue
+    return n3_tts.generate_with_a2_slowdown_outer_loop(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        spec.clip_id, text, out_path,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        lambda max_attempts: bvoices.generate_voice_body_wide_margin(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            text, out_path, spec.voice, max_attempts=max_attempts),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        slowdown_pct=Z_ADV_DIALOGUE_SLOWDOWN_PCT)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 549, in generate_with_a2_slowdown_outer_loop
+    result = apply_a2_slowdown_postprocess(
+        name, narration_dir, tts_input, result,
+        is_last_slot=(final_block and (_budget_last or attempt >= max_slowdown_attempts)),
+        log_human_review=True, **_pp_kw)
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 216, in apply_a2_slowdown_postprocess
+    shutil.copyfile(out_path, original_path)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\shutil.py", line 313, in copyfile
+    with open(src, 'rb') as fsrc:
+         ~~~~^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\tensh\\eigo-radio\\docs/research/FY-FZ-FEMALE-VOICE-RANK-01/evidence/fvr_ev_b1b_heroine.wav'

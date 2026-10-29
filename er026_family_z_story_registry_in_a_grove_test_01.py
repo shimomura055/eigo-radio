@@ -198,13 +198,13 @@ class VoiceAndSpeakerTest(unittest.TestCase):
         self.assertEqual(names, self.EXPECT)
         self.assertEqual(r.STORY_REGISTRY[KEY]["voice_tts_names_plan"], names)
         asg = st.derive_voice_assignment(KEY)
-        self.assertTrue(all(not row["pinned"] for row in asg["speakers"]))   # pin(個別例外)なし
+        self.assertTrue(all(row["pinned"] == (row["gender"] == "female") for row in asg["speakers"]))   # 男性=pinなし。女性=FY-FZ-FEMALE-VOICE-RANK-01で順位変更前の制作済みVoiceをpin(制作済み作品は差替えない)
         self.assertNotIn("narrator_voice_pin", asg)                           # 本文narratorも既定Aoede
         pool = st.FAMILY_Z_DIALOGUE_VOICE_POOL
         males = [row["voice"] for row in asg["speakers"] if row["gender"] == "male"]
         females = [row["voice"] for row in asg["speakers"] if row["gender"] == "female"]
         self.assertEqual(males, list(pool["male"]))      # 男性5名=Pool5名ちょうど(循環なし)
-        self.assertEqual(females, list(pool["female"][:2]))
+        self.assertEqual(females, ["Zephyr", "Kore"])   # 順位変更前の制作済みVoice(pin)。新順位[:2]=Leda/Erinomeは新規作品にのみ適用
         self.assertEqual(len(set(self.EXPECT.values())), 8)   # 8声すべて別
 
     def test_speakers_resolve_and_unknown_fails_closed(self):

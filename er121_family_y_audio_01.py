@@ -80,9 +80,12 @@ def tts_voice(voice_name: str):
         p9a.VOICE_NAME = prev
 
 
-def segment_voice_map() -> dict:
+def segment_voice_map(out_dir: str | None = None, level: str | None = None) -> dict:
+    """segment->TTS Voice。out_dir(run dir)を渡すと、そのrunの voice_assignment.json の記録割当を優先(既存記事不変。FY-FZ-FEMALE-VOICE-RANK-01)。
+    省略時は現行既定(新規制作の既定=新順位)。生成・guard・assemble・reconcileは必ずrun dirを渡す。"""
     nv = narrator_voice()
-    return {sid: ys.voice_of_segment(sid, nv) for sid in ys.Y_SEGMENT_IDS}
+    slots = ys.resolve_voice_slots(out_dir, level)
+    return {sid: ys.voice_of_segment(sid, nv, slots) for sid in ys.Y_SEGMENT_IDS}
 
 
 @contextlib.contextmanager
@@ -189,19 +192,19 @@ def write_level_inputs(theme_out_dir: str, level: str, parsed_en: dict, support:
     return parts
 
 
-def voice_guard_cached(cached: dict | None) -> dict | None:
+def voice_guard_cached(cached: dict | None, out_dir: str | None = None, level: str | None = None) -> dict | None:
     """同一out_dirのresume時、Y本文segmentの前回entryを再利用してよいのは『要求Voiceが記録され一致する』場合だけ
     (run内cacheはsegment ID+テキストのみで照合するため、Voice名を追加照合する。記録なし/不一致entryは再利用せず再生成)。"""
     if not cached:
         return cached
     segs = dict(cached.get("segments") or {})
     dropped = []
-    for sid, voice in segment_voice_map().items():
+    for sid, voice in segment_voice_map(out_dir, level).items():
         e = segs.get(sid)
         if e is not None and e.get("y_tts_voice_requested") != voice:
             segs.pop(sid)
             dropped.append(sid)
-    vmap = segment_voice_map()
+    vmap = segment_voice_map(out_dir, level)
     for k in list(segs):                                  # 委任_04: chunk entryも『親segmentの要求Voiceが記録され一致する』場合だけ再利用
         pc = ys.parse_y_chunk_id(k)
         if pc is not None and (segs[k] or {}).get("y_tts_voice_requested") != vmap.get(pc[0]):
@@ -264,7 +267,7 @@ def reconcile_hr_approvals_for_request(out_dir: str, level: str, style_profile: 
     approvals = load_json(ap)
     rp = f"{out_dir}/audit/tts_generation_results.json"
     segs = (load_json(rp).get("segments") or {}) if os.path.exists(rp) else {}
-    vmap = segment_voice_map()
+    vmap = segment_voice_map(out_dir, level)
     cur_style = current_style_record(level, style_profile, tts_backend)
     moved, checked = [], 0
     for key in list(approvals):
@@ -475,7 +478,7 @@ def refresh_y_chunk_parents(out_dir: str, parts: dict, segments: dict, plans: di
     generate末尾と、assembleのGate前で呼ぶ(人間承認後の再assembleで親も通る)。親statusはCHUNKS_NOT_ALL_VALIDATED(共有Gateで必ずブロック)かOK。"""
     ap = asm.human_approval_path(out_dir)
     approvals = load_json(ap) if os.path.exists(ap) else {}
-    vmap = segment_voice_map()
+    vmap = segment_voice_map(out_dir, level)
     out = {}
     for sid, plan in plans.items():
         if not plan.get("chunked"):
@@ -563,7 +566,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
     shared_raw = ({} if xr._ONLY_SEGMENTS is not None else shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend))
     shared_status = xr._summarize_shared_narration(shared_raw)
-    cached = _drop_stale_chunk_cache(voice_guard_cached(xr._load_cached_tts_results(out_dir)), chunk_plans)
+    cached = _drop_stale_chunk_cache(voice_guard_cached(xr._load_cached_tts_results(out_dir), out_dir, "b1b"), chunk_plans)
     if kp is not None:
         expl_path = f"{theme_out_dir}/key_phrases/b1b/kp_explanations.json"
         cached = seed_kp_explanations_cache(cached, kp, load_json(expl_path) if os.path.exists(expl_path) else None)
@@ -594,7 +597,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
         if name == "preview" and not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, style_profile_mod.ROLE_PREVIEW, _role_style("PREVIEW"))
 
-    vmap = segment_voice_map()
+    vmap = segment_voice_map(out_dir, "b1b")
     for name in ys.Y_SEGMENT_IDS:
         text = parts["segments"][name]
         voice = vmap[name]
@@ -674,7 +677,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
     shared_raw = ({} if xr._ONLY_SEGMENTS is not None else shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend))
     shared_status = xr._summarize_shared_narration(shared_raw)
     cached = chunk_tts.drop_cached_std_chunks_without_slowdown(
-        _drop_stale_chunk_cache(voice_guard_cached(xr._load_cached_tts_results(out_dir)), chunk_plans), is_chunk_id=lambda k: ys.parse_y_chunk_id(k) is not None)
+        _drop_stale_chunk_cache(voice_guard_cached(xr._load_cached_tts_results(out_dir), out_dir, "a2"), chunk_plans), is_chunk_id=lambda k: ys.parse_y_chunk_id(k) is not None)
     results = {}
 
     topic_text = f"Today's topic is {parts['title']}."
@@ -708,7 +711,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
         if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, style_profile_mod.ROLE_SUPPORT_JA, _role_style_ja_support())
 
-    vmap = segment_voice_map()
+    vmap = segment_voice_map(out_dir, "a2")
     for name in ys.Y_SEGMENT_IDS:
         text = parts["segments"][name]
         voice = vmap[name]

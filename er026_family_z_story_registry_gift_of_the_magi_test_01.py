@@ -131,7 +131,7 @@ class VoiceAndSpeakerTest(unittest.TestCase):
         self.assertEqual(names, {"narrator": "Aoede", "della": "Zephyr", "madame": "Kore", "jim": "Algieba"})
         self.assertEqual(r.STORY_REGISTRY[KEY]["voice_tts_names_plan"], names)
         asg = st.derive_voice_assignment(KEY)
-        self.assertTrue(all(not row["pinned"] for row in asg["speakers"]))   # pin(個別例外)なし
+        self.assertTrue(all(row["pinned"] == (row["gender"] == "female") for row in asg["speakers"]))   # 男性=pinなし。女性=FY-FZ-FEMALE-VOICE-RANK-01で順位変更前の制作済みVoiceをpin(制作済み作品は差替えない)
 
     def test_speakers_resolve_and_unknown_fails_closed(self):
         self.assertEqual(a63.normalize_speaker("dialogue:jim", KEY), "jim")

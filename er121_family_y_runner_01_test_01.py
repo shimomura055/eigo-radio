@@ -231,7 +231,7 @@ class FullMockRun(unittest.TestCase):
         import er121_family_y_audio_01 as ya
         vm = ya.segment_voice_map()
         self.assertEqual(vm["y_voice_1"], "Puck")
-        self.assertEqual(vm["y_voice_2"], "Zephyr")
+        self.assertEqual(vm["y_voice_2"], "Leda")
         self.assertEqual(vm["y_voice_3"], "Schedar")
         narrator = ya.narrator_voice()
         for sid in ys.Y_NARRATOR_IDS:

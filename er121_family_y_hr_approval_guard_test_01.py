@@ -141,13 +141,13 @@ class TestVoiceBinding(Base):
         res = self.results()
         res["segments"]["y_voice_2_k1"]["voice"] = "Algieba"
         res["segments"]["y_voice_2_k1"]["y_tts_voice_requested"] = "Algieba"
-        res["segments"]["y_voice_2_k2"]["voice"] = "Zephyr"
+        res["segments"]["y_voice_2_k2"]["voice"] = "Leda"
         self.save_results(res)
         ap = {"y_voice_2_k1": {"canonical_text_sha256": "x", "approved_at": "t", "approved_by": "user"},
               "y_voice_2_k2": {"canonical_text_sha256": "x", "approved_at": "t", "approved_by": "user"}}
         self.wj(asm.human_approval_path(self.b1), ap)
         got = {m["segment"]: m["reason"] for m in self.reconcile()["quarantined"]}
-        self.assertEqual(got, {"y_voice_2_k1": "Y_HR_APPROVAL_VOICE_MISMATCH"})   # k2はZephyr一致で残る
+        self.assertEqual(got, {"y_voice_2_k1": "Y_HR_APPROVAL_VOICE_MISMATCH"})   # k2はLeda一致で残る
         self.assertEqual(sorted(self.approvals()), ["y_voice_2_k2"])
 
     def test_gate_does_not_honor_old_approval_after_voice_change(self):
