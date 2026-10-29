@@ -140,8 +140,11 @@ class T2_LegacyAutoFailure(ZNuance):
         for lv in ("b1b", "a2"):
             self.assertFalse(any(os.path.exists(f"{self.sd(lv)}/{n}") for n in NUANCE_FILES), lv)
         index = rd(f"{self.ctx.pages_dir}/index.html")
-        self.assertEqual(g.count_nuance_blocks(index), 0)
-        self.assertNotIn(g.NUANCE_HEADING, index)
+        # 778f22f00(HR-SELECTION-FLOW 委任_04)で追加した事後確認節(重複アラーム)は「ニュアンス解説」の語を含み得る共通レンダ。
+        # LEGACY判定の意図=ニュアンス解説コーナー非表示、なので同節(<section id='post-check'>)以降を除いた本文領域で検査する。
+        body = index.split("<section id='post-check'>")[0]
+        self.assertEqual(g.count_nuance_blocks(body), 0)
+        self.assertNotIn(g.NUANCE_HEADING, body)
 
     def test_auto_adopted_run_generates_nothing_and_pages_complete_without_corner(self):
         hk = Hooks(self.ctx).install()
