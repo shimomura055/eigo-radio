@@ -1,13 +1,13 @@
 ## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)
 2箇所。最終状態=**アラーム付き完成**。制作は停止せずHuman Reviewにも回していません。確認・承認操作は完成の条件ではありません。
 - **tajomaru** × 1箇所
-  - [Z/b1b/comment_3] er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/comment_3.wav / 文脈 `...[[tajomaru]] says he freed Takehiro, and they fought...` / 目安0.0秒
+  - [Z/b1b/comment_3 継承] er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/comment_3.wav / 文脈 `...[[tajomaru]] says he freed Takehiro, and they fought...` / 目安0.0秒
     - 検出した不一致: 原稿 `tajomaru` -> Primary `tanjuromaru` / Secondary `taj mahal`
     - 発音の根拠(Ledger/Perplexity調査): 階層=PRON_IN_CITED_PAGE / 確信度=low / hint=tah-joh-MAH-roo
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
 - **takehiro** × 1箇所
-  - [Z/b1b/comment_3] er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/comment_3.wav / 文脈 `...Tajomaru says he freed [[takehiro]], and they fought with swords. What does...` / 目安1.3秒
+  - [Z/b1b/comment_3 継承] er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/comment_3.wav / 文脈 `...Tajomaru says he freed [[takehiro]], and they fought with swords. What does...` / 目安1.3秒
     - 検出した不一致: 原稿 `takehiro` -> Primary `takahiro` / Secondary `takahiro`
     - 発音の根拠(Ledger/Perplexity調査): 階層=NAME_IN_CITED_PAGE / 確信度=medium / hint=tah-KEH-hee-roh
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)

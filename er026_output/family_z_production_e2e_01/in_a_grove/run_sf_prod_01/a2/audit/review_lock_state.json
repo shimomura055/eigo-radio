@@ -1543,12 +1543,12 @@
   },
   "kp2_en": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "7242487ff827b47b3b49f2eec272bff85dec632fd51c2f856dc7ca6c4cbb3808",
+    "canonical_text_sha256": "476342b3553fe919674e4d291c6a8848a147e0bbe1c948c9d4b0fc409458d9da",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "kp2_en",
-    "updated_at": "2026-10-29T11:06:02",
+    "updated_at": "2026-10-29T15:03:49",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp2_en.wav",
@@ -1559,381 +1559,7 @@
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 1.24,
-        "asr_text": "constable",
-        "asr_text_length": 9,
-        "max_len": 19,
-        "substring_ok": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "phonetic_verdict": null,
-        "audio_classification": "EXACT_MATCH",
-        "connected_speech_info": null,
-        "reading_resolver_info": null,
-        "scg_info": null,
-        "verified": true,
-        "disfluency_checked": true,
-        "disfluency_evidence": {
-          "flagged": false,
-          "repeats": [],
-          "word_count": 1,
-          "transcript": "Constable.",
-          "method": "faster_whisper_small_local_verbatim"
-        },
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "asr_prompt_applied": true,
-        "non_latin_cascade_enabled": true,
-        "non_latin_cascade_invoked": false,
-        "style_prefix": {
-          "len": 332,
-          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
-          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
-        },
-        "cascade_steps": [
-          {
-            "step": "primary_1",
-            "provider": "openai_asr",
-            "text": "constable",
-            "classification": "EXACT_MATCH",
-            "entity_like_source": []
-          },
-          {
-            "step": "secondary_vote",
-            "provider": "azure",
-            "text": "Constable.",
-            "classification": "NORMALIZED_MATCH",
-            "phrase_list_used": false,
-            "azure_phrase_list_weight": null,
-            "azure_phrase_list": [],
-            "cached": false,
-            "unified_judge_state": "PASS",
-            "vote_required": true,
-            "entity_like_source": []
-          }
-        ],
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "dual_agreed",
-          "slot": 1,
-          "script_version": "v0",
-          "role": null,
-          "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "ea177b3679a0e22c0b00c62dabfb6b9f1aaccdf70123a75e0c4d631eec819d04",
-          "primary": {
-            "text": "constable",
-            "passed": true,
-            "label": "EXACT_MATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Constable.",
-            "label": "NORMALIZED_MATCH",
-            "accepted": true,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "target": "secondary",
-            "value_guard": "NO_VALUES",
-            "negation_diff": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 1.24,
-            "est_jpy": 0.0889,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 1036,
-            "secondary_ms": 1035
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 9,
-            "secondary_len": 10,
-            "max_len": 19,
-            "adopted_from": "secondary",
-            "adopted_ok": true,
-            "surface_len": 9,
-            "primary_ok": true
-          },
-          "vote": {
-            "version": "kp_vote_check_v1",
-            "guard_lifted": true,
-            "guard_lifted_version": "kp_vote_guard_lifted_v1",
-            "observed_protected_diff": {
-              "primary": false,
-              "secondary": false,
-              "whisper": false
-            },
-            "required": true,
-            "state": "PASS_DUAL",
-            "reason": "dual_agreed",
-            "row": "P+S",
-            "pass_count": 2,
-            "tiebreak_enabled": true,
-            "primary": {
-              "provider": "openai",
-              "text": "constable",
-              "pass": true,
-              "available": true,
-              "label": "EXACT_MATCH",
-              "observed_protected_diff": false,
-              "rescued": false,
-              "error": null,
-              "technical_failure": false,
-              "note": null,
-              "rescue_layers": []
-            },
-            "secondary": {
-              "provider": "azure",
-              "text": "Constable.",
-              "pass": true,
-              "available": true,
-              "label": "NORMALIZED_MATCH",
-              "observed_protected_diff": false,
-              "rescued": false,
-              "error": null,
-              "technical_failure": false,
-              "note": "secondary_accepted",
-              "rescue_layers": []
-            },
-            "secondary_called": true,
-            "whisper": null,
-            "whisper_called": false,
-            "whisper_model": null,
-            "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
-            "ortho_scope": "Z",
-            "primary_not_pass_reason": null,
-            "primary_rescued_by_secondary": false
-          },
-          "p3_entry": "vote_required",
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": null,
-            "asr_text_present": true,
-            "cache": {
-              "calls": 7,
-              "hits": 0
-            }
-          }
-        },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp2_en_attempt1_custom60ebc452.wav"
-      }
-    ]
-  },
-  "kp2_ja": {
-    "state": "RESOLVED",
-    "canonical_text_sha256": "0ac325abf9fc513191244fc30795f5a2d7bf5e87a245705d39de2ec092551ed1",
-    "language": "ja",
-    "theme_id": "run_sf_prod_01",
-    "level": "a2",
-    "segment_id": "kp2_ja",
-    "updated_at": "2026-10-29T11:06:05",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
-    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp2_ja.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
-    "budget_guard_triggered": false,
-    "last_attempts_log": [
-      {
-        "attempt": 1,
-        "status": "OK",
-        "duration_seconds": 1.24,
-        "asr_text": "警官",
-        "asr_text_length": 2,
-        "max_len": 32,
-        "substring_ok": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "phonetic_verdict": null,
-        "audio_classification": "EXACT_MATCH",
-        "connected_speech_info": null,
-        "reading_resolver_info": null,
-        "scg_info": null,
-        "verified": true,
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "asr_prompt_applied": false,
-        "non_latin_cascade_enabled": false,
-        "non_latin_cascade_invoked": null,
-        "style_prefix": null,
-        "cascade_steps": null,
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 1,
-          "script_version": "v0",
-          "role": null,
-          "lang": "ja",
-          "segment_key": "",
-          "audio_sha256": "de9f95bf591385b6de2517ead60a9be3a2d60b80de0520c3ed122e6b65d8a7da",
-          "primary": {
-            "text": "警官",
-            "passed": true,
-            "label": "EXACT_MATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": false,
-            "cached": false,
-            "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "value_guard": "NO_VALUES",
-            "negation_diff": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
-          },
-          "timing": {
-            "total_ms": 0,
-            "secondary_ms": 0
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 2,
-            "secondary_len": null,
-            "max_len": 32,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": null,
-            "primary_ok": true
-          },
-          "r5": {
-            "version": "r5_v1",
-            "measurement_error": null,
-            "f1": {
-              "rollback_const_READING_MATCH_FINAL_GATE": true,
-              "reading_match_primary_pass": false,
-              "final_gate_rejected": false,
-              "demoted_p3": false,
-              "would_have_passed_before_f1": false,
-              "reason_code": null,
-              "pair_reasons": []
-            },
-            "f2": {
-              "enabled": false,
-              "fired": false,
-              "fallback": null,
-              "replaced": null,
-              "canon_before": null,
-              "canon_after": null,
-              "text_before": null,
-              "text_after": null,
-              "state_after": null
-            },
-            "o524_part_of_larger_pairs": 0,
-            "o523_weak_kana_diff_pairs": 0,
-            "models": {
-              "primary": {
-                "provider": "openai_asr",
-                "model": "gpt-4o-mini-transcribe"
-              },
-              "secondary": null
-            }
-          },
-          "canonical_text": "警官",
-          "verdict": "PASS",
-          "rescue_basis": null,
-          "judge_rule_version": "ja_v2beta_r1off_01",
-          "ja_v2beta": {
-            "active": true,
-            "scope": "Z",
-            "layers": []
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 0,
-            "cost_guard_triggered": false,
-            "language": "ja-JP",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 7,
-              "hits": 0
-            }
-          }
-        },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp2_ja_attempt1_customa6dd8324.wav"
-      }
-    ]
-  },
-  "kp3_en": {
-    "state": "RESOLVED",
-    "canonical_text_sha256": "476342b3553fe919674e4d291c6a8848a147e0bbe1c948c9d4b0fc409458d9da",
-    "language": "en",
-    "theme_id": "run_sf_prod_01",
-    "level": "a2",
-    "segment_id": "kp3_en",
-    "updated_at": "2026-10-29T11:06:10",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
-    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp3_en.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
-    "budget_guard_triggered": false,
-    "last_attempts_log": [
-      {
-        "attempt": 1,
-        "status": "OK",
-        "duration_seconds": 1.14,
+        "duration_seconds": 1.0,
         "asr_text": "drown",
         "asr_text_length": 5,
         "max_len": 15,
@@ -1994,7 +1620,7 @@
           "role": null,
           "lang": "en",
           "segment_key": "",
-          "audio_sha256": "67764d326d023cf1351a8675a24271d070ffa2d6efc9420732629efc9f335c74",
+          "audio_sha256": "a2266bb79e1634382bae486194ec29d08c99ee1b475f0496dee71ad88c078f07",
           "primary": {
             "text": "drown",
             "passed": true,
@@ -2040,13 +1666,13 @@
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 1,
-            "azure_seconds": 1.14,
-            "est_jpy": 0.0889,
+            "azure_seconds": 1.0,
+            "est_jpy": 0.0444,
             "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 536,
-            "secondary_ms": 535
+            "total_ms": 687,
+            "secondary_ms": 687
           },
           "technical_stop": null,
           "length": {
@@ -2118,26 +1744,26 @@
             "segment_id": null,
             "asr_text_present": true,
             "cache": {
-              "calls": 9,
+              "calls": 2,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp3_en_attempt1_custom60ebc452.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp2_en_attempt2_custom60ebc452.wav"
       }
     ]
   },
-  "kp3_ja": {
+  "kp2_ja": {
     "state": "RESOLVED",
     "canonical_text_sha256": "bbc2d234133d18ba98d1814ac7e494e5493abaa1f2dd5fb46facba257a7b09a5",
     "language": "ja",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
-    "segment_id": "kp3_ja",
-    "updated_at": "2026-10-29T11:06:13",
+    "segment_id": "kp2_ja",
+    "updated_at": "2026-10-29T15:03:52",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
-    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp3_ja.wav",
+    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp2_ja.wav",
     "cumulative_tts_attempts": 1,
     "cumulative_asr_calls": 1,
     "budget_guard_triggered": false,
@@ -2145,7 +1771,7 @@
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 1.19,
+        "duration_seconds": 1.24,
         "asr_text": "溺れる",
         "asr_text_length": 3,
         "max_len": 33,
@@ -2175,7 +1801,7 @@
           "role": null,
           "lang": "ja",
           "segment_key": "",
-          "audio_sha256": "917b340e2d15b05e1a610a95f4becf9487f253330c0e9f5c0dacbd001696bf42",
+          "audio_sha256": "86ae08498264f38bea080dfc84f2a84b3684139a855579252fd930e287d63e3b",
           "primary": {
             "text": "溺れる",
             "passed": true,
@@ -2280,12 +1906,424 @@
             "language": "ja-JP",
             "asr_text_present": true,
             "cache": {
-              "calls": 9,
+              "calls": 2,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp3_ja_attempt1_customa6dd8324.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp2_ja_attempt2_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "07299a3f8843d2cde6e11075c597b2ce9868221d2a401aba32abf05bd455af23",
+    "language": "en",
+    "theme_id": "run_sf_prod_01",
+    "level": "a2",
+    "segment_id": "kp3_en",
+    "updated_at": "2026-10-29T15:03:58",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp3_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.04,
+        "asr_text": "bandit",
+        "asr_text_length": 6,
+        "max_len": 16,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "Bandit",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "bandit",
+            "classification": "EXACT_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Bandit.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "a8a63eaa8b49d159e08145c25bcc6be52fb74b6ae94169f46b5e077d33dc4997",
+          "primary": {
+            "text": "bandit",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Bandit.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.04,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 544,
+            "secondary_ms": 543
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 6,
+            "secondary_len": 7,
+            "max_len": 16,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 6,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "bandit",
+              "pass": true,
+              "available": true,
+              "label": "EXACT_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Bandit.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+            "ortho_scope": "Z",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp3_en_attempt2_custom60ebc452.wav"
+      }
+    ]
+  },
+  "kp3_ja": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "09492a2a62637314b2d7756816b03ff0be6e0086b370585285fe45ca7fe68acd",
+    "language": "ja",
+    "theme_id": "run_sf_prod_01",
+    "level": "a2",
+    "segment_id": "kp3_ja",
+    "updated_at": "2026-10-29T15:04:05",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp3_ja.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.29,
+        "asr_text": "登録",
+        "asr_text_length": 2,
+        "max_len": 32,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "SECONDARY_CONFIRMED_PRIMARY_FALSE_NG",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": {
+          "scg_applied": true,
+          "scg_result": "PASS",
+          "exclusion_reason": null,
+          "primary_text": "登録",
+          "unified_judge_state": "PASS_WITH_WARNING",
+          "unified_reason_code": "secondary_confirmed",
+          "service": "Azure Speech STT (continuous recognition, no Phrase List)",
+          "azure_region": "japanwest",
+          "speech_sdk_version": "1.50.0",
+          "language": "ja-JP",
+          "phrase_list": false,
+          "audio_seconds": 1.29,
+          "est_cost_jpy": 0.0889,
+          "wall_seconds": 1.03,
+          "timestamp": "2026-10-29T15:04:05",
+          "secondary_transcript": "盗賊。",
+          "error": null,
+          "secondary_classification": "NORMALIZED_MATCH",
+          "judgement_reason": "統一judge(secondary_confirmed): Secondary(Azure) label='NORMALIZED_MATCH'",
+          "scg_info_source": "AUW_unified_judge"
+        },
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "af5b5d6e7875f8b487fe3732c2bacdf59caa0490b46d7ae066bbe5928476f93b",
+          "primary": {
+            "text": "登録",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "盗賊。",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false,
+            "provenance_complete": true,
+            "model_id": "azure-speech-stt"
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.29,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1033,
+            "secondary_ms": 1033
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 2,
+            "secondary_len": 3,
+            "max_len": 32,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 2,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "r5": {
+            "version": "r5_v1",
+            "measurement_error": null,
+            "f1": {
+              "rollback_const_READING_MATCH_FINAL_GATE": true,
+              "reading_match_primary_pass": false,
+              "final_gate_rejected": false,
+              "demoted_p3": false,
+              "would_have_passed_before_f1": false,
+              "reason_code": null,
+              "pair_reasons": []
+            },
+            "f2": {
+              "enabled": false,
+              "fired": false,
+              "fallback": null,
+              "replaced": null,
+              "canon_before": null,
+              "canon_after": null,
+              "text_before": null,
+              "text_after": null,
+              "state_after": null
+            },
+            "o524_part_of_larger_pairs": 0,
+            "o523_weak_kana_diff_pairs": 0,
+            "models": {
+              "primary": {
+                "provider": "openai_asr",
+                "model": "gpt-4o-mini-transcribe"
+              },
+              "secondary": {
+                "provider": "azure",
+                "model_id": "azure-speech-stt"
+              }
+            }
+          },
+          "canonical_text": "盗賊",
+          "verdict": "PASS_W",
+          "rescue_basis": null,
+          "judge_rule_version": "ja_v2beta_r1off_01",
+          "ja_v2beta": {
+            "active": true,
+            "scope": "Z",
+            "layers": []
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 5,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/kp3_ja_attempt2_customa6dd8324.wav"
       }
     ]
   },
@@ -5312,12 +5350,12 @@
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part2_c1",
-    "updated_at": "2026-10-29T11:12:44",
+    "updated_at": "2026-10-29T15:04:30",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c1.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
@@ -5332,7 +5370,7 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part2_c1",
-          "audio_sha256": "168c2a510459522c8a2e2349c73342118b3f3e8d198ffbe1c2609cb27c992e1b",
+          "audio_sha256": "ca76bfe508b1c24f9b2c3d756415283414b1c3ac162c3f1077b0c1a754dbb8e0",
           "primary": {
             "text": "I killed him fairly.",
             "passed": true,
@@ -5396,7 +5434,7 @@
             "segment_id": "full_story_part2_c1",
             "asr_text_present": true,
             "cache": {
-              "calls": 15,
+              "calls": 5,
               "hits": 0
             }
           }
@@ -5408,19 +5446,19 @@
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 2.371,
+          "raw_duration_seconds": 2.291,
           "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.34,
-          "trimmed_duration_seconds": 2.371,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 2.281,
           "leading_margin_retained_seconds": 0.26,
-          "trailing_margin_retained_seconds": 0.34
+          "trailing_margin_retained_seconds": 0.35
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 2.371,
+          "duration_seconds": 2.281,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -5432,40 +5470,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9897,
-                "time_a_seconds": 0.05,
-                "time_b_seconds": 2.13,
-                "lag_seconds": 2.08,
+                "similarity": 0.9949,
+                "time_a_seconds": 0.19,
+                "time_b_seconds": 2.05,
+                "lag_seconds": 1.86,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9945,
+                "time_a_seconds": 0.19,
+                "time_b_seconds": 2.22,
+                "lag_seconds": 2.03,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9798,
-                "time_a_seconds": 0.72,
-                "time_b_seconds": 2.13,
-                "lag_seconds": 1.41,
-                "run_length_seconds_at_thresh_0.85": 0.02
-              },
-              {
-                "similarity": 0.9771,
-                "time_a_seconds": 0.07,
-                "time_b_seconds": 2.23,
-                "lag_seconds": 2.16,
+                "similarity": 0.981,
+                "time_a_seconds": 0.54,
+                "time_b_seconds": 2.22,
+                "lag_seconds": 1.68,
                 "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9683,
-                "time_a_seconds": 0.73,
-                "time_b_seconds": 2.3,
-                "lag_seconds": 1.57
+                "similarity": 0.9803,
+                "time_a_seconds": 0.54,
+                "time_b_seconds": 2.05,
+                "lag_seconds": 1.51
               },
               {
-                "similarity": 0.9658,
-                "time_a_seconds": 0.23,
-                "time_b_seconds": 2.14,
-                "lag_seconds": 1.91
+                "similarity": 0.9757,
+                "time_a_seconds": 0.2,
+                "time_b_seconds": 2.22,
+                "lag_seconds": 2.02
               }
             ],
-            "best_run_length_seconds": 0.02,
+            "best_run_length_seconds": 0.03,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -5474,11 +5512,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.36,
-            "time_a": 0.34,
-            "lag": 1.23,
-            "similarity_at_start": 0.7289,
-            "best_run_length_seconds": 0.36,
+            "run_length_seconds": 0.43,
+            "time_a": 0.67,
+            "lag": 0.74,
+            "similarity_at_start": 0.7327,
+            "best_run_length_seconds": 0.43,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -5489,13 +5527,13 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c1_attempt1_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c1_attempt2_englishstyleprefixwidemargin.wav",
         "tts_mode": "ctx",
         "overall_attempt_n": 1,
         "dialogue_tts_policy": "fz_ctx_v1",
         "style_prefix": {
-          "len": 3795,
-          "sha256": "eab70921d726a07887ec2f8447d403713c9cd760a2b2a9c1a03c406f4002952d",
+          "len": 3780,
+          "sha256": "4ef87f8e0f1b11012bca1d03f7ecc9daaf87f0199c94084aa258bc3bf9862013",
           "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
         }
       }
@@ -5503,12 +5541,12 @@
   },
   "full_story_part2_c2": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "018e048dc2dc0ec0c9419946620241dd76c4b63ab3e2c172d3bdeab29c2eca41",
+    "canonical_text_sha256": "4ad2474487a7d16e14ec22fe87a6b17daf152b143ce4861084077026897caa84",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part2_c2",
-    "updated_at": "2026-10-29T11:12:53",
+    "updated_at": "2026-10-29T15:04:38",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c2.wav",
@@ -5519,10 +5557,10 @@
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 12.87,
-        "asr_text": "Tajomaru said, The wind lifted her face covering, and I wanted her. I promised him buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger.",
-        "asr_text_length": 189,
-        "max_len": 250,
+        "duration_seconds": 1.8,
+        "asr_text": "Tajomaru said,",
+        "asr_text_length": 14,
+        "max_len": 74,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
@@ -5537,52 +5575,52 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 12.87,
+          "duration_seconds": 1.8,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 36,
+            "word_count": 3,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9939,
-                "time_a_seconds": 1.79,
-                "time_b_seconds": 5.03,
-                "lag_seconds": 3.24,
+                "similarity": 0.9788,
+                "time_a_seconds": 0.07,
+                "time_b_seconds": 1.68,
+                "lag_seconds": 1.61,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9435,
+                "time_a_seconds": 0.21,
+                "time_b_seconds": 1.38,
+                "lag_seconds": 1.17,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9937,
-                "time_a_seconds": 6.15,
-                "time_b_seconds": 9.96,
-                "lag_seconds": 3.81,
-                "run_length_seconds_at_thresh_0.85": 0.02
+                "similarity": 0.9291,
+                "time_a_seconds": 0.22,
+                "time_b_seconds": 1.51,
+                "lag_seconds": 1.29,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9917,
-                "time_a_seconds": 7.66,
-                "time_b_seconds": 9.97,
-                "lag_seconds": 2.31,
-                "run_length_seconds_at_thresh_0.85": 0.05
+                "similarity": 0.9135,
+                "time_a_seconds": 0.07,
+                "time_b_seconds": 1.53,
+                "lag_seconds": 1.46
               },
               {
-                "similarity": 0.9911,
-                "time_a_seconds": 6.16,
-                "time_b_seconds": 7.36,
-                "lag_seconds": 1.2
-              },
-              {
-                "similarity": 0.9901,
-                "time_a_seconds": 2.58,
-                "time_b_seconds": 4.47,
-                "lag_seconds": 1.89
+                "similarity": 0.8783,
+                "time_a_seconds": 0.0,
+                "time_b_seconds": 1.38,
+                "lag_seconds": 1.38
               }
             ],
-            "best_run_length_seconds": 0.05,
+            "best_run_length_seconds": 0.02,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -5591,11 +5629,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.32,
-            "time_a": 6.01,
-            "lag": 1.38,
-            "similarity_at_start": 0.804,
-            "best_run_length_seconds": 0.32,
+            "run_length_seconds": 0.19,
+            "time_a": 0.38,
+            "lag": 0.83,
+            "similarity_at_start": 0.7123,
+            "best_run_length_seconds": 0.19,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -5618,7 +5656,7 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "Tajomaru said, The wind lifted her face covering, and I wanted her. I promised him buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger.",
+            "text": "Tajomaru said,",
             "classification": "NORMALIZED_MATCH",
             "entity_like_source": []
           }
@@ -5631,9 +5669,9 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part2_c2",
-          "audio_sha256": "b09c577a9b980b2257a3e51960c990ac110fa324c27fabf257ce054ed16c4097",
+          "audio_sha256": "7f170bd602bfe3197c65fd2c0d16de03b739c65b42c1c547461fba64ded00b65",
           "primary": {
-            "text": "Tajomaru said, The wind lifted her face covering, and I wanted her. I promised him buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger.",
+            "text": "Tajomaru said,",
             "passed": true,
             "label": "NORMALIZED_MATCH",
             "equivalence_basis": null,
@@ -5679,9 +5717,9 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 189,
+            "primary_len": 14,
             "secondary_len": null,
-            "max_len": 250,
+            "max_len": 74,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
@@ -5695,23 +5733,23 @@
             "segment_id": "full_story_part2_c2",
             "asr_text_present": true,
             "cache": {
-              "calls": 15,
+              "calls": 5,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c2_attempt1_customa3c4625e.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c2_attempt3_customa3c4625e.wav"
       }
     ]
   },
   "full_story_part2_c3": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "51891bb7a83ba94e093be6ccb37d80afb37d93d50eb1eb22a09c6ab546a00fbc",
+    "canonical_text_sha256": "f60d2665f67045884058a25092e090e37b9f2afe69a6f96eb87bc9764431fdf5",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part2_c3",
-    "updated_at": "2026-10-29T11:13:18",
+    "updated_at": "2026-10-29T15:05:24",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c3.wav",
@@ -5722,30 +5760,30 @@
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "She held my arm and begged for one of us to die. She would leave with the man who lived. I freed him for a fair sword fight. Twenty-three blows. No other man had lasted twenty. She was gone when he fell. I took his weapons and left.",
+        "asr_text": "The wind lifted her face cover and I wanted her. I promised him buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger. She held my arm and begged for one of us to die. She would leave with the man who lived. I freed him for a fair sword fight. Twenty-three blows. No other man had lasted twenty. She was gone when he fell. I took his weapons and left.",
         "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
           "slot": 1,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part2_c3",
-          "audio_sha256": "1493572d288a5a5d752cde55a64f0b9fdcd48da9db066b47eaf7067a515d4cbb",
+          "audio_sha256": "fb1d286f98769836b09ab9db0ca6188331b7534e661dda9ddd314a9f8a7270e5",
           "primary": {
-            "text": "She held my arm and begged for one of us to die. She would leave with the man who lived. I freed him for a fair sword fight. Twenty-three blows. No other man had lasted twenty. She was gone when he fell. I took his weapons and left.",
-            "passed": true,
-            "label": "NORMALIZED_MATCH",
+            "text": "The wind lifted her face cover and I wanted her. I promised him buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger. She held my arm and begged for one of us to die. She would leave with the man who lived. I freed him for a fair sword fight. Twenty-three blows. No other man had lasted twenty. She was gone when he fell. I took his weapons and left.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
             "equivalence_basis": null,
             "warning_labels": []
           },
           "secondary": {
-            "called": false,
+            "called": true,
             "cached": false,
             "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
+            "text": "The wind lifted her face covering, and I wanted her. I promised him, buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger. She held my arm and begged for one of us to die. She would leave with a man who lived. I freed him for a fair sword fight. 23 blows. No other man had lasted 20. She was gone when he fell. I took his weapons and left.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
             "error": null,
             "unavailable": false
           },
@@ -5774,47 +5812,78 @@
               ],
               "reasons": [],
               "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "23",
+                  "hyp": "23",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "20",
+                  "hyp": "20",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
             }
           },
           "negation_guard": {
-            "primary": false
+            "primary": false,
+            "secondary": false
           },
           "final_gate": {
             "applied": true,
+            "target": "secondary",
             "value_guard": "EQUAL",
             "negation_diff": false
           },
-          "warnings": [],
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
           "exclusion_rule": null,
           "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
+            "azure_calls": 1,
+            "azure_seconds": 28.161,
+            "est_jpy": 1.2889,
+            "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 1,
-            "secondary_ms": 0
+            "total_ms": 12048,
+            "secondary_ms": 12041
           },
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 232,
-            "secondary_len": null,
-            "max_len": 248,
-            "adopted_from": "primary",
+            "primary_len": 403,
+            "secondary_len": 392,
+            "max_len": 424,
+            "adopted_from": "secondary",
             "adopted_ok": true,
-            "surface_len": null,
+            "surface_len": 298,
             "primary_ok": true
           },
+          "p3_entry": "p3_primary_ng",
           "adapter": {
             "layers": [],
-            "azure_real_calls": 0,
+            "azure_real_calls": 1,
             "cost_guard_triggered": false,
             "language": "en-US",
             "segment_id": "full_story_part2_c3",
             "asr_text_present": true,
             "cache": {
-              "calls": 15,
+              "calls": 8,
               "hits": 0
             }
           }
@@ -5826,11 +5895,11 @@
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 19.691,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.46,
-          "trimmed_duration_seconds": 19.581,
-          "leading_margin_retained_seconds": 0.24,
+          "raw_duration_seconds": 28.291,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.48,
+          "trimmed_duration_seconds": 28.161,
+          "leading_margin_retained_seconds": 0.26,
           "trailing_margin_retained_seconds": 0.35
         },
         "disfluency_checked": false,
@@ -5838,52 +5907,52 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 19.581,
+          "duration_seconds": 28.161,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 49,
+            "word_count": 83,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9962,
-                "time_a_seconds": 17.82,
-                "time_b_seconds": 19.4,
-                "lag_seconds": 1.58,
+                "similarity": 0.9984,
+                "time_a_seconds": 6.66,
+                "time_b_seconds": 13.15,
+                "lag_seconds": 6.49,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9982,
+                "time_a_seconds": 13.14,
+                "time_b_seconds": 14.46,
+                "lag_seconds": 1.32,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
+                "similarity": 0.9971,
+                "time_a_seconds": 4.77,
+                "time_b_seconds": 24.81,
+                "lag_seconds": 20.04,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9966,
+                "time_a_seconds": 13.47,
+                "time_b_seconds": 23.34,
+                "lag_seconds": 9.87
+              },
+              {
                 "similarity": 0.9958,
-                "time_a_seconds": 3.35,
-                "time_b_seconds": 15.5,
-                "lag_seconds": 12.15,
-                "run_length_seconds_at_thresh_0.85": 0.06
-              },
-              {
-                "similarity": 0.9957,
-                "time_a_seconds": 2.71,
-                "time_b_seconds": 18.13,
-                "lag_seconds": 15.42,
-                "run_length_seconds_at_thresh_0.85": 0.09
-              },
-              {
-                "similarity": 0.9945,
-                "time_a_seconds": 3.93,
-                "time_b_seconds": 17.18,
-                "lag_seconds": 13.25
-              },
-              {
-                "similarity": 0.9945,
-                "time_a_seconds": 11.62,
-                "time_b_seconds": 17.17,
-                "lag_seconds": 5.55
+                "time_a_seconds": 5.19,
+                "time_b_seconds": 13.14,
+                "lag_seconds": 7.95
               }
             ],
-            "best_run_length_seconds": 0.09,
+            "best_run_length_seconds": 0.05,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -5892,11 +5961,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.48,
-            "time_a": 0.77,
-            "lag": 1.75,
-            "similarity_at_start": 0.8194,
-            "best_run_length_seconds": 0.48,
+            "run_length_seconds": 0.43,
+            "time_a": 16.12,
+            "lag": 0.51,
+            "similarity_at_start": 0.8787,
+            "best_run_length_seconds": 0.43,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -5907,13 +5976,13 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c3_attempt1_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c3_attempt2_englishstyleprefixwidemargin.wav",
         "tts_mode": "ctx",
         "overall_attempt_n": 1,
         "dialogue_tts_policy": "fz_ctx_v1",
         "style_prefix": {
-          "len": 3542,
-          "sha256": "9c0c1f6eeffe2e6da26caec102a0b10008f5753fff9560e90c072b29546c4f30",
+          "len": 3691,
+          "sha256": "eb45ddc27770fecd30ad50cd020b5bdc8a3a3de568cfabdbbcf205fbcfd7953b",
           "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
         }
       }
@@ -5926,12 +5995,12 @@
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part2_c4",
-    "updated_at": "2026-10-29T11:13:26",
+    "updated_at": "2026-10-29T15:05:31",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c4.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
@@ -5946,7 +6015,7 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part2_c4",
-          "audio_sha256": "fe425091162e490fe51d95548509d7194b049f23a9a67fda0deaed76d0508151",
+          "audio_sha256": "f00ea777c8557f4e2c35c01076bd2edb173e50cc8908eb1bcfaad24a0e14f46b",
           "primary": {
             "text": "I crawled towards my husband.",
             "passed": true,
@@ -6010,7 +6079,7 @@
             "segment_id": "full_story_part2_c4",
             "asr_text_present": true,
             "cache": {
-              "calls": 15,
+              "calls": 8,
               "hits": 0
             }
           }
@@ -6022,19 +6091,19 @@
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 2.731,
+          "raw_duration_seconds": 2.451,
           "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.36,
-          "trimmed_duration_seconds": 2.721,
+          "raw_trailing_silence_seconds": 0.26,
+          "trimmed_duration_seconds": 2.451,
           "leading_margin_retained_seconds": 0.24,
-          "trailing_margin_retained_seconds": 0.35
+          "trailing_margin_retained_seconds": 0.26
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 2.721,
+          "duration_seconds": 2.451,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -6046,40 +6115,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9817,
-                "time_a_seconds": 0.13,
-                "time_b_seconds": 2.5,
-                "lag_seconds": 2.37,
-                "run_length_seconds_at_thresh_0.85": 0.03
+                "similarity": 0.9988,
+                "time_a_seconds": 0.02,
+                "time_b_seconds": 2.29,
+                "lag_seconds": 2.27,
+                "run_length_seconds_at_thresh_0.85": 0.11
               },
               {
-                "similarity": 0.9623,
-                "time_a_seconds": 0.98,
-                "time_b_seconds": 2.12,
-                "lag_seconds": 1.14,
+                "similarity": 0.9782,
+                "time_a_seconds": 0.4,
+                "time_b_seconds": 2.34,
+                "lag_seconds": 1.94,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9607,
-                "time_a_seconds": 0.21,
-                "time_b_seconds": 2.52,
-                "lag_seconds": 2.31,
-                "run_length_seconds_at_thresh_0.85": 0.01
+                "similarity": 0.9487,
+                "time_a_seconds": 0.91,
+                "time_b_seconds": 2.07,
+                "lag_seconds": 1.16,
+                "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
-                "similarity": 0.9344,
-                "time_a_seconds": 0.37,
-                "time_b_seconds": 2.15,
-                "lag_seconds": 1.78
+                "similarity": 0.9319,
+                "time_a_seconds": 0.28,
+                "time_b_seconds": 1.69,
+                "lag_seconds": 1.41
               },
               {
-                "similarity": 0.934,
-                "time_a_seconds": 1.3,
-                "time_b_seconds": 2.35,
+                "similarity": 0.9261,
+                "time_a_seconds": 0.35,
+                "time_b_seconds": 1.4,
                 "lag_seconds": 1.05
               }
             ],
-            "best_run_length_seconds": 0.03,
+            "best_run_length_seconds": 0.11,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -6088,11 +6157,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.23,
-            "time_a": 0.55,
-            "lag": 0.67,
-            "similarity_at_start": 0.7269,
-            "best_run_length_seconds": 0.23,
+            "run_length_seconds": 0.17,
+            "time_a": 0.78,
+            "lag": 1.12,
+            "similarity_at_start": 0.7469,
+            "best_run_length_seconds": 0.17,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -6103,13 +6172,13 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c4_attempt1_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c4_attempt2_englishstyleprefixwidemargin.wav",
         "tts_mode": "ctx",
         "overall_attempt_n": 1,
         "dialogue_tts_policy": "fz_ctx_v1",
         "style_prefix": {
-          "len": 3606,
-          "sha256": "238f8d2ddb3fc0e83e85481a470a03417425aa654bbc9ad725bf2cd580e6f7f3",
+          "len": 4116,
+          "sha256": "24f447da3053f8dfb88f8debdac01ae61e0ef2794e61be90d20f303cd7d95bbd",
           "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
         }
       }
@@ -6117,12 +6186,12 @@
   },
   "full_story_part2_c5": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "1f7df60899cab5074947c799e4bbbe898755452a1aa2457e375fb38c1f2e9f3e",
+    "canonical_text_sha256": "e998c7d22df219f1192e3dca9ad053a4882c3ded7f5e0698d1d5739d8d7a2d6d",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part2_c5",
-    "updated_at": "2026-10-29T11:13:57",
+    "updated_at": "2026-10-29T15:05:46",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c5.wav",
@@ -6133,15 +6202,15 @@
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 20.4,
-        "asr_text": "My Sago sat at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
-        "asr_text_length": 258,
-        "max_len": 322,
+        "duration_seconds": 2.32,
+        "asr_text": "Misago said at the temple.",
+        "asr_text_length": 26,
+        "max_len": 86,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "NORMALIZED_MATCH",
+        "audio_classification": "PASS_WITH_PRONUNCIATION_ALARM",
         "connected_speech_info": null,
         "reading_resolver_info": null,
         "scg_info": null,
@@ -6151,52 +6220,52 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 20.4,
+          "duration_seconds": 2.32,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 55,
+            "word_count": 5,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9964,
-                "time_a_seconds": 15.59,
-                "time_b_seconds": 18.24,
-                "lag_seconds": 2.65,
-                "run_length_seconds_at_thresh_0.85": 0.02
+                "similarity": 0.9823,
+                "time_a_seconds": 0.1,
+                "time_b_seconds": 2.11,
+                "lag_seconds": 2.01,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9934,
-                "time_a_seconds": 2.17,
-                "time_b_seconds": 9.62,
-                "lag_seconds": 7.45,
-                "run_length_seconds_at_thresh_0.85": 0.02
+                "similarity": 0.9493,
+                "time_a_seconds": 0.23,
+                "time_b_seconds": 1.56,
+                "lag_seconds": 1.33,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9922,
-                "time_a_seconds": 2.17,
-                "time_b_seconds": 20.23,
-                "lag_seconds": 18.06,
-                "run_length_seconds_at_thresh_0.85": 0.04
+                "similarity": 0.9441,
+                "time_a_seconds": 0.1,
+                "time_b_seconds": 2.25,
+                "lag_seconds": 2.15,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9918,
-                "time_a_seconds": 5.3,
-                "time_b_seconds": 12.65,
-                "lag_seconds": 7.35
+                "similarity": 0.9273,
+                "time_a_seconds": 0.24,
+                "time_b_seconds": 1.75,
+                "lag_seconds": 1.51
               },
               {
-                "similarity": 0.9914,
-                "time_a_seconds": 3.94,
-                "time_b_seconds": 16.88,
-                "lag_seconds": 12.94
+                "similarity": 0.9247,
+                "time_a_seconds": 0.24,
+                "time_b_seconds": 2.05,
+                "lag_seconds": 1.81
               }
             ],
-            "best_run_length_seconds": 0.04,
+            "best_run_length_seconds": 0.01,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -6205,11 +6274,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.4,
-            "time_a": 14.27,
-            "lag": 1.85,
-            "similarity_at_start": 0.755,
-            "best_run_length_seconds": 0.4,
+            "run_length_seconds": 0.19,
+            "time_a": 0.32,
+            "lag": 0.54,
+            "similarity_at_start": 0.701,
+            "best_run_length_seconds": 0.19,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -6232,46 +6301,59 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "My Sago sat at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
-            "classification": "TRUE_CONTENT_MISMATCH",
-            "entity_like_source": []
+            "text": "Misago said at the temple.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "tier3_corroboration_secondary",
+            "provider": "azure",
+            "text": "Misago said at the temple.",
+            "sub_reason": "entity_only",
+            "entity_like_source": [
+              "capitalized"
+            ]
           },
           {
             "step": "secondary_1",
             "provider": "azure",
-            "text": "Masago said at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
-            "classification": "NORMALIZED_MATCH",
+            "text": "Misago said at the temple.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
             "phrase_list_used": false,
             "azure_phrase_list_weight": null,
             "azure_phrase_list": [],
-            "cached": false,
-            "unified_judge_state": "PASS_WITH_WARNING",
-            "entity_like_source": []
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
           }
         ],
         "asr_judgement": {
-          "state": "PASS_WITH_WARNING",
-          "reason_code": "secondary_confirmed",
+          "state": "PASS_WITH_PRONUNCIATION_ALARM",
+          "reason_code": "pronunciation_alarm_accept",
           "slot": 1,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part2_c5",
-          "audio_sha256": "356eba7fcb07b6e8392ecec66d0e4ee1845a126fa256cd50d83d9beb592d9902",
+          "audio_sha256": "fb528f6df8daaf2fb959d9f16fe4c639415a930a7ac2525b986b9fac327d7343",
           "primary": {
-            "text": "My Sago sat at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
+            "text": "Misago said at the temple.",
             "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
+            "label": "ASR_VALIDATION_UNCERTAIN",
             "equivalence_basis": null,
             "warning_labels": []
           },
           "secondary": {
-            "called": true,
-            "cached": false,
+            "called": false,
+            "cached": true,
             "engine": "azure",
-            "text": "Masago said at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
-            "label": "NORMALIZED_MATCH",
-            "accepted": true,
+            "text": "Misago said at the temple.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
             "error": null,
             "unavailable": false
           },
@@ -6294,62 +6376,143 @@
             "secondary": false
           },
           "final_gate": {
-            "applied": true,
-            "target": "secondary",
-            "value_guard": "NO_VALUES",
-            "negation_diff": false
+            "applied": false
           },
-          "warnings": [
-            "SECONDARY_CONFIRMED"
-          ],
+          "warnings": [],
           "exclusion_rule": null,
           "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 20.4,
-            "est_jpy": 0.9333,
-            "est_jpy_known": true
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
           },
           "timing": {
-            "total_ms": 8058,
-            "secondary_ms": 8054
+            "total_ms": 1,
+            "secondary_ms": 0
           },
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 258,
-            "secondary_len": 258,
-            "max_len": 322,
-            "adopted_from": "secondary",
+            "primary_len": 26,
+            "secondary_len": 26,
+            "max_len": 86,
+            "adopted_from": "primary",
             "adopted_ok": true,
-            "surface_len": 194,
+            "surface_len": 21,
             "primary_ok": true
           },
           "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": true,
+            "reason": "ENTITY_ONLY_ACCEPT",
+            "detail": {}
+          },
+          "pronunciation_alarm_records": [
+            {
+              "alarm_id": "pnal_2fb7f3aed59c8d66",
+              "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+              "created_at": "2026-10-29T15:05:43",
+              "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+              "final_state_ja": "アラーム付き完成",
+              "family": "Z",
+              "article_id": "",
+              "level": "",
+              "segment_id": "full_story_part2_c5",
+              "role": "FULL_STORY",
+              "slot": 1,
+              "proper_noun": "masago",
+              "tts_input_token": null,
+              "location": {
+                "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c5.wav",
+                "wav_sha256": "fb528f6df8daaf2fb959d9f16fe4c639415a930a7ac2525b986b9fac327d7343",
+                "canonical_sentence": "Masago said at the temple.",
+                "tts_input_text": "Masago said at the temple.",
+                "char_index": 0,
+                "context": "...[[masago]] said at the temple....",
+                "approx_seconds": 0.0,
+                "approx_note": "文字位置を音声長で按分した目安(±数秒)。正確な時刻ではありません"
+              },
+              "mismatch": {
+                "canonical": "masago",
+                "asr_primary": "misago",
+                "asr_secondary": "misago",
+                "similarity_primary": 0.8333,
+                "similarity_secondary": 0.8333,
+                "proper_noun_evidence": "cmu_oov",
+                "primary_text": "Misago said at the temple.",
+                "secondary_text": "Misago said at the temple."
+              },
+              "pronunciation_basis": {
+                "has_basis": true,
+                "evidence_tier": "PRON_IN_CITED_PAGE",
+                "confidence": "low",
+                "pronunciation_hint": "mah-sah-goh",
+                "ipa": "/ma.sa.ɡo/",
+                "sources": [
+                  "https://en.wiktionary.org/wiki/masago",
+                  "https://www.howtopronounce.com/masago",
+                  "https://www.sushi-pedia.com/en/sushi/masago"
+                ],
+                "note": ""
+              },
+              "tts_supply_result": {
+                "supplied": false,
+                "reason": "no_ledger_entry_or_not_planned",
+                "original": "masago"
+              },
+              "models": {
+                "primary_asr": {
+                  "provider": "openai_asr",
+                  "model": "gpt-4o-mini-transcribe"
+                },
+                "secondary_asr": "azure-speech-stt",
+                "secondary_azure_calls": 0
+              },
+              "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
+              "operator_only": true
+            }
+          ],
+          "pronunciation_alarm": {
+            "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+            "accepted": true,
+            "reason": "ENTITY_ONLY_ACCEPT",
+            "alarm_ids": [
+              "pnal_2fb7f3aed59c8d66"
+            ],
+            "nouns": [
+              "masago"
+            ],
+            "tts_input_text": "Masago said at the temple.",
+            "pre_supply_text": "Masago said at the temple.",
+            "supply_map": {},
+            "supply_decisions": []
+          },
           "adapter": {
-            "layers": [],
+            "layers": [
+              "tier3"
+            ],
             "azure_real_calls": 1,
             "cost_guard_triggered": false,
             "language": "en-US",
             "segment_id": "full_story_part2_c5",
             "asr_text_present": true,
             "cache": {
-              "calls": 17,
-              "hits": 0
+              "calls": 9,
+              "hits": 1
             }
           }
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c5_attempt1_customa3c4625e.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c5_attempt3_customa3c4625e.wav"
       }
     ]
   },
   "full_story_part2_c6": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "40ccdb365eb14206374cf4c6468d230c2b6a4b476566f89cf84ac16b055f6726",
+    "canonical_text_sha256": "26ce4abaf3d82ee646817d18d150939e875b68457e256ad5713bed250702ace5",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part2_c6",
-    "updated_at": "2026-10-29T11:14:10",
+    "updated_at": "2026-10-29T15:06:18",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c6.wav",
@@ -6360,7 +6523,7 @@
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "I later tried drowning myself, but I failed. Where can I go after that?",
+        "asr_text": "The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes. I later tried drowning myself, but I failed. Where can I go after that?",
         "asr_judgement": {
           "state": "PASS",
           "reason_code": "primary_pass",
@@ -6369,9 +6532,9 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part2_c6",
-          "audio_sha256": "e1dd7e61cf23f5c415e3d9a4f4face1311c1168ce100c35f233b773f2cdd2040",
+          "audio_sha256": "78a61755f5f0ea0fd2f93ced94a89f41d1f8e3fbbfd0378bfbec8204e1456d83",
           "primary": {
-            "text": "I later tried drowning myself, but I failed. Where can I go after that?",
+            "text": "The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes. I later tried drowning myself, but I failed. Where can I go after that?",
             "passed": true,
             "label": "NORMALIZED_MATCH",
             "equivalence_basis": null,
@@ -6417,9 +6580,9 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 71,
+            "primary_len": 303,
             "secondary_len": null,
-            "max_len": 88,
+            "max_len": 324,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
@@ -6433,8 +6596,8 @@
             "segment_id": "full_story_part2_c6",
             "asr_text_present": true,
             "cache": {
-              "calls": 19,
-              "hits": 0
+              "calls": 9,
+              "hits": 1
             }
           }
         },
@@ -6445,64 +6608,64 @@
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 6.931,
-          "raw_leading_silence_seconds": 0.46,
-          "raw_trailing_silence_seconds": 0.48,
-          "trimmed_duration_seconds": 6.691,
-          "leading_margin_retained_seconds": 0.35,
-          "trailing_margin_retained_seconds": 0.35
+          "raw_duration_seconds": 26.331,
+          "raw_leading_silence_seconds": 0.24,
+          "raw_trailing_silence_seconds": 0.24,
+          "trimmed_duration_seconds": 26.331,
+          "leading_margin_retained_seconds": 0.24,
+          "trailing_margin_retained_seconds": 0.24
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 6.691,
+          "duration_seconds": 26.331,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 14,
+            "word_count": 64,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9995,
-                "time_a_seconds": 3.08,
-                "time_b_seconds": 4.52,
-                "lag_seconds": 1.44,
-                "run_length_seconds_at_thresh_0.85": 0.02
+                "similarity": 0.9975,
+                "time_a_seconds": 7.38,
+                "time_b_seconds": 18.13,
+                "lag_seconds": 10.75,
+                "run_length_seconds_at_thresh_0.85": 0.08
               },
               {
-                "similarity": 0.9995,
-                "time_a_seconds": 3.05,
-                "time_b_seconds": 4.71,
-                "lag_seconds": 1.66,
-                "run_length_seconds_at_thresh_0.85": 0.05
+                "similarity": 0.9946,
+                "time_a_seconds": 3.6,
+                "time_b_seconds": 9.29,
+                "lag_seconds": 5.69,
+                "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
-                "similarity": 0.9991,
-                "time_a_seconds": 0.3,
-                "time_b_seconds": 4.56,
-                "lag_seconds": 4.26,
+                "similarity": 0.9939,
+                "time_a_seconds": 3.59,
+                "time_b_seconds": 7.45,
+                "lag_seconds": 3.86,
                 "run_length_seconds_at_thresh_0.85": 0.04
               },
               {
-                "similarity": 0.9985,
-                "time_a_seconds": 0.27,
-                "time_b_seconds": 4.67,
-                "lag_seconds": 4.4
+                "similarity": 0.9938,
+                "time_a_seconds": 0.3,
+                "time_b_seconds": 24.88,
+                "lag_seconds": 24.58
               },
               {
-                "similarity": 0.9983,
-                "time_a_seconds": 4.76,
-                "time_b_seconds": 6.4,
-                "lag_seconds": 1.64
+                "similarity": 0.9929,
+                "time_a_seconds": 0.42,
+                "time_b_seconds": 18.02,
+                "lag_seconds": 17.6
               }
             ],
-            "best_run_length_seconds": 0.05,
+            "best_run_length_seconds": 0.08,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -6511,11 +6674,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.25,
-            "time_a": 2.15,
-            "lag": 1.59,
-            "similarity_at_start": 0.7144,
-            "best_run_length_seconds": 0.25,
+            "run_length_seconds": 0.42,
+            "time_a": 12.14,
+            "lag": 1.84,
+            "similarity_at_start": 0.7147,
+            "best_run_length_seconds": 0.42,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -6526,13 +6689,13 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c6_attempt1_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part2_c6_attempt2_englishstyleprefixwidemargin.wav",
         "tts_mode": "ctx",
         "overall_attempt_n": 1,
         "dialogue_tts_policy": "fz_ctx_v1",
         "style_prefix": {
-          "len": 3327,
-          "sha256": "8aa12b907356ba4c79e21afa0259b58611bc7407b84d704b13c79965b19a7f47",
+          "len": 4026,
+          "sha256": "39748d92e5f5560241fccfd7b28ec4a1ab16cbb7a71745e014dd8b1dcf768c66",
           "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
         }
       }
@@ -6545,12 +6708,12 @@
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part3_c1",
-    "updated_at": "2026-10-29T11:14:18",
+    "updated_at": "2026-10-29T15:06:25",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part3_c1.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
@@ -6565,7 +6728,7 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part3_c1",
-          "audio_sha256": "7dafd980a79923e18c5ae5c31138b8e20df8d5d891c84b4a23e8906e54cb51c8",
+          "audio_sha256": "225a67dded74c2b0d94f7e752c2dbefc11999ef3b159fd5ed4f378cabcc92f43",
           "primary": {
             "text": "I heard him speaking kindly to her.",
             "passed": true,
@@ -6629,8 +6792,8 @@
             "segment_id": "full_story_part3_c1",
             "asr_text_present": true,
             "cache": {
-              "calls": 19,
-              "hits": 0
+              "calls": 9,
+              "hits": 1
             }
           }
         },
@@ -6641,19 +6804,19 @@
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 3.451,
-          "raw_leading_silence_seconds": 0.48,
-          "raw_trailing_silence_seconds": 0.26,
-          "trimmed_duration_seconds": 3.321,
-          "leading_margin_retained_seconds": 0.35,
-          "trailing_margin_retained_seconds": 0.26
+          "raw_duration_seconds": 3.371,
+          "raw_leading_silence_seconds": 0.24,
+          "raw_trailing_silence_seconds": 0.24,
+          "trimmed_duration_seconds": 3.371,
+          "leading_margin_retained_seconds": 0.24,
+          "trailing_margin_retained_seconds": 0.24
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 3.321,
+          "duration_seconds": 3.371,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -6665,40 +6828,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9988,
-                "time_a_seconds": 0.08,
-                "time_b_seconds": 1.54,
-                "lag_seconds": 1.46,
-                "run_length_seconds_at_thresh_0.85": 0.01
-              },
-              {
-                "similarity": 0.998,
-                "time_a_seconds": 1.68,
-                "time_b_seconds": 3.2,
-                "lag_seconds": 1.52,
-                "run_length_seconds_at_thresh_0.85": 0.02
-              },
-              {
-                "similarity": 0.997,
-                "time_a_seconds": 0.08,
+                "similarity": 0.9991,
+                "time_a_seconds": 0.01,
                 "time_b_seconds": 3.21,
-                "lag_seconds": 3.13,
-                "run_length_seconds_at_thresh_0.85": 0.01
+                "lag_seconds": 3.2,
+                "run_length_seconds_at_thresh_0.85": 0.07
               },
               {
-                "similarity": 0.9968,
-                "time_a_seconds": 1.54,
-                "time_b_seconds": 3.2,
-                "lag_seconds": 1.66
+                "similarity": 0.999,
+                "time_a_seconds": 1.39,
+                "time_b_seconds": 3.23,
+                "lag_seconds": 1.84,
+                "run_length_seconds_at_thresh_0.85": 0.04
               },
               {
-                "similarity": 0.9963,
-                "time_a_seconds": 0.08,
-                "time_b_seconds": 1.69,
-                "lag_seconds": 1.61
+                "similarity": 0.9989,
+                "time_a_seconds": 0.14,
+                "time_b_seconds": 2.62,
+                "lag_seconds": 2.48,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9988,
+                "time_a_seconds": 0.21,
+                "time_b_seconds": 3.24,
+                "lag_seconds": 3.03
+              },
+              {
+                "similarity": 0.9986,
+                "time_a_seconds": 0.02,
+                "time_b_seconds": 1.4,
+                "lag_seconds": 1.38
               }
             ],
-            "best_run_length_seconds": 0.02,
+            "best_run_length_seconds": 0.07,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -6707,11 +6870,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.37,
-            "time_a": 1.0,
-            "lag": 1.0,
-            "similarity_at_start": 0.7308,
-            "best_run_length_seconds": 0.37,
+            "run_length_seconds": 0.3,
+            "time_a": 0.23,
+            "lag": 1.84,
+            "similarity_at_start": 0.7151,
+            "best_run_length_seconds": 0.3,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -6722,13 +6885,13 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c1_attempt1_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c1_attempt2_englishstyleprefixwidemargin.wav",
         "tts_mode": "ctx",
         "overall_attempt_n": 1,
         "dialogue_tts_policy": "fz_ctx_v1",
         "style_prefix": {
-          "len": 3328,
-          "sha256": "32a498d8608c584bbf1b699e79e526a16a6eda525d38c3dbec74c7fa286ace3d",
+          "len": 4223,
+          "sha256": "29bb24413138847fad09606504dfd6a3f4c12cada79b95ccaea3b6107a1140f6",
           "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
         }
       }
@@ -6736,31 +6899,181 @@
   },
   "full_story_part3_c2": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "de8b000d6371f8c3b3c2572e6b2af8e1877366e980250244d9017bc44f415953",
+    "canonical_text_sha256": "27c940d2078f75f509a0df15f061669d4b326476138d3803ea17ee7af5719097",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "a2",
     "segment_id": "full_story_part3_c2",
-    "updated_at": "2026-10-29T11:15:18",
+    "updated_at": "2026-10-29T15:06:36",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part3_c2.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 37.41,
-        "asr_text": "Takahiro's spirit said through a medium, she asked him to take her anywhere, then she pointed at me, Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
-        "asr_text_length": 504,
-        "max_len": 570,
+        "duration_seconds": 3.0,
+        "asr_text": "Take a hero's spirit, said through a medium.",
+        "asr_text_length": 44,
+        "max_len": 100,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Take a hero's spirit, said through a medium.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Take a hero's spirit said through a medium.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "Takehiro"
+            ],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c2",
+          "audio_sha256": "37ca86ccfe6faf873d8b357d7709c5f0a92a47261fd4fc6c82530fa6e3d28c50",
+          "primary": {
+            "text": "Take a hero's spirit, said through a medium.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Take a hero's spirit said through a medium.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 3.0,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 2045,
+            "secondary_ms": 2042
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 44,
+            "secondary_len": 43,
+            "max_len": 100,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 34,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": false,
+            "reason": "ASR_SPAN_TOO_LONG",
+            "detail": {
+              "canonical": "takehiro",
+              "asr": "take hero",
+              "why": "asr_general_more_words"
+            }
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c2",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 11,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c2_attempt3_customa3c4625e.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 2.92,
+        "asr_text": "Takehiro's spirit said through medium,",
+        "asr_text_length": 38,
+        "max_len": 100,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
         "scg_info": null,
@@ -6770,52 +7083,52 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 37.41,
+          "duration_seconds": 2.92,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 101,
+            "word_count": 5,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9965,
-                "time_a_seconds": 8.99,
-                "time_b_seconds": 26.33,
-                "lag_seconds": 17.34,
-                "run_length_seconds_at_thresh_0.85": 0.05
-              },
-              {
-                "similarity": 0.9964,
+                "similarity": 0.97,
                 "time_a_seconds": 0.17,
-                "time_b_seconds": 18.0,
-                "lag_seconds": 17.83,
+                "time_b_seconds": 2.88,
+                "lag_seconds": 2.71,
                 "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9957,
-                "time_a_seconds": 12.88,
-                "time_b_seconds": 30.13,
-                "lag_seconds": 17.25,
+                "similarity": 0.9331,
+                "time_a_seconds": 0.03,
+                "time_b_seconds": 2.71,
+                "lag_seconds": 2.68,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9315,
+                "time_a_seconds": 0.56,
+                "time_b_seconds": 2.23,
+                "lag_seconds": 1.67,
                 "run_length_seconds_at_thresh_0.85": 0.04
               },
               {
-                "similarity": 0.9951,
-                "time_a_seconds": 17.13,
-                "time_b_seconds": 34.71,
-                "lag_seconds": 17.58
+                "similarity": 0.9291,
+                "time_a_seconds": 0.61,
+                "time_b_seconds": 2.23,
+                "lag_seconds": 1.62
               },
               {
-                "similarity": 0.995,
-                "time_a_seconds": 2.94,
-                "time_b_seconds": 32.9,
-                "lag_seconds": 29.96
+                "similarity": 0.922,
+                "time_a_seconds": 0.54,
+                "time_b_seconds": 2.19,
+                "lag_seconds": 1.65
               }
             ],
-            "best_run_length_seconds": 0.05,
+            "best_run_length_seconds": 0.04,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -6824,11 +7137,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.44,
-            "time_a": 6.02,
-            "lag": 1.36,
-            "similarity_at_start": 0.7631,
-            "best_run_length_seconds": 0.44,
+            "run_length_seconds": 0.22,
+            "time_a": 1.63,
+            "lag": 0.78,
+            "similarity_at_start": 0.7322,
+            "best_run_length_seconds": 0.22,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -6851,146 +7164,22 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "Takahiro's spirit said through a medium, she asked him to take her anywhere, then she pointed at me, Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
-            "classification": "ASR_VALIDATION_UNCERTAIN",
-            "entity_like_source": [
-              "capitalized"
-            ]
-          },
-          {
-            "step": "tier3_corroboration_secondary",
-            "provider": "azure",
-            "text": "Takehiro's spirit said through a medium. She asked him to take her anywhere. Then she pointed at me. Kill that man.He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me.I got it beside the cedar and picked up her small dagger. She had dropped it there.I pushed it into my own chest.The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
-            "sub_reason": "entity_only",
-            "entity_like_source": [
-              "capitalized"
-            ]
+            "text": "Takehiro's spirit said through medium,",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
           }
         ],
         "asr_judgement": {
-          "state": "PASS_WITH_WARNING",
+          "state": "PASS",
           "reason_code": "primary_pass",
-          "slot": 1,
+          "slot": 2,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part3_c2",
-          "audio_sha256": "794b5562fbc4ad21f64372ea791e471aada42ae5ee80fcc8d4e06f721b1bda1e",
+          "audio_sha256": "8ba246452f48f74031be2dbf9964bb3d884ed589427e1b35395e677584d19941",
           "primary": {
-            "text": "Takahiro's spirit said through a medium, she asked him to take her anywhere, then she pointed at me, Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
-            "passed": true,
-            "label": "SECONDARY_ASR_CORROBORATED_MATCH",
-            "equivalence_basis": null,
-            "warning_labels": [
-              "SECONDARY_CORROBORATED"
-            ]
-          },
-          "secondary": {
-            "called": false,
-            "cached": false,
-            "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "value_guard": "EQUAL",
-            "negation_diff": false
-          },
-          "warnings": [
-            "SECONDARY_CORROBORATED"
-          ],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
-          },
-          "timing": {
-            "total_ms": 1,
-            "secondary_ms": 0
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 504,
-            "secondary_len": null,
-            "max_len": 570,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": null,
-            "primary_ok": true
-          },
-          "adapter": {
-            "layers": [
-              "tier3"
-            ],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "full_story_part3_c2",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 20,
-              "hits": 0
-            }
-          }
-        },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c2_attempt1_customa3c4625e.wav"
-      }
-    ]
-  },
-  "full_story_part3_c3": {
-    "state": "RESOLVED",
-    "canonical_text_sha256": "2714380487c9a889711947e3053b7b1b6c71edf61a311d3609149ea0210f226d",
-    "language": "en",
-    "theme_id": "run_sf_prod_01",
-    "level": "a2",
-    "segment_id": "full_story_part3_c3",
-    "updated_at": "2026-10-29T11:15:29",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
-    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part3_c3.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
-    "budget_guard_triggered": false,
-    "last_attempts_log": [
-      {
-        "attempt": 1,
-        "status": "OK",
-        "asr_text": "I sank into the darkness and never came back.",
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 1,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "full_story_part3_c3",
-          "audio_sha256": "3e804c5ea29b8e0cef7e28c4d2d075be8dc6686a996bb8bdd0e7d835ba6f08c7",
-          "primary": {
-            "text": "I sank into the darkness and never came back.",
+            "text": "Takehiro's spirit said through medium,",
             "passed": true,
             "label": "NORMALIZED_MATCH",
             "equivalence_basis": null,
@@ -7036,9 +7225,116 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 45,
+            "primary_len": 38,
             "secondary_len": null,
-            "max_len": 62,
+            "max_len": 100,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c2",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 11,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c2_attempt4_customa3c4625e.wav"
+      }
+    ]
+  },
+  "full_story_part3_c3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "29dae12ea246163bda8d0a677844ccaff59f1acc0ca766883ef58a8d1fe1d8a4",
+    "language": "en",
+    "theme_id": "run_sf_prod_01",
+    "level": "a2",
+    "segment_id": "full_story_part3_c3",
+    "updated_at": "2026-10-29T15:07:28",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part3_c3.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "She asked him to take her anywhere. Then she pointed at me. Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest. I sank into the darkness and never came back.",
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c3",
+          "audio_sha256": "6800bed1f8b034bd94867d9793f01ef0ed16605fb2f2e7b114225fd6aad2ecde",
+          "primary": {
+            "text": "She asked him to take her anywhere. Then she pointed at me. Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest. I sank into the darkness and never came back.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 1,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 509,
+            "secondary_len": null,
+            "max_len": 532,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
@@ -7052,8 +7348,8 @@
             "segment_id": "full_story_part3_c3",
             "asr_text_present": true,
             "cache": {
-              "calls": 21,
-              "hits": 0
+              "calls": 11,
+              "hits": 1
             }
           }
         },
@@ -7064,11 +7360,11 @@
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 4.851,
-          "raw_leading_silence_seconds": 0.28,
-          "raw_trailing_silence_seconds": 0.5,
-          "trimmed_duration_seconds": 4.701,
-          "leading_margin_retained_seconds": 0.28,
+          "raw_duration_seconds": 42.291,
+          "raw_leading_silence_seconds": 0.24,
+          "raw_trailing_silence_seconds": 0.6,
+          "trimmed_duration_seconds": 42.041,
+          "leading_margin_retained_seconds": 0.24,
           "trailing_margin_retained_seconds": 0.35
         },
         "disfluency_checked": false,
@@ -7076,52 +7372,52 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 4.701,
+          "duration_seconds": 42.041,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 9,
+            "word_count": 103,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9993,
-                "time_a_seconds": 0.22,
-                "time_b_seconds": 4.42,
-                "lag_seconds": 4.2,
-                "run_length_seconds_at_thresh_0.85": 0.04
-              },
-              {
-                "similarity": 0.999,
-                "time_a_seconds": 0.23,
-                "time_b_seconds": 2.67,
-                "lag_seconds": 2.44,
+                "similarity": 0.997,
+                "time_a_seconds": 25.28,
+                "time_b_seconds": 38.91,
+                "lag_seconds": 13.63,
                 "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
-                "similarity": 0.9989,
-                "time_a_seconds": 2.67,
-                "time_b_seconds": 4.42,
-                "lag_seconds": 1.75,
-                "run_length_seconds_at_thresh_0.85": 0.04
+                "similarity": 0.9965,
+                "time_a_seconds": 22.35,
+                "time_b_seconds": 26.66,
+                "lag_seconds": 4.31,
+                "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9987,
-                "time_a_seconds": 0.07,
-                "time_b_seconds": 3.71,
-                "lag_seconds": 3.64
+                "similarity": 0.9961,
+                "time_a_seconds": 21.18,
+                "time_b_seconds": 22.35,
+                "lag_seconds": 1.17,
+                "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9985,
-                "time_a_seconds": 0.22,
-                "time_b_seconds": 4.39,
-                "lag_seconds": 4.17
+                "similarity": 0.9955,
+                "time_a_seconds": 33.91,
+                "time_b_seconds": 36.42,
+                "lag_seconds": 2.51
+              },
+              {
+                "similarity": 0.9953,
+                "time_a_seconds": 27.99,
+                "time_b_seconds": 36.42,
+                "lag_seconds": 8.43
               }
             ],
-            "best_run_length_seconds": 0.04,
+            "best_run_length_seconds": 0.03,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -7130,11 +7426,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.35,
-            "time_a": 3.01,
-            "lag": 0.88,
-            "similarity_at_start": 0.7026,
-            "best_run_length_seconds": 0.35,
+            "run_length_seconds": 0.47,
+            "time_a": 29.13,
+            "lag": 0.87,
+            "similarity_at_start": 0.7569,
+            "best_run_length_seconds": 0.47,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -7145,13 +7441,13 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c3_attempt1_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/attempts/full_story_part3_c3_attempt2_englishstyleprefixwidemargin.wav",
         "tts_mode": "ctx",
         "overall_attempt_n": 1,
         "dialogue_tts_policy": "fz_ctx_v1",
         "style_prefix": {
-          "len": 3165,
-          "sha256": "ebe89ff055b9a04c25af29aacc40931af7ab2e29e1007132a96a5bc5e22cebac",
+          "len": 3873,
+          "sha256": "01995b2e23bc76db790c861d92f34a2ef6d8db8f980791e69912d485bd86e52e",
           "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
         }
       }

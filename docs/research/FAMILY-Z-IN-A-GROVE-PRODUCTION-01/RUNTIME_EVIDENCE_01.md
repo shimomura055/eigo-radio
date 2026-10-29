@@ -123,3 +123,16 @@ Writer〜std_adjust〜plan〜support(委任_06まで)+ kp(委任_06 約1.6+委�
 - 再導出後planと保存済みreuse_key(文脈入力sha・本文sha)の差分から、再生成が必要なclip(新KP音声を除く): Std 9 clip(part2_c1[文脈のみ変化 4語]・c2・c3[81語]・c4[文脈 5語]・c5・c6[64語]・part3_c1[文脈 7語]・c2・c3[103語])、Adv 9 clip(part2_c1[4語]・c2・c3[92語]・part3_c1[9語]・c2・c3[60語]・c4[6語]・c5・c6[91語])。dialogue発声語数 Std約264語・Adv約262語、narrator短文はflash-lite。正しいVoiceの既存音声(木樵り・旅法師・放免・媼の全clip、part1の全narrator、Std part1_c3[HR採用wav]等)は再利用(reuse_key一致=sha不変)。
 - 費用見込み(実測単価): gemini-2.5-pro-preview-tts ¥0.097/生成秒(Std実績 ¥13.35/137.9秒・Adv ¥11.18/113.1秒)、既存の最終音声1秒あたり実費はStd ¥0.146・Adv ¥0.115(再試行込み)。再生成する最終音声はStd約117秒・Adv約114秒 → pro TTS 初回通過なら ¥22.3、再試行込みの実績単価なら ¥30。加えてnarrator(flash-lite)¥0.5、KP音声(Std kp2/kp3 en+ja、KP3V二重ASR)¥2〜3、OpenAI ASR ¥1.5、Azure二次ASR ¥4〜7(Std実績 ¥7.64/13回)、emotion notes LLM 2 call ¥0.3、kp_part1_a2/ja LLM ¥0.3 → **追加見込み ¥31〜44(中心¥36)、累計 ¥118〜131**。Cap110(残¥23.34)を超過見込み。
 - 次の一手(Fableによる解除・Cap引上げ後): ①`py er026_family_z_fiction_production_runner_01.py --story in_a_grove --run run_sf_prod_01 --clear-stop --reason "..."`(Fable) ②Cap再設定(推奨¥135、7-7自律範囲)→`_run13.sh`の`--approved-budget-jpy 110`を更新 ③起動は『300秒内≤2、間隔≥150秒、toolも計上』を守り、`--stages kp --regenerate-stage kp_part1_a2`→同`kp_part1_ja_a2`→`--stages tts_b1b,tts_a2`(または各level 1起動)→`--stages provision_shell,gate,assemble,pages,page_verify`(1起動)。TTS後に `fz13_voice_table_01.py after` で全clipの実送信voice・話者・wav shaを再取得し`VOICE_TABLE_BEFORE_13.md`と突合。
+
+## 委任_14(2026-10-29 14:47〜)
+### STOP解除ログ・Cap再設定
+- 14:47:25 stop_scope_check rc=3(RUN_STOP + RESTART_STORM_LOCK)。14:47:34 `--clear-stop --reason "FZ13 self-induced RESTART_STORM (tool launch counted; no API cost); cleared by Fable authority 26-4/26-6, 委任_14"` 実行 rc=0。`<run>/STOP`と`RESTART_STORM_LOCK.json`の両方が正規手順(clear-stop)で除去され、run_launch_log.jsonlにCLEARED(14:47:37)記録。STOP_ALLなし。clear-stop自体はLAUNCH計上されない(launch log確認)。
+- Cap ¥110→¥135(Fable決定、7-7自律範囲、案件累計見込み¥131<¥300)。`_run13.sh`の`--approved-budget-jpy`を135へ更新。
+### 起動時刻(JST、規則=300秒内2回まで・間隔150秒以上。clear-stopはLAUNCH非計上=launch log確認)
+- m1 14:47:47 `--stages kp --regenerate-stage kp_part1_a2`(rc=0相当: 次段kp_part1_ja_a2の親sha不一致で想定STOP rc=2、API: LLM少額) / m2 14:50:26 `--regenerate-stage kp_part1_ja_a2` rc=0 / m3 14:53:00 `--stages tts_b1b,tts_a2`(b1bでSTOP rc=2、a2未着手) / m4 15:03:33 `--stages tts_a2` rc=2(下記)。間隔は全て>=150秒、300秒窓内の最大起動数=2。
+- 累計費用: ¥122.02(Cap135、残¥12.98)。委任_14増分=¥35.36(¥86.66→122.02)。
+### Adv TTS(b1b): 31 clip OK、full_story_part3_c6(takehiro Puck, 91語) のみSTOPPED
+- 経過(dialogue_ctx_attempt_state.json / review_lock_state.json): ctx#1=primary PASS相当だが「soft feet, and unseen hand」の読み崩れでAzure secondary NG_BOTH / ctx#2=primary PASS・repetition QA非flag(verified)→Adv減速(adv_dialogue_fast6)後の再検証でNG確定(final_ng 14:58:06) / cooldown180秒 / #3=従来方式fallback: ASR PASSだがrepetition QA method_d'短lag flagged=True。通算3回上限(er122 MAX_TOTAL_ATTEMPTS)到達→STOPPED、review_lock=HUMAN_REVIEW_REQUIRED。
+- 既存の上限・Gateは回避していない。再生成には er011_human_review_lock_01.py:475 approve_regenerate(人間承認の1回限り)+`--only-clips full_story_part3_c6` が必要=Workerは承認権限なし。
+### Std TTS(a2): 再生成clipすべてOK。`tts_a2`再実行でcomment_3・full_story_part1_c3が『HUMAN_REVIEW_LOCKED』扱い→FamilyZTtsClipFailedStop(委任_10既知: HR採用済みclipを含むstageの再実行で出る。review_lockはRESOLVED/HUMAN_APPROVED、wav sha(0d3f39c6…/dba66c45…)は不変を確認)。他31 clipはOK。
+### VOICE_TABLE_AFTER_14.md: 全44行(Std/Adv)で実送信voice不一致0、narratorへの発言混入0。ただしAdv part3_c6の現行wavは未採用(STOPPED)の試行4。
