@@ -127,3 +127,33 @@
 - Y/Zの学習解説・ニュアンス・glossaryのEnd User表示は未試験(Xのみ342チェック)。
 - 旧run(display_spec無し)ではglossary/本文意味が出ない(適用対象外として記録)。
 - HR選定フロー/藪の中Workerのrunner未commit差分が解消するまでhook着手不可。
+
+## 14. Opusレビュー反映(M1〜M8)(委任_02B、2026-10-29。Fable決定として記録。本節は§4/§5/§7/§9の該当記述を上書きする)
+
+条件Aレビュー=条件付き可。本委任(WP-A/B/D)で反映したのはM1・M4(書込部分)・M5・M6(検証部分)とFable決定の訳/Voice説明文。M2・M3・M7・M8(同期module・runner hook等)は02A/WP-E側の担当で、本委任の指示には原文が含まれないため**ここへは書かない(未受領=推測で補わない)**。
+
+| 項目 | Fable決定(指示原文の要約) | 実装(file) |
+|---|---|---|
+| M1 アダプタ | 最終dev HTMLを**HTMLパーサ(正規表現禁止)**で解析。X/Y/Zの現行builder出力からgolden fixtureを作り構造契約testで固定。中間データと照合(行数・開始時刻=`audit/timeline.json`、Y訳=`split_y_article`、KP=`confirmed_selection`)。Zは話者divをまたぐ文を結合せずdiv単位。OPEN-596の閉じ無し引用行もfixtureへ | `er135_enduser_dom_01.py`(`html.parser`ベースの`parse_html`・token列の文分割)、`er135_enduser_page_01.py`(`parse_dev_page`/`build_rows_from_dev_html`/`match_rows_to_timeline`)、fixture=`er135_enduser_fixtures_01/`、test=`er135_enduser_page_test_01.py` T1/T2 |
+| 訳 | 承認済みのみ(X Full Story=`ja_writer/revision2.md`段落、Y=`text/article_ja.md`/Voice紹介)。無いブロックは非表示。`ja_source`は承認済み2値のみ。Y Voice説明文(CURRENT_SPEC:3202-3206)はhero直下。開発者向けの⏸/LR赤/Fallback青は出さない(CURRENT_SPEC:3203) | `attach_translations`、`notice`(`#notice`をhero直下)、`R.JA_SOURCES`、除去=`inline_tokens`(chunk-mark除去・`rpt-*`展開・`div.rpt-notes`/TTS badge無視)。test T3/T6/T8 |
+| M5 asset・schema | 出力JSONはadditionalProperties=falseのschema。index.html/app.js/style.cssはproduction asset(DEV rev01-eの機械的派生、除去項目は許可リスト固定)とsha256一致。assetに`sync=dummy`/`dummy`/`Q.get('a')`/他記事`audio_base`/`dev_enduser_page_01`/`PROTOTYPE-01`のpathが無いこと、er135がDEV/Trial pathをimport・読込しないことを静的test。syncが本物のASR由来(model/params/mp3 sha)であることを検査。`placeholder_for_layout_check`/`dev_translation_unapproved`の混入は拒否 | `enduser_page_assets/derive_assets_01.py`(EDITS=許可リスト)・`rev01-e/ASSET_SHA256.json`・`ASSET_DIFF_01.md`、`check_schema`/`validate_output`/`check_assets`/`check_sync`、禁止語=`er135_enduser_rules_01.py`。test T9/T10/T11/T14 |
+| M4(書込) | 一時dirへ生成→一括rename(atomic)。出力先=`<既存dir>/enduser/index.html`(audioは`../`参照、mp3複製0)。失敗時は`enduser/`を書かない(既存`enduser/`の削除は行わず、stale検出で報告=M6: Zは公開dirへ直書きのため削除で公開版が消える)。停止コードは`ENDUSER_*` | `write_enduser_page`(`.enduser.tmp.*`→rename。成功時のみ旧`enduser/`を`.enduser.old.*`へ退避→置換→削除、rename失敗時は旧を復元)。**§8の表『失敗時に古いenduser/を削除』は本節で『削除しない・stale検出で報告』へ変更**。test T12 |
+| M6(検証) | `verify_consistency`(公開dirに対して: dev行=enduser本文、音声sha、asset sha、stale検出)とPlaywright検証CLI(`--verify-only`、PC1280+モバイル模擬390x844、DEV verify_rev_e継承) | `verify_consistency`(`ENDUSER_STALE_DEV_CHANGED`等)、`er135_enduser_page_verify_01.py`(`er135_enduser_page_01.py verify-only`)。test T13、実測=§15 |
+
+### 14-1 実装中に確定した設計差分(Fable確認用)
+- **rows契約(同期moduleへ渡す側)**: `build_rows_from_dev_html(dev_html, run_ctx) -> (rows_by_level, study_by_level, meta)`。`rows_by_level[lv]=[{row_id, kind, audio_path(絶対), sentences:[{sid,text}], + level, label, label_raw, data_t, audio_rel, paragraphs, ...}]`。指示の4キー(row_id/kind/audio_path/sentences)に`data_t`等を足した上位互換。sentencesが空の行(音声のみ・KP)は同期対象外。sid=`<lv>_<行idx>-s<levelの通し連番>`(DEVと同じ通し連番)。
+- **sync受け側の契約**(02A `er135_enduser_sync_01.py`の実出力に合わせて実装・突合済み): `schema=enduser_sync_v1`、`model`、`params`(`engine`にwhisperを含む・`time_base`=`row_local_seconds`(各行mp3内の秒。本moduleが行の`data-t`を加算して全編内の秒へ換算)または`episode_seconds`)、`rows[]={row_id, mp3_sha256(実mp3のsha), sentences[{sid,text,start,end}], kp_en?}`、`gate.status=="PASS"`のみ受理、`cost.api_calls==0`。sidの集合・順序はdev本文と同一、時刻は行のmp3長内・行内は単調・行をまたぐ逆行は0.05秒まで許容。ダミー語(dummy/proportional/placeholder)を含む値は拒否。02Aへ渡す行は`rows_for_sync(rows)`(本文行+KP行のみ。KP行は`kp={"expressions":[…]}`付き)。**KP英語区間は02Aの`kp_en`(start/end/source/blocks/token_match。ブロック数>=4必須)を優先採用**し、syncにKP行が無い場合のみ`compute_kp_audio`(下記)へfallback(syncが全KP行のkp_enを持てば本module側の再ASRは0)。出力`data/sync_<lv>.json`は`{schema=enduser_sync_public_v1, level, sentences:[{sid,start,end}]}`のみ(status/conf等は載せない)。同期の実行(`sync_level`呼出し)は本moduleでは行わない(WP-Eのhook側が`rows_for_sync`→`sync_level`→`build_enduser`の順で呼ぶ)。
+- **KP英語区間(fallback実装)**: `compute_kp_audio`(ffmpeg silencedetect + ローカルASR=faster-whisper medium int8)。ブロック数<4はSTOP(`ENDUSER_KP_BLOCKS`)、2番目のブロックを英語区間とし、ASR転写がKP表現と一致しなければSTOP(`ENDUSER_KP_ASR_MISMATCH`)。Z Adv KP2の5ブロックは「4以上」で通る。
+- **KP表の3列目**(Z Advanced=英語での説明): devページの表示内容なので落とさず`kp[].text2`+`kp_header[2]`として保持し、asset(J5)で意味の下に表示。
+- **asset追加(DEVからの機械的派生に対する最小追加)**: J5(KP 3列目)、J16/H3/C4(Voice説明文)、**J18(不具合是正)**: DEVの太字化は不規則動詞(hold等)の3単現・ing形(holds/giving)を候補にせず、月StandardのVocabulary「hold heat in」(本文の英文=`…it holds heat in`)の太字が0件になった(DEVは月Std未試験)。J18で語形を追加。許可リスト(`derive_assets_01.py` EDITS)に載る。
+- **glossaryのassert**: display_spec付き(本文にlk1/lk2/lk3 spanあり)levelで全KP・全Vocab掲載・重複なしを要求しSTOP。**藪の中の現行dev page(HEAD、OPEN-592修正途中)は下線`bandit`(lk3)に対応する「本文中の意味」一覧が無く、この検査で停止する**(devページ自体の不整合。WP-E実施時は藪の中のKP/下線修正完了後)。
+- **中間データ照合の対応**: timelineの置き場はXが`<run>/<a2|b1b>/audit/timeline.json`、Zが`<run>/<a2|b1b>/assembly/timeline.json`(Z devページはIntro/Notification行なし・label表記も違うため**開始時刻**で順序照合)。Xのみ行数も一致を要求。
+
+## 15. 実装後の実測(委任_02B、API 0・ローカル)
+
+- unit/integration: `er135_enduser_page_test_01.py` **100件PASS**(`test_output_02B.txt`)。内訳=構造契約8・文分割6・開発者向け除去3・太字/glossary 4・KP区間6・訳8・学習コーナー6・Voice説明文4・同期受入12・validator負例11・asset6・atomic書込8・整合検査11・静的隔離5・決定性2。fixture=現行builder出力の実dev HTML(X月reselect/Y fee_03/Z melos_02)+OPEN-596実本文断片。
+- ブラウザ検証(`er135_enduser_page_01.py verify-only`、Playwright Chromium、PC1280x900+モバイル模擬390x844): X=168・Y=162・Z=162チェック **NG 0**(`verify_result_02B_{x,y,z}_local_mocksync.json`)。console error 0・HTTP 4xx 0・音声参照200/206・ハイライト追従(1 levelあたり約25文サンプル)・文クリック再生・シーク・パート間連続再生・停止/再開・KP英語のみ・太字・0件コーナー非表示・Voice説明文(Y)・訳ブロック==承認済みデータ。**同期データはproportionalのmock(コード経路の検査用)であり、実ASR同期の品質の証拠ではない**(実同期=02A成果物+WP-E)。実機iOS Safari/Androidは未実施(模擬のみ)。
+- `verify_consistency`(`consistency_02B_{x,y,z}.json`): 3 Familyの公開dir相当(scratchコピー)でok。dev変更=`ENDUSER_STALE_DEV_CHANGED`、音声変更/欠落、asset改変、article.json改変、残骸tmp、禁止語混入、schema違反を検出(testで確認)。
+- KP英語区間(実音声・実ASR、`kp_audio_live_asr_02B.json`): X月(std2/adv3)・Y fee_03(std3/adv3)・Z melos_02(std5/adv5)の全KP clipで silencedetect 4ブロック→2番目の区間+faster-whisper medium(int8・CPU)の転写がKP表現と一致(X adv区間はDEV rev01-eの値と同一: way off 1.48-2.413 等)。
+- 中間データ照合: X(行数・開始時刻=`audit/timeline.json`)・Z(`assembly/timeline.json`、開始時刻)・Y(`run_gpg5_y_01`の`audit/timeline.json`)と一致、Y訳=`split_y_article(article_ja.md)`と一致、KP=`confirmed_selection`/`a2_result.json`と一致(fixtureに凍結)。
+- 未実施/残: runner hook(WP-E)、実ASR同期を通したlive evidence、live(GitHub Pages)検証、実機検証。
