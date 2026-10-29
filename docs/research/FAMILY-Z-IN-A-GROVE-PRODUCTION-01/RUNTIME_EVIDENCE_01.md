@@ -136,3 +136,10 @@ Writer〜std_adjust〜plan〜support(委任_06まで)+ kp(委任_06 約1.6+委�
 - 既存の上限・Gateは回避していない。再生成には er011_human_review_lock_01.py:475 approve_regenerate(人間承認の1回限り)+`--only-clips full_story_part3_c6` が必要=Workerは承認権限なし。
 ### Std TTS(a2): 再生成clipすべてOK。`tts_a2`再実行でcomment_3・full_story_part1_c3が『HUMAN_REVIEW_LOCKED』扱い→FamilyZTtsClipFailedStop(委任_10既知: HR採用済みclipを含むstageの再実行で出る。review_lockはRESOLVED/HUMAN_APPROVED、wav sha(0d3f39c6…/dba66c45…)は不変を確認)。他31 clipはOK。
 ### VOICE_TABLE_AFTER_14.md: 全44行(Std/Adv)で実送信voice不一致0、narratorへの発言混入0。ただしAdv part3_c6の現行wavは未採用(STOPPED)の試行4。
+
+## 委任_15(2026-10-29 15:11〜、TTS/ASR API 0・追加費用0)
+- stop_scope_check rc=0(15:11)。起動(paid run)なし。
+- HRページ: `user_test/family_z_in_a_grove_hr_02/`(Adv full_story_part3_c6、Takehiro=Puck、試行#1=attempt2.wav(ctx, NG_BOTH)、#2=attempt3.wav(ctx, 1次PASS・repetition非flag[短lag 0.5s<0.6]、減速後再検証NG。音声は減速前の素の試行)、#3=attempt4.wav(従来, 1次PASS・repetition短lag 0.73s>0.6 flagged))。attempts/attempt1.wavは旧plan(6語)の別内容のため除外。減速後再検証NGの詳細ASRはdialogue_ctx_attempt_state.jsonに保存なし(final_ng_epoch 14:58:06のみ)。
+- Std review_lock(a2/audit/review_lock_state.json): comment_3・full_story_part1_c3とも state=RESOLVED/final_status=HUMAN_APPROVED(委任_10、12:37)=既知の良性。
+- Std単独でのgate/assemble/pages/page_verify: 不可。er026_family_z_fiction_production_runner_01.py:2629(stage_gate)/2639(stage_assemble)/2653(stage_pages)/2620(provision_shell)が`for lv in LEVELS`(b1b,a2固定、1181行)で全levelを処理し、`--levels`等の引数なし(3165-3192)。b1bはc6が未OKで`assert_tts_results_complete`(er063:1937)等で止まる。runner改造は範囲外のため未実施。
+- VOICE_TABLE_AFTER_14.md再確認: a2 19行・b1b 25行=44行(a2: 発言clip全て設計Voice、narrator行はAoedeのみ、不一致0)。
