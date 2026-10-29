@@ -45,3 +45,7 @@
 - 2回目(HR確定後、完成段を1起動): 同引数で `--stages tts_b1b,tts_a2,gate,assemble,pages,page_verify`(OPEN-480回避。provision_shellはY runnerのSTAGESに無い)。
 - 予算提案: 見積85〜110円・悪化時〜130円(PLAN A-3)。`--approved-budget-jpy 130`(Cap170以内)。警告閾値100円を超える見込みのため、**超過見込みで新規API前にSTOPする可能性があり、`--ack-warn-threshold`はFable確認後に付与**。本文再生成は+約60円のため、Packageを確定してから1回で通す。
 - 注意: `world_frame.title_ja`(仮題「妻の姓を選ぶ、それぞれの声」)は、runnerが記事タイトルとして**そのまま使う**(text_core:2075。`title`生成stageなし)。ユーザー原文§1「最終タイトルは正式Productionで決定」との整合は、Fableがtitle_jaを仮題のまま通すか、正式な決定手順を別途定めるか判断(判断候補)。
+
+## 8. 委任_03 タイトル確定・V1重み付け(2026-10-29)
+- 確定title_ja=「夫が妻の姓を選ぶとき、それぞれの声」(Std/Adv共通、runnerは単一title_jaを使用: text_core:2075)。理由: Family Y先例は全て「<争点>、それぞれの声」(SNS=Package title_ja・宅配=REVISION_SCRIPT_01:103・TRIAL_03/WORLD_SETTING_01:104・規則文=er110_family_y_persona_pipeline_01.py:237「25字以内・争点が分かる・『それぞれの声』で終わる」)。Fable案「夫が妻の姓を選ぶとき」を保ち末尾のみ先例体裁に合わせた最小調整(17字、疑問形/制度論なし)。
+- V1(sheets.voice_1)のpersona_sketch_ja/arc_ja/claim_core_jaを調整: 語りの中心=苗字が変わることへの本人・双方の親の受け止めと周囲の反応、婿養子は明示、同居は背景(experiences追加・変更なし)。Package sha256 d5a0c983...→d1bc9fe2...、validate_theme_package=[]。

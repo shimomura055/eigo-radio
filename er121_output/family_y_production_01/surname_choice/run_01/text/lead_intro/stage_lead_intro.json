@@ -1,0 +1,76 @@
+{
+  "input_key": "d684d8a0dba195c82fe9c45654ba1a645399d12d70d920f3027d9a8953b5a6d4",
+  "result": {
+    "lead": "結婚して名字が変わるとしたら、自分や家族はどんな気持ちになるだろう。妻の姓を選ぶのは、結婚の届け出で夫婦がその姓を名乗ると決めることで、養子縁組は伴わない。夫婦の思いと家族の思いを前に、何を大事にして決めればいいのだろう。ここに、立場も暮らしも違う三人の声を並べてみよう。",
+    "intros": {
+      "voice_1": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+      "voice_2": "次は、来年結婚する息子がいる母親。息子が妻の姓を選ぶと聞いて、寂しさを感じた。",
+      "voice_3": "最後は、妻の姓を選んだ身内がいる親世代の人。子どもの結婚は、まだこれからのことだ。"
+    },
+    "lead_record": {
+      "source": "generated",
+      "routing_key": "FAMILY_Y_LEAD_GENERATE",
+      "expected_model": "gpt-6.1-sol",
+      "effort": "high",
+      "model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "prompt_file": "lead_generate_01.txt",
+      "prompt_sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21",
+      "user_prompt_sha256": "3bf46abc36c01b0329f1857adad2bf58076cc08b77af11cbaae4684555ad8e3a",
+      "inputs_source": "package",
+      "n_calls": 1,
+      "sha256": "c17b6d085253234cd0a0d2150541f68e6486ddc84c1a82cdb607f9a07b9213af"
+    },
+    "intro_record": {
+      "source": "generated",
+      "routing_key": "FAMILY_Y_PERSONA_INTRO",
+      "expected_model": "gpt-6.1-sol",
+      "effort": "high",
+      "model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "prompt_file": "persona_intro_01.txt",
+      "prompt_sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4",
+      "user_prompt_sha256": "14e414ad2fe1d0ac06944394a7761569e3dcf7f0902eafb57c3f904dbd82c72d",
+      "check_mode": "derived",
+      "n_calls": 1,
+      "sha256": {
+        "voice_1": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+        "voice_2": "8e3ba6194b4ec83be2a55b889fa0265640dcc0dd7679b650ecda17587cd665aa",
+        "voice_3": "d599f1786c15551f7a2a9ee8ad230e6bf5935ba57dd058558d7ed2edf6bace11"
+      }
+    },
+    "gate_record": {
+      "text_sha256": "8c28dba43d3681f09dd90a3d63452c9aab7daf1fd3b9d4f91ace6213321be419",
+      "na_fields": [
+        "leak_tension_reverts_to_research",
+        "leak_binary_camp_split",
+        "leak_evidence_memorable"
+      ],
+      "applicable_flagged": [],
+      "not_applicable_flagged": [
+        {
+          "section": "tension",
+          "fail_fields": [
+            "leak_evidence_memorable"
+          ],
+          "reasoning": "調査や数字、発見を報じる構文はなく、三人を明示的な二対一の陣営にも分けていません。一方、人物の経験は短い紹介にとどまり、養子縁組との違いを説明する事実が相対的に目立ちます。",
+          "quoted_evidence": "妻の姓を選ぶのは、結婚の届け出で夫婦がその姓を名乗ると決めることで、養子縁組は伴わない。"
+        }
+      ],
+      "any_flagged_raw": true,
+      "prompt_sha256": "eed9dd92e9f9a9caf799ebe8b6f94484c3542646304b2a23f3ca8cf54420ae1c",
+      "model": "gpt-6-luna",
+      "meta": {
+        "response_id": "resp_00aab405af1f4ff5006ae2ad60a94887d0a88a6e987c4e1172",
+        "model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 1118,
+          "output_tokens": 2423
+        }
+      },
+      "status": "PASS"
+    }
+  }
+}

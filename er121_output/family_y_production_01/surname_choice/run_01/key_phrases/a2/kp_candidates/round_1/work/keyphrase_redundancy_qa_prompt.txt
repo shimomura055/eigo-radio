@@ -1,0 +1,100 @@
+以下は、同じ記事から選ばれた10件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。10件から作れる全てのペア(45組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず45組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+If your last name changed when you married, how would you and your family feel? The couple choose to use the wife’s name on their marriage papers. This does not mean adoption. When the couple and their families have feelings about this, what should matter as they decide? Here are three people with different lives and situations.
+
+First is a father who was adopted into his wife’s family and took their last name. He lives with his family at his wife’s parents’ home. I was adopted into my wife’s family, and I use their last name. I did not hesitate at all about changing my last name. My parents’ home is in a country area, but they are not old-fashioned. They accepted it easily. My wife’s parents were more careful. They asked me many times if I was really sure. I was thankful that both sets of parents accepted my choice without being upset. I live at my wife’s parents’ home, and I still find it a little hard to have so little time alone. But fitting in with what each family thought was normal was harder than changing my last name. Once I accepted that things could be different, I felt much more at ease.
+
+Next is a mother whose son will marry next year. She felt lonely when she heard he would take his wife’s last name. Honestly, I felt lonely. My son will marry next year, and I heard he would take his bride’s last name. I didn’t like it. They will live near her parents’ home, far from us. Then he said he would change his last name too, and I felt like my son was moving away. I got really upset. But was it only the name change that I didn’t like? I think I really wanted him to stay close. Someone said I was thinking in an old-fashioned way, and I thought they were right. I need to let my son go. I still feel lonely, but I want to accept his choice to take his wife’s last name. I want to be kind to his wife without getting too close. And I want to care about their happiness as a couple.
+
+Last is someone from the parents’ generation whose relative chose his wife’s last name. Their own child will marry in the future. I think it’s fine for a man to take his wife’s last name. If my son made that choice, I wouldn’t oppose him. But I keep thinking about what happened in my family. I know a relative who took his wife’s last name without talking to his parents first. His mother, my aunt, was so shocked that she became ill. But if it were my son, it would still bother me if his partner’s parents thought it was only natural. I want them to feel at least a little grateful to my son. I say the couple should decide for themselves, but it still bothers me. Even so, I don’t want my feelings as a parent to hold my son back. If he talked to me before choosing a last name, I could tell him how I feel. I hope we can have that kind of time with his partner’s parents too.
+
+The man adopted into his wife’s family was thankful that both sets of parents accepted his choice. The parent who does not want to hold their son back wanted his partner’s parents to feel grateful to him. Thanks for accepting his choice and thanks for changing his name go in opposite directions. This difference may also show who they think a man’s choice to take his wife’s name is for. If your son chose his wife’s last name, what would you want his partner’s parents to say to you?
+
+【Key Phrase 10件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "hold someone's son back",
+    "japanese_gloss": "人の息子の足を引っ張る",
+    "source_sentence": "Even so, I don't want my feelings as a parent to hold my son back"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "fit in with",
+    "japanese_gloss": "～に合わせる",
+    "source_sentence": "But fitting in with what each family thought was normal was harder than changing my last name"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "go in opposite directions",
+    "japanese_gloss": "互いに相反している",
+    "source_sentence": "Thanks for accepting his choice and thanks for changing his name go in opposite directions"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "only natural",
+    "japanese_gloss": "ごく自然なこと",
+    "source_sentence": "But if it were my son, it would still bother me if his partner's parents thought it was only natural"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "at ease",
+    "japanese_gloss": "気持ちが楽な",
+    "source_sentence": "Once I accepted that things could be different, I felt much more at ease"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "hesitate",
+    "japanese_gloss": "ためらう",
+    "source_sentence": "I did not hesitate at all about changing my last name"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "oppose",
+    "japanese_gloss": "反対する",
+    "source_sentence": "If my son made that choice, I wouldn't oppose him"
+  },
+  {
+    "rank": 8,
+    "key_phrase": "grateful",
+    "japanese_gloss": "感謝している",
+    "source_sentence": "I want them to feel at least a little grateful to my son"
+  },
+  {
+    "rank": 9,
+    "key_phrase": "adoption",
+    "japanese_gloss": "養子縁組",
+    "source_sentence": "This does not mean adoption"
+  },
+  {
+    "rank": 10,
+    "key_phrase": "relative",
+    "japanese_gloss": "親戚",
+    "source_sentence": "Last is someone from the parents' generation whose relative chose his wife's last name"
+  }
+]
