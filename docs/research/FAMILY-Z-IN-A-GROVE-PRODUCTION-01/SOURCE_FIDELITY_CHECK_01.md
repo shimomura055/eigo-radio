@@ -36,3 +36,9 @@
 
 ## 結論
 b1b: 実TTS入力で上記4点OK、Preview/Comment先取りなし。a2: 確定本文で同OK、**a2のTTS入力(Preview/Comment含む)での最終確認は未実施**。
+
+## 委任_12(2026-10-29、API 0): a2(Std) TTS入力の最終確認(委任_07で未実施だった項目)
+- Std TTS入力: a2/audit/tts_generation_results.json の full_story_* 22 clip の canonical_text(連結)= writer/std.md 本文と一致(引用符・空白除去後、差は見出し`# The Thicket`の11文字のみ)。Adv(b1b)も同法で writer/r2.md と一致(差は見出しのみ)。
+- confirmed_selection(a2): `a2/audit/confirmed_selection.json` sha256 9bf2f55ea955784d…(`key_phrases/a2/confirmed_selection.json`と同一)。KP=on silent feet / constable / drown(vocab一致、kp_selection_verified ok)。Adv KP=cold contempt / on soft feet / medium。
+- Voice map(voice_assignment.json、Z APPROVED 2026-10-23): woodcutter=Algieba / monk=Schedar / constable=Fenrir / old_woman=Zephyr / tajomaru=Orus / masago=Kore / takehiro=Puck、ナレーター=Aoede(Std)・Charon(Adv comment/preview)。Std comment_3(日本語ナレ)=Aoede、part1_c3=Algieba(きこり、ユーザー採用#2)。
+- 7証言・3矛盾証言・結末・評決なし・非グラフィック(委任_07 §1〜5)はStd最終確定本文でも不変(std.md/r2.md無変更、TTS入力一致を上記で確認)。
