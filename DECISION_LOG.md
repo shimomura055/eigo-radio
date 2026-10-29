@@ -22787,3 +22787,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **決定/事実**: ユーザー試聴NG(修正①多襄丸の発言範囲とVoice・修正②Std KP constable→bandit、原文=delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_FIX_01.md)。原因=Z共通分割処理(er062 extract_quotes/build_flat_chunks)が閉じ引用符の無い発言をnarratorへ倒す不具合(OPEN-596)。承認済み配役仕様との矛盾の是正(11-8)としてquote_spans()を追加(閉じた段落は従来と同一、新flagなし)、test 9件追加、既存失敗集合は不変。本文は無変更(sha束縛のため)、処理側で解決。segment_plan再導出(境界・Comment位置・clip id不変、support入力shaのみ付替え)、Std KPをreadable(照合コード)経由でconstable→bandit・constable=追加解説に再確定(rev3)。
 - **未了/停止**: TTS再生成は未実施(見込み追加¥31〜44、累計¥118〜131でCap110超過見込み)。Worker自身のRESTART_STORM(tool起動の計上忘れ)で`<run>/STOP`が立っており解除はFable。ユーザー判断事項の追加なし(Cap引上げは7-7のFable自律範囲)。
 - **注意**: 旧完成候補ページ(v1)は試聴NGで差替え前提だが未差替え。Production採用・正式公開の変更なし。
+
+### 2026-10-29 END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01: ユーザー正式採用(DEV rev01-e = APPROVED_FOR_PRODUCTION)とProduction配線指示(追記のみ、API 0)
+- ユーザーがEnd User向け視聴ページ DEV rev01-e を正式採用(Family X/Y/Z × Standard/Advanced の全6組、Status=APPROVED_FOR_PRODUCTION)。目的=(1)正式Production経路へ組み込みPRODUCTION_WIREDまで完了、(2)記事完成時に開発者向け・End User向け両ページを自動生成し最終報告で両URLを提示。開発者向けページは廃止・置換しない(同一完成データから2種を生成)。DEV仮データ・未承認翻訳11ブロックの正式混入禁止、未承認の翻訳方式・同期失敗時の新fallbackを独断導入しない(新トレードオフはユーザー判断)。PRODUCTION_WIRED条件=原文§9の10項目。
+- 原文=`docs/pm/delegation_log/2026-10-29_END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01_USER.md`。管理=OPEN-597(OPEN-590の末尾にも追記)。現時点は**未配線**(PRODUCTION_WIREDではない)。委任_01=現状調査+設計(コード実装なし)→Opus条件A→実装。
