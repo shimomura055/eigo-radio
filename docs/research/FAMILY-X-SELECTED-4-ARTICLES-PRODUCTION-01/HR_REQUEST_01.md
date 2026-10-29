@@ -132,3 +132,6 @@
   - 重複判定: 暫定選定のKey Phrase・Wordとは学習上の焦点が別と判定しました。
 
 (★=AI推奨KP。文法の解説全文・AI選定理由はフォームに表示)
+
+## 公開確認
+フォーム(index.html)と8データJSON+articles.jsonをpush(47141553c)。GitHub Pages deploy完了後 2026-10-29 22:06 に9URL(上記フォーム直リンク+data/*.json 8件+articles.json)すべてHTTP 200を確認(curl)。
