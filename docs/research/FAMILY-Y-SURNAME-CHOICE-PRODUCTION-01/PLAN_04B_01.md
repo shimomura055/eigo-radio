@@ -42,3 +42,56 @@
 - `er121_family_y_runner_01.py:32 APPROVED_BUDGET_MAX_JPY = 170.0` は**定数**(CLI引数ではない)。`E2EBudget.__init__`(:127-128)が`approved_jpy > 定数`を`YBudgetStop`、:1661 mock ctxも同定数を使用。`--approved-budget-jpy`は定数以下のみ受理。
 - 200円への引上げ手順(04Bで実施する場合。runner編集は04Aでは禁止): (1)`:32`を`200.0`、コメントへ『委任_04A 7-7自律範囲、Fable判断』を追記 (2)`er121_family_y_runner_text_wiring_test_01.py:33-37 test_cap_is_170_and_above_is_refused`を200/200.01へ更新(関数名・docstring[:3]も) (3)`BUDGET_PLAN_03.md §1`へ追記 (4)実行は`--approved-budget-jpy 200 --ack-warn-threshold`。
 - **ただしrun_02のcost_log実績は¥48.75**(`er121_output/.../run_02/cost_log.jsonl`、compute_cost_jpy_so_far)で、04Bの総額≈¥8〜12を足しても約¥60(warn閾値100円未満)。**04BのためのCap引上げは不要**(別目的で再実行が増える場合のみ)。
+
+---
+# Opus反映(M1〜M8)と04B実装・リハーサル結果(委任_04B、2026-10-29。run_02本体は無書込・runner/Production module編集0)
+
+実装(新規のみ): `tools/apply_v1_intro_patch_01.py`(A。紹介行差替え+来歴)/`tools/apply_user_decision_surname_choice_02.py`(B。take offense)/`tools/test_apply_surname_choice_tools_01.py`(unit test 36件、API 0)。
+リハーサルはrun_02を`scratchpad/rr*`へ複製(複製のRUN_LOCK.jsonは本体のPID 804の写しのため削除。STOP確認は複製に対し`stop_scope_check_01.py`でrc=0)して実施した。
+
+## M1〜M8の反映(file:line。tools/配下)
+- M1 `apply_v1_intro_patch_01.py:101-102` DECLARED_CHANGED/DECLARED_STALE、`:467 rewrite_provenance`。tts_b1b/tts_a2は付替えず`downstream_stale`へ(リハーサルで`gate`/`assemble`=`FAMILY_Y_STAGE_NOT_FRESH`でSTOP、`tts_b1b`=`stale(親の再生成後)`でSTOPを実測)。
+- M2 `:309 oracle`(runnerの`R._sha`/`ys.canonical_body`/`g.cand_stage_input_sha`/`g.final_stage_input_sha`/`p2w.cand_marker`で再計算)、`:344 plan_provenance`(旧値が記録値と一致することを確認)、`:337 check_declared`(変わるentry集合==宣言集合でなければSTOP)。text段の入力shaは紹介文に依存しない(theme package+reuse manifestのみ。runner:358)ため`text`はoutput shaのみ付替え。
+- M3 `:378 kp_precheck`(読取のみで確定item6件・文法・ニュアンス引用の逐語残存を新本文で検査)→main内`cc.stale_or_rebind`(REBOUND)→新署名取得→期待旧値`sha(旧text|旧sig)`一致時のみ付替え→`kp_<lv>_result.json`の署名・sha検査(`kp_result_json_check`)→runnerの`stage_kp`(API 0)でG1を通し、確定物(keywords_canonicalized/vocab_confirmed/final)がsha系を除き退避版と内容一致(`finals_equal_ignoring_sha`=6件すべてequal)。`kp_<lv>_result.json`自体は凍結出力のため旧署名を埋め込んだまま(entryの入力shaと署名のみ新値)。
+- M4 `:67 TARGETS`(5ファイルの旧file sha・行番号・旧行/新行・行数)、`:171 build_patched`、`:211 check_article_invariants`(split_y_articleでtitle/lead/全voice body/V2・V3紹介/closing不変、supportに父親/father無し、Std KP3文がa2に逐語残存)。
+- M5 `:454 _event`(tool_id・USER_02のpath+file sha・§2・旧/新行とsha・`output_origin=human_patched_line`・旧LLM response_idが新出力を生成していない旨・api_calls=0)。適用済み再実行は`NO_OP_ALREADY_APPLIED`(リハーサルで確認)、別variantで適用済みなら拒否。
+- M6 `:414 backup_run`/`:435 restore_run`/`:139 _write_atomic`(一時ファイル+os.replace)。provenanceはfile変更・KP REBOUND・part2 marker書換えの後(検証のstage_kp前)に1回のatomic書込。失敗時は領域ごと全復元(fixed2の失敗リハーサル後、baselineとの差分0ファイルを実測)。先に複製でAPI 0工程を通した。
+- M7 `:241 check_new_lines`: 固定ENをtranslate段と同じ`ys.check_y_article(en)`(b1b/a2とも ok)+Std決定論検査`std_gen.run_checks`(checks_failed=[]、numbers_missing/added=[])、JA固定行は`check_intro`(theme spec。ok、34字)+Trial補助Gate(luna)PASS記録(`er121_output/family_y_intro_trial_01/surname/v1_gate_result.json`REC)を参照(本toolで再実行しない=API 0)。
+- M8 `apply_user_decision_surname_choice_02.py:123 deterministic_gates`: 免除はtool内の閉じた定数ペア(p_85cbe0223d, `taking offense`→`take offense`)のRule7不合格だけ(他の理由があれば拒否)。免除は候補item(`requalified.exemption`)・確定レコードorigin.transcription・rescueメタ(`rescue.user_instruction`)に記録。Production側に汎用免除の参照は足していない(Production module編集0)。他の全ゲート(CMU・記号・Human NG・gloss再整合[ALIGN_PASS]・QA 12項目全PASS・候補全体Redundancy QA・presentation_blockers)は再適用して合格。順序はA→B(revoke→requalify→confirm→再生成)。
+
+### M8 grep(used_form/key_phrase/display_phraseを『本文に含まれる』前提で使う処理)
+- ハイライト解決: `er_learning_highlight_01.py:263-264,278`は`source_span`(=本文表層`taking offense`)と`source_sentence_id`で特定。`used_form`は表示用のみ(:253,333)。→ B適用後も`_resolve_highlights_or_stop`が通る(リハーサルで実測)。
+- Part 1: `er003_kp_source_sentence_ja_01.py:86`は`source_sentence`だけを読む。`er003_kp_general_explanation_01.py:130`はused_form(基本形)を入力。引用文は不変。
+- 解説・TTS・ページは設計上`used_form`(基本形)を使う(`er019_family_x_kp_explanation_01.py:145-151 explanation_phrase`、`er019_family_x_audio_production_runner_01.py:1986-1997`、`er121_family_y_audio_01.py:1574-1581`)。本文表層(display_phrase)と異なるのは既存の基本形化(`push prices up`等)と同じ扱い。
+- G2/G3: `er128_kp_confirmed_content_01.py:883-886`(TTS英語/復唱==used_form)、`:919`(Part 1行をused_formで引く)。TTS再生成後に`take offense`で一致する見込み(Part 1行のenglish_expressionは`take offense`に更新済みをリハーサルで確認)。G2/G3の最終確認はTTS後の04C(TTS未実行のため)。
+- 完全には確認できないもの(04Cで確認): G2(`gate`)のphrase_repeat記録、page_verify G3、ページ見出しの`take offense`表示。通らなければ回避せずSTOP報告。
+
+## リハーサルで判明した事項(設計への影響。tool内に対処を実装済みのものと、Fable判断が要るもの)
+1. **[判断候補D] Std V1のEN文数**: 旧a2のV1紹介は3文、M7固定文は2文。a2本文の文番号S<n>が以降すべて1つずれ、a2の候補doc/確定レコード/Part1等の`source_sentence_id`が本文とずれる→`_resolve_highlights_or_stop`が`HL_SENTENCE_MISMATCH`(a2の10件)でSTOP(tts/pages/page_verifyの前提)。M7固定文(`--std-variant fixed2`、既定)はこのGateで安全にSTOPし全復元される(リハーサルで実測)。文数を保つ案`--std-variant split3`=`The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  `(3文、行末空白2つ)だとA→B→TTS前提すべて通る(実測)。split3は旧Stdの3文構成と同じ文体・事実(sheet範囲)で、Fable未決定のため既定にしていない。**04Cはsplit3採用(推奨)かfixed2維持(候補docのsentence_id全面再採番=新設計が必要)の決定が前提**。
+2. **Part 2(文法)結果の古さ**: 本文変更で`part2_result.json`が『古い』になり`_assert_study_ready`が`FAMILY_Y_PART2_NOT_READY`でSTOP(TTS前提)。A toolが`--regenerate-stage part2_<lv>`相当(再finalizeのみ・LLM 0・再抽出なし)をlevel別に単一regenで順に実行(`part2_refinalize`)。part2_result/confirmed_grammar(_frozen)/mdは、sha系・confirmation_id・`reused_from_previous_run`を除き内容一致を確認。
+3. **part2_<lv>の入力shaは本文shaを含み、文法review署名も本文shaを含む**ため、M3の文法REBOUND(`er119_grammar_review_01._rebind_grammar_text`)をA toolが先に実行し、その署名でpart2_<lv>を付替える(runnerのstage_kp内では先に`part2_<lv>`の親sha不一致でSTOPするため)。
+4. **kp_<lv>来歴付替えの順序**(B): 内容が変わる確定(used_form変更)では、runnerの`_rebind_kp_on_confirmation`の条件『現在のKP assetsが新しい確定と一致』を満たすため、assets install(`R.install_kp_assets`)を先に行う必要がある(`kp_prepare`)。Aは内容不変(署名のみ変化)なので従来どおり。
+5. **部分再生成(B。ユーザー原文§5『他のKey Phrase・学習項目は変更しない』)**: runnerの`kp_expl_b1b`/`kp_part1_b1b`再生成は全itemを作り直す。実測でKP2/KP3の英語解説文とPart 1の全5行の文言が変わった(例: `trying to control someone or something`→`trying to keep something or someone`)。これはKP2/KP3の解説音声の作り直しと『他の項目の変更』を招く。toolに`PartialRegen`(`:387`。変わったrank=1だけLLM生成し、他は前回の承認済み出力を保持。runnerの`_ensure`・来歴・stale化はそのまま。audit.partial_regenerationに記録。Production module編集0)を実装。結果: kp_explanations rank2・3 identical、Part 1 rows 2-5 identical、rank1のみ更新。KP1英語解説文は旧と同一(LLMが同じ文を返した)ため`kp1_explanation`のwavは再利用できる。**これは新しい処理構造(部分再生成shim)のためOpus条件A該当の可能性=Fable判断**。
+6. **`--only-segments`のsegment ID**: 許可は`kp<n>_english|explanation|japanese_meaning`(`er121_family_y_audio_01.py:102`)。Fable決定のM1文面の`kp1_en`は不可、正しくは`kp1_english`。
+7. **pagesステージはTTSのstaleを確認しない**: `gate`/`assemble`/`tts_*`は`downstream_stale`でSTOPするが、`pages`単独は実行できてしまう(`page_verify`が`G3HL_BODY_CHANGED`でSTOP)。04Cは必ず`tts_a2,gate,assemble,pages,page_verify`を1起動で(OPEN-480)。並行Workerのpages実行がA適用後に走らないよう、A適用はRUN_LOCK無し確認後(toolは`st.acquire_run_lock`を取得)。
+8. **リハーサル中に直した実装欠陥(Bで5回、Aで複数回の失敗→いずれも全復元。LLM費用はB失敗分も発生)**: rescue候補のQA/gloss記録(presentation_blockers: 救済メタを本toolの再判定結果で更新)/kp_b1b付替え順序(上記4)/cost_logは追記のみで復元対象外(費用記録を消さない)/Aのpart2・sentence_id・auditファイル。
+9. **再生成が必要なsegmentの特定(読取専用 `tts_regeneration_plan`)**: baseline=なし → A適用後={b1b:[y_intro_1], a2:[y_intro_1]} → A+B適用後={b1b:[kp1_english, y_intro_1], a2:[y_intro_1]}。kp2・kp3・kp1_explanation・他の全segmentはcanonical_text一致でwav再利用(TTS 3 clipのみ)。
+
+## 04C手順(run_02本体へ適用。すべてFable/ユーザー判断後。費用≈¥5〜7、Cap: run_02実績¥48.75+≈¥7=約¥56で170内)
+前提: (a) 上記1のStd V1 EN文数の決定(split3推奨)。(b) 並行WorkerがEnd Userページ配線のrun_02使用を終えている(`er121_output/family_y_production_01/surname_choice/run_02/RUN_LOCK.json`が無い/PID死亡)。(c) `.venv\Scripts\python.exe tools/stop_scope_check_01.py --managed-id FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01 --run-dir er121_output/family_y_production_01/surname_choice/run_02 --out <json>`がrc=0。(d) 5の部分再生成shimのFable判断。
+```
+set PYTHONUTF8=1
+# A: 紹介行差替え+来歴(API 0)。dry-run -> apply
+.venv\Scripts\python.exe docs\research\FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01\tools\apply_v1_intro_patch_01.py --dry-run --std-variant split3
+.venv\Scripts\python.exe docs\research\FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01\tools\apply_v1_intro_patch_01.py --by <名> --std-variant split3 --report <json>
+# B: take offense(LLM実績≈¥1.2。revoke -> requalify -> confirm -> 部分再生成)。dry-run -> apply
+.venv\Scripts\python.exe docs\research\FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01\tools\apply_user_decision_surname_choice_02.py dry-run --by <名>
+.venv\Scripts\python.exe docs\research\FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01\tools\apply_user_decision_surname_choice_02.py apply --by <名> --budget-jpy 9 --report <json>
+# TTS 起動1(Adv。M1(1)。kp1_explanationは文が同一のため再利用=--only-segmentsに含めても生成0)
+.venv\Scripts\python.exe er121_family_y_runner_01.py --mode real --slug surname_choice --run run_02 --theme-package docs/research/FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01/theme_packages/surname_choice_package_01.json --reuse-manifest er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/reuse_manifest.json --approved-budget-jpy 170 --ack-warn-threshold --stages tts_b1b --regenerate-stage tts_b1b --only-segments y_intro_1,kp1_english,kp1_explanation
+# TTS 起動2(Std -> 完成段。M1(2))
+.venv\Scripts\python.exe er121_family_y_runner_01.py --mode real --slug surname_choice --run run_02 --theme-package docs/research/FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01/theme_packages/surname_choice_package_01.json --reuse-manifest er121_output/family_y_production_01/surname_choice/run_01/reuse_r0/reuse_manifest.json --approved-budget-jpy 170 --ack-warn-threshold --stages tts_a2,gate,assemble,pages,page_verify --regenerate-stage tts_a2 --only-segments y_intro_1
+```
+(Z完成段の`provision_shell`指定(OPEN-480)はY runnerのSTAGESに存在しない: Yのstageは`seed_check,text,translate,support,kp,tts_b1b,tts_a2,gate,assemble,pages,page_verify`。上記が1起動で完結する。)
+04C検査項目: (1) tool report: `result=APPLIED`、`tts_regeneration_plan`=A後{b1b:[y_intro_1],a2:[y_intro_1]}・B後はb1bに`kp1_english`が加わる (2) 全segmentの`canonical_text`==現本文/KP確定、差替えsegment(b1b: y_intro_1, kp1_english / a2: y_intro_1)以外の**wav sha一致**(退避前後比較) (3) `gate`(Y style gate+Std減速確認+G2: TTS英語・phrase_repeat==used_form)・`assemble`(Audio Validation)通過 (4) `page_verify`: G3ハイライト(HL_SENTENCE_MISMATCHなし)、Part 1 rowの`take offense`、ページのV1紹介行(新)、`father/父親`/`taking offense`(KP見出し・解説・Part 1行)のGrep0(本文`without taking offense`は残る) (5) 本文(Voice発言・Lead・Closing・V2/V3紹介)のsha不変、KP2・3/Part 1他行/文法の不変(tool report `retained_items_check`・`finals_equal_ignoring_sha`) (6) `final_manifest.json`のstage_entries、cost_log加算(≈¥5〜7)。
+撤回: 各toolは失敗時に退避から全復元。成功後に戻す場合は`_backup_<tool>_<日時>`(run_02の親dir)から領域ごと復元(cost_logは追記のみ=戻さない)。
