@@ -1,0 +1,88 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+“One stab in the chest. That’s what I saw,” said the woodcutter. “I found him this morning, in a thicket off the mountain road. The blood was dry. No sword or bow, sir—only rope beneath a cedar, and a comb. The broken bamboo and trampled earth showed a struggle.”
+
+“I passed them yesterday at noon,” said the monk. “He carried a sword and bow. His wife rode beside him, her face veiled. I hardly looked at them. Now I wish I had.”
+
+“I caught Tajomaru, the famous bandit, by the stone bridge,” said the constable. “He’d fallen from a horse, but he still had the dead man’s bow. Find the woman. She’ll tell you what he did.”
+
+“Takehiro was my daughter’s husband,” said the old woman. “A gentle samurai. Masago is proud, yes, but she’s only nineteen. Please find her. Don’t send me home without news.”
+
+“Yes, I killed him,” said Tajomaru. “But listen before you call me a coward! A breeze lifted her veil, and I wanted her. I promised him buried treasure, led him into the thicket and tied him to the cedar. She fought with her dagger, but I took her by force.
+
+“Then she seized my arm. One of us must die, she said. She would go with the survivor. So I freed him. We fought fairly, sword against sword. Twenty-three strokes! No other man had lasted twenty. When he fell, she was gone. I took his weapons and left.”
+
+“I crawled towards my husband after the bandit left,” said Masago at the temple. “He was still tied up. I begged him to die with me. But his eyes held nothing except cold contempt. For me. His own wife.
+
+“I held my dagger. His lips moved: ‘Kill me.’ So I stabbed him. How could I bear those eyes?
+
+“Afterwards, I tried to drown myself. I couldn’t even do that. Where can I go now?”
+
+“I heard the bandit comforting her,” said Takehiro’s spirit through the medium. “My wife said, ‘Take me anywhere.’ Then she pointed at me. ‘Kill that man.’
+
+“He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left.
+
+“I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest.
+
+“The thicket fell silent. Then someone crept towards me on soft feet. An unseen hand quietly drew the dagger from my chest.
+
+“I sank for ever into the darkness.”
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "cold contempt",
+    "japanese_gloss": "冷ややかな軽蔑",
+    "source_sentence": "But his eyes held nothing except cold contempt"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "on soft feet",
+    "japanese_gloss": "忍び足で",
+    "source_sentence": "Then someone crept towards me on soft feet"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "sink for ever",
+    "japanese_gloss": "永遠の眠りにつく",
+    "source_sentence": "I sank for ever into the darkness"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "constable",
+    "japanese_gloss": "警官",
+    "source_sentence": "I caught Tajomaru, the famous bandit, by the stone bridge,\" said the constable"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "medium",
+    "japanese_gloss": "霊媒師",
+    "source_sentence": "I heard the bandit comforting her,\" said Takehiro's spirit through the medium"
+  }
+]

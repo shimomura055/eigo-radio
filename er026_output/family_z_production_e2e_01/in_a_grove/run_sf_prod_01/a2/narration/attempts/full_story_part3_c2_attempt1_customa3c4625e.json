@@ -1,0 +1,122 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part3_c2",
+  "theme_id": "run_sf_prod_01",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part3_c2.wav",
+  "saved_at": "2026-10-29T11:14:59",
+  "sha256": "794b5562fbc4ad21f64372ea791e471aada42ae5ee80fcc8d4e06f721b1bda1e",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "Takahiro's spirit said through a medium, she asked him to take her anywhere, then she pointed at me, Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
+  "audio_classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 37.41,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 101,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9965,
+          "time_a_seconds": 8.99,
+          "time_b_seconds": 26.33,
+          "lag_seconds": 17.34,
+          "run_length_seconds_at_thresh_0.85": 0.05
+        },
+        {
+          "similarity": 0.9964,
+          "time_a_seconds": 0.17,
+          "time_b_seconds": 18.0,
+          "lag_seconds": 17.83,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9957,
+          "time_a_seconds": 12.88,
+          "time_b_seconds": 30.13,
+          "lag_seconds": 17.25,
+          "run_length_seconds_at_thresh_0.85": 0.04
+        },
+        {
+          "similarity": 0.9951,
+          "time_a_seconds": 17.13,
+          "time_b_seconds": 34.71,
+          "lag_seconds": 17.58
+        },
+        {
+          "similarity": 0.995,
+          "time_a_seconds": 2.94,
+          "time_b_seconds": 32.9,
+          "lag_seconds": 29.96
+        }
+      ],
+      "best_run_length_seconds": 0.05,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.44,
+      "time_a": 6.02,
+      "lag": 1.36,
+      "similarity_at_start": 0.7631,
+      "best_run_length_seconds": 0.44,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Takahiro's spirit said through a medium, she asked him to take her anywhere, then she pointed at me, Kill that man. He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me. I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest. The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "tier3_corroboration_secondary",
+      "provider": "azure",
+      "text": "Takehiro's spirit said through a medium. She asked him to take her anywhere. Then she pointed at me. Kill that man.He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me.I got it beside the cedar and picked up her small dagger. She had dropped it there.I pushed it into my own chest.The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.",
+      "sub_reason": "entity_only",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    }
+  ]
+}
