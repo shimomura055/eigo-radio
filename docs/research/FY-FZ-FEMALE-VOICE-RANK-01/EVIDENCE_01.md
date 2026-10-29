@@ -1,15 +1,15 @@
 # FY-FZ-FEMALE-VOICE-RANK-01 委任_01 EVIDENCE_01(2026-10-29)
 
 ## 結論
-女性Voice候補順位(Leda/Erinome/Sulafat/Kore/Zephyr)をY・Zの正式Production経路へ反映(コード・test・API 0確認完了)。実TTS送信の動作証拠は **Z Std/Adv=取得済み(Leda実送信)**、**Y Std/Adv=未取得**(自分の起動3回が300秒内に重なりRESTART_STORMのSTOPが`run_fvr_ev_01`に自動作成された。解除はFable/ユーザーのみ。API費用は0のまま停止)。よって全4組合せ揃っておらず PRODUCTION_WIRED とは呼ばない(WIRED_PENDING_FABLE:Y実送信証拠待ち)。
+女性Voice候補順位(Leda/Erinome/Sulafat/Kore/Zephyr)をY・Zの正式Production経路へ反映(コード・test・API 0確認完了)。実TTS送信の動作証拠は **Z Std/Adv=取得済み(Leda実送信)**、**Y Std/Adv=取得済み(委任_02、2026-10-29 18:16/18:20 JST、Leda実送信)**。委任_01では自起動3回でRESTART_STORMのSTOP(API 0)となったがFableが`--clear-stop`許可、委任_02で2起動(間隔約4分)で取得。全4組合せ揃う。
 
 ## 4組合せ表
 | 組合せ | 順位反映(正式経路) | 実送信 voice_id (cost_log `tts_voice_sent`) | model_id | Style/routing | 費用 | 状態 |
 |---|---|---|---|---|---|---|
 | Z Std(a2) | `er062` 新規(pin無し)作品 `derive_dialogue_voice_tts_names`→`er063.resolve_dialogue_voice`=Leda(女性1位) / 男性Algieba不変 | **Leda** (`evidence/z/cost_log.jsonl` stage tts_a2 fvr_ev_a2_heroine、ASR一致) | gemini-2.5-pro-preview-tts | `er063.real_generators()["dialogue"]` Std=`bvoices.generate_voice_body_wide_margin`(既定Dialogue Style、速度後処理なし)、TTS_EXECUTION_MODE=STANDARD | 約¥0.5 | 取得済み |
 | Z Adv(b1b) | 同上 | **Leda** (tts_b1b fvr_ev_b1b_heroine、ASR一致、最終成功1回) | gemini-2.5-pro-preview-tts | Adv=`generate_with_a2_slowdown_outer_loop`+slowdown 6%(Z_ADV_DIALOGUE_SLOWDOWN_PCT) | 約¥2(driver不具合の再実行2回分含む。Z合計 gemini TTS 4回・in1822/out500 tokens ≒¥2〜3) | 取得済み |
-| Y Std(a2) | `er121_family_y_structure_01` 既定 `FIXED_VOICE_SLOTS`=Puck/**Leda**/Schedar。正式runnerが新規run dirで`voice_assignment.json`に`voice_2=Leda`を書出し(`evidence/y/voice_assignment.json`)、stage入力shaがVoice込みで変わりprovenance不一致STOP(再生成を要求=Voice変更が正式経路に届く証拠、API 0) | **未取得**(STOPのため) | - | - | 0 | 実送信待ち |
-| Y Adv(b1b) | 同上 | **未取得** | - | - | 0 | 実送信待ち |
+| Y Std(a2) | `er121_family_y_structure_01` 既定 `FIXED_VOICE_SLOTS`=Puck/**Leda**/Schedar。正式runnerが新規run dirで`voice_assignment.json`に`voice_2=Leda`を書出し(`evidence/y/voice_assignment.json`)、stage入力shaがVoice込みで変わりprovenance不一致STOP(再生成を要求=Voice変更が正式経路に届く証拠、API 0) | **Leda** (`evidence/y/cost_log.jsonl` 1行目 stage tts_a2 y_voice_2、ASR 2回目で一致[1回目不一致→attempt2成功]、y_voice_2 status OK) | gemini-3.8-flash-lite-tts | tts_backend=speech_metadata_flash_lite、TTS_EXECUTION_MODE=STANDARD | 約¥1.56 | 取得済み |
+| Y Adv(b1b) | 同上 | **Leda** (stage tts_b1b y_voice_2 attempt1 成功、ASR 1回で一致、status OK) | gemini-3.8-flash-lite-tts | tts_backend=speech_metadata_flash_lite、STANDARD(b1bはY runnerの同backend) | 約¥1.39(累計¥2.94) | 取得済み |
 
 Y実送信の再開手順(Fable): `python er121_family_y_runner_01.py --clear-stop --reason "..." --slug redelivery_fee --run run_fvr_ev_01`後、`--stages tts_a2 --regenerate-stage tts_a2 --only-segments y_voice_2`を1起動、150秒以上空けて`--stages tts_b1b --regenerate-stage tts_b1b --only-segments y_voice_2`を1起動(共通引数は`evidence/y/console_launch3.log`の履歴と同じ、`--approved-budget-jpy 15`、cost_logは複製元の過去行を空にしてある[`cost_log_inherited_from_style_fix_01.jsonl.bak`に退避])。
 
