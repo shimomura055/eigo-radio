@@ -588,3 +588,7 @@
 
 ### 2026-10-29 FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_10 追記
 - `#216 **新規・未回答・分類D**(2026-10-29): 藪の中 Std HR Lock 2 clip(comment_3 日本語ナレーション/full_story_part1_c3 きこり英語)の試聴判断(各試行のPASS/NG)。URL=https://shimomura055.github.io/eigo-radio/user_test/family_z_in_a_grove_hr_01/ 。選択肢=(a)いずれかの試行を採用(clip別に「試行Nを採用」と回答。既存の個別Human Approval機構で採用→残stage gate,assemble,pages,page_verifyへ進む。追加API費用0) (b)全NG→再生成(Cap90残¥3.65では不足=Cap引上げが必要、見積は下記RESULT_PACKET_FZ10/RUNTIME_EVIDENCE_01、2 clip合計約¥7.2/1サイクル)。ブロック対象=藪の中Std完成(Adv完成・Std 25/27)。SSOT=OPEN-592。`
+
+### 2026-10-29 FX-MOON-SHRINKING-FINAL-PUBLISH-01 追記
+- `#217 判断済み(2026-10-29): 月のしわ Std/Adv 試聴PASS・記事単位APPROVED_FOR_PRODUCTION・正式公開(commit 88df63bb0、https://shimomura055.github.io/eigo-radio/user_test/family_x_moon_shrinking_reselect_01/index.html)。原文=docs/pm/delegation_log/2026-10-29_FX-MOON-SHRINKING-FINAL-PUBLISH-01_USER.md。`
+- `#203 解消(承認済み音声[run_ms_03 attempt 2]再利用、公開完了、2026-10-29)。`
