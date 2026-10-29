@@ -623,6 +623,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B比較条件・費用上限・受入条件、2026-09-29、委任_02)Step 1実行、gpt-6-luna重大見逃し検出によりSTOP、Trial終了Status候補=USER_DECISION_REQUIRED
 - [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B完走、2026-09-29、委任_03)、Trial終了Status候補=USER_DECISION_REQUIRED
 - [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: Closeout(価格一次確認・Status確定・OPEN-233再開、2026-09-29、委任_04)、Trial終了Status=VALIDATED(採用候補・Production採用ではない)、OPEN-233をREOPENEDへ
+- [本ファイル内] ## FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_09: ユーザー最終判断=『藪の中』作品不採用(お蔵入り)・SSOT反映(2026-10-30)
 
 ---
 
@@ -22856,3 +22857,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ### 2026-10-30 ONE-STEP-FURTHER-CORNER-TRIAL-01 委任_01: 新学習コーナー「One Step Further」品質検証Trialを開始(Trial専用・Production未変更)
 - ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ONE-STEP-FURTHER-CORNER-TRIAL-01_USER.md`)に基づき、ニュアンス解説に代わる新コーナー案の内容品質・再現性・費用をTrial。対象=Y姓/X AIの島/Z告げ口心臓×Std/Adv。到達Status上限=VALIDATED。新コーナーの採用・ニュアンス解説の扱い・表示仕様はユーザー判断(OPEN-614、UDRはFable提示)。Production code/Prompt/記事本文/音声/KP/文法は変更しない。
+
+## FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_09: ユーザー最終判断=『藪の中』作品不採用(お蔵入り)・SSOT反映(2026-10-30)
+- 判定: 作品として不採用(お蔵入り)。リリースしない。原文=`docs/pm/delegation_log/2026-10-30_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_FINAL.md`。
+- 理由: 音声・Voice割当・ASR・ページ組立の制作品質は問題なし。物語自体が日本語でも理解しづらく、矛盾する複数証言とセリフが入り混じる構成は英語学習用音声に不適(コンテンツ適性の問題)。
+- 対応: (1)正式リリースせず追加修正・再生成なし (2)成果物・検証記録は保存、不採用をSSOT/DECISION_LOGへ反映 (3)今後のZ作品選定は文学的評価・Voice多様性に加え「英語学習者が音声だけで理解できるか」を重視(OPEN-615) (4)不採用を理由にFamily Z全体の品質基準・Production仕様は無断変更しない(OPEN-596/602/607/608の配線・是正は有効)。
+- 分類: 制作技術上の失敗ではなく、作品選定段階での適性判断の失敗。OPEN-592=CLOSED/USER_REJECTED_CONTENT。UDR #218/#220系列の最終判断。コード・ページ・成果物は無変更、API 0。本案件最終累計API費用≒¥136.6。

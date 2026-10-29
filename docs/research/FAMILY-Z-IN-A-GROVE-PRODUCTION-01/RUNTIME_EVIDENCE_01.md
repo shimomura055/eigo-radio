@@ -155,3 +155,6 @@ Writer〜std_adjust〜plan〜support(委任_06まで)+ kp(委任_06 約1.6+委�
 - test: er135_enduser_page_test_01.py T18(node実行3件: sink for ever→sank for everの太字範囲1件・sunk、表規模>=100形群と代表動詞5語、fail-safe[一致0/placeholderのみ/複数候補=非強調])。er135 page/hook/sync/dropout計182 PASS。
 - 再生成(produce、ASRはcache hit、runner再起動なし): 月/再配達料/メロス/姓/藪の中すべてrc=0・Playwright(PC+mobile模擬)全項目OK・verify-consistency ok。dev index.html(git未変更)。月のsync_std 1要素0.03秒差のみ(固有名詞prompt自動使用に伴うcache再計算)。姓のbuild_info id/article.jsonのidが"pages"→公開dir名に正規化(produce経路の仕様)。
 - 藪の中: End User生成・公開(`enduser_FAILED_browser_bold_sink_for_ever_01`は記録後に削除)。
+
+## 最終判断(2026-10-30): 作品不採用・お蔵入り
+ユーザー最終判断(原文=`docs/pm/delegation_log/2026-10-30_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_FINAL.md`): 作品として不採用、リリースしない。制作品質(音声・Voice・ASR・ページ組立)は問題なし、不採用理由はコンテンツ適性(作品選定段階の適性判断の失敗)。本記録・成果物は保存のみ。追加修正・再生成なし。本案件最終累計API費用≒¥136.6(委任_07/08はAPI 0)。
