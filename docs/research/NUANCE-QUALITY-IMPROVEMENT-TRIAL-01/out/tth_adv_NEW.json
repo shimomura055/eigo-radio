@@ -1,0 +1,126 @@
+{
+ "schema": "nuance_candidate_v1",
+ "family": "Z",
+ "article_id": "the_tell_tale_heart",
+ "level": "Advanced",
+ "level_key": "b1b",
+ "generated_at": "2026-10-29T21:13:21+0900",
+ "candidate": null,
+ "no_candidate_reason": "model_returned_none",
+ "kp_word_basis": {
+  "status": "provisional",
+  "items": [
+   "blood went cold",
+   "sharpen someone's senses",
+   "never stir",
+   "Not a mark",
+   "fastening"
+  ],
+  "provisional_ids": [
+   "p_d5e6b6ba10",
+   "p_c5931d1289",
+   "p_6a2291ca74",
+   "p_04d93d1d66",
+   "p_fbedf23779"
+  ],
+  "pool_ids": [
+   {
+    "id": "p_d5e6b6ba10",
+    "kind": "phrase"
+   },
+   {
+    "id": "p_c5931d1289",
+    "kind": "phrase"
+   },
+   {
+    "id": "p_6a2291ca74",
+    "kind": "phrase"
+   },
+   {
+    "id": "p_04d93d1d66",
+    "kind": "phrase"
+   },
+   {
+    "id": "p_f5f0c03a89",
+    "kind": "word"
+   },
+   {
+    "id": "p_fbedf23779",
+    "kind": "word"
+   },
+   {
+    "id": "p_e2cae8b540",
+    "kind": "word"
+   },
+   {
+    "id": "p_4f64ca6f21",
+    "kind": "word"
+   },
+   {
+    "id": "p_5899ff84b0",
+    "kind": "word"
+   }
+  ],
+  "candidates_sha256": "41261214d178720ab45aafe121950c9d5dbb5a50872a473b5da10154e4d46b46",
+  "pool_identity_sha": "544b9343ec65b6e32abcd1574d4358e3b3e732d9ce25b6a96f3889910096b641",
+  "grammar_identity_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+ },
+ "text_sha256": "9f274464b940538c05ad40cd0adbf0aaa0abf84a77d1e154f646dfa20e549961",
+ "model": "gpt-6-luna",
+ "prompt_sha": "0cb5e9495ece99905cecf7e6968e55205e402b91250a09d1fec3787bc4e699d4",
+ "judge_prompt_sha": "643c857a6ca5c9c0cf608f4595e19e399e86ed04b13422d6fb689efea4322d39",
+ "generation": {
+  "prompt_sha256": "094b9dfc201344d29e8cbe4baf7b52834cb13e33340071632cd7ea74ee64345a",
+  "rejected_candidates": [
+   {
+    "expression": "I hear everything in heaven and earth.",
+    "focus": "「すべて」と言い切る誇張が、語り手の主張に与える印象",
+    "reason": "low_value",
+    "note": "文学的な誇張の説明にとどまり、使い分けの学習価値が弱い。"
+   },
+   {
+    "expression": "You should have seen my patience!",
+    "focus": "聞き手に見せるよう促す形が、誇らしげな強調になる点",
+    "reason": "grammar_overlap",
+    "note": "中心となるのが should have の構文・用法の説明になりやすい。"
+   },
+   {
+    "expression": "The old man was away in the country.",
+    "focus": "in the country が「田舎で」を指す用法",
+    "reason": "too_basic",
+    "note": "辞書で確認できる基本的な語義の違いにとどまる。"
+   },
+   {
+    "expression": "What if a neighbour heard?",
+    "focus": "近所の人に聞かれる可能性を心配する疑問の形",
+    "reason": "grammar_overlap",
+    "note": "主な説明が What if の構文・用法になりやすい。"
+   }
+  ],
+  "model_reason_ja": "本文中には語感や文脈上の含みを説明できる表現もありますが、既定のKey Phrase・Wordや文法事項との重複、または基本的な語義説明に寄りやすく、4条件を明確に満たす候補はありません。"
+ },
+ "status": "NO_CANDIDATE",
+ "usage": {
+  "input_tokens": 3824,
+  "output_tokens": 1469,
+  "cost_jpy": 0.1787,
+  "n_calls": 1,
+  "calls": [
+   {
+    "process": "NUANCE_EXPLANATION",
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3824,
+     "output_tokens": 1469,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 1057
+    },
+    "response_id": "resp_06d98eb9cdb38cb0006ae338617e7887d0b55fa34b0106aa7c",
+    "elapsed_sec": 16.95,
+    "cost_jpy": 0.1787
+   }
+  ]
+ },
+ "trial_extra_issues": []
+}

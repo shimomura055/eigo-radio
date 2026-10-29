@@ -1,0 +1,450 @@
+=== y_surname_std CUR status=CANDIDATE reason=None cost=0.2357 extra=None
+ expr: at least a little | 希望の最低ラインを示し、要求を控えめに伝える働き
+ quote: I want them to feel at least a little thankful to my son.
+ type: None
+ expl: 「at least」は最低限のラインを示し、「a little」がその程度を小さく表します。この場面では、相手の親に息子への感謝を求めながらも、強い感謝を要求するのではなく「少しは」と控えめに伝えています。「感謝してほしい」だけの場合より期待の程度を限定し、要求の強さを和らげる表現です。 (144字)
+=== y_surname_std NEW status=CANDIDATE reason=None cost=0.2174 extra=[]
+ expr: at least a little | 「最低限ここまでは」という期待を添える働き
+ quote: I want them to feel at least a little thankful to my son.
+ point: 感謝の強さを控えめにしつつ、「少しは」という最低限の期待を伝えます。
+ type: comparison
+    A  I want them to feel thankful to my son. / 相手の親たちには、息子に感謝してほしいです。 / 感謝してほしいという希望を述べていますが、どの程度かは示していません。
+    B [TEXT] I want them to feel at least a little thankful to my son. / 相手の親たちには、息子に少しは感謝してほしいです。 / 「少しは」を最低限の望みとして示し、控えめながらも譲れない気持ちを添えます。
+ expl: 「少しは」と訳すと、感謝の量がわずかだという点だけに目が向きがちです。ここでは「少しでも感謝すること」を最低限の望みとして示しています。強い感謝を求めるのではなく、相手の親にも息子への感謝を表してほしい、という控えめながら明確な期待が伝わります。 (123字)
+=== y_surname_std NEWFIX status=CANDIDATE reason=None cost=0.2398 extra=[]
+ expr: at least a little | 「少しは」を最低ラインとして示す含み
+ quote: I want them to feel at least a little thankful to my son.
+ point: 相手の親に、息子への感謝を「最低限、少しは」感じてほしいという気持ちを表します。
+ type: comparison
+    A [TEXT] I want them to feel at least a little thankful to my son. / 相手の親には、息子に少なくとも少しは感謝してほしいと思います。 / 感謝の最低ラインを示し、それ以上に感謝する可能性も残します。
+    B  I want them to feel a little thankful to my son. / 相手の親には、息子に少し感謝してほしいと思います。 / 感謝の程度を「少し」と述べるだけで、最低ラインを強調しません。
+ expl: 「at least a little」は「少しだけ」ではなく、「最低限、少しは」という下限を置く表現です。この親は、相手の親に息子への感謝を少しでも感じてほしいと願っていますが、それ以上の感謝を望まないわけではありません。「少しだけ」と受け取ると、量をそこまでに限る響きに誤解しやすいので注意しましょう。 (152字)
+=== y_surname_std NEW2 status=CANDIDATE reason=None cost=0.2795 extra=[]
+ expr: at least a little | 控えめな希望に「最低限」の線を引く含み
+ quote: I want them to feel at least a little thankful to my son.
+ point: 強い感謝を求めず、「少しだけでも」という最低限の希望を示します。
+ type: comparison
+    A  I want them to feel thankful to my son. / 彼らには息子に感謝してほしい。 / 感謝の程度を指定せず、希望を広く述べています。
+    B  I want them to feel a little thankful to my son. / 彼らには息子に少し感謝してほしい。 / 感謝の程度が少しであることを述べています。
+    C [TEXT] I want them to feel at least a little thankful to my son. / 彼らには、少なくとも少しは息子に感謝してほしい。 / 「少し」を最低限の希望として示しています。
+ expl: 「少し感謝してほしい」だけでなく、「少なくとも少しは」と、ここだけは望みたい最低ラインを示します。親たちに強い感謝を求めるのではなく、相手の親にも息子への感謝を感じてほしいという、控えめながら譲れない期待が伝わります。 (109字)
+=== y_surname_std NEW2FIX status=CANDIDATE reason=None cost=0.2331 extra=[]
+ expr: at least a little | 「少しは」を最低限の希望として示す含み
+ quote: I want them to feel at least a little thankful to my son.
+ point: 感謝の気持ちを多く求めるのではなく、少しでも感じてほしいという最低ラインを示します。
+ type: comparison
+    at leastなし  I want them to feel a little thankful to my son. / 相手の親たちには、息子に少し感謝してほしいと思います。 / 感謝の程度が少しだと述べていますが、それを最低限の希望として強調してはいません。
+    本文 [TEXT] I want them to feel at least a little thankful to my son. / 相手の親たちには、息子に少しは感謝してほしいと思います。 / 少しでも感謝することが最低限の希望で、それ以上の感謝も含みうる言い方です。
+ expl: ここでは、相手に大きな感謝を求めるというより、「少しでも感謝してほしい」という最低ラインを示しています。a littleだけなら感謝の程度が小さいことを表すのが中心ですが、at leastが加わると、その小ささを認めつつ「それくらいは」と希望する含みが出ます。 (130字)
+=== y_surname_std NEW2FIX_r2 status=CANDIDATE reason=None cost=0.1798 extra=[]
+ expr: at least a little | 感謝の程度を控えめに示しつつ、最低限は求める含み
+ quote: I want them to feel at least a little thankful to my son.
+ point: 大きな感謝は求めない一方、少しは感謝してほしいという最低ラインを示します。
+ type: comparison
+    A [TEXT] I want them to feel at least a little thankful to my son. / 相手のご両親には、息子に少しは感謝してほしいです。 / 感謝の大きさは控えめでも、ゼロではなく少しはあってほしいという含みです。
+    B  I want them to feel thankful to my son. / 相手のご両親には、息子に感謝してほしいです。 / 感謝を求めていますが、どの程度の感謝かは示していません。
+ expl: 「少しは」と訳すだけでは、控えめな表現という点だけに目が向きがちです。ここでは「大きな感謝でなくてよい」という譲歩と、「それでも少しは感謝してほしい」という最低ラインが一緒に伝わります。感謝の程度をやわらかく求めるときに使えます。 (115字)
+=== y_surname_std NEW2FIX_r3 status=CANDIDATE reason=None cost=0.1406 extra=[]
+ expr: at least a little | 「少しでも」を最低限の希望として示す含み
+ quote: I want them to feel at least a little thankful to my son.
+ point: 強い感謝を求めるのではなく、「せめて少しは」という最低ラインを示しています。
+ type: comparison
+    修飾なし  I want them to feel thankful to my son. / 相手の親たちには、息子に感謝してほしい。 / 感謝の程度に下限を設けず、感謝してほしいと述べています。
+    本文 [TEXT] I want them to feel at least a little thankful to my son. / 相手の親たちには、息子に少しでも感謝の気持ちを持ってほしい。 / 「少しでも」が加わり、求める感謝は控えめでも、ゼロではないことが伝わります。
+ expl: 「少なくとも少し」と字面だけで捉えると、量の話のように見えますが、ここでは相手への要求を控えめにしつつ、最低限の気持ちは示してほしいという表現です。感謝を強く求めるのではなく、「まったく何も感じないのではなく、少しは」と伝えたい場面で使えます。 (122字)
+=== y_surname_std NEW3 status=CANDIDATE reason=None cost=0.2613 extra=[]
+ expr: at least a little vs a little | at least が「少し」を最低ラインとして示す働き
+ quote: I want them to feel at least a little thankful to my son.
+ point: ここでの at least は、「少し」を望む気持ちの最低ラインとして示します。
+ type: comparison
+    A  I want them to feel a little thankful to my son. / 相手の親たちには、息子に少し感謝してほしい。 / 感謝の程度が少しだということを述べています。
+    B [TEXT] I want them to feel at least a little thankful to my son. / 相手の親たちには、息子に少なくとも少しは感謝してほしい。 / 少しでも感謝することを最低限の望みとして示します。
+ expl: 「少し」と「少なくとも少し」は似ていますが、後者では少しが望みの下限になります。at least はこのように、数量や程度について「ここまでは」と基準を示すときにも使えます。ただし、それ以上を望んでいると決めつける表現ではありません。 (117字)
+=== y_surname_std NEW3FIX status=CANDIDATE reason=None cost=0.1878 extra=[]
+ expr: at least a little | 控えめな程度を示しつつ、最低ラインを置く働き
+ quote: I want them to feel at least a little thankful to my son.
+ point: 感謝の程度は控えめでも、少なくとも少しは感じてほしいという下限を示します。
+ type: comparison
+    A  I want them to feel thankful to my son. / 相手のご両親には、息子に感謝してほしいです。 / 感謝を望んでいますが、どの程度かは特に指定していません。
+    B [TEXT] I want them to feel at least a little thankful to my son. / 相手のご両親には、息子に少しは感謝してほしいです。 / 感謝の程度は小さくてもよい一方、少しはあることを最低ラインとして示します。
+ expl: 「a little」で程度は控えめですが、at least が加わると「少なくともそこまでは」という下限が生まれます。この文は強い感謝を求めると言い切らず、感謝が少しはあることを望む言い方です。「少しだけ」に引っぱられると、at least が示す最低ラインを見落としやすいので注意しましょう。 (147字)
+=== y_surname_std NEW3FIX_r2 status=CANDIDATE reason=None cost=0.2588 extra=[]
+ expr: at least a little | 「少しでも」という、望む程度の最低ラインを示す働き
+ quote: I want them to feel at least a little thankful to my son.
+ point: 相手の親に求める感謝について、「少しでも」という最低ラインを示します。
+ type: comparison
+    A  I want them to feel thankful to my son. / 彼らには息子に感謝してほしいと思います。 / 感謝してほしいとは言いますが、その程度は示していません。
+    B  I want them to feel a little thankful to my son. / 彼らには息子に少し感謝してほしいと思います。 / 感謝の程度が少しだと述べますが、最低ラインとしては示しません。
+    C [TEXT] I want them to feel at least a little thankful to my son. / 彼らには息子に少しでも感謝してほしいと思います。 / 少しを下限として示し、それより少ない反応ではないことを望む言い方です。
+ expl: 「少しでも」は、感謝の量を少しだけに限定する表現ではありません。ここでは、望む反応の下限を示しています。日本語の「少なくとも少し」からは不自然さが先に立ちやすいですが、英語では at least が加わることで、「少し」という程度が最低ラインとして伝わります。 (130字)
+=== y_surname_std NEW3FIX_r3 status=CANDIDATE reason=None cost=0.1582 extra=[]
+ expr: at least a little | 気持ちの程度に最低ラインを置き、上限は決めない働き
+ quote: I want them to feel at least a little thankful to my son.
+ point: 感謝の気持ちに「少しは」という最低ラインを置いています。
+ type: comparison
+    A  I want them to feel thankful to my son. / 私は、彼らに息子へ感謝してほしいと思います。 / 感謝してほしいという希望は伝わりますが、気持ちの程度は示していません。
+    B [TEXT] I want them to feel at least a little thankful to my son. / 私は、彼らに息子へ少しでも感謝してほしいと思います。 / 感謝の最低ラインは示しますが、それ以上の感謝を排除する表現ではありません。
+ expl: 「少なくとも少し」と訳すと、感謝の量を少しに限定するように感じるかもしれません。しかし、この表現が示すのは最低ラインで、上限ではありません。気持ちの程度についても使えるため、「少しは感じてほしい」という控えめな希望を伝えられます。 (115字)
+=== y_surname_adv CUR status=CANDIDATE reason=None cost=0.2925 extra=None
+ expr: can't help thinking | 考えが意図に反して浮かぶ、抑えにくさ
+ quote: If my son decided to do that, I wouldn’t oppose it, but I can’t help thinking about a relative.
+ type: None
+ expl: 「can't help thinking」は、単に「考える」より、考えないようにしてもその考えが浮かぶという抑えにくさを含みます。ここでは息子の選択を認める姿勢を述べたあと、親戚の事例がなお気にかかると打ち明けています。「I think about a relative」なら中立的な思考の報告で、この表現ほど心に引っかかっている感じは出ません。 (173字)
+=== y_surname_adv CURFIXAT status=CANDIDATE reason=None cost=0.1662 extra=None
+ expr: at least | 「最低限これくらいは」という要求の下限を示す含み
+ quote: I want them to feel at least a little grateful to my son.
+ type: None
+ expl: ここでの at least は、感謝の強さを数量として測るというより、「最低限、少しは」という期待の下限を示します。I want them to feel grateful なら感謝を求める言い方ですが、at least a little を加えると、強い感謝までは求めない一方で、わずかでも感謝してほしいという気持ちが表れます。日本語の「少なくとも」だけで読むと、この要求の控えめな線引きを見落としがちです。 (205字)
+=== y_surname_adv NEW status=CANDIDATE reason=None cost=0.2068 extra=[]
+ expr: at least a little | 控えめに見せつつ、最低限の期待を示す働き
+ quote: I want them to feel at least a little grateful to my son.
+ point: 感謝の度合いはわずかでもよいとしながら、それを最低限の期待として示しています。
+ type: comparison
+    A [TEXT] I want them to feel at least a little grateful to my son. / 相手の両親には、息子に少しは感謝してほしい。 / 「少しでもよい」という譲歩を含みつつ、それを最低限の線として求める響きがあります。
+    B  I want them to feel grateful to my son. / 相手の両親には、息子に感謝してほしい。 / 感謝を求める点は同じですが、どの程度の感謝でよいかという最低ラインは示しません。
+ expl: 「少しは」と訳すと、感謝の量が少ないという点だけに目が向きがちです。ここでは at least が「せめてこの程度は」という下限を設け、控えめな言い方の中に最低限の期待を残しています。相手に強く要求するのではなく、譲歩を示しながらも、何を期待しているかを伝えたい場面で使われます。 (140字)
+=== y_surname_adv NEWFIX status=CANDIDATE reason=None cost=0.2705 extra=[]
+ expr: can't help thinking | 自分の意思に反して考えが浮かぶ含みと、考え続ける表現との違い
+ quote: If my son decided to do that, I wouldn’t oppose it, but I can’t help thinking about a relative.
+ point: 反対する意思はない一方で、親戚のことが意図せず頭に浮かぶことを示します。
+ type: comparison
+    A [TEXT] If my son decided to do that, I wouldn’t oppose it, but I can’t help thinking about a relative. / 息子がそうすると決めても反対はしないが、親戚のことを考えずにはいられない。 / 考えないようにしても、その考えが浮かんでしまう含みがあります。
+    B  If my son decided to do that, I wouldn’t oppose it, but I keep thinking about a relative. / 息子がそうすると決めても反対はしないが、親戚のことを繰り返し考えてしまう。 / 思考が何度も続くことに焦点があり、考えを抑えられない含みは必ずしもありません。
+    C  If my son decided to do that, I wouldn’t oppose it, but I still think about a relative. / 息子がそうすると決めても反対はしないが、今でも親戚のことを考える。 / 以前から現在まで考えていることを表し、考えが不意に浮かぶとは限りません。
+ expl: 「考える」とだけ訳すと、話し手が意識して親戚のことを考えているようにも読めます。この文では「反対はしない」という意思と対比され、考えが自分の意図どおりには止められないことが伝わります。思考の回数や継続を述べたい場合は、keep thinking や still think のほうが焦点に合います。 (149字)
+=== y_surname_adv NEWFIXAT status=CANDIDATE reason=None cost=0.2118 extra=[]
+ expr: at least | 「少なくとも」が、控えめな最低ラインを示す含み
+ quote: I want them to feel at least a little grateful to my son.
+ point: 強い感謝を求めるのではなく、「ほんの少しでも」という最低ラインを示しています。
+ type: comparison
+    A [TEXT] I want them to feel at least a little grateful to my son. / 相手のご両親には、息子に少しは感謝してほしいです。 / at least が「わずかでもよい」という控えめな最低ラインを添えます。
+    B  I want them to feel a little grateful to my son. / 相手のご両親には、息子に少し感謝してほしいです。 / 少しの感謝を望む文ですが、それが最低限の希望だという含みは弱まります。
+ expl: 日本語の「少なくとも」は、数量や条件の下限を示すだけに感じられることがあります。この文では、相手のご両親に大きな感謝を要求するのではなく、「ほんの少しでも」と希望を抑えた言い方になっています。控えめな要望を述べつつ、譲れない最低ラインを示したいときに使える表現です。 (133字)
+=== y_surname_adv NEW2 status=CANDIDATE reason=None cost=0.3247 extra=[]
+ expr: can’t help thinking | 考えが浮かぶのを抑えられないという含み
+ quote: If my son decided to do that, I wouldn’t oppose it, but I can’t help thinking about a relative.
+ point: 息子の選択を認める姿勢と、親戚のことが頭に浮かんでしまう気持ちを対比している。
+ type: comparison
+    A  If my son decided to do that, I wouldn’t oppose it, but I think about a relative. / 息子がそうすると決めても反対はしませんが、ある親戚のことを考えます。 / 考えることを中立的に述べており、意図せず考えてしまう含みは弱い。
+    B [TEXT] If my son decided to do that, I wouldn’t oppose it, but I can’t help thinking about a relative. / 息子がそうすると決めても反対はしませんが、どうしてもある親戚のことを考えてしまいます。 / 親戚のことが意に反して頭に浮かぶ感じが加わる。
+ expl: 「考える」とだけ言う場合と違い、本文の can’t help thinking は、その考えが本人の意思で選んだものではないと伝えます。親戚の経験を気にしてしまう一方、息子の選択には反対しないという両方の姿勢を表せる言い方です。can’t help を「考える能力がない」と取らず、「つい考えてしまう」と捉えましょう。 (159字)
+=== y_surname_adv NEW2FIX status=CANDIDATE reason=None cost=0.2422 extra=[]
+ expr: can't help thinking | 考えずにはいられないという含みと、その強さの度合い
+ quote: If my son decided to do that, I wouldn’t oppose it, but I can’t help thinking about a relative.
+ point: 反対はしないという立場を示しつつ、親戚のことが頭に浮かぶ気がかりを添えています。
+ type: context
+ expl: 「考えずにはいられない」は強い衝動や深刻な執着にも聞こえますが、この文では、息子の選択には反対しないと述べたあと、それでも親戚の一件が頭に浮かぶという控えめな補足です。can't help thinking は、考えるのを止めようとしても思い浮かぶ感じを添えますが、必ずしも考え続けて苦しんでいるほどの強さではありません。本人の表向きの立場と、なお残る気がかりを並べたい場面で使えます。 (193字)
+=== y_surname_adv NEW2FIXAT status=CANDIDATE reason=None cost=0.2572 extra=[]
+ expr: at least | 感情の程度に「最低限」の線を引き、要求を控えめに示す働き
+ quote: I want them to feel at least a little grateful to my son.
+ point: 感謝の程度に最低ラインを置き、「せめて少しは」と要求を控えめに示します。
+ type: comparison
+    A  I want them to feel grateful to my son. / 相手の親には、息子に感謝してほしいです。 / 感謝を望みますが、どの程度かは指定していません。
+    B  I want them to feel a little grateful to my son. / 相手の親には、息子に少し感謝してほしいです。 / 感謝の程度は少しと示しますが、それが最低ラインだとは明示しません。
+    C [TEXT] I want them to feel at least a little grateful to my son. / 相手の親には、息子にせめて少しは感謝してほしいです。 / 「少し」を最低限のラインとして示し、それ以上を求めるかは限定しません。
+ expl: 「at least」は「少なくとも」と数量だけに結びつけると、この文の意図を取り逃がします。ここでは感謝の量を測るのではなく、「多くなくてもいいが、ゼロではなく、せめて少しは」という最低ラインを示しています。強い感謝を求めるというより、息子への配慮として小さな感謝を望む、控えめな要求になります。程度や行動について、話し手が譲れる範囲を示すときにも使えます。 (179字)
+=== y_surname_adv NEW2FIXAT_r2 status=CANDIDATE reason=None cost=0.1539 extra=[]
+ expr: at least | 期待する感情の最低ラインを示し、要求を控えめに見せる働き
+ quote: I want them to feel at least a little grateful to my son.
+ point: 感謝の度合いは小さくてもよいが、ゼロではないことを最低ラインとして示します。
+ type: comparison
+    A  I want them to feel grateful to my son. / 相手のご両親には、息子に感謝してほしいです。 / 感謝を求めていますが、どの程度でよいかは限定していません。
+    B  I want them to feel a little grateful to my son. / 相手のご両親には、息子に少し感謝してほしいです。 / 少しの感謝を望みますが、それが最低限の条件だという含みは弱めです。
+    C [TEXT] I want them to feel at least a little grateful to my son. / 相手のご両親には、息子に少しでも感謝してほしいです。 / 感謝の量はわずかでもよい一方、少なくとも感謝はしてほしいという線を引きます。
+ expl: 「少し感謝してほしい」だけでなく、「ほんの少しでも、それだけは」という最低ラインが感じられるのがポイントです。話し手は相手に大きな感謝を求める形を避けつつ、息子が相手の家族に迎えられることへの感謝は期待しています。at least は数量の説明だけでなく、控えめに見せた要求や譲れない条件を表すこともあります。 (155字)
+=== y_surname_adv NEW2FIXAT_r3 status=CANDIDATE reason=None cost=0.216 extra=[]
+ expr: at least | 控えめな希望に見せつつ、最低限のラインを示す働き
+ quote: I want them to feel at least a little grateful to my son.
+ point: 「少しは」という控えめな希望の中に、それだけは求めたいという最低ラインを込めています。
+ type: comparison
+    A  I want them to feel a little grateful to my son. / 相手のご両親には、息子に少し感謝してほしいと思います。 / 感謝の気持ちを少し持ってほしいという希望を述べています。
+    B [TEXT] I want them to feel at least a little grateful to my son. / 相手のご両親には、息子に少なくとも少しは感謝してほしいと思います。 / 「少し」を最低限の基準として示し、それより少なくないことを求める響きがあります。
+ expl: 「少しは感謝してほしい」は控えめな願いに聞こえますが、at least があることで、「多くなくてもよいが、少しは」という最低ラインが生まれます。単に希望の程度を弱めるだけではなく、相手に求める下限を示す表現です。日本語の「少なくとも」を数量の話に限って考えると、この文のような気持ちや態度にも使える点を見落としやすいでしょう。 (164字)
+=== y_surname_adv NEW3 status=CANDIDATE reason=None cost=0.2834 extra=[]
+ expr: at least a little | 「少し」を最低ラインとして示す含み
+ quote: I want them to feel at least a little grateful to my son.
+ point: at least は「少し」を感謝の最低ラインとして示し、それ以上の感謝も排除しません。
+ type: comparison
+    A  I want them to feel a little grateful to my son. / 相手の両親には、息子に少しありがたいと思ってほしい。 / ある程度の感謝を望む表現ですが、「少し」が最低限だとは明示していません。
+    B [TEXT] I want them to feel at least a little grateful to my son. / 相手の両親には、息子に少なくとも少しはありがたいと思ってほしい。 / 「少し」を下限として置くため、それを超える感謝も含みえます。
+ expl: 「少しだけありがたく」と読むと、感謝の量を小さく限定しているように見えます。しかし at least は最低ラインを示すので、「少しでも」という希望であり、それ以上の感謝を排除しません。相手に求めることを控えめな下限として述べたいときに使える表現です。 (126字)
+=== y_surname_adv NEW3FIXAT status=CANDIDATE reason=None cost=0.1695 extra=[]
+ expr: at least | 程度を表す語句に加わる「最低限」の含み
+ quote: I want them to feel at least a little grateful to my son.
+ point: ここでは「少し」という程度を、望む感謝の最低ラインとして示しています。
+ type: comparison
+    A  I want them to feel a little grateful to my son. / 彼らに息子へ少し感謝してほしい。 / 感謝の程度が少しだとは述べますが、それを最低ラインとして強調してはいません。
+    B [TEXT] I want them to feel at least a little grateful to my son. / 彼らに、少なくとも少しは息子に感謝してほしい。 / 少しの感謝を最低限の水準として置き、それより強い感謝の可能性も残します。
+ expl: 「少し感謝してほしい」だけなら、感謝の程度を小さく述べる表現です。at least が加わると、その小さな程度が「これだけは」という下限になります。ただし、感謝を少しだけに限りたいという意味ではありません。程度を表す語句と結びつくときも、数量の「少なくとも」と同じく、下限を示す働きがあります。 (147字)
+=== y_surname_adv NEW3FIXAT_r2 status=CANDIDATE reason=None cost=0.2368 extra=[]
+ expr: at least | 感情の程度に置く「最低ライン」と、控えめに聞こえる効果
+ quote: I want them to feel at least a little grateful to my son.
+ point: 感謝の程度に最低ラインを置き、相手への希望を控えめに聞こえさせます。
+ type: comparison
+    程度の指定なし  I want them to feel grateful to my son. / 相手には息子に感謝してほしい。 / 感謝の程度には触れず、感謝してほしいという希望をそのまま述べています。
+    少しの感謝  I want them to feel a little grateful to my son. / 相手には息子に少し感謝してほしい。 / 感謝の程度を「少し」としていますが、それを最低ラインとして示す働きはありません。
+    本文 [TEXT] I want them to feel at least a little grateful to my son. / 相手には息子に少なくとも少しは感謝してほしい。 / 「少し」を最低ラインとして示し、それ以上の感謝も排除しません。
+ expl: 「at least」は「少なくとも」と訳されるため、人数や数量の下限に使う語だと思いがちです。しかし、ここでは感情の程度にも使われ、「少しは感謝してほしい」という希望を控えめに伝えています。「少しだけで十分」と上限を決める表現ではなく、求める程度の最低ラインを示しています。 (137字)
+=== y_surname_adv NEW3FIXAT_r3 status=CANDIDATE reason=None cost=0.1858 extra=[]
+ expr: at least | 「少し」を最低ラインとして示し、それ以上の程度も含める働き
+ quote: I want them to feel at least a little grateful to my son.
+ point: 「a little」を最低限の程度として示し、それより強い感謝も排除しません。
+ type: comparison
+    A  I want them to feel grateful to my son. / 相手の両親には、息子に感謝してほしい。 / 感謝を望むことは伝わりますが、程度の下限は示していません。
+    B  I want them to feel a little grateful to my son. / 相手の両親には、息子に少し感謝してほしい。 / 感謝の程度を少なめに表しますが、それを最低ラインとは明示しません。
+    C [TEXT] I want them to feel at least a little grateful to my son. / 相手の両親には、息子に少なくとも少しは感謝してほしい。 / 「少し」を最低ラインにし、それ以上の感謝もありうる形です。
+ expl: 「少しは感謝してほしい」だけだと、感謝の量は少しで十分、という意味にも取れます。ここでは at least がその「少し」を下限にするため、少しを超える感謝も含まれます。「少しだけ」と同じように上限を設ける表現ではない点に注意しましょう。 (119字)
+=== ai_island_std CUR status=CANDIDATE reason=None cost=0.1959 extra=None
+ expr: at least | 「少なくとも」が数量でなく、主張の範囲を限定する用法
+ quote: Its scores on other tasks stayed the same. For this AI, at least, remembering that way helped it build towers.
+ type: None
+ expl: ここでの at least は、何かの数が「最低でも」という意味ではなく、直前の結論を「少なくともこのAIについては」と限定する表現です。記憶を消した結果から言える範囲を慎重に示し、ほかのAIにも同じ効果があるとは断定していません。日本語の「少なくとも」だけで読むと数量の下限と誤解しやすいので、何を限定しているかを見るのがポイントです。 (169字)
+=== ai_island_std NEW status=CANDIDATE reason=None cost=0.2332 extra=[]
+ expr: at least（範囲を限定する用法） | 断定の範囲をこのAIに限り、一般化を避ける含み
+ quote: For this AI, at least, remembering that way helped it build towers.
+ point: ここでは「最低限」ではなく、話の当てはまる範囲をこのAIに限る働きです。
+ type: comparison
+    A [TEXT] For this AI, at least, remembering that way helped it build towers. / 少なくともこのAIについては、その方法を覚えていたことが塔を建てる助けになった。 / このAIについては言えるが、ほかのAIにも当てはまるとは限らない、という慎重さが加わります。
+    B  For this AI, remembering that way helped it build towers. / このAIについては、その方法を覚えていたことが塔を建てる助けになった。 / 対象はこのAIに限られますが、Aのように「ほかにも当てはまるかは別」という含みは明示されません。
+ expl: at least は「少なくとも」と訳すため、数や最低ラインを思い浮かべがちです。この文では、結果の主張をこのAIに限ることで、ほかのAIにも同じ効果があるとは言い切らない慎重さを示しています。研究結果を述べる場面などで、断定の範囲を狭めたいときに使われます。 (130字)
+=== ai_island_std NEWFIX status=CANDIDATE reason=None cost=0.1817 extra=[]
+ expr: at least | 数量ではなく、主張の範囲を「このAI」に限る含み
+ quote: For this AI, at least, remembering that way helped it build towers.
+ point: ここでは「少なくとも何個」ではなく、当てはまる範囲をこのAIに限っています。
+ type: context
+ expl: 日本語の「少なくとも」から数量を思い浮かべると、この文の働きを取り違えやすいところです。ここでは「このAIについては言えるが、ほかのAIにも同じことが当てはまるとは限らない」という控えめな限定になっています。結果をすべてのAIに広げず、確認できた範囲で述べる言い方です。 (135字)
+=== ai_island_std NEW2 status=CANDIDATE reason=None cost=0.2552 extra=[]
+ expr: at least | 結論の範囲をしぼり、断定しすぎない含み
+ quote: For this AI, at least, remembering that way helped it build towers.
+ point: ここでは「最低でも」ではなく、結果をこのAIに限って述べる慎重さを加えている。
+ type: comparison
+    A [TEXT] For this AI, at least, remembering that way helped it build towers. / 少なくともこのAIについては、その方法を覚えていたことが塔を作る助けになった。 / at least があることで、結果を他のAIにまで広げない慎重な言い方になる。
+    B  For this AI, remembering that way helped it build towers. / このAIについては、その方法を覚えていたことが塔を作る助けになった。 / 事実を述べているが、Aのように「ここで言えるのは少なくともこの範囲」と明示する感じは弱い。
+ expl: この実験では、記憶を消した一つのAIで塔の数が減りました。at least は、その結果をすべてのAIに当てはめるのではなく、「このAIについてなら言える」と範囲をしぼります。「最低でも」と数量の話に結びつけると、この慎重な含みを見落としやすい表現です。 (127字)
+=== ai_island_std NEW2FIX status=CANDIDATE reason=None cost=0.2097 extra=[]
+ expr: at least | 「少なくとも」が主張の範囲を限る働き
+ quote: For this AI, at least, remembering that way helped it build towers.
+ point: ここでは数量の下限ではなく、述べている結果をこのAIに限っています。
+ type: context
+ expl: 「at least」は「少なくとも」と覚えると、数や量の最低ラインを表す場面を思い浮かべがちです。ここでは「このAIについては」という範囲の限定で、方法を覚えていたことが役立ったと述べながら、ほかのAIにも同じ効果があったとは言い切っていません。研究結果を広げすぎない慎重さが出ています。 (144字)
+=== ai_island_std NEW3 status=CANDIDATE reason=None cost=0.2622 extra=[]
+ expr: at least | 結論の範囲を限定し、断定を控えめにする働き
+ quote: For this AI, at least, remembering that way helped it build towers.
+ point: at least が、記憶の効果について言える範囲をこのAIに限っています。
+ type: comparison
+    A  For this AI, remembering that way helped it build towers. / このAIについては、その方法を覚えていたことが塔を建てる助けになりました。 / 対象はこのAIに限っていますが、効果を述べる調子は比較的そのままです。
+    B [TEXT] For this AI, at least, remembering that way helped it build towers. / 少なくともこのAIについては、その方法を覚えていたことが塔を建てる助けになりました。 / at least が加わると、この例で確認できたことにとどめる慎重さが出ます。
+ expl: 「少なくとも」は数の下限を表すだけ、と思うと読み違えます。ここでは at least が、このAIについて確認できた範囲に結論をとどめ、ほかのAIにも同じ効果があるとは言い切らない慎重さを添えています。研究結果などを述べるとき、断定の範囲を調整する用法です。 (129字)
+=== ai_island_adv CUR status=CANDIDATE reason=None cost=0.2232 extra=None
+ expr: At least for this AI | 証拠から導く主張の範囲をこのAIに限定する
+ quote: At least for this AI, remembering that technique helped it build towers.
+ type: None
+ expl: ここでの“At least”は「最低限」という数量ではなく、主張の範囲を限定する働きです。「このAIでは助けになった」と述べるにとどまり、AI一般に当てはまるとは言っていません。たとえば“For AIs, it helped”なら、より広く一般化した響きになります。日本語の「少なくとも」も範囲を限定する用法だと捉えるのがポイントです。 (168字)
+=== ai_island_adv NEW status=CANDIDATE reason=None cost=0.26 extra=[]
+ expr: at least for this AI | 「少なくとも」が主張の適用範囲を絞る働き
+ quote: At least for this AI, remembering that technique helped it build towers.
+ point: 結果を述べながら、結論をこのAIに限って慎重に提示しています。
+ type: comparison
+    A [TEXT] At least for this AI, remembering that technique helped it build towers. / 少なくともこのAIについては、その技法を覚えていたことが塔の建設に役立ちました。 / 役立ったという結果は述べつつ、主張の範囲をこのAIに絞っています。
+    B  For this AI, remembering that technique helped it build towers. / このAIについては、その技法を覚えていたことが塔の建設に役立ちました。 / このAIを対象にしているとは分かりますが、Aのように主張を限定する慎重さは明示されません。
+ expl: 「at least」は数量の最低ラインだけでなく、ここでは主張の適用範囲を慎重に絞る働きをします。技法の記憶が役立ったという結果は述べつつ、ほかのAIにも当てはまるとは言っていません。実験結果を一般論へ広げず、確認できた範囲だけを述べたいときに有効です。 (127字)
+=== ai_island_adv NEWFIX status=CANDIDATE reason=None cost=0.2234 extra=[]
+ expr: At least for this AI | 結論の適用範囲をこのAIに限る、慎重な言い方
+ quote: At least for this AI, remembering that technique helped it build towers.
+ point: 「少なくとも」は数量の下限ではなく、結論をどこまで言えるかを慎重に区切っています。
+ type: comparison
+    A [TEXT] At least for this AI, remembering that technique helped it build towers. / 少なくともこのAIについては、そのテクニックを覚えていたことが塔づくりに役立った。 / このAIでは効果が見られたと述べつつ、ほかのAIにも当てはまるとは言い切らない慎重さがあります。
+    B  For this AI, remembering that technique helped it build towers. / このAIでは、そのテクニックを覚えていたことが塔づくりに役立った。 / このAIに話を限っている点は同じですが、Aほど「ここまでは言える」という留保が前面に出ません。
+ expl: ここでの “at least” は、効果の大きさや数の「最低限」ではなく、主張の届く範囲を示しています。実験で確かめられたのは、記憶を消した場合にこのAIの塔づくりが落ちたこと。だから「このAIについては言える」と慎重に述べ、AI一般に同じ効果があるとは広げていません。「少なくとも」を数量の下限とだけ結びつけると、この限定の働きを見落としやすくなります。 (178字)
+=== ai_island_adv NEW2 status=CANDIDATE reason=None cost=0.2402 extra=[]
+ expr: alone | aloneが結論を否定せず、根拠の十分性を限定する働き
+ quote: These results alone do not show that play itself had an effect.
+ point: aloneは遊びの効果を否定するのではなく、今回の結果だけでは判断できないと限定します。
+ type: comparison
+    A [TEXT] These results alone do not show that play itself had an effect. / これらの結果だけでは、遊びそのものに効果があったとは示せない。 / aloneによって、結論そのものよりも、結果だけでは根拠が足りない点に焦点が当たります。
+    B  These results do not show that play itself had an effect. / これらの結果は、遊びそのものに効果があったことを示していない。 / aloneがないと、結果が示していないという報告になり、根拠の範囲を限定する含みは弱まります。
+ expl: ここでのaloneは「結果だけでは」という範囲の限定です。遊びに効果がなかったと断定しているのではなく、今回の結果のみでは効果の有無を証明できない、という慎重な言い方です。研究や議論で結論を急がず、根拠の限界を示すときに使われます。 (116字)
+=== ai_island_adv NEW2FIX status=CANDIDATE reason=None cost=0.2115 extra=[]
+ expr: At least for this AI | 効果の主張をこのAIの事例に限る慎重な限定
+ quote: At least for this AI, remembering that technique helped it build towers.
+ point: 実験結果から言えることを、このAIの事例にとどめる慎重な言い方です。
+ type: comparison
+    A  For this AI, remembering that technique helped it build towers. / このAIでは、その技法を覚えていたことが塔の建設に役立った。 / このAIについて述べていますが、主張の範囲を慎重に限定する響きは弱めです。
+    B [TEXT] At least for this AI, remembering that technique helped it build towers. / 少なくともこのAIについては、その技法を覚えていたことが塔の建設に役立った。 / この事例では効果があったと言える一方、他のAIにも当てはまるとは主張していません。
+ expl: 「少なくとも」は数量の下限を示すだけでなく、ここでは主張できる範囲を慎重に区切ります。実験で確かめられたのは、このAIが技法を覚えていた場合の効果です。だからといって、AI一般にも同じ効果があると広げて読まないのがポイントです。 (114字)
+=== ai_island_adv NEW3 status=CANDIDATE reason=None cost=0.2529 extra=[]
+ expr: At least for this AI vs For this AI | 「少なくとも」が主張の適用範囲を限定する含み
+ quote: At least for this AI, remembering that technique helped it build towers.
+ point: この文のat leastは数量ではなく、効果について言える範囲をこのAIに限っています。
+ type: comparison
+    A  For this AI, remembering that technique helped it build towers. / このAIについては、そのテクニックを覚えていたことが塔を作る助けになった。 / このAIについて述べていますが、主張の範囲をあえて限定する響きはありません。
+    B [TEXT] At least for this AI, remembering that technique helped it build towers. / 少なくともこのAIについては、そのテクニックを覚えていたことが塔を作る助けになった。 / 効果を確認できた範囲を示し、他のAIにも当てはまるとは言い切らない慎重さが加わります。
+ expl: 「at least」を「最低でも」とだけ覚えると、数や量の下限だと思いがちです。ここでは数ではなく、主張の適用範囲をこのAIに限り、他のAIにも同じ効果があるとは言い切らない慎重さを添えています。研究結果の説明などで、確認できた範囲を越えて一般化しないときに役立つ表現です。 (137字)
+=== tth_std CUR status=CANDIDATE reason=None cost=0.3004 extra=None
+ expr: everything in heaven and on earth | 「何もかも」と範囲を広げる誇張の響き
+ quote: I hear everything in heaven and on earth.
+ type: None
+ expl: 「everything in heaven and on earth」は、文字どおり天と地の全物を指すというより、「何もかも」と範囲を極端に広げた誇張です。ここでは「I hear a lot（たくさん聞こえる）」よりずっと大げさで、聴力の範囲を現実離れするほど広く言い表す響きがあります。場所の説明ではなく、強い断定として受け取りましょう。 (170字)
+=== tth_std NEW status=CANDIDATE reason=None cost=0.3358 extra=[]
+ expr: You see | 相手に説明をつなぐ会話上の合図
+ quote: You see, I sat right above the body without fear.
+ point: ここでは視覚を促すのではなく、聞き手に説明を続ける合図になっています。
+ type: comparison
+    A [TEXT] You see, I sat right above the body without fear. / ほら、私は恐れもなく遺体の真上に座っていたのです。 / You seeが、聞き手に話しかけながら説明する感じを加えます。
+    B  I sat right above the body without fear. / 私は恐れもなく遺体の真上に座っていました。 / こちらは聞き手への呼びかけがなく、事実をそのまま述べています。
+ expl: You seeを「あなたは見る」と直訳すると、視覚の話だと誤解しやすくなります。この場面では、語り手が聞き手に話しかけ、これから述べることを説明として受け取ってほしいという会話上の合図です。日本語では「ほら」「つまり」などが近いこともありますが、いつも同じ語に置き換わるわけではありません。 (145字)
+=== tth_std NEWFIX status=CANDIDATE reason=None cost=0.1795 extra=[]
+ expr: everything in heaven and on earth | 「何でも」を天地に広げて、誇張を強める表現
+ quote: I hear everything in heaven and on earth.
+ point: 語り手の耳が何もかも聞き取るという、大げさで壮大な主張に聞こえます。
+ type: comparison
+    A [TEXT] I hear everything in heaven and on earth. / 天にも地にもあるものを、私はすべて聞く。 / 「天地のすべて」と範囲を広げ、語り手の主張を誇張して印象づけます。
+    B  I hear everything. / 私は何でも聞く。 / これだけでも広い主張ですが、天地を持ち出す壮大な響きはありません。
+ expl: 「天にも地にも」を文字どおりの場所の説明と取るより、「この世の何もかも」という誇張として読むのが自然です。単に「何でも聞く」と言うより、天地まで含めることで、語り手の自信満々で現実離れした主張が強く響きます。 (104字)
+=== tth_std NEW2 status=CANDIDATE reason=None cost=0.2791 extra=[]
+ expr: You see | 会話の You see が聞き手に理解・納得を促す働き
+ quote: You see, I sat right above the body without fear.
+ point: ここでは視覚の指示ではなく、直後の事実を聞き手への説明・根拠として差し出しています。
+ type: comparison
+    A  I sat right above the body without fear. / 私は恐れもなく、遺体の真上に座っていた。 / 事実をそのまま述べており、聞き手に納得を促す響きは特にありません。
+    B [TEXT] You see, I sat right above the body without fear. / ほら、私は恐れもせず遺体の真上に座っていたのです。 / You see が加わることで、話し手はこの事実を聞き手にも認めてほしいという姿勢を示します。
+ expl: You see は目で見るよう命じているのではなく、聞き手に「ほら、こうでしょう」と話の筋を認めさせるような前置きです。ここでは、遺体の真上に座ったことを、自分が恐れていなかった証拠として差し出しています。日本語の「ほら」は強く聞こえることもあるので、聞き手に説明し、納得を促す働きに注目しましょう。 (150字)
+=== tth_std NEW2FIX status=CANDIDATE reason=None cost=0.2168 extra=[]
+ expr: everything in heaven and on earth | 「天にも地にも」を添えて、全てという主張を大きく響かせる効果
+ quote: I hear everything in heaven and on earth.
+ point: 「天にも地にも」は場所を説明するだけでなく、「何もかも」という主張を壮大に強調します。
+ type: comparison
+    A  I hear everything. / 私はすべてが聞こえる。 / 「すべて」と言っていますが、どこまでを指すかは文脈に委ねられます。
+    B [TEXT] I hear everything in heaven and on earth. / 天にも地にもあるすべてのものが聞こえる。 / 聞こえる範囲を天地にまで広げ、主張を大げさで力強く響かせます。
+ expl: 「天にも地にも」は、聞こえる場所を文字どおり説明しているというより、「この世の何もかも」という大きな範囲を示す言い回しです。ここでは、語り手が自分の聴覚の鋭さを強く言い張る響きがあります。日本語の「天にも地にも」を字義どおりに受け取り、超自然的な場所の話だと考えないようにしましょう。 (142字)
+=== tth_std NEW3 status=CANDIDATE reason=None cost=0.2807 extra=[]
+ expr: everything vs almost everything | 「すべて」と言い切る表現が生む誇張の強さ
+ quote: I hear everything in heaven and on earth.
+ point: everything と言い切ることで、語り手は自分の聴覚の鋭さを極端な表現で強調しています。
+ type: comparison
+    A  I hear almost everything in heaven and on earth. / 天にも地にもあるほとんどすべてのものが聞こえる。 / almost があると「すべて」から少し範囲を狭め、完全な断言を避けます。
+    B [TEXT] I hear everything in heaven and on earth. / 天にも地にもあるすべてのものが聞こえる。 / 本文では範囲を限定せず、例外がないかのように言い切っています。
+ expl: everything は基本語ですが、ここでは単に聞こえる物を挙げているのではなく、「天にも地にもあるすべて」と範囲を極端に広げています。日本語では誇張として受け取りやすい一方、語り手は聴覚の鋭さを断言し、正気だという主張を強めています。日常会話でも、文脈によって everything は大げさな言い方になります。 (158字)
+=== tth_adv CUR status=CANDIDATE reason=None cost=0.2334 extra=None
+ expr: none of his money | 金銭欲を一切否定する、none ofの強い言い切り
+ quote: He had never hurt me; I wanted none of his money.
+ type: None
+ expl: none of his moneyは「彼の金の一部も欲しくなかった」という全量否定を前面に出し、強い断言になります。I didn't want his moneyも「欲しくなかった」ですが、こちらは比較的中立的です。この場面では、語り手が金銭欲を殺害の動機として先回りして否定する響きがあります。 (148字)
+=== tth_adv NEW status=NO_CANDIDATE reason=model_returned_none cost=0.1787 extra=[]
+  gen: "本文中には語感や文脈上の含みを説明できる表現もありますが、既定のKey Phrase・Wordや文法事項との重複、または基本的な語義説明に寄りやすく、4条件を明確に満たす候補はありません。"
+=== tth_adv NEWFIX status=CANDIDATE reason=None cost=0.2997 extra=[]
+ expr: none of his money | 「少しも欲しくない」と言い切る表現が、弁明に与える断定的な響き
+ quote: He had never hurt me; I wanted none of his money.
+ point: 語り手が金目当てではないと、きっぱり否定する響きを作っています。
+ type: comparison
+    A [TEXT] He had never hurt me; I wanted none of his money. / 彼は私を傷つけたことがなかった。私は彼の金など少しも欲しくなかった。 / none が、彼の金を一切望まないという断定を簡潔に響かせます。
+    B  He had never hurt me; I didn't want any of his money. / 彼は私を傷つけたことがなかった。私は彼の金を少しも欲しくなかった。 / こちらも同じ内容を表せますが、否定をふつうに述べる、より会話的な響きです。
+ expl: どちらも「彼の金は欲しくなかった」と訳せますが、本文の none は否定を短く強くまとめ、金目当てではないという弁明をきっぱりした調子にしています。日本語では訳が同じになりやすいため、単なる「欲しくない」という情報だけでなく、話し手がどれほど明確に否定しているかにも注目すると、表現の選び方が見えてきます。 (153字)
+=== tth_adv NEW2 status=CANDIDATE reason=None cost=0.2935 extra=[]
+ expr: everything in heaven and earth vs everything around me | 「天と地のすべて」が生む、詩的で誇張めいた範囲の広さ
+ quote: I hear everything in heaven and earth.
+ point: 「天と地のすべて」と範囲を宇宙的に広げ、誇張めいた強い断言にしています。
+ type: comparison
+    A  I hear everything. / 私は何もかも聞き取る。 / 「何もかも」は広い主張ですが、何の範囲かは文脈に委ねられます。
+    B  I hear everything around me. / 周囲のものなら何でも聞こえる。 / 聞こえる範囲が身の回りに収まり、比較的現実的な説明になります。
+    C [TEXT] I hear everything in heaven and earth. / 天と地のあらゆるものが聞こえる。 / 「天と地」という大きな対を添えることで、範囲を極限まで広げた響きになります。
+ expl: 「天と地のすべて」は、文字どおり天上と地上の音を一つ残らず聞くという説明というより、「聞こえるものは何でも」という主張を大げさで壮大に響かせます。日本語では地理的な範囲の話と受け取りがちですが、この言い回しは聞こえる範囲を限りなく広く見せる表現です。中立的に周囲の音を説明する文とは、断言の強さが異なります。 (154字)
+=== tth_adv NEW2FIX status=NO_CANDIDATE reason=model_returned_none cost=0.1161 extra=[]
+  gen: "この場面での含みは「彼の金は少しも欲しくなかった」という全否定ですが、主な学習点は none of の基本的な意味です。辞書的な説明を超えるニュアンスとして扱う価値は弱いため、採用しません。"
+=== tth_adv NEW3 status=CANDIDATE reason=None cost=0.2878 extra=[]
+ expr: none vs not ... any | 否定の内容を、断定的・やや文語的に響かせる選択
+ quote: He had never hurt me; I wanted none of his money.
+ point: ここでは none が「欲しくない金は少しもない」と断定するような、引き締まった響きを添えています。
+ type: comparison
+    A [TEXT] He had never hurt me; I wanted none of his money. / 彼は私を傷つけたことがなかった。彼の金は一切欲しくなかった。 / none は「ゼロ」をきっぱり示す、やや文語的で引き締まった言い方です。
+    B  He had never hurt me; I didn't want any of his money. / 彼は私を傷つけたことがなかった。彼の金は欲しくなかった。 / こちらはより日常的な言い方で、否定の内容を淡々と述べます。
+ expl: 日本語ではどちらも「金は欲しくなかった」と訳せるため、語調の差が見えにくくなります。none は、否定の対象を「一切ない」と言い切るような響きを持ち、この場面では「金目当てではない」という主張をきっぱり述べる形になっています。日常的な会話より、少し改まった語りや強い否定を表したいときに選ばれることがあります。 (155字)
+=== y_redelivery_std CUR status=CANDIDATE reason=None cost=0.2294 extra=None
+ expr: Am I wrong to feel this way? | 正誤を尋ねる形で、気持ちへの理解を求める
+ quote: Am I wrong to feel this way?
+ type: None
+ expl: ここでは、事実が正しいかを確かめているというより、「料金を払うのは納得できない」という自分の気持ちが不当なのか、相手に理解や安心を求めています。たとえば “Is this information wrong?” は情報の正誤を尋ねますが、この表現は感情への評価を尋ねる形です。日本語の「間違っている？」をそのまま受け取ると、文字どおりの正誤確認に聞こえやすい点に注意しましょう。 (189字)
+=== y_redelivery_std NEW status=CANDIDATE reason=None cost=0.2866 extra=[]
+ expr: maybe | 意見を断定せず、異論の余地を残す働き
+ quote: But maybe that’s just my view.
+ point: maybeは意見を断定せず、ほかの見方もありうると控えめに添えます。
+ type: comparison
+    A [TEXT] But maybe that’s just my view. / でも、それは私の見方にすぎないのかもしれません。 / 自分の案を押しつけず、個人的な見方かもしれないと和らげています。
+    B  But that’s just my view. / でも、それは私の見方にすぎません。 / 自分の見方にすぎないと、よりはっきり言い切っています。
+ expl: 日本語では「たぶん」と訳して終わりがちですが、ここでは事実の確率を述べるというより、自分の提案を断定しすぎないためのクッションです。意見のあとに置くことで、「これは一つの見方」と相手に異論の余地を残せます。 (103字)
+=== y_redelivery_std NEWFIX status=CANDIDATE reason=None cost=0.2322 extra=[]
+ expr: Am I wrong to feel this way? | 自分の感じ方を問いかける形が生む、ためらいと理解を求める響き
+ quote: Am I wrong to feel this way?
+ point: 自分の不満を断定せず、聞き手に受け止めてもらおうとする問いかけです。
+ type: comparison
+    A [TEXT] Am I wrong to feel this way? / こんなふうに感じる私が間違っているのでしょうか。 / 自分の感じ方への判断を聞く形で、不満を述べつつ理解や共感を求める響きがあります。
+    B  Is it wrong to feel this way? / こんなふうに感じるのは間違っているのでしょうか。 / 感じ方そのものが正しいかを一般的に問う響きで、話し手自身への判断を求める感じは弱まります。
+ expl: 日本語の「間違っているの？」だけを見ると、事実や道徳の正誤を尋ねているように響きます。ここでは、自分の感じ方を相手に判断してもらう形にして、配達員への理解も示しながら、自分の不満を受け止めてもらおうとしています。断定より、ためらいを含む言い方です。 (124字)
+=== y_redelivery_std NEW2 status=CANDIDATE reason=None cost=0.2674 extra=[]
+ expr: Am I wrong to feel this way? | 自分の感じ方が妥当かを尋ねる響き
+ quote: Am I wrong to feel this way?
+ point: 配達への賛否の正解より、自分の感じ方が妥当かを相手に尋ねる響きです。
+ type: comparison
+    A [TEXT] Am I wrong to feel this way? / こんなふうに感じる私は間違っているのでしょうか。 / 自分の感じ方が行き過ぎていないか、相手に確かめる響きです。
+    B  Is it wrong to feel this way? / こんなふうに感じるのは悪いことなのでしょうか。 / 感じている本人よりも、その感情自体が悪いかを問う響きです。
+ expl: ここでは、配達料金への意見が正しいかを判定してほしいというより、「こう感じる自分はおかしいのか」と相手に受け止めてもらおうとしています。wrongを単に「間違い」と捉えると、事実の正誤を聞いているように誤解しがちです。誰を、何を判断の対象にしているかに注目しましょう。 (134字)
+=== y_redelivery_std NEW2FIX status=CANDIDATE reason=None cost=0.2296 extra=[]
+ expr: Am I wrong to feel this way? | 自分の感じ方を問いかけて、不満を控えめに伝える響き
+ quote: Am I wrong to feel this way?
+ point: ここでは不満を言い切る代わりに、自分の感じ方が妥当か読者に問いかけています。
+ type: comparison
+    本文 [TEXT] Am I wrong to feel this way? / こんなふうに感じる私は間違っているのでしょうか。 / 自分の感じ方に確信を持ちきれず、相手に理解や意見を求める響きがあります。
+    確信を示す場合  I know I'm right to feel this way. / こう感じるのは正しいと分かっています。 / こちらは自分の判断に自信があり、より断定的に聞こえます。
+ expl: この問いは、相手に正解を判定してもらうだけでなく、自分の不満が行き過ぎではないかと確かめる響きがあります。日本語では文字どおり「感じ方が間違いか」と受け取りがちですが、ここでは強く言い切らず、読者に共感や意見を促す締め方です。 (113字)
+=== y_redelivery_std NEW3 status=CANDIDATE reason=None cost=0.4127 extra=[]
+ expr: I guess | 判断を断定せず、控えめに述べる働き
+ quote: I guess it can’t be helped.
+ point: ここでは、人手不足への受け止めを確定的に言わず、控えめに示しています。
+ type: comparison
+    A  It can’t be helped. / 仕方がありません。 / 話し手の判断をそのまま述べ、比較的はっきりした言い方です。
+    B [TEXT] I guess it can’t be helped. / 仕方がないのだろうと思います。 / I guess が加わることで、判断を少し控えめに伝えます。
+ expl: I guess は「推測する」と覚えていると、事実が不確かだという意味だけに見えがちです。ここでは、人手不足は仕方ないという見方をやわらげています。ただし、その譲歩は「だから料金を払うのも受け入れる」という意味ではなく、続く文では料金への反対をはっきり述べています。 (133字)
+=== y_redelivery_adv CUR status=CANDIDATE reason=None cost=0.2498 extra=None
+ expr: Am I wrong to feel this way? | 意見を断言せず、聞き手に判断を委ねる問いかけ
+ quote: Am I wrong to feel this way?
+ type: None
+ expl: この問いは、文字どおり自分の感情が正しいかどうかを尋ねる場合もありますが、意見の後に置くと「そう感じるのはおかしい？」と聞き手の反応を求め、主張をやわらげる働きがあります。たとえば “I disagree.” と言い切るより、相手に異論を述べる余地を残す言い方です。ここでは料金への不満を述べたあとに添え、断定的な非難ではなく、判断を聞く形にしています。 (177字)
+=== y_redelivery_adv NEW status=CANDIDATE reason=None cost=0.3197 extra=[]
+ expr: can’t accept having to pay for that vs don’t want to pay for that | 単なる希望ではなく、負担の妥当性への異議を表す言い方
+ quote: But I can’t accept having to pay for that.
+ point: ここでは支払いを望まないというより、自分が負担するのは納得できないという異議を示します。
+ type: comparison
+    A [TEXT] But I can’t accept having to pay for that. / でも、その費用を払わなければならないことは受け入れられません。 / 支払いを自分に課すこと自体が不当だという、強い異議がにじみます。
+    B  But I don’t want to pay for that. / でも、その費用は払いたくありません。 / こちらは支払いたくないという希望が中心で、負担の仕組みへの異議までは必ずしも含みません。
+ expl: 「受け入れられない」と訳すと、個人的な好き嫌いの表明に見えることがあります。しかしこの場面では、配達の遅れなど利用者だけでは変えられない事情を挙げたうえで、費用を負担させることの妥当性に異議を唱えています。自分の希望を述べるだけなのか、負担のあり方に納得できないのかを意識すると、表現の強さを選び分けやすくなります。 (158字)
+=== y_redelivery_adv NEWFIX status=CANDIDATE reason=None cost=0.2418 extra=[]
+ expr: Am I wrong to feel this way? | 「間違いか」ではなく、自分の感じ方がもっともかを尋ねる含み
+ quote: Am I wrong to feel this way?
+ point: 料金への不満を断定するだけでなく、自分の感じ方がもっともかを相手に問い、理解や共感を求めています。
+ type: comparison
+    A [TEXT] Am I wrong to feel this way? / こんなふうに感じる私が間違っているのでしょうか？ / 問題への不満を述べたあと、自分の感じ方が理解できるものかを尋ねる響きがあります。
+    B  Am I wrong about this? / このことについて、私は間違っているのでしょうか？ / こちらは自分の感じ方より、問題についての判断や認識が正しいかを尋ねる響きです。
+ expl: 日本語の「間違っている？」から、正誤や善悪を判定してほしい質問だと受け取りがちです。しかしここでは、配達が遅れた事情は理解しつつ、料金を払うことには納得できないという気持ちが妥当かを確かめています。自分の主張を弱めるというより、相手に共感や理解を求める言い方です。 (132字)
+=== y_redelivery_adv NEW2 status=CANDIDATE reason=None cost=0.2796 extra=[]
+ expr: must vs may | mustが義務ではなく、根拠のある強い推量を表す使い方
+ quote: The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped.
+ point: ここでの must は義務ではなく、人手不足を根拠に配達員の苦労を強く推し量っています。
+ type: comparison
+    A  The delivery workers may have a hard time because there aren’t enough of them, and I guess it can’t be helped. / 配達員は人手が足りないので、大変な思いをしているかもしれないし、仕方がないのだろうと思います。 / mayは可能性を控えめに述べ、話し手は確信を示しません。
+    B [TEXT] The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped. / 配達員は人手が足りないので、きっと大変な思いをしているし、仕方がないのだろうと思います。 / mustは人手不足を根拠に「きっとそうだ」と強く推量しています。
+ expl: must haveを「〜しなければならない」と結びつけると、配達員への指示のように誤読しがちです。ここでは人手不足という理由から、話し手が配達員の苦労を推し量っています。mayなら可能性を残して述べるところを、mustはより確かな見立てとして示します。自分で確認していない状況でも、根拠をもとに強く推測するときに使える形です。 (163字)
+=== y_redelivery_adv NEW2FIX status=CANDIDATE reason=None cost=0.1971 extra=[]
+ expr: Am I wrong to feel this way? | 不満を述べた後、相手に理解や判断を求める問いかけ
+ quote: But I can’t accept having to pay for that. Am I wrong to feel this way?
+ point: 自分の感じ方への疑問を示しつつ、聞き手に理解や判断を促す問いかけです。
+ type: context
+ expl: ここで話し手は、配達員の大変さは理解しながらも、料金を払うことには納得できないと述べています。その後の問いは、単に「正しいか間違いか」の答えを求めるだけでなく、自分の不満を聞き手がどう受け止めるかを尋ねる働きもあります。日本語の直訳だけだと、道徳的な正誤を厳密に問う質問と捉えがちですが、実際には共感や判断を促す、少しためらいを含んだ締めくくりです。 (175字)
+=== y_redelivery_adv NEW3 status=CANDIDATE reason=None cost=0.3585 extra=[]
+ expr: must have a hard time vs may have a hard time | mustが義務ではなく、根拠に基づく強い推量を表す点
+ quote: The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped.
+ point: 話し手は配達員の苦労を事実として断言せず、人手不足から強く推し量っています。
+ type: comparison
+    A [TEXT] The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped. / 配達員の人たちは人手が足りないので、大変に違いないし、仕方がないのだろうと思います。 / 人手不足を根拠に、大変だろうと強く推量しています。
+    B  The delivery workers may have a hard time because there aren’t enough of them, and I guess it can’t be helped. / 配達員の人たちは人手が足りないので、大変なこともあるかもしれないし、仕方がないのだろうと思います。 / 大変である可能性は認めつつ、Aより確信を弱めています。
+    C  The delivery workers have a hard time because there aren’t enough of them, and I guess it can’t be helped. / 配達員の人たちは人手が足りないので、大変ですし、仕方がないのだろうと思います。 / 推量ではなく、大変だということを事実として述べています。
+ expl: mustを義務の「〜しなければならない」と取ると誤解します。ここでは、人手不足という理由から配達員の苦労を推し量っています。単なる事実報告ではなく、根拠を示した強めの見立てを表す形です。自分で直接確かめていないことでも、状況からかなり確からしいと考えるときに使えます。 (134字)
