@@ -459,6 +459,19 @@ def nuance_for_display(study_dir: str, *, level: Optional[str] = None) -> Option
     return res
 
 
+def finalize_nuance(study_dir: str, paragraphs: list, *, level: str, kp_dir: str, run_hint: str, next_command: str) -> Optional[dict]:
+    """ページ生成入口(X player/公開ページ、Y/Z pages)が呼ぶニュアンス解説の確定(R-3。LLM 0・冪等)。人間の確定(sidecar)から`nuance_result.json`を書いて返す。
+    戻り: None=LEGACY(nuance_spec.json無し=従来出力と同一) / dict(status=ADOPTED|REJECTED|NONE)。ページ合成には戻り値をそのまま`compose_page_html(nuance=…)`へ渡す。
+    未確定=Part2NotConfirmed(rc=4。既存runnerの文法待機と同じ捕捉口で待機バナーになる) / 本文・確定集合と不整合=Part2Stale(STOP rc=3。人間の採用を黙って捨てない)。"""
+    import er134_nuance_explanation_01 as nx
+    try:
+        return nx.finalize_stage(study_dir, paragraphs, level=level, kp_dir=kp_dir, run_hint=run_hint)
+    except nx.NuanceNotConfirmed as e:
+        raise Part2NotConfirmed(f"{e}", e.pending) from e
+    except nx.NuanceStale as e:
+        raise g.Part2Stale(f"ニュアンス解説の確定結果を作れません: {e}。次の一手: {next_command}") from e
+
+
 def expected_block_counts(study_dir: str, *, level: Optional[str] = None) -> dict:
     """節に出るべきブロック数(runnerのpage_verifyが使う単一の期待値。文法=0または1 / ニュアンス=0または1)。"""
     result = g.load_json(RESULT_PATH(study_dir))
@@ -557,7 +570,7 @@ def form_nuance_bundle(study_dir: str, *, level: str, kp_cands: dict) -> Optiona
         if status == "FAILED_TECHNICAL":
             kind = (doc.get("failed_technical") or {}).get("kind") or "unknown"
             note = (f"ニュアンス解説の候補なし（技術失敗: {kind}）。本物の0件ではありません。制作コマンドを同じまま再実行するとHR送信前に1回だけ自動で再試行されます"
-                    f"（それでも失敗する場合は --regenerate-stage nuance_cand_{level}）。このまま送信するとニュアンス解説なしで確定します")
+                    f"（それでも失敗する場合は `py er119_kp_human_review_cli_01.py nuance-retry --run <run> --level {level} --by <名前>` で失敗した候補を退避してから再実行）。このまま送信するとニュアンス解説なしで確定します")
         else:
             note = "ニュアンス解説の候補はありません"
         return {"nuance_spec": spec, "nuance_note_ja": note}
@@ -642,7 +655,8 @@ def public_study_html(audio_dir: str, article_text: str, *, level: str, next_com
         part1_html = p1.study_html_for_audio_dir(audio_dir, items=items, level=level)
     else:
         part1_html = ""
-    return compose_page_html(part1_html, result, nuance=nuance_for_display(f"{b}/study_text", level=level))
+    nuance = finalize_nuance(f"{b}/study_text", paragraphs, level=level, kp_dir=f"{b}/key_phrases", run_hint=audio_dir, next_command=next_command)   # R-3: ページ入口で確定(LLM 0・冪等)
+    return compose_page_html(part1_html, result, nuance=nuance)
 
 
 # ============================================================

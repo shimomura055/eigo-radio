@@ -1,0 +1,8 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[KP_REVIEW_PENDING] Human Review待ちです: ニュアンス解説(失敗ではありません。有料の後続工程には進みません)。
+  - ニュアンス解説(level=a2): 依頼書 er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_nxm1/a2/study_text/nuance_human_review_request.md
+  まとめ(統合依頼書): er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_nxm1/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er019_family_x_audio_production_runner_01.py --slug moon_shrinking --run run_nxm1 --level both --stage player --budget-jpy 23.8
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。
+  詳細: ニュアンス解説の採用/不採用がHuman Reviewで未確定です(level=a2)。V3フォーム、または `py er119_kp_human_review_cli_01.py nuance-select --run er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_nxm1 --level a2 --choice adopt|reject --candidates-sha f25d9ee02809ccf6845c0c459c5a8628d1f7c64a1e3afb11f26a437e75f73451 --by <名前> --user-ref <path>` で決めてください。

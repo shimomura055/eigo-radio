@@ -1689,13 +1689,13 @@ def nuance_pool_identity_sha(kp_cands: dict) -> str:
     """現在のKP/Word候補docの『提示pool』の同一性sha(M-3: candidate_id+used_form/display_phrase/key_phrase+kind。gloss/gatesは含めない=confirm-reviseで変わらない)。
     N1(er134)がkp_word_basis.pool_identity_shaに記録する値と同一関数で算出する(提示pool=exporterと同じ算出)。"""
     import er134_nuance_explanation_01 as nx   # 遅延import(循環回避)
-    return nx.pool_identity_sha([nx._pool_entry(c, False) for c in nx.presented_pool(kp_cands)])
+    return nx.pool_identity_sha_of(kp_cands)   # er134のpublic wrapper(内部関数 _pool_entry に依存しない。02Cで寄せ替え)
 
 
 def nuance_presented_ids(kp_cands: dict) -> list:
     """現在のKP/Word候補docの提示pool(HRで人間が選べる集合)のcandidate_id。exporterの提示集合と同じ算出(M-4)。"""
     import er134_nuance_explanation_01 as nx
-    return [c["candidate_id"] for c in nx.presented_pool(kp_cands)]
+    return nx.presented_ids_of(kp_cands)
 
 
 def _nuance_text_sha_of_grammar(study_dir: str) -> Optional[str]:
@@ -1947,6 +1947,103 @@ def cmd_grammar_from_form(run: str, level: str, payload_path: str, by: str, user
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "grammar": len(gv["items"]), "grammar_ids": [i["id"] for i in gv["items"]],
             "grammar_status": "confirmed", "grammar_review": grammar_review, "unchanged": False,
             "next": "制作コマンドを同じまま再実行してください(文法finalize→後続が進みます)"}
+
+
+# ------------------------------------------------------------
+# ニュアンス解説の採否をフォームを経由せず決めるCLI面(`nuance-show` / `nuance-select`。委任_02C。文法の `grammar-select` と同じ位置づけ)。
+# 検証・書込みはフォーム経路(cmd_from_form)と同じ _validate_form_nuance / _write_nuance_sidecar を通す=V3フォームと同じ結果になる(sha照合・M-4被覆・pool_conflicts・ISSUE rc=4)。
+# KPが確定済み(live)のレコードにだけ後付けできる(confirmation_idで結び付ける)。確定済みの変更はrevoke経由のみ。
+# ------------------------------------------------------------
+def _nuance_context(run: str, level: str) -> dict:
+    kp_dir = _kp_dir_for(run, level)
+    sd = _pending_study_dir(run, level)
+    if sd is None or not os.path.exists(os.path.join(sd, FILE_NUANCE_SPEC)):
+        raise CliError(f"level={level} にはニュアンス解説の仕様マーク(nuance_spec.json)がありません(既存記事=遡及なし、または新規reviewが未作成)")
+    return {"kp_dir": kp_dir, "study_dir": sd}
+
+
+def cmd_nuance_show(run: str, level: str) -> dict:
+    """現在のニュアンス解説の状態(候補・採否・次の一手)を返す(API 0・読取のみ)。"""
+    ctx = _nuance_context(run, level)
+    sd, kp_dir = ctx["study_dir"], ctx["kp_dir"]
+    cp = os.path.join(sd, FILE_NUANCE_CANDIDATE)
+    doc = _read(cp) if os.path.exists(cp) else None
+    st = nuance_state(sd)
+    rec = load_record(kp_dir)
+    out = {"level": level, "study_dir": sd, "candidate_status": (doc or {}).get("status"), "no_candidate_reason": (doc or {}).get("no_candidate_reason"),
+           "decision": (st["sidecar"].get("decision") if st else None), "kp_record_live": bool(rec and rec.get("state") == STATE_LIVE)}
+    cand = (doc or {}).get("candidate") if (doc or {}).get("status") == "CANDIDATE" else None
+    if cand:
+        out["candidate"] = {k: cand.get(k) for k in ("expression", "focus", "explanation_ja", "quote_en", "quote_ja", "candidate_sha256", "pool_conflicts", "grammar_conflicts")}
+        out["overlap_check"] = {"verdict": (cand.get("overlap_check") or {}).get("verdict"), "reason": (cand.get("overlap_check") or {}).get("reason")}
+    out["next"] = ("採否は確定済みです(変更はrevoke経由のみ)" if st else
+                   ("`nuance-select --choice adopt|reject --candidates-sha <candidate.candidate_sha256> --by <名> --user-ref <path>` で採否を決めてください(KPが確定済みの場合)。"
+                    "KPが未確定ならV3フォーム(KP・文法と一緒に送信)を使ってください" if cand else "候補がありません(決める項目はありません)"))
+    return out
+
+
+def cmd_nuance_select(run: str, level: str, choice: str, candidate_sha256: str, by: str, user_ref: str) -> dict:
+    """KP確定済み(live・ユーザー確定)のレコードへ、ニュアンス解説の採否だけを後から確定する。KPの保護項目(items/content_sha256/confirmation_id)は不変。
+    choice=adopt|reject。candidate_sha256=表示した候補のsha(古い候補への操作を拒否=フォームと同じ)。冪等: 同じ採否・同じ候補shaで確定済みなら変更しない。
+    別の内容で確定済みは拒否(確定後不変。変更は revoke → 選び直し)。"""
+    by, user_ref = _need_by(by), _need_user_ref(user_ref)
+    if choice not in NUANCE_FORM_DECISIONS:
+        raise CliError(f"--choice は adopt|reject のみ(指定: {choice!r})。候補がなければ決める項目はありません")
+    ctx = _nuance_context(run, level)
+    kp_dir, sd = ctx["kp_dir"], ctx["study_dir"]
+    rec = load_record(kp_dir)
+    if rec is None or rec.get("state") != STATE_LIVE or (rec.get("confirmed_by") or {}).get("actor") not in ENFORCING_ACTORS:
+        raise CliError("ニュアンス解説の採否を後から確定できるKP確定レコード(live)がありません。先にKP/KWを確定してください(V3フォームなら採否も一緒に送信できます)")
+    if rec.get("nuance"):
+        st = nuance_state(sd)
+        side = (st or {}).get("sidecar") or {}
+        if side.get("decision") == NUANCE_FORM_DECISIONS[choice] and side.get("candidate_sha256") == candidate_sha256:
+            return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "nuance": side.get("decision"), "unchanged": True, "next": "既に同じ採否で確定済みです(変更なし)"}
+        guard_nuance(sd, "nuance-select(既にユーザー確定済み)")
+        raise CliError("ニュアンス解説は既に別の内容で確定済みです。確定後は変更できません(変更は revoke → 選び直し)")
+    cands = rv.load_candidates(kp_dir)
+    confirmed_ids = [i["candidate_id"] for i in rec.get("items") or [] if i.get("category") in (1, 2)]
+    gst = grammar_state(sd)
+    gids = [x for x in (_side_ids(gst) if gst else []) if x]
+    nv = _validate_form_nuance(run, kp_dir, level, sd, {"decision": choice, "candidate_sha256": candidate_sha256}, confirmed_ids=confirmed_ids, cands=cands, grammar_ids=gids)
+    if nv is None or nv["decision"] == "none":
+        raise CliError("決める対象のニュアンス候補がありません(候補なし)")
+    with rv.review_lock(kp_dir, rv.KIND_KP, by):
+        rec = load_record(kp_dir)
+        if rec.get("nuance"):
+            raise CliError("ニュアンス解説の確定状態が変わりました。再実行してください")
+        rec["revision"] = rec["revision"] + 1
+        rec["nuance"] = _write_nuance_sidecar(run, rec, nv, kp_dir, level=level, by=by, user_ref=user_ref)
+        _append_history_note(rec, "nuance_confirmed", by, user_ref, {"decision": nv["decision"], "candidate_sha256": candidate_sha256, "via": "nuance-select"})
+        save_record(kp_dir, rec)
+    return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "nuance": nv["decision"], "unchanged": False,
+            "next": "制作コマンドを同じまま再実行してください(ページ生成入口でニュアンス解説が確定→反映されます)"}
+
+
+FILE_EVIDENCE_COPY_MARKER = "EVIDENCE_COPY_RUN.json"
+SCHEMA_EVIDENCE_COPY_MARKER = "eigo_radio_evidence_copy_run_v1"
+
+
+def cmd_nuance_issue_spec(run: str, level: str, by: str, user_ref: str) -> dict:
+    """**copy-run限定**の明示コマンド(Opus M-2。reconsumeと同型): 既存run(KP review作成済み=LEGACY)の複製に、ニュアンス解説の仕様マーク(nuance_spec.json)を発行する。
+    実運用のrunでは使えない(`<run>/EVIDENCE_COPY_RUN.json`=複製時にevidence用ツールが書くマーカーが無い、またはマーカーのcopy_runが--runと一致しない場合は拒否)。
+    目的はruntime evidence(既存の完了runを複製してN0->N1->HR->finalize->pagesを実走する)だけ。公開済み・進行中の本番runには遡及しない(ユーザー原文§2E)。"""
+    by, user_ref = _need_by(by), _need_user_ref(user_ref)
+    mp = os.path.join(run, FILE_EVIDENCE_COPY_MARKER)
+    if not os.path.exists(mp):
+        raise CliError(f"このコマンドはcopy-run限定です。{mp} がありません(実運用のrunにニュアンス解説を遡及させません。新規runはKP review作成時に自動でマークされます)")
+    mk = _read(mp)
+    if mk.get("schema") != SCHEMA_EVIDENCE_COPY_MARKER or os.path.normpath(os.path.abspath(mk.get("copy_run") or "")) != os.path.normpath(os.path.abspath(run)):
+        raise CliError("EVIDENCE_COPY_RUN.json が不正、または--runと一致しません(別の場所へ移したrunの印は無効)")
+    sd = _pending_study_dir(run, level)
+    if sd is None:
+        raise CliError(f"level={level} の文法study dirが見つかりません(文法の候補/確定がある複製runだけが対象)")
+    if rv.load_candidates(_kp_dir_for(run, level)) is None:
+        raise CliError(f"level={level} のKP候補docがありません")
+    import er134_nuance_explanation_01 as nx
+    r = nx.ensure_spec(sd, level=level, new_review=True, issuer=f"evidence_copy_run:{by}")
+    return {"level": level, "study_dir": sd, "state": r["state"], "issued_now": r["issued_now"], "source_run": mk.get("source_run"), "user_ref": user_ref,
+            "next": "runnerの該当stage(X=--stage scaffold / Y・Z=--stage kp)を実行するとN1(候補生成・重複判定)が走ります"}
 
 
 def cmd_from_review(run: str, level: str, by: str, user_ref: str, *, adopt_existing: bool = False, apply: bool = False) -> dict:

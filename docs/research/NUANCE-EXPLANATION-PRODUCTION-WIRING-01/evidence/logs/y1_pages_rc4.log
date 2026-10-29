@@ -1,0 +1,7 @@
+[Y-E2E] stage=pages mode=real ...
+[KP_REVIEW_PENDING] Human Review待ちです: ニュアンス解説(失敗ではありません。有料の後続工程には進みません)。
+  - ニュアンス解説(level=b1b): 依頼書 er121_output/family_y_production_01/redelivery_fee/run_nxw_y1/study_text/nuance_human_review_request.md
+  まとめ(統合依頼書): er121_output/family_y_production_01/redelivery_fee/run_nxw_y1/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er121_family_y_runner_01.py --mode real --slug redelivery_fee --run run_nxw_y1 --theme-package C:/Users/tensh/eigo-radio/docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/THEME_DATA_02.json --reuse-manifest docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/theme_packages/redelivery_fee_reuse_01.json --stages pages,page_verify --approved-budget-jpy 30 --tts-execution-mode STANDARD
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。

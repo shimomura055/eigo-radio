@@ -963,3 +963,210 @@ def candidate_stage(study_dir: str, inputs: dict, *, call_fn=None, judge_fn=None
     if doc["status"] == ST_FAILED_TECHNICAL:
         _write_json_atomic(f["failed"], {"schema": "nuance_failed_v1", "level_key": level, "failed_technical": doc.get("failed_technical"), "at": _now(), "usage": doc["usage"]})
     return {"state": "SPEC_ISSUED", "doc": doc, "reused": False, "api_calls": doc["usage"]["n_calls"]}
+
+
+# ============================================================
+# Runner glue (NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02C。X/Y/Z 3 runnerが呼ぶ共通関数。runnerごとの分岐は『引数の渡し方』だけ)
+#   N0+N1 = n1_stage(KP review作成/再利用の後・HR提示前) / N3 = finalize_stage(ページ生成入口。LLM 0・冪等) / 公開API wrapper(er128・exporterが内部関数に依存しない)
+#   契約: (a) nuance_spec.json が無い = LEGACY = 生成0・待機0・表示0(ファイルも作らない) (b) 採否は人間のsidecar(confirmed_nuance.json)から決定論で導出し、
+#   再生成・resume・regenerationで変わらない(sidecarがある限りLLMを呼ばない) (c) 技術失敗(API障害等)は非ブロッキング=ニュアンス無しで完結(STOP系例外だけ伝播)
+# ============================================================
+RESULT_SCHEMA = "nuance_result_v1"
+RESULT_FILENAME = g.NUANCE_RESULT_FILENAME
+REQUEST_FILENAME = "nuance_human_review_request.md"
+ST_RESULT_ADOPTED, ST_RESULT_REJECTED, ST_RESULT_NONE = "ADOPTED", "REJECTED", "NONE"
+
+
+class NuanceNotConfirmed(NuanceError):
+    """採否が未確定(Human Review待ち。失敗ではなくrc=4)。pending=[{kind:'nuance', level, request_md, study_dir, status}]。"""
+
+    def __init__(self, message: str, pending: list | None = None):
+        super().__init__(message)
+        self.pending = pending or []
+
+
+class NuanceStale(NuanceError):
+    """確定結果と現在の本文/確定集合が整合しない、または結果が読めない(STOP rc=3。人間の採用を黙って捨てない/覆さない=R-4)。"""
+
+
+def pool_identity_sha_of(kp_cands: dict) -> str:
+    """public wrapper: KP/Word候補docの提示poolの同一性sha(er128・exporter・form_nuance_bundleが内部関数 `_pool_entry` に依存しないための口)。"""
+    return pool_identity_sha([_pool_entry(c, False) for c in presented_pool(kp_cands)])
+
+
+def presented_ids_of(kp_cands: dict) -> list:
+    """public wrapper: 提示pool(HRで人間が選べる集合)のcandidate_id(ai_rank順)。"""
+    return [c["candidate_id"] for c in presented_pool(kp_cands)]
+
+
+def grammar_items_of(study_dir: str) -> list:
+    """提示中の文法Top1/Top2(grammar_candidates.json。候補抽出が未実行/無ければ[])。N1の重複判定(警告用)の入力。"""
+    p = f"{study_dir}/grammar_candidates.json"
+    if not os.path.exists(p):
+        return []
+    doc = _read_json(p)
+    out = []
+    for c in (doc.get("candidates") or [])[:GRAMMAR_PRESENT_MAX]:
+        out.append({"id": c.get("candidate_id"), "rank": c.get("rank"), "title": c.get("construct_ja") or "", "example": c.get("sentence") or ""})
+    return out
+
+
+def render_request_md(doc: dict, *, level: str, run_hint: str) -> str:
+    """HR依頼書(統合依頼書に連結される。フォームを使わない面〔CLI〕の案内を含む)。候補docの内容だけを逐語表示する(API 0)。"""
+    cand = (doc or {}).get("candidate") or {}
+    oc = cand.get("overlap_check") or {}
+    lines = ["# ニュアンス解説 Human Review 依頼", "", f"- level: {level}({LEVELS.get(level)}) / 最大1件・採用するか不採用かを決めます(不採用でも代替候補は自動補充されません)",
+             f"- 候補ID: nuance_{str(cand.get('candidate_sha256') or '')[:16]} / candidate_sha256: {cand.get('candidate_sha256')}", "",
+             f"## {cand.get('expression')}", f"- 焦点: {cand.get('focus')}", "", cand.get("explanation_ja") or "", "",
+             f"- 本文の英文: {cand.get('quote_en')}", f"- 日本語訳: {cand.get('quote_ja')}", "",
+             f"- 重複判定(KP/Word): {oc.get('verdict')} / {oc.get('reason')}"]
+    if cand.get("pool_conflicts"):
+        lines.append(f"- 注意: 次の提示候補と焦点が重複します。これらを選ぶと採用できません: {cand['pool_conflicts']}")
+    if cand.get("grammar_conflicts"):
+        lines.append(f"- 警告(文法候補との重複の可能性。採否は妨げません): {cand['grammar_conflicts']}")
+    lines += ["", "## 決め方", "- V3フォーム: 『ニュアンス解説』欄で採用/不採用を選び、KP・文法と一緒に送信(推奨)",
+              f"- CLI(KPを先に確定した場合など): `py er119_kp_human_review_cli_01.py nuance-select --run {run_hint} --level {level} --choice adopt|reject "
+              f"--candidates-sha {cand.get('candidate_sha256')} --by <名前> --user-ref <ユーザー発言のdelegation_logパス>`", ""]
+    return "\n".join(lines)
+
+
+def _pending_item(doc: dict | None, study_dir: str, level: str, run_hint: str, status: str) -> dict:
+    p = f"{study_dir}/{REQUEST_FILENAME}"
+    if doc and doc.get("status") == ST_CANDIDATE:
+        os.makedirs(study_dir, exist_ok=True)
+        with open(p, "w", encoding="utf-8", newline="\n") as f:
+            f.write(render_request_md(doc, level=level, run_hint=run_hint))
+    return {"kind": "nuance", "level": level, "request_md": p, "study_dir": study_dir, "status": status}
+
+
+def _failed_input_doc(*, family: str, article_id: str, level: str, kp_cands: dict, paragraphs: list, err: Exception) -> dict:
+    """build_inputsが入力不整合で失敗した場合の候補doc(非ブロッキングの技術失敗として残す。黙って候補なしにしない)。"""
+    return {"schema": SCHEMA, "family": family, "article_id": article_id, "level": LEVELS[level], "level_key": level, "generated_at": _now(), "candidate": None,
+            "status": ST_FAILED_TECHNICAL, "no_candidate_reason": "failed_technical:input_error", "failed_technical": {"kind": "input_error", "detail": f"{type(err).__name__}: {err}"},
+            "kp_word_basis": {"status": "provisional", "items": [], "provisional_ids": [], "pool_ids": [], "candidates_sha256": (kp_cands or {}).get("candidates_sha256"),
+                              "pool_identity_sha": pool_identity_sha_of(kp_cands or {}), "grammar_identity_sha": None},
+            "text_sha256": g.text_sha256(list(paragraphs)), "model": MODEL, "prompt_sha": PROMPT_GEN_SHA256, "judge_prompt_sha": PROMPT_JUDGE_SHA256, "usage": _usage_total([])}
+
+
+def n1_stage(*, family: str, run_dir: str, kp_dir: str, study_dir: str, level: str, article_id: str, title: str, paragraphs: list, review_existed: bool,
+             client=None, call_fn=None, judge_fn=None, budget_guard=None) -> dict:
+    """N0(spec発行)+N1(候補生成・重複判定)。KP review作成/再利用の**後**・HR提示前に各levelで1回呼ぶ(Opus M-1)。
+    - KP候補docが無い(候補生成失敗等) = SKIPPED(specも作らない)
+    - spec: 『この呼出でKP reviewが新規作成された(review_existed=False)』ときだけ発行(M-2。遡及なし)。無ければLEGACY=何もしない
+    - 確定済みsidecar(live)がある = 再生成しない(CONFIRMED。採否保持)
+    - 不在宣言(AUTO採用)のrun = 生成0(NO_CANDIDATE: auto_adopted_no_human_review)
+    - 技術失敗はFAILED_TECHNICAL docを残し非ブロッキング。model契約違反・予算guard例外・KeyboardInterruptは伝播(STOP)
+    戻り: {state(LEGACY|SKIPPED|CONFIRMED|SPEC_ISSUED), status(candidate doc status|None), api_calls, cost_jpy, pending(HR待ちitem|None), reused}"""
+    _check_level(level)
+    cands = rv.load_candidates(kp_dir)
+    if cands is None:
+        return {"state": "SKIPPED", "status": None, "api_calls": 0, "cost_jpy": 0.0, "pending": None, "reused": False}
+    sp = ensure_spec(study_dir, level=level, new_review=not review_existed)
+    if sp["state"] == ST_LEGACY:
+        return {"state": ST_LEGACY, "status": None, "api_calls": 0, "cost_jpy": 0.0, "pending": None, "reused": False}
+    cc = rv._cc()
+    if cc.nuance_state(study_dir) is not None:   # 人間が確定済み: LLMを呼ばない(採否保持)
+        return {"state": "CONFIRMED", "status": None, "api_calls": 0, "cost_jpy": 0.0, "pending": None, "reused": True}
+    review = rv.load_review(kp_dir) or {}
+    auto = review.get("status") == rv.ST_AUTO
+    try:
+        inputs = build_inputs(family=family, article_id=article_id, title=title, level=level, paragraphs=paragraphs, kp_cands=cands,
+                              grammar_items=grammar_items_of(study_dir), std_part1=bool(review.get("std_part1", True)))
+    except NuanceInputError as e:
+        doc = _failed_input_doc(family=family, article_id=article_id, level=level, kp_cands=cands, paragraphs=paragraphs, err=e)
+        _write_json_atomic(study_files(study_dir)["candidate"], doc)
+        _write_json_atomic(study_files(study_dir)["failed"], {"schema": "nuance_failed_v1", "level_key": level, "failed_technical": doc["failed_technical"], "at": _now(), "usage": doc["usage"]})
+        return {"state": "SPEC_ISSUED", "status": ST_FAILED_TECHNICAL, "api_calls": 0, "cost_jpy": 0.0, "pending": None, "reused": False}
+    res = candidate_stage(study_dir, inputs, call_fn=call_fn, judge_fn=judge_fn, client=client, budget_guard=budget_guard, auto_adopted=auto)
+    doc = res["doc"]
+    pend = _pending_item(doc, study_dir, level, run_dir, "NUANCE_PENDING") if (doc and doc.get("status") == ST_CANDIDATE) else None
+    cost = (doc or {}).get("usage", {}).get("cost_jpy") if not res["reused"] else 0.0
+    return {"state": res["state"], "status": (doc or {}).get("status"), "api_calls": res["api_calls"], "cost_jpy": cost or 0.0, "pending": pend, "reused": res["reused"]}
+
+
+def retry_failed_candidate(study_dir: str, *, level: str) -> str:
+    """明示操作(CLI nuance-retry): **技術失敗(FAILED_TECHNICAL)の候補docだけ**を退避し、次回の制作コマンド(--stage kp等)でN1を再実行させる(R-5。HR送信前の再試行)。
+    有効な候補(CANDIDATE)/本物の0件(NO_CANDIDATE)は退避しない=『代替候補を探し直す』経路を作らない(A-7)。確定後は拒否(revoke必須)。戻り: 退避先path。"""
+    _check_level(level)
+    rv._cc().guard_nuance(study_dir, "候補の再試行")
+    p = study_files(study_dir)["candidate"]
+    if not os.path.exists(p):
+        raise NuanceInputError(f"退避する候補docがありません: {p}")
+    if _read_json(p).get("status") != ST_FAILED_TECHNICAL:
+        raise NuanceInputError("再試行できるのは技術失敗(FAILED_TECHNICAL)の候補docだけです。有効な候補・本物の0件は、採否を人間が決めます(代替候補の自動補充・探し直しはしません)")
+    dst = f"{study_dir}/nuance_candidate.REGEN_{jsha(_read_json(p))[:8]}.json"
+    os.replace(p, dst)
+    return dst
+
+
+def _result_path(study_dir: str) -> str:
+    return f"{study_dir}/{RESULT_FILENAME}"
+
+
+def _write_result_if_changed(study_dir: str, res: dict) -> None:
+    p = _result_path(study_dir)
+    if os.path.exists(p):
+        try:
+            if _read_json(p) == res:
+                return
+        except (OSError, ValueError):
+            pass
+    _write_json_atomic(p, res)
+
+
+def finalize_stage(study_dir: str, paragraphs: list, *, level: str, kp_dir: str, run_hint: str = "<run>") -> dict | None:
+    """N3(ページ生成入口で呼ぶ。**LLM 0**・冪等)。人間の確定(confirmed_nuance.json)から表示用の確定結果 `nuance_result.json` を決定論で書き、その内容を返す。
+    戻り: None = LEGACY(nuance_spec.json無し。ファイルも作らない=従来出力と同一) / dict(status=ADOPTED|REJECTED|NONE)。
+    - sidecar(live)あり: adopted→ADOPTED(候補全文は確定時の逐語コピー。引用が現在の本文に1〜2文の逐語で残ることと、確定した①②が現在の確定レコードと一致することを再確認。崩れていれば
+      NuanceStale=STOP。人間の採用を自動で覆さない=R-4) / rejected→REJECTED / none→NONE
+    - sidecarなし: 候補なし/技術失敗の候補docで本文が一致 → NONE(人間の判断対象が無い) / 不在宣言(AUTO採用) → NONE / 候補ありで未決定 → NuanceNotConfirmed(rc=4。黙って不採用にしない)
+    - 候補docが無い/古い(本文不一致) → NuanceNotConfirmed(rc=4。制作コマンドを再実行してN1を実行)"""
+    _check_level(level)
+    sf = study_files(study_dir)
+    if not os.path.exists(sf["spec"]):
+        return None
+    cc = rv._cc()
+    cur_text_sha = g.text_sha256(list(paragraphs))
+    st = cc.nuance_state(study_dir)
+    doc = _read_json(sf["candidate"]) if os.path.exists(sf["candidate"]) else None
+    if st is not None:
+        side = st["sidecar"]
+        decision = side.get("decision")
+        base = {"schema": RESULT_SCHEMA, "level_key": level, "confirmation_id": side.get("confirmation_id"), "decided_by": side.get("by"), "decided_at": side.get("decided_at"),
+                "user_ref": side.get("user_ref"), "text_sha256": cur_text_sha}
+        if decision == "adopted":
+            cand = side.get("candidate")
+            if not isinstance(cand, dict) or candidate_sha256(cand) != side.get("candidate_sha256") or cand.get("candidate_sha256") != side.get("candidate_sha256"):
+                raise NuanceStale("確定したニュアンス解説の本文がsidecarのshaと一致しません(改変の疑い)。表示しません。revoke→再確認してください")
+            q = quote_check(cand.get("quote_en"), "\n\n".join(paragraphs))
+            if not q["ok"]:
+                raise NuanceStale(f"確定したニュアンス解説の引用が現在の本文に逐語で見つかりません({q['reason']})。本文が変わった可能性があります。"
+                                  f"`py er128_kp_confirmed_content_01.py revoke --run {run_hint} --level {level} ...` で確定を取り消して選び直してください(人間の採用を自動で覆しません)")
+            live_ids = sorted(i["candidate_id"] for i in st["rec"].get("items") or [] if i.get("category") in (1, 2))
+            if sorted((side.get("confirmed_against") or {}).get("kp_word") or []) != live_ids:
+                raise NuanceStale("ニュアンス解説の確定後にKey Phrase・Wordの確定集合が変わっています(重複の最終確認が成立しません)。revoke→再確認してください")
+            out = dict(base, status=ST_RESULT_ADOPTED, reason=None, candidate_sha256=side["candidate_sha256"],
+                       candidate={k: (q["verbatim"] if k == "quote_en" else cand[k]) for k in ("expression", "focus", "explanation_ja", "quote_en", "quote_ja")},
+                       final_overlap_check={"verdict": "pass", "against_kp_word": live_ids, "stage": "N3_deterministic", "n1_overlap_check": (cand.get("overlap_check") or {}).get("verdict")},
+                       model=(doc or {}).get("model"), prompt_sha=(doc or {}).get("prompt_sha"))
+        elif decision == "rejected":
+            out = dict(base, status=ST_RESULT_REJECTED, reason="human_rejected", candidate_sha256=side.get("candidate_sha256"))
+        else:
+            out = dict(base, status=ST_RESULT_NONE, reason=side.get("no_candidate_reason") or "no_candidate_at_confirm", candidate_sha256=None)
+        _write_result_if_changed(study_dir, out)
+        return out
+    # sidecarなし(人間の採否が無い)
+    if doc is None or doc.get("text_sha256") != cur_text_sha or doc.get("level_key") not in (None, level):
+        raise NuanceNotConfirmed("ニュアンス解説の候補がまだ生成されていない、または本文が変わっています(N1未実行/古い)。制作コマンド(X=--stage scaffold / Y・Z=--stage kp)を同じまま再実行して候補を作ってください。",
+                                 pending=[{"kind": "nuance", "level": level, "request_md": None, "study_dir": study_dir, "status": "NUANCE_CANDIDATE_MISSING"}])
+    review = rv.load_review(kp_dir) or {}
+    status = doc.get("status")
+    if status == ST_CANDIDATE and review.get("status") != rv.ST_AUTO:
+        raise NuanceNotConfirmed(f"ニュアンス解説の採用/不採用がHuman Reviewで未確定です(level={level})。V3フォーム、または `py er119_kp_human_review_cli_01.py nuance-select --run {run_hint} "
+                                 f"--level {level} --choice adopt|reject --candidates-sha {(doc.get('candidate') or {}).get('candidate_sha256')} --by <名前> --user-ref <path>` で決めてください。",
+                                 pending=[_pending_item(doc, study_dir, level, run_hint, "NUANCE_PENDING")])
+    reason = R_AUTO_ADOPTED if status == ST_CANDIDATE else (doc.get("no_candidate_reason") or status)
+    out = {"schema": RESULT_SCHEMA, "level_key": level, "status": ST_RESULT_NONE, "reason": reason, "candidate_sha256": None, "confirmation_id": None, "text_sha256": cur_text_sha,
+           "candidate_doc_status": status}
+    _write_result_if_changed(study_dir, out)
+    return out

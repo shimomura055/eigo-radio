@@ -32,7 +32,7 @@ DEFAULT_RUN = "run_01"
 APPROVED_BUDGET_MAX_JPY = 170.0          # 案件個別Cap(Fable判断 委任_02C: 150→170円。BUDGET_PLAN_03 §1)。これを超える承認は受け付けない
 WARN_THRESHOLD_JPY = 100.0
 STAGES = ("seed_check", "text", "translate", "support", "kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify")
-STAGE_EST_JPY = {"text": 45.0, "translate": 12.0, "support": 6.0, "kp": 10.0, "tts_b1b": 30.0, "tts_a2": 30.0}
+STAGE_EST_JPY = {"text": 45.0, "translate": 12.0, "support": 6.0, "kp": 10.0, "tts_b1b": 30.0, "tts_a2": 30.0, "nuance": 1.0}   # nuance=ニュアンス解説(1level 最大生成1+判定1+各retry1。実測0.11-0.21円/level)の上限見積り(NUANCE-EXPLANATION-PRODUCTION-WIRING-01 R-10)
 TTS_CLIP_EST_JPY = 2.0     # clip単位guard見積り。TTS統一委任_02(Opus R-6): 最悪clip=6TTS+ASR+LR LLM≒2円へ更新(旧1.0)
 # OPEN-537是正(FAMILY-Y-STYLE-PROFILE-FIX-01 委任_02): 旧 `STYLE_PROFILE = "default"` を撤去。Yのprofileは承認profile(_ya().Y_APPROVED_STYLE_PROFILE=fx_20261017)を
 # resolve_style_profile()で課金前に解決・固定記録(audit/style_profile.json)し、ctx.style_profileとして生成/Gate/組立へ透過する。
@@ -591,6 +591,34 @@ def _kp_review_step(ctx, lv, text) -> dict:
         raise YE2EStop(f"FAMILY_Y_KP_REVIEW_STOP({lv}): {e}") from e
 
 
+def _nuance_cand_step(ctx, lv: str, review_existed: bool) -> dict:
+    """ニュアンス解説(NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02C)のN0(spec発行)+N1(候補生成・重複判定)。KP review作成/再利用の**後**・HR提示前(Opus M-1)。
+    X/Y/Zの契約は共通関数 er134.n1_stage。nuance_spec.jsonが無い(既存run=LEGACY)なら生成0・待機0。確定済みの採否があれば再生成しない。技術失敗は非ブロッキング。
+    mock/dry-runでhooks(nuance_call_fn/nuance_judge_fn)が無い場合は実APIへ出さず実行しない(specも発行しない=LEGACY扱い)。"""
+    import er134_nuance_explanation_01 as nx
+    call_fn, judge_fn = ctx.hooks.get("nuance_call_fn"), ctx.hooks.get("nuance_judge_fn")
+    if ctx.mode != "real" and (call_fn is None or judge_fn is None):
+        return {"state": "SKIPPED_NO_HOOK", "status": None, "api_calls": 0, "cost_jpy": 0.0, "pending": None, "reused": False}
+    paragraphs, label = _part2_inputs(ctx, lv)
+    with ctx.stage_context(f"nuance_cand_{lv}"):
+        return nx.n1_stage(family="y", run_dir=ctx.out_dir, kp_dir=_kp_src_dir(ctx, lv), study_dir=_part2_dir(ctx, lv), level=lv, article_id=f"family_y_{ctx.slug}_{lv}",
+                           title=label, paragraphs=paragraphs, review_existed=review_existed, client=ctx.llm_client, call_fn=call_fn, judge_fn=judge_fn,
+                           budget_guard=lambda process, prompt, attempt: _guard(ctx, f"nuance_{lv}_{process}_a{attempt}", STAGE_EST_JPY["nuance"] / 4))
+
+
+def _assert_nuance_final(ctx, where: str, level: str):
+    """ページ生成入口でのニュアンス解説の確定(R-3。LLM 0・冪等)。None=LEGACY(従来出力と同一)。未確定=YKpReviewPending(rc=4)、不整合=YE2EStop。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, _label = _part2_inputs(ctx, level)
+    try:
+        return p2w.finalize_nuance(_part2_dir(ctx, level), paragraphs, level=level, kp_dir=_kp_src_dir(ctx, level), run_hint=ctx.out_dir, next_command=_part2_resume_next(ctx, level))
+    except p2w.Part2NotConfirmed as e:
+        raise YKpReviewPending(str(e), e.pending) from e
+    except (g.Part2Error, g.Part2InputError) as e:
+        raise YE2EStop(f"FAMILY_Y_NUANCE_NOT_READY({where}, {level}): {e}") from e
+
+
 def _rebind_kp_on_confirmation(ctx, prov, lv: str, text: str, kr: dict, input_sha: str):
     """KCP3所見D1: 自動採用runへ後からユーザー確定(フォーム/HR)を入れて KP review署名が変わっても、`kp_<lv>` 来歴の親sha不一致STOPにしない(API 0で再バインド)。
     条件(すべて満たすときだけ): 明示 --regenerate-stage kp_<lv> ではない / 確定レコードがユーザー確定(live) / 旧署名で再計算した入力shaが記録済みentryと一致(=本文は不変) /
@@ -625,10 +653,15 @@ def stage_kp(ctx) -> dict:
             pending.append(p2c["pending"])
     for lv in LEVELS:
         text = ys.canonical_body(_rd(_level_text_path(ctx, lv)))
+        _review_existed = os.path.exists(_khr().paths(_kp_src_dir(ctx, lv))["review"])   # N0は『この呼出でKP reviewが新規作成された』ときだけ(M-2。既存runはLEGACY)
         review_res = _kp_review_step(ctx, lv, text)
         kr = review_res.get("kp_review") or {}
+        nz = _nuance_cand_step(ctx, lv, _review_existed)      # N1: KP候補生成後・HR提示前(M-1)。KP候補docが無い/LEGACY/確定済み/AUTO採用は生成0
+        summary[f"nuance_cand_{lv}"] = {k: nz[k] for k in ("state", "status", "api_calls", "cost_jpy")}
         if kr.get("state") == "PENDING":
             pending.append(kr["pending"])
+            if nz["pending"] is not None:      # ニュアンス解説の候補もKP/文法と同じ待機点・同じ統合依頼書に載せる(rc=4は1回)
+                pending.append(nz["pending"])
             summary[lv] = {"status": "KP_REVIEW_PENDING", "pending": kr["pending"]}
             continue
         if kr.get("state") == "FAILED":
@@ -1289,6 +1322,7 @@ def stage_pages(ctx) -> dict:
     _assert_kp_review_consistent(ctx, "a2", "stage_pages")
     p2res = _assert_study_ready(ctx, "stage_pages")           # Part 1/Part 2(Advanced)の存在・最新性・確定との一致(未確定=rc=4、古い=STOP)
     p2res_std = _assert_std_study_ready(ctx, "stage_pages")   # Standardの学習テキスト(Part 1[display_spec付きのみ]+Part 2)。ページ専用=ここ(pages/page_verify)だけで確認する
+    nz_by_level = {ADV_LEVEL: _assert_nuance_final(ctx, "stage_pages", ADV_LEVEL), STD_LEVEL: _assert_nuance_final(ctx, "stage_pages", STD_LEVEL)}   # R-3: ページ入口で確定(未確定=rc=4/不整合=STOP)
     hl_results = _resolve_highlights_or_stop(ctx, "stage_pages")  # SLOT-23: display_spec付きlevelだけ。特定不能(ISSUE)はページ生成(mp3化)前にSTOP。マーク無しlevelは空=従来とバイト同一
     study_by_level = {}
     for lv, p2r in ((ADV_LEVEL, p2res), (STD_LEVEL, p2res_std)):
@@ -1299,7 +1333,7 @@ def stage_pages(ctx) -> dict:
                 part1_html = _p1().render_html_block(rows)
             except _p1().KpGeneralExplanationError as e:
                 raise YE2EStop(f"FAMILY_Y_KP_PART1_RENDER_NOT_OK({lv}): {e}") from e
-        study_by_level[lv] = _p2w().compose_page_html(part1_html, p2r, nuance=_p2w().nuance_for_display(_part2_dir(ctx, lv), level=lv))   # 共通builder1つ・同じテンプレート: Part 1→Part 2(文法0件は非表示)→ニュアンス解説(採用時のみ)
+        study_by_level[lv] = _p2w().compose_page_html(part1_html, p2r, nuance=nz_by_level[lv])   # 共通builder1つ・同じテンプレート: Part 1→Part 2(文法0件は非表示)→ニュアンス解説(採用時のみ)
     study_html, study_html_std = study_by_level[ADV_LEVEL], study_by_level[STD_LEVEL]
     audio_dir = f"{ctx.pages_dir}/audio"
     os.makedirs(audio_dir, exist_ok=True)
