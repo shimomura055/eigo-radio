@@ -323,6 +323,25 @@ class T4_EmphasisAndGlossary(unittest.TestCase):
             self.assertEqual(set(bi["glossary"].values()), {"not_applicable_no_display_spec"})
             self.assertFalse(any("glossary" in p for L in art["levels"].values() for p in L["parts"]))
 
+    def test_level_level_meaning_list_is_pooled(self):
+        """Y(highlight_meaning_html)は③本文中の意味一覧を行の外(level節の台本表の直後)に置く。行内一覧と同じ結果(glossary全通過)になること。"""
+        h = fx_html("x_moon")
+        ul = "<ul class=\"lk-meaning\"><li>radius ＝ 中心から外側までの長さ</li></ul>"
+        self.assertEqual(h.count(ul), 1)
+        i = h.index(ul)
+        j = h.index("</tbody></table>", i) + len("</tbody></table>")
+        moved = h[:i] + h[i + len(ul):j] + ul + h[j:]
+        self.assertNotEqual(moved, h)
+        art0, _s0, bi0 = Built("x_moon").data()
+        art1, _s1, bi1 = Built("x_moon", html=moved).data()
+        self.assertEqual(bi1["glossary"], bi0["glossary"])
+        g0 = [g for L in art0["levels"].values() for p in L["parts"] for g in p.get("glossary", [])]
+        g1 = [g for L in art1["levels"].values() for p in L["parts"] for g in p.get("glossary", [])]
+        self.assertEqual(sorted(x["en"] for x in g0), sorted(x["en"] for x in g1))
+        # 余分な項目(下線に対応しない)をpoolに足すとSTOP(黙って捨てない)
+        extra = moved.replace(ul, ul.replace("</ul>", "<li>zzzunused ＝ 余分</li></ul>"))
+        self.assertEqual(stop_code(Built("x_moon", html=extra).data), "ENDUSER_GLOSSARY_ASSERT")
+
     def test_glossary_assert_violations_are_stop(self):
         # (a) 本文中の意味一覧(ul.lk-meaning)の項目が欠けた
         h = mutate(fx_html("x_moon"), "<ul class=\"lk-meaning\"><li>radius ＝ 中心から外側までの長さ</li></ul>", "<ul class=\"lk-meaning\"></ul>")

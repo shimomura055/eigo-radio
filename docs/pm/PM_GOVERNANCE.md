@@ -1764,6 +1764,14 @@ Fableからユーザーへのすべての報告」に本フォーマットを適
 - 初適用: Y再配達Std preview(`user_test/family_y_production_redelivery_fee_03/hr_preview_01.html`、委任_05 commit bb2b6aec4)。旧Style比較・Voice別S9評価(UDR-YRF-2/3)は必須判断から撤回。
 - 9-12(HR試聴提示ルール)・9-14(報告順序)と併用する。矛盾する場合は本節の「推奨1つ・質問1つ」を優先し、9-12の試聴artifact規則は維持する。
 
+### 9-16. 記事完成報告=開発者向けURL+End User向けURL+両検証結果(必須、2026-10-29ユーザー正式採用、END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01)
+
+原文=`docs/pm/delegation_log/2026-10-29_END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01_USER.md` §5・§10。
+- Family X/Y/Zの各記事で、Standard/Advancedの完成候補を提出する記事単位の完成報告は、原則として次を**セット**で載せる: (1)開発者向け視聴ページURL(`…/<dir>/index.html`) (2)End User向け視聴ページURL(`…/<dir>/enduser/index.html`、正式Production経路が`pages`/`page_verify`[X=`er019_family_x_listening_page_01.py`]で自動生成) (3)両ページの公開・動作検証結果(開発者向け=既存verify、End User向け=`er135_enduser_page_01.py verify-only`[PC1280+モバイル模擬390x844]+`verify-consistency`。実機iOS Safari/Android Chrome未実施なら模擬と区別し、実機検証済みと書かない)。
+- End Userページの生成失敗(`ENDUSER_*`でSTOP、dev index.htmlは不変)は完成報告にせず、STOP理由・原因・次の一手を付けて報告する。End User向けページのために別のユーザー判断・別報告・追加のHuman Reviewを増やさない。既存の最終試聴・承認Gateは維持。
+- Yの公開手順(SSOT化): 公開dirへcopyするときは`python er135_enduser_page_01.py publish-copy --pages-dir <run>/pages --public-dir <user_test/…>`を使う(`enduser/`だけをcopyし、copy先で`verify-consistency`+`verify-only`を実行。公開dirのdev index.htmlがpagesと異なる=stale検出で不合格)。公開dev index.htmlを後から手編集した場合(状態注記の差替え等)は、同一moduleの`produce --dev-dir <公開dir> --cache-dir <run>/enduser_sync_cache`で公開dir上のdev HTMLから再生成する(ASRはキャッシュ=mp3 sha256が同じなら0回)。Zはpages_dirが公開dirのためhookが直接公開dirへ書く。
+- 量産単価: API費用0円/セット、ローカルCPU(faster-whisper medium)約6.5分/セット(初回のみ。再実行はキャッシュで約1秒)。
+
 ## 10. commit / push運用
 
 **(2026-10-05ユーザー指示)** ユーザー承認済みの総予算・個別run上限・STOP

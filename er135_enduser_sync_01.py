@@ -50,6 +50,12 @@ DEFAULT_THRESHOLDS = {
     "display_min_coverage": 0.60,     # 2-stage: share of a display sentence's chars found in the script
     "kp_min_ratio": 0.80,             # KP expression tokens found in the ASR of the chosen English block
     "kp_min_blocks": 4,
+    # ASR dropout repair (WP-E, 2026-10-29): Whisper sometimes skips a spoken span inside a long row (Y redelivery fee std_18 lost 10 words /
+    # 4.2 s; the words exist in the audio). A gap between ASR words (or lead/tail) longer than dropout_gap_s that holds >= dropout_min_voiced_s of
+    # non-silence is re-transcribed as its own window (same model/params, cached per window) and merged. Gates are NOT relaxed.
+    "dropout_gap_s": 2.0,
+    "dropout_min_voiced_s": 1.0,
+    "dropout_margin_s": 0.4,
     "audio_len_tol_s": 0.05,
 }
 LOCK_NAME = ".asr.lock"
@@ -676,6 +682,44 @@ def _validate_rows(rows):
             raise EnduserSyncError("ENDUSER_SYNC_ROWS_INVALID", "row %s duplicate sid" % r['row_id'])
 
 
+def find_dropouts(words, audio, th):
+    """ASR dropout candidates: [(gap_start, gap_end, (win_start, win_end))]. A gap (before the first word, between words, after the last word)
+    longer than dropout_gap_s that contains >= dropout_min_voiced_s of non-silence (silence_runs) is a spoken span the ASR skipped."""
+    audur = len(audio) / SR
+    ws = sorted(words, key=lambda w: w['start'])
+    edges = [(0.0, ws[0]['start'])] if ws else [(0.0, audur)]
+    edges += [(ws[i]['end'], ws[i + 1]['start']) for i in range(len(ws) - 1)]
+    if ws:
+        edges.append((ws[-1]['end'], audur))
+    silr = silence_runs(audio)
+    out = []
+    for g0, g1 in edges:
+        if g1 - g0 <= th['dropout_gap_s']:
+            continue
+        sil_in = sum(max(0.0, min(g1, b) - max(g0, a)) for a, b in silr)
+        if (g1 - g0) - sil_in < th['dropout_min_voiced_s']:
+            continue
+        m = th['dropout_margin_s']
+        out.append((g0, g1, (round(max(0.0, g0 - m), 2), round(min(audur, g1 + m), 2))))
+    return out
+
+
+def merge_dropouts(raw, gaps, rraws, sha, lang):
+    """Merge window re-transcriptions into the row raw (a copy; the cached raw is untouched). Only words whose centre lies inside the gap are taken."""
+    words = [dict(w) for w in raw['words']]
+    n = 0
+    for g0, g1, win in gaps:
+        rr = rraws[(sha, _job_label(lang, win))]
+        for w in rr['words']:
+            st, en = w['start'] + win[0], w['end'] + win[0]
+            c = (st + en) / 2
+            if g0 - 0.02 <= c <= g1 + 0.02:
+                words.append(dict(w, start=round(st, 3), end=round(en, 3)))
+                n += 1
+    words.sort(key=lambda w: (w['start'], w['end']))
+    return dict(raw, words=words, text=''.join(w['w'] for w in words).strip()), n
+
+
 def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, align_mode="auto"):
     """Sync one level (Std or Adv). Returns the enduser_sync_v1 dict or raises EnduserSyncError."""
     if align_mode not in ('auto', 'direct'):
@@ -703,9 +747,23 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
             job = (p, sha, _row_lang(r))
         prepared.append((r, audio, sha, kpw, job))
     raws = asr_raw_many([x[4] for x in prepared], cache_dir, model)
-    out_rows, stats, warnings = [], {}, []
+    repairs = {}
+    rjobs = []
+    for r, audio, sha, kpw, job in prepared:
+        if r['kind'] == 'kp':
+            continue
+        raw = raws[(sha, _job_label(job[2], job[3] if len(job) > 3 else None))]
+        gaps = find_dropouts(raw['words'], audio, th)
+        if gaps:
+            repairs[r['row_id']] = gaps
+            rjobs += [(job[0], sha, job[2], g[2]) for g in gaps]
+    rraws = asr_raw_many(rjobs, cache_dir, model) if rjobs else {}
+    out_rows, stats, warnings, repair_log = [], {}, [], []
     for r, audio, sha, kpw, job in prepared:
         raw = raws[(sha, _job_label(job[2], job[3] if len(job) > 3 else None))]
+        if r['row_id'] in repairs:
+            raw, nrep = merge_dropouts(raw, repairs[r['row_id']], {(sha, _job_label(job[2], g[2])): rraws[(sha, _job_label(job[2], g[2]))] for g in repairs[r['row_id']]}, sha, job[2])
+            repair_log.append({'row_id': r['row_id'], 'repaired_words': nrep, 'gaps': [[round(g[0], 2), round(g[1], 2)] for g in repairs[r['row_id']]]})
         audur = len(audio) / SR
         ro = dict(row_id=r['row_id'], mp3_sha256=sha, sentences=[])
         if r['kind'] == 'kp':
@@ -736,7 +794,7 @@ def sync_level(level_dir, rows, *, cache_dir, model="medium", thresholds=None, a
                  "token_match": {"rows": {k: {kk: v[kk] for kk in keep} for k, v in stats.items()},
                                  "total_tokens": tot, "total_matched": mat,
                                  "min_row_ratio": round(min(ratios), 4) if ratios else None},
-                 "thresholds": th, "warnings": warnings},
+                 "thresholds": th, "warnings": warnings, "asr_dropout_repairs": repair_log},
         "cost": {"api_calls": 0, "wall_s": round(time.time() - t_start, 1),
                  "asr_transcribed": ASR_STATS["transcribe_calls"] - s0["transcribe_calls"],
                  "cached_segments": ASR_STATS["cache_hits"] - s0["cache_hits"], "model": model},

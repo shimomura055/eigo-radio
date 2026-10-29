@@ -1415,6 +1415,29 @@ def _verify_highlights_on_page(ctx, html_text: str) -> dict:
     return out
 
 
+def _build_enduser_page(ctx) -> dict:
+    """END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 WP-E: `<pages_dir>/enduser/`を生成し、整合検査+Playwright検証(PC/モバイル模擬)まで行う。
+    公開dirへは別手順(`er135_enduser_page_01.py publish-copy`)でenduser/込みでcopyする。"""
+    if ctx.mode != "real":      # mock/dry-run=偽TTS音声(発話なし)でASR同期は成立しない。real(正式Production)では必須=この分岐に入らない
+        return {"skipped": True, "reason": f"mode={ctx.mode}(偽TTS音声のためASR同期は実施しない。real modeでは必須)", "enduser_dir": None}
+    import er135_enduser_page_01 as eu
+    try:
+        return eu.hook_run(ctx.pages_dir, "y", run_dir=ctx.out_dir, cache_dir=f"{ctx.out_dir}/enduser_sync_cache", y_article_ja=_ja_path(ctx),
+                           result_json=f"{ctx.out_dir}/enduser_page_result.json")
+    except eu.EnduserPageStop as e:
+        raise YE2EStop(f"{e.code}: {e.message}") from e
+
+
+def _enduser_manifest(ctx) -> dict:
+    """final manifest用: enduser/の各ファイルsha(build_info.json由来)。未生成=None(記録のみ)。"""
+    p = f"{ctx.pages_dir}/enduser/build_info.json"
+    if not os.path.exists(p):
+        return None
+    bi = _rj(p)
+    return {"dir": f"{ctx.pages_dir}/enduser", "dev_index_sha256": bi.get("dev_index_sha256"), "files": bi.get("files"), "assets": bi.get("assets"),
+            "cost": bi.get("cost")}
+
+
 def stage_page_verify(ctx) -> dict:
     if _page_audience(ctx) != "public":
         raise YE2EStop("FAMILY_Y_PAGE_VERIFY_DEV_PAGE: 開発用ページ(audience=dev, index_dev.html)は公開用の検証・final manifestの対象外です。--page-audienceを指定せず(public)検証してください")
@@ -1433,6 +1456,8 @@ def stage_page_verify(ctx) -> dict:
     _wj(f"{ctx.out_dir}/page_verify_local.json", rec)
     if viol:
         raise YE2EStop(f"FAMILY_Y_PAGE_VERIFY_FAILED: {viol}")
+    rec["enduser"] = _build_enduser_page(ctx)       # End User向け視聴ページ(APPROVED_FOR_PRODUCTION、API 0)。既存検査がすべて通った後にだけ生成。失敗=ENDUSER_*でSTOP(dev index.html・既存enduser/は不変)
+    _wj(f"{ctx.out_dir}/page_verify_local.json", rec)
     write_final_manifest(ctx)
     return rec
 
@@ -1512,7 +1537,7 @@ def write_final_manifest(ctx) -> str:
             ent["prompt_sha256"] = e.get("prompt_sha256")
         entries[n] = ent
     man = {"management_id": MANAGEMENT_ID, "slug": ctx.slug, "run": ctx.run, "mode": ctx.mode, "entry_status": ys.ENTRY_STATUS,
-           "page": f"{ctx.pages_dir}/index.html",
+           "page": f"{ctx.pages_dir}/index.html", "enduser": _enduser_manifest(ctx),
            "assembled": {lv: _glob_one(f"{ctx.out_dir}/{lv}/assembled/*.wav") for lv in LEVELS},
            "ja_article": _ja_path(ctx), "closing_record": tr.get("closing_record"),
            "stage_entries": entries,

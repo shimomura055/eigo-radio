@@ -120,6 +120,8 @@ import実行される事故防止(CONSOLIDATION-124)。)
 ### HR(Human Review)をユーザーに求める場合の必須7項目(PM_GOVERNANCE 30節、2026-10-29)
 対象/適用された承認済みProductionルート(spec節・file:line)/通過工程と各判定(時系列)/retry・fallback・LRの発動・非発動と理由/HRの直接原因/残る自動救済手段の有無/ユーザーに判断してほしい具体事項。冒頭で「既存ルートを正常に通過した結果のHR」か「不具合・未実行工程によるHR」かを区別する(後者はユーザー判断前に是正)。Fableは受入時に十分性を確認する。新Gateではない。
 
+### 記事完成報告(Family X/Y/Z・Std/Adv完成候補の提出)の必須項目(PM_GOVERNANCE 9-16、2026-10-29 END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01)
+**開発者向けURL(`…/<dir>/index.html`)+End User向けURL(`…/<dir>/enduser/index.html`)+両ページの公開・動作検証結果(開発者向け=既存verify、End User向け=`er135_enduser_page_01.py verify-only`[PC+モバイル模擬]と`verify-consistency`、実機iOS/Android未実施なら模擬と区別)**をセットで報告する。End Userページが生成されていない(`ENDUSER_*`でSTOP)場合は完成報告にせず、STOP理由付きで報告する。別報告・別ユーザー判断を増やさない。
 Sonnetはユーザー判断の候補を`判断候補`と表記する(`USER_DECISION_REQUIRED`の
 ラベルはFableだけが付ける。PM_GOVERNANCE 27-3)。
 ユーザー向け最終報告は固定5節順(PM_GOVERNANCE 9-0、2026-10-05): 1結論(完了/

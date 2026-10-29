@@ -2744,6 +2744,18 @@ def _verify_learning_items(ctx) -> dict:
     return out
 
 
+def _build_enduser_page(ctx) -> dict:
+    """END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 WP-E: `<pages_dir>/enduser/`(Zは公開dirへ直書きのためここが公開dir)を生成し、整合検査+Playwright検証まで行う。"""
+    if ctx.mode != "real":      # mock/dry-run=偽TTS音声(発話なし)でASR同期は成立しない。real(正式Production)では必須=この分岐に入らない
+        return {"skipped": True, "reason": f"mode={ctx.mode}(偽TTS音声のためASR同期は実施しない。real modeでは必須)", "enduser_dir": None}
+    import er135_enduser_page_01 as eu
+    try:
+        return eu.hook_run(ctx.pages_dir, "z", run_dir=ctx.out_dir, cache_dir=f"{ctx.out_dir}/enduser_sync_cache",
+                           result_json=f"{ctx.out_dir}/enduser_page_result.json")
+    except eu.EnduserPageStop as e:
+        raise FamilyZE2EStop(f"{e.code}: {e.message}") from e
+
+
 def stage_page_verify(ctx) -> dict:
     import functools
     import http.server
@@ -2789,7 +2801,9 @@ def stage_page_verify(ctx) -> dict:
         problems.append(f"index.html:user_page_standard_check={res['user_page_standard_check']['failed']}")
     if problems:
         raise FamilyZE2EStop(f"FAMILY_Z_PAGE_VERIFY_LOCAL_NG: {problems}(詳細 {ctx.out_dir}/page_verify_local.json)")
-    return {"pages": sorted(res["pages"]), "evidence": f"{ctx.out_dir}/page_verify_local.json",
+    res["enduser"] = _build_enduser_page(ctx)   # End User向け視聴ページ(APPROVED_FOR_PRODUCTION、API 0)。既存検査がすべて通った後にだけ生成。失敗=ENDUSER_*でSTOP(dev index.html・既存enduser/は不変)
+    _m().w62.wj(f"{ctx.out_dir}/page_verify_local.json", res)
+    return {"pages": sorted(res["pages"]), "evidence": f"{ctx.out_dir}/page_verify_local.json", "enduser": res["enduser"]["enduser_dir"],
             "note": "--local は内部証跡(公開URL版(m)は別途)"}
 
 

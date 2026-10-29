@@ -252,6 +252,22 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
     return summary
 
 
+def build_enduser_after_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_DEFAULT, source_root: str = SOURCE_ROOT_DEFAULT) -> int:
+    """End User向け視聴ページ(`<web>/enduser/`)を自動生成する(END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 WP-E。APPROVED_FOR_PRODUCTION、API 0)。
+    開発者向け index.html の既存検査・書出しが完了した後にだけ呼ぶ。失敗(`ENDUSER_*`)でも開発者向け index.html と既存の enduser/ は変更しない(rc=5)。"""
+    import er135_enduser_page_01 as eu
+    run = f"{run_root}/{slug}__{run_name}"
+    source_dir = f"{source_root}/{slug}/{run_name}"
+    try:
+        r = eu.hook_run(web, "x", run_dir=run, cache_dir=f"{run}/enduser_sync_cache", ja_manuscript=eu.find_x_ja_manuscript(source_dir),
+                        result_json=f"{run}/enduser_page_result.json")
+    except eu.EnduserPageStop as exc:
+        print(f"[FAMILY-X-LISTENING-PAGE][ENDUSER_STOP] {exc.code}: {exc.message}")
+        return 5
+    print("enduser page written", r["enduser_dir"], {k: r[k] for k in ("consistency", "total_wall_s", "api_calls")})
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Family X 標準公開試聴ページ builder(新規記事の正式入口)")
     ap.add_argument("--slug", required=True)
@@ -268,7 +284,7 @@ def main(argv=None):
         print(f"[FAMILY-X-LISTENING-PAGE][STOP] {exc}")
         return 3
     print("page written", a.web, s)
-    return 0
+    return build_enduser_after_page(a.slug, a.run_name, a.web, run_root=a.run_root, source_root=a.source_root)
 
 
 if __name__ == "__main__":

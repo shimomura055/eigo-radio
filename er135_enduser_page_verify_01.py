@@ -333,7 +333,10 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
                 href = li.get_attribute("href")
                 li.scroll_into_view_if_needed()
                 li.click()
-                page.wait_for_timeout(700)
+                # 長いページ(Yの3 Voice等)ではsmooth scrollが700msで終わらない。スクロール位置が止まる(150ms間隔で2回連続同値)まで最大5秒待ってから判定する
+                page.evaluate("""() => new Promise(res => { let last = -1, same = 0; const t0 = performance.now();
+                  (function f(){ const y = Math.round(scrollY); same = (y === last) ? same + 1 : 0; last = y;
+                    if (same >= 2 || performance.now() - t0 > 5000) res(y); else setTimeout(f, 150); })(); })""")
                 r_ = page.evaluate("(href) => { const t=document.getElementById(href.slice(1)); if(!t) return null; const b=t.getBoundingClientRect(); return {top:b.top, open:t.open, head:t.querySelector('.vh').textContent, vh:innerHeight}; }", href)
                 if not r_ or r_["head"] != en or not r_["open"] or not (-5 <= r_["top"] <= r_["vh"] * 0.8):
                     badl.append((en, href, r_))

@@ -318,6 +318,9 @@ def parse_dev_page(dev_html: str, family: str) -> dict:
             tds = [c for c in n.elements() if c.tag == "td"]
             if tds and tds[0].elements() and tds[0].elements()[0].tag == "b" and not n.inside("td"):
                 L["rows"].append(_parse_row(n, cur, len(L["rows"]), family))
+        elif n.tag == "ul" and n.classes() == ["lk-meaning"] and not n.inside("td"):
+            # 行の外(level節の台本表の直後)に置かれる③本文中の意味一覧(Yの`highlight_meaning_html`、Xの表示範囲外HL_MEANING_ONLY)。
+            L.setdefault("level_meanings", []).extend(li.text().strip() for li in n.find_all("li"))
         elif n.tag == "section" and n.has_class("study"):
             kind, items = _parse_study_section(n)
             if kind in L["study"]:
@@ -377,6 +380,7 @@ def build_rows_from_dev_html(dev_index_html: str, run_ctx: dict) -> tuple:
         "id": run_ctx.get("id") or (Path(dev_dir).name if dev_dir else "article"),
         "family": family.upper(), "title_ja": title_ja, "topic_en": topic_en, "notice": parsed["notice"],
         "level_main": {lv: L["main"] for lv, L in parsed["levels"].items()},
+        "level_meanings": {lv: L.get("level_meanings", []) for lv, L in parsed["levels"].items()},
         "dev_index_sha256": run_ctx.get("dev_index_sha256") or sha256_bytes(dev_index_html.encode("utf-8")),
     }
     return rows_by_level, study_by_level, meta
@@ -671,8 +675,28 @@ def _norm_en(s: str) -> str:
     return re.sub(r"^(the|a|an)\s+", "", s.lower().strip())
 
 
-def build_glossary(lv: str, parts: list, vocab: list) -> str:
-    """glossaryを各story/oneline行へ付与。戻り値='applied'|'not_applicable_no_display_spec'。"""
+_POSS_TOKENS = frozenset({"my", "your", "his", "her", "our", "their", "its", "one's", "one’s", "someone's", "someone’s", "somebody's", "somebody’s"})
+
+
+def _gl_stem(t: str) -> str:
+    if t in _POSS_TOKENS:
+        return "<p>"
+    return re.sub(r"(ing|ed|es|s|e)$", "", t) if len(t) > 3 else t
+
+
+def _gl_score(a: str, b: str) -> float:
+    """下線(本文の語形)と『本文中の意味』一覧の見出し語の対応度。文字列比と、語形・人称(my/one's)の違いを吸収した語幹列比の大きい方
+    (例: let my son go<->let one's son go / giving something up<->give something up / adjusting<->adjust)。"""
+    char = difflib.SequenceMatcher(None, _norm_en(a), _norm_en(b)).ratio()
+    ta = [_gl_stem(t) for t in re.findall(r"[\w'’]+", _norm_en(a))]
+    tb = [_gl_stem(t) for t in re.findall(r"[\w'’]+", _norm_en(b))]
+    tok = difflib.SequenceMatcher(None, ta, tb).ratio() if ta and tb else 0.0
+    return max(char, tok)
+
+
+def build_glossary(lv: str, parts: list, vocab: list, level_meanings: list | None = None) -> str:
+    """glossaryを各story/oneline行へ付与。戻り値='applied'|'not_applicable_no_display_spec'。
+    level_meanings=行の外(level節の台本表の直後)にある③本文中の意味一覧。行内の一覧に無い下線(lk3)はこの共有poolから1回だけ対応づける。poolに未使用が残ればSTOP。"""
     have_lk = False
     for p in parts:
         if p["kind"] in ("story", "oneline"):
@@ -688,6 +712,13 @@ def build_glossary(lv: str, parts: list, vocab: list) -> str:
         quotes.append(_plain_html(f.get("本文の英文", "")).lower())
         means.append(_plain_html(f.get("本文中の意味", "")).strip())
     seen, used_v = set(), set()
+    pool = []
+    for w in (level_meanings or []):
+        if "＝" not in w:
+            stop("ENDUSER_GLOSSARY_ASSERT", f"{lv}: 本文中の意味(level一覧)の書式が'英語＝意味'でない: {w!r}")
+        a, b = w.split("＝", 1)
+        pool.append((a.strip(), b.strip()))
+    used_pool = set()
     for p in parts:
         p.pop("glossary", None)
         if p["kind"] not in ("story", "oneline"):
@@ -717,19 +748,34 @@ def build_glossary(lv: str, parts: list, vocab: list) -> str:
             else:
                 best, bi = 0.0, None
                 for j, (e, _jm) in enumerate(lk3):
-                    r = difflib.SequenceMatcher(None, _norm_en(txt), _norm_en(e)).ratio()
+                    r = _gl_score(txt, e)
                     if r > best:
                         best, bi = r, j
-                if best < 0.8 or bi in used_m:
+                src = lk3
+                if (best < 0.8 or bi in used_m) and pool:       # 行内の一覧に無ければlevel一覧(共有pool)から1回だけ
+                    pbest, pj = 0.0, None
+                    for j, (e, _jm) in enumerate(pool):
+                        if j in used_pool:
+                            continue
+                        r = _gl_score(txt, e)
+                        if r > pbest:
+                            pbest, pj = r, j
+                    if pbest >= 0.8:
+                        src, best, bi = pool, pbest, pj
+                        used_pool.add(pj)
+                if best < 0.8 or (src is lk3 and bi in used_m):
                     stop("ENDUSER_GLOSSARY_ASSERT", f"{lv} {p['label']}: 下線'{txt}'が本文中の意味一覧に一意に対応しない(best={best:.2f})")
-                used_m.add(bi)
-                e0 = lk3[bi][0]
-                ents.append({"key": key, "lk": lk, "en": (e0[:1].lower() + e0[1:]) if txt[:1].islower() else e0, "ja": lk3[bi][1], "vi": None, "form": txt})
+                if src is lk3:
+                    used_m.add(bi)
+                e0 = src[bi][0]
+                ents.append({"key": key, "lk": lk, "en": (e0[:1].lower() + e0[1:]) if txt[:1].islower() else e0, "ja": src[bi][1], "vi": None, "form": txt})
             seen.add(key)
         if used_m != set(range(len(lk3))):
             stop("ENDUSER_GLOSSARY_ASSERT", f"{lv} {p['label']}: 本文中の意味{len(lk3)}件のうち未使用あり")
         if ents:
             p["glossary"] = [{"en": e["en"], "ja": e["ja"], "vi": e["vi"]} for e in ents]
+    if used_pool != set(range(len(pool))):
+        stop("ENDUSER_GLOSSARY_ASSERT", f"{lv}: level一覧の本文中の意味{len(pool)}件のうち、下線に対応しない項目あり({sorted(set(range(len(pool))) - used_pool)})")
     if used_v != set(range(len(vocab))):
         stop("ENDUSER_GLOSSARY_ASSERT", f"{lv}: Vocabulary{len(vocab)}件のうち一覧に載らない項目あり({sorted(set(range(len(vocab))) - used_v)})")
     glos = [g["en"] for p in parts for g in p.get("glossary", [])]
@@ -791,7 +837,7 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
         trans_cov[lv] = attach_translations(lv, parts, family, ja)
         study = study_by_level.get(lv, {})
         vocab, grammar, nuance = study.get("vocab", []), study.get("grammar", []), study.get("nuance", [])
-        gloss_info[lv] = build_glossary(lv, parts, vocab)
+        gloss_info[lv] = build_glossary(lv, parts, vocab, (meta.get("level_meanings") or {}).get(lv))
         levels[lv] = {"level": lv, "main": main, "parts": parts, "vocab": vocab, "grammar": grammar, "nuance": nuance,
                       "total_sec": pm["duration"], "sentence_count": sent_n}
         sync_public[lv] = {"schema": R.SCHEMA_SYNC_PUBLIC, "level": lv,
@@ -874,6 +920,7 @@ SCHEMA_BUILD_INFO_SPEC = _obj({
     "warnings": _arr(S_STR),
     "cost": _obj({"api_calls": S_INT, "model": S_STR, "asr_wall_s": S_NUM, "build_wall_s": S_NUM, "cached_segments": S_INT}),
     "timeline_check": {"type": "object"},
+    "episode_check": {"type": "object"},
 }, required=["schema", "id", "family", "asset_build", "dev_index_sha256", "audio_sha256", "assets", "files", "sync", "translation_coverage", "glossary", "ja_manuscript", "warnings", "cost"])
 
 _TYPE_MAP = {"string": str, "integer": int, "number": (int, float), "boolean": bool, "array": list, "object": dict, "null": type(None)}
@@ -1097,7 +1144,7 @@ def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR) -> dict:
 def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja_manuscript=None, kp_audio=None, asr=None, probe=None,
                   assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None) -> dict:
     t0 = time.time()
-    dev_dir = Path(dev_dir)
+    dev_dir = Path(dev_dir).resolve()    # 相対pathだと音声pathが二重結合になる(runnerのctx.pages_dirは相対)
     idx = dev_dir / "index.html"
     if not idx.is_file():
         stop("ENDUSER_DEV_HTML_STRUCTURE", f"dev index.htmlが無い: {idx}")
@@ -1230,6 +1277,222 @@ def verify_consistency(public_dir, assets_dir=ASSET_DIR) -> dict:
 # ------------------------------------------------------------
 # CLI
 # ------------------------------------------------------------
+# ------------------------------------------------------------
+# WP-E: 正式経路(runner hook)用の一括生成 `produce_enduser` と未実装ゲート§6-2(4)(5)
+# ------------------------------------------------------------
+EPISODE_OFFSET_TOL_S = 0.05      # 設計§6-2(4): segmentが全編mp3内data-t位置に一致(1秒窓の相互相関ずれ)
+EPISODE_LEN_TOL_S = 0.15         # 設計§6-2(5): 全編音声長とtimeline合計の差
+EPISODE_CORR_MIN = 0.97         # 相関の下限(別音声/位置ずれの検出用)。実測(月X・全44行)は最小0.9885、lagは全行0.000s。mp3再エンコード差で1.0にはならない
+_EP_SR = 16000
+
+
+def _best_lag(x, y, max_lag):
+    """x(1秒窓)とy(前後max_lag余白付き)の正規化相互相関の最大(lag_samples, corr)。"""
+    import numpy as np
+    n = len(x)
+    xv = (x - x.mean()).astype(np.float64)
+    xn = float(np.sqrt((xv * xv).sum()))
+    if xn < 1e-9:
+        return None
+    yv = y.astype(np.float64)
+    nfft = 1 << (len(yv) + n).bit_length()
+    corr = np.fft.irfft(np.fft.rfft(yv, nfft) * np.conj(np.fft.rfft(xv, nfft)), nfft)[: len(yv) - n + 1]
+    c1 = np.concatenate([[0.0], np.cumsum(yv)])
+    c2 = np.concatenate([[0.0], np.cumsum(yv ** 2)])
+    m = len(yv) - n + 1
+    s1 = c1[n:n + m] - c1[:m]
+    s2 = c2[n:n + m] - c2[:m]
+    yn = np.sqrt(np.maximum(s2 - s1 * s1 / n, 1e-12))
+    ncc = corr / (xn * yn)
+    k = int(np.argmax(ncc))
+    return k - max_lag, float(ncc[k])
+
+
+def timeline_total(run_dir, sub: str):
+    """run配下の組立timeline(`<sub>/audit/timeline.json`|`<sub>/assembly/timeline.json`。pause/_silenceも含む全項目)の終端秒。無ければNone。
+    ZのdevページはIntro/Notification/Outro行を持たないため、全編長との照合はdevの行ではなくこの完全なtimelineで行う。"""
+    if not run_dir:
+        return None
+    for pat in TIMELINE_CANDIDATES:
+        p = Path(run_dir) / pat.format(sub=sub)
+        if p.is_file():
+            d = json.load(open(p, encoding="utf-8"))
+            tl = d["timeline"] if isinstance(d, dict) else d
+            return max(float(x["start_seconds"]) + float(x["duration_seconds"]) for x in tl)
+    return None
+
+
+def episode_checks(dev_dir, rows_by_level: dict, meta: dict, probe, run_dir=None) -> dict:
+    """§6-2(4)(5): (4)各segmentの1秒窓が全編mp3の`data-t`位置にあること(相関ずれ<=0.05s)、(5)全編音声長とrunのtimeline終端の差<=0.15s
+    (timelineが無い場合のみdevページの最終行終端で代替し、`length_basis`に記録)。
+    違反は`ENDUSER_EPISODE_OFFSET` / `ENDUSER_EPISODE_LENGTH`でSTOP。設計値は緩和しない。"""
+    import numpy as np
+    import er135_enduser_sync_01 as S
+    out = {}
+    max_lag = int(0.3 * _EP_SR)
+    for lv, rows in rows_by_level.items():
+        main = meta["level_main"][lv]
+        pm = probe(main)
+        if pm is None:
+            stop("ENDUSER_AUDIO_MISSING", f"{lv}: {main}")
+        total = timeline_total(run_dir, {"std": "a2", "adv": "b1b"}[lv])
+        basis = "run_timeline"
+        if total is None:
+            total, basis = max((r["data_t"] + (probe(r["audio_rel"]) or {"duration": 0.0})["duration"]) for r in rows), "dev_last_row_end"
+        dlen = abs(pm["duration"] - total)
+        if dlen > EPISODE_LEN_TOL_S:
+            stop("ENDUSER_EPISODE_LENGTH", f"{lv}: 全編音声長{pm['duration']:.3f}s とtimeline合計{total:.3f}sの差{dlen:.3f}s > {EPISODE_LEN_TOL_S}s")
+        ep = S.load_audio(str(Path(dev_dir) / main), _EP_SR)
+        n_ok, skipped, worst, min_corr = 0, 0, 0.0, 1.0
+        for r in rows:
+            seg = S.load_audio(str(Path(dev_dir) / r["audio_rel"]), _EP_SR)
+            w = _EP_SR
+            start = None
+            for off in range(0, max(1, len(seg) - w + 1), _EP_SR // 4):      # 先頭から0.25秒刻みで、音のある最初の1秒窓
+                if float(np.sqrt(np.mean(seg[off:off + w] ** 2))) > 0.01:
+                    start = off
+                    break
+            if start is None or len(seg) < w:
+                skipped += 1
+                continue
+            x = seg[start:start + w]
+            a = int(round(r["data_t"] * _EP_SR)) + start - max_lag
+            lo = max(a, 0)
+            y = ep[lo: a + w + 2 * max_lag]
+            if len(y) < w:
+                stop("ENDUSER_EPISODE_OFFSET", f"{r['row_id']}: data-t={r['data_t']}が全編音声の外")
+            bl = _best_lag(x, y, max_lag - (lo - a))
+            if bl is None:
+                skipped += 1
+                continue
+            lag, c = bl
+            lag_s = lag / _EP_SR
+            worst, min_corr = max(worst, abs(lag_s)), min(min_corr, c)
+            if abs(lag_s) > EPISODE_OFFSET_TOL_S or c < EPISODE_CORR_MIN:
+                stop("ENDUSER_EPISODE_OFFSET", f"{r['row_id']}: segmentが全編音声のdata-t={r['data_t']}位置と一致しない lag={lag_s:+.3f}s corr={c:.4f}"
+                                              f"(許容 lag<={EPISODE_OFFSET_TOL_S}s corr>={EPISODE_CORR_MIN})")
+            n_ok += 1
+        out[lv] = {"rows_checked": n_ok, "rows_skipped_silent": skipped, "max_abs_lag_s": round(worst, 4), "min_corr": round(min_corr, 5),
+                   "episode_dur_s": round(pm["duration"], 3), "timeline_total_s": round(total, 3), "length_diff_s": round(dlen, 3), "length_basis": basis}
+    return out
+
+
+def produce_enduser(dev_dir, family: str, *, run_dir=None, cache_dir, ja_manuscript=None, y_article_ja=None, model="medium",
+                    out_dir=None, align_mode="direct") -> dict:
+    """正式経路の一括生成(API 0): dev index.html -> 行抽出 -> 02A `sync_level`(ローカルfaster-whisper。tts_textは渡さず直接整列=Fable決定)
+    -> §6-2(4)(5) -> build_enduser(validator込み・atomic書込)。失敗は`EnduserPageStop(ENDUSER_*)`(dev index.htmlと既存enduser/は不変)。
+    再実行時は`cache_dir`(segment mp3 sha256単位のASR生出力)によりASR 0回。"""
+    import er135_enduser_sync_01 as S
+    t0 = time.time()
+    dev_dir = Path(dev_dir).resolve()
+    idx = dev_dir / "index.html"
+    if not idx.is_file():
+        stop("ENDUSER_DEV_HTML_STRUCTURE", f"dev index.htmlが無い: {idx}")
+    raw_dev = idx.read_bytes()
+    rows_by_level, _study, meta = build_rows_from_dev_html(raw_dev.decode("utf-8"), {"family": family, "dev_dir": dev_dir, "dev_index_sha256": sha256_text_bytes(raw_dev)})
+    probe = make_probe(dev_dir)
+    sync_by_level, sync_wall = {}, {}
+    os.makedirs(cache_dir, exist_ok=True)
+    for lv, rows in rows_by_level.items():
+        t1 = time.time()
+        try:
+            sync_by_level[lv] = S.sync_level(str(dev_dir), rows_for_sync(rows), cache_dir=str(cache_dir), model=model, align_mode=align_mode)
+        except S.EnduserSyncError as e:
+            raise EnduserPageStop(e.code, e.message) from e
+        sync_wall[lv] = round(time.time() - t1, 1)
+    ep = episode_checks(dev_dir, rows_by_level, meta, probe, run_dir=run_dir)
+    res = build_enduser(dev_dir, family, sync_by_level, run_dir=run_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, probe=probe,
+                        out_dir=out_dir, extra_build_info={"episode_check": ep})
+    res["sync_by_level"] = {lv: {"gate": s["gate"]["status"], "min_row_ratio": s["gate"]["token_match"]["min_row_ratio"], "cost": s["cost"],
+                                 "wall_s": sync_wall[lv]} for lv, s in sync_by_level.items()}
+    res["episode_check"] = ep
+    res["total_wall_s"] = round(time.time() - t0, 1)
+    return res
+
+
+def find_x_ja_manuscript(source_dir):
+    """X: 承認済み日本語原稿の優先順(`derive_japanese_title`と同じ: revision2 > revision1 > original)。無ければNone(訳なし=非表示)。"""
+    for name in ("revision2.md", "revision1.md", "original.md"):
+        p = Path(source_dir) / "ja_writer" / name
+        if p.is_file():
+            return str(p)
+    return None
+
+
+def hook_run(dev_dir, family: str, *, run_dir, cache_dir, ja_manuscript=None, y_article_ja=None, result_json=None, browser_verify=True, model="medium") -> dict:
+    """runner hook共通入口: 生成 -> verify_consistency -> Playwright検証(PC+モバイル模擬)。失敗は`EnduserPageStop(ENDUSER_*)`。
+    成功時は要約dictを返し、result_jsonへ保存する(公開dirには置かない)。"""
+    res = produce_enduser(dev_dir, family, run_dir=run_dir, cache_dir=cache_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, model=model)
+    vc = verify_consistency(dev_dir)
+    if not vc["ok"]:
+        raise EnduserPageStop("ENDUSER_CONSISTENCY", "生成直後のverify_consistencyが不合格: " + json.dumps(vc["violations"], ensure_ascii=False)[:600])
+    summary = {"ok": True, "family": family.upper(), "enduser_dir": res["out_dir"], "files": res["files"], "consistency": "ok",
+               "sync": res["sync_by_level"], "episode_check": res["episode_check"], "translation_coverage": res["build_info"]["translation_coverage"],
+               "dev_index_sha256": res["build_info"]["dev_index_sha256"], "enduser_index_sha256": res["build_info"]["files"]["index.html"],
+               "total_wall_s": res["total_wall_s"], "api_calls": 0, "browser_verify": None}
+    if browser_verify:
+        import er135_enduser_page_verify_01 as V
+        out = (str(Path(result_json).with_name(Path(result_json).stem + "_browser.json")) if result_json else None)
+        rc = V.run(dev_dir, out=out)
+        summary["browser_verify"] = {"rc": rc, "result": out}
+        if rc != 0:
+            if result_json:
+                Path(result_json).write_text(json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
+            raise EnduserPageStop("ENDUSER_BROWSER_VERIFY", f"Playwright検証が不合格(rc={rc}): {out}")
+    if result_json:
+        Path(result_json).write_text(json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
+    return summary
+
+
+def publish_copy(pages_dir, public_dir, *, browser_verify=True) -> dict:
+    """Y公開手順の補助(Opus M6): `<pages_dir>/enduser/`だけを公開dirへcopy(devページ・音声は触らない)し、copy先で
+    verify_consistency(+Playwright)を実行。公開dirのdev index.htmlがpages_dirのものと異なる(stale)場合は、copy前に不合格にして公開dirを一切変更しない。
+    copyは一時名->renameで原子的。copy後の検査に落ちたら元のenduser/へ戻す。"""
+    pages_dir, public_dir = Path(pages_dir), Path(public_dir)
+    src = pages_dir / ENDUSER_DIRNAME
+    if not src.is_dir():
+        stop("ENDUSER_NOT_BUILT", f"{src}が無い(pages/page_verifyを先に実行)")
+    if not public_dir.is_dir() or not (public_dir / "index.html").is_file():
+        stop("ENDUSER_DEV_HTML_STRUCTURE", f"公開dir/index.htmlが無い: {public_dir}")
+    bi = json.load(open(src / "build_info.json", encoding="utf-8"))
+    pub_sha = sha256_text_bytes((public_dir / "index.html").read_bytes())
+    if pub_sha != bi["dev_index_sha256"]:
+        return {"ok": False, "public_dir": str(public_dir), "copied": False,
+                "consistency": {"ok": False, "checked": {}, "violations": [{"code": "ENDUSER_STALE_DEV_CHANGED",
+                                "message": "公開dirのdev index.htmlがenduser生成時のものと異なる(公開後に手編集された等)。公開dirは変更していない。"
+                                           "`produce --dev-dir <公開dir>`で公開dirのdev HTMLから再生成する"}]}}
+    tmp = public_dir / f".enduser.tmp.{os.getpid()}.{uuid.uuid4().hex[:8]}"
+    old = public_dir / f".enduser.old.{os.getpid()}.{uuid.uuid4().hex[:8]}"
+    dst = public_dir / ENDUSER_DIRNAME
+    swapped = False
+    try:
+        shutil.copytree(src, tmp)
+        if dst.exists():
+            os.rename(dst, old)
+            swapped = True
+        os.rename(tmp, dst)
+    except Exception as e:                                  # noqa: BLE001
+        if swapped and old.exists() and not dst.exists():
+            os.rename(old, dst)
+        raise EnduserPageStop("ENDUSER_WRITE_FAILED", f"{type(e).__name__}: {e}") from e
+    finally:
+        if tmp.exists():
+            shutil.rmtree(tmp, ignore_errors=True)
+    vc = verify_consistency(public_dir)
+    if not vc["ok"] and swapped and old.exists():           # copy後の検査に落ちた: 元のenduser/へ戻す
+        shutil.rmtree(dst, ignore_errors=True)
+        os.rename(old, dst)
+        return {"ok": False, "public_dir": str(public_dir), "copied": False, "rolled_back": True, "consistency": vc}
+    if swapped:
+        shutil.rmtree(old, ignore_errors=True)
+    out = {"ok": vc["ok"], "public_dir": str(public_dir), "copied": True, "consistency": vc}
+    if vc["ok"] and browser_verify:
+        import er135_enduser_page_verify_01 as V
+        out["browser_rc"] = V.run(public_dir)
+        out["ok"] = out["browser_rc"] == 0
+    return out
+
+
 def _load_sync_args(items: list) -> dict:
     out = {}
     for it in items:
@@ -1260,8 +1523,30 @@ def main(argv=None) -> int:
     o.add_argument("--base-url", help="既に配信中のURL(省略時はローカルRange対応サーバを起動)")
     o.add_argument("--out", help="結果jsonの保存先")
     o.add_argument("--shots", help="スクリーンショットの保存先dir")
+    pr = sub.add_parser("produce", help="正式経路と同じ一括生成(同期ASR込み・API 0)。公開済みdirへの後付け(backfill)にも使う")
+    pr.add_argument("--family", required=True, choices=["x", "y", "z"])
+    pr.add_argument("--dev-dir", required=True)
+    pr.add_argument("--run-dir")
+    pr.add_argument("--cache-dir", required=True, help="ASR生出力キャッシュ(公開dirには置かない)")
+    pr.add_argument("--ja-manuscript")
+    pr.add_argument("--y-article-ja")
+    pr.add_argument("--result-json")
+    pr.add_argument("--no-browser", action="store_true")
+    pc = sub.add_parser("publish-copy", help="Y公開手順の補助: pages_dirのenduser/を公開dirへcopyしコピー先で検証")
+    pc.add_argument("--pages-dir", required=True)
+    pc.add_argument("--public-dir", required=True)
+    pc.add_argument("--no-browser", action="store_true")
     a = ap.parse_args(argv)
     try:
+        if a.cmd == "produce":
+            r = hook_run(a.dev_dir, a.family, run_dir=a.run_dir, cache_dir=a.cache_dir, ja_manuscript=a.ja_manuscript, y_article_ja=a.y_article_ja,
+                         result_json=a.result_json, browser_verify=not a.no_browser)
+            print(json.dumps(r, ensure_ascii=False, indent=1))
+            return 0
+        if a.cmd == "publish-copy":
+            r = publish_copy(a.pages_dir, a.public_dir, browser_verify=not a.no_browser)
+            print(json.dumps(r, ensure_ascii=False, indent=1))
+            return 0 if r["ok"] else 3
         if a.cmd == "build":
             kp = json.load(open(a.kp_audio_json, encoding="utf-8")) if a.kp_audio_json else None
             r = build_enduser(a.dev_dir, a.family, _load_sync_args(a.sync_json), run_dir=a.run_dir, ja_manuscript=a.ja_manuscript, kp_audio=kp, y_article_ja=a.y_article_ja)
