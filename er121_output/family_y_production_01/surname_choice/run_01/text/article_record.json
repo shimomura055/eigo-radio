@@ -1,0 +1,395 @@
+{
+  "management_id": "FAMILY-Y-PRODUCTION-LAUNCH-01",
+  "status": "FAMILY_Y_PRODUCTION",
+  "slug": "surname_choice",
+  "theme_id": "surname_choice",
+  "title": "夫が妻の姓を選ぶとき、それぞれの声",
+  "theme_package_sha256": "d1bc9fe2ffa98e5cdd7299525cb5db50187f7394912455c8f3c9e0a7a99eee73",
+  "theme_package_sha_method": "file_bytes",
+  "theme_package_path": "docs/research/FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01/theme_packages/surname_choice_package_01.json",
+  "mode": "generated",
+  "routes_preflighted": [
+    {
+      "routing_key": "FAMILY_Y_LEAK_JUDGE",
+      "model": "gpt-6-luna",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_GENERATE",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_PROVENANCE_MAP",
+      "model": "gpt-6-luna",
+      "effort": "medium"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_STRUCTURE_TAG",
+      "model": "gpt-6-luna",
+      "effort": "medium"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_REWRITE",
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    },
+    {
+      "routing_key": "FAMILY_Y_LEAD_GENERATE",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_PERSONA_INTRO",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_CLOSING_REWRITE",
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    }
+  ],
+  "stages_done": [
+    "voices",
+    "lead_intro",
+    "closing"
+  ],
+  "voices": {
+    "source": "generated",
+    "routing_key": "FAMILY_Y_VOICE_GENERATE",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "model_ids": [
+      "gpt-6.1-sol"
+    ],
+    "prompt_file": "voice_generate_02.txt",
+    "prompt_sha256": "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e",
+    "per_slot": {
+      "voice_1": {
+        "user_prompt_sha256": "f91fa6061e732d4c0a7bdd66c80368730219193a540d9a06d187e0ccdf0ed41c",
+        "n_calls": 1,
+        "problems_per_try": [
+          []
+        ],
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 267,
+          "sentences": 7,
+          "mean_sentence_chars": 38.1,
+          "max_sentence_chars": 62,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 2,
+          "ends_with_question": false,
+          "last_sentence": "違っていてあたりまえだと思えてから、ずいぶん気持ちが楽になった。"
+        },
+        "repetition": {
+          "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+          "threshold": 0.3,
+          "n_sentences": 7,
+          "n_repeat_pairs": 0,
+          "repeat_pairs": [],
+          "contrast_turns": 2,
+          "last_vs_first_echo": false
+        }
+      },
+      "voice_2": {
+        "user_prompt_sha256": "e8265a5f3258ea58afc2b26d1c739f143378791072c5caaed9062a664ecdc5bb",
+        "n_calls": 1,
+        "problems_per_try": [
+          []
+        ],
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 264,
+          "sentences": 10,
+          "mean_sentence_chars": 26.4,
+          "max_sentence_chars": 37,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 1,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 2,
+          "ends_with_question": false,
+          "last_sentence": "お嫁さんにも近づきすぎずに接して、息子夫婦の幸せを大事にしたいと思ってる。"
+        },
+        "repetition": {
+          "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+          "threshold": 0.3,
+          "n_sentences": 10,
+          "n_repeat_pairs": 1,
+          "repeat_pairs": [
+            {
+              "i": 3,
+              "j": 7,
+              "overlap": 0.38,
+              "a": "そこへ姓まで変えると言われて、息子が離れていくようで、取り乱してしまった。",
+              "b": "私が子離れしないといけないんだね。"
+            }
+          ],
+          "contrast_turns": 2,
+          "last_vs_first_echo": false
+        }
+      },
+      "voice_3": {
+        "user_prompt_sha256": "1e528d8cd8f6f0e8fb05bdb445bc1f37775734a88349bd0f998d0a2a014d8d7e",
+        "n_calls": 1,
+        "problems_per_try": [
+          []
+        ],
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 274,
+          "sentences": 9,
+          "mean_sentence_chars": 30.4,
+          "max_sentence_chars": 52,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 4,
+          "ends_with_question": false,
+          "last_sentence": "そういう時間は、相手の親とも持てたらと思う。"
+        },
+        "repetition": {
+          "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+          "threshold": 0.3,
+          "n_sentences": 9,
+          "n_repeat_pairs": 0,
+          "repeat_pairs": [],
+          "contrast_turns": 1,
+          "last_vs_first_echo": false
+        }
+      }
+    },
+    "unmapped_regen": {
+      "voice_2": {
+        "before": "寂しいんだよね。来年結婚する息子が相手の姓になると聞いて、私も夫も反対だった。遠くに住むうえに姓まで変わるなんて、息子が離れていってしまう気がして、取り乱した。でも、姓がそんなに大事だったのかな？いや、そばにいてほしかったんだと思う。古い考えだと指摘されて、その通りだと思った。姓が変わっても、私の息子でなくなるわけじゃないのにね。私が子離れしないとね。義父母にされて嬉しかったことも、嫌だったこともあるから、お嫁さんとは近づきすぎずにいたい。まだ気持ちは追いつかないけれど、息子が幸せなら、私の寂しさで姓を変えることに反対し続けたくはない。",
+        "after": "正直、寂しかった。来年結婚する息子が、お嫁さんの姓になると聞いて、嫌だと思ったんだ。住むのも相手の実家のそばで、うちからはずいぶん遠くなる。そこへ姓まで変えると言われて、息子が離れていくようで、取り乱してしまった。でも、私が嫌だったのは、苗字が変わることだけなのかな？そばにいてほしい、それが本音だったんだと思う。古い考えだと指摘されて、その通りだと思った。私が子離れしないといけないんだね。まだ寂しさはあるけれど、息子が妻の姓を選ぶことは受け入れたい。お嫁さんにも近づきすぎずに接して、息子夫婦の幸せを大事にしたいと思ってる。",
+        "n_unmapped_before": 1,
+        "n_unmapped_after": 0,
+        "problems_per_try": [
+          []
+        ]
+      },
+      "voice_3": {
+        "before": "自分は、男性が妻の姓を選ぶのも、本人たちが決めていいと思う。自分の息子の結婚はまだ先の話だけど、身内のことを思うと、親の気持ちも気になる。その身内が親に話を通さず妻の姓にしたとき、母親である自分の伯母は、ショックで体調を崩した。ただ、姓が変わることに反対なのと、何も相談がなくてつらいのとは、違うと思う。もし息子が妻の姓を選んでも、反対はしない。それでも、相手の親が当然だという態度だったら、自分も割り切れないだろうな。息子に少しはありがたいと思っていてほしいんだ。口を出しすぎたくはないけれど、決める前に、親の気持ちも聞いてもらえたらと思う。",
+        "after": "自分は、男性が妻の姓を選ぶのは構わないと思う。もし息子がそう決めても反対はしないが、身内のことが頭にある。親に話を通さず妻の姓にした身内がいて、その母親である自分の伯母が、ショックで体調を崩したのを知っている。ただ、自分の息子の場合、相手の親がそれを当然だと思っていたら、やっぱり引っかかる。息子に対して、少しはありがたいと思っていてほしいんだ。本人たちが決めればいいと言いながら、そこは気になる。だからといって、親の気持ちで息子を縛りたくはない。姓を決める前に話してくれたら、自分も気持ちを伝えられる。そういう時間は、相手の親とも持てたらと思う。",
+        "n_unmapped_before": 1,
+        "n_unmapped_after": 2,
+        "problems_per_try": [
+          []
+        ]
+      }
+    },
+    "map_routing_key": "FAMILY_Y_VOICE_PROVENANCE_MAP",
+    "structure_routing_key": "FAMILY_Y_VOICE_STRUCTURE_TAG",
+    "structure": {
+      "tags_before": {
+        "tags": {
+          "voice_1": {
+            "voice": "voice_1",
+            "opening_type": "自分の状況・立場の描写から",
+            "development_type": "経験の時系列",
+            "closing_type": "主張を言い切って締める",
+            "evidence_ja": "冒頭は「僕は婿養子になって」と現在の立場を述べ、親の反応や同居生活を経て、最後は「違っていてあたりまえだと思えてから」と気づきを言い切っている。"
+          },
+          "voice_2": {
+            "voice": "voice_2",
+            "opening_type": "感情・本音の吐露から",
+            "development_type": "自分への突っ込みと本音を行き来する",
+            "closing_type": "約束・要求で締める",
+            "evidence_ja": "「正直、寂しかった」と感情から始まり、「私が嫌だったのは…？」と自問して本音を探っている。締めは「息子夫婦の幸せを大事にしたい」という自分の意向。"
+          },
+          "voice_3": {
+            "voice": "voice_3",
+            "opening_type": "主張・意見の表明から",
+            "development_type": "主張から具体例へ",
+            "closing_type": "約束・要求で締める",
+            "evidence_ja": "冒頭で「男性が妻の姓を選ぶのは構わない」と意見を示し、身内の例や息子への気持ちを続けている。最後は「時間は…持てたらと思う」と話し合いの機会を望んでいる。"
+          }
+        },
+        "fire": {
+          "fired": false,
+          "pairs": [],
+          "regenerate_slot": null
+        }
+      },
+      "regen": null,
+      "tags_after": null
+    },
+    "final_map_n_unmapped": {
+      "voice_1": 0,
+      "voice_2": 0,
+      "voice_3": 1
+    },
+    "final_map_r2plus_only_idx": {
+      "voice_1": [],
+      "voice_2": [],
+      "voice_3": []
+    },
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1,
+      "rewritten": false,
+      "source": "judged_this_run",
+      "dir": "er121_output/family_y_production_01/surname_choice/run_01/text\\voices\\gate_voices",
+      "judge_routing_key": "FAMILY_Y_LEAK_JUDGE",
+      "rewrite_routing_key": "FAMILY_Y_VOICE_REWRITE"
+    },
+    "final_sha256": {
+      "voice_1": "7259c2abca33711a5596aab25d3f0cd5dae27209570b73fb02d0452a12713e40",
+      "voice_2": "c21df1012f322191054a063fb66c270ce6b72cb82ac1aea206a968fbb310137e",
+      "voice_3": "814263bf36670118705cb52ffc8e57be697ba51386e63c7a572b2e99d5d22beb"
+    },
+    "voices_sha256": "0c55b01d01bd3feed91c505a33789e442db058dab1c0dc3e5fe4a5958fa3091c"
+  },
+  "lead": {
+    "source": "generated",
+    "routing_key": "FAMILY_Y_LEAD_GENERATE",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "model_ids": [
+      "gpt-6.1-sol"
+    ],
+    "prompt_file": "lead_generate_01.txt",
+    "prompt_sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21",
+    "user_prompt_sha256": "3bf46abc36c01b0329f1857adad2bf58076cc08b77af11cbaae4684555ad8e3a",
+    "inputs_source": "package",
+    "n_calls": 1,
+    "sha256": "c17b6d085253234cd0a0d2150541f68e6486ddc84c1a82cdb607f9a07b9213af"
+  },
+  "intros": {
+    "source": "generated",
+    "routing_key": "FAMILY_Y_PERSONA_INTRO",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "model_ids": [
+      "gpt-6.1-sol"
+    ],
+    "prompt_file": "persona_intro_01.txt",
+    "prompt_sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4",
+    "user_prompt_sha256": "14e414ad2fe1d0ac06944394a7761569e3dcf7f0902eafb57c3f904dbd82c72d",
+    "check_mode": "derived",
+    "n_calls": 1,
+    "sha256": {
+      "voice_1": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+      "voice_2": "8e3ba6194b4ec83be2a55b889fa0265640dcc0dd7679b650ecda17587cd665aa",
+      "voice_3": "d599f1786c15551f7a2a9ee8ad230e6bf5935ba57dd058558d7ed2edf6bace11"
+    }
+  },
+  "leadintro_gate": {
+    "text_sha256": "8c28dba43d3681f09dd90a3d63452c9aab7daf1fd3b9d4f91ace6213321be419",
+    "na_fields": [
+      "leak_tension_reverts_to_research",
+      "leak_binary_camp_split",
+      "leak_evidence_memorable"
+    ],
+    "applicable_flagged": [],
+    "not_applicable_flagged": [
+      {
+        "section": "tension",
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "調査や数字、発見を報じる構文はなく、三人を明示的な二対一の陣営にも分けていません。一方、人物の経験は短い紹介にとどまり、養子縁組との違いを説明する事実が相対的に目立ちます。",
+        "quoted_evidence": "妻の姓を選ぶのは、結婚の届け出で夫婦がその姓を名乗ると決めることで、養子縁組は伴わない。"
+      }
+    ],
+    "any_flagged_raw": true,
+    "prompt_sha256": "eed9dd92e9f9a9caf799ebe8b6f94484c3542646304b2a23f3ca8cf54420ae1c",
+    "model": "gpt-6-luna",
+    "meta": {
+      "response_id": "resp_00aab405af1f4ff5006ae2ad60a94887d0a88a6e987c4e1172",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 1118,
+        "output_tokens": 2423
+      }
+    },
+    "status": "PASS"
+  },
+  "closing": {
+    "source": "general_prompt_02",
+    "general_method_used": true,
+    "slug": "surname_choice",
+    "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+    "model_id": "gpt-6.1-sol",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "prompt_version": "02",
+    "prompt_sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07",
+    "user_sha256": "8a9cd56912d32f765bef0be5dd0583753d466aacef5a4c1f55cfe725ee947cf3",
+    "selected_id": "A",
+    "gen_calls": 1,
+    "generation_sha256": "2db7be84691f32bf5ee17ec19c6a0112f35db8c624cf5b685ef591849f851df9",
+    "final_sha256": "2db7be84691f32bf5ee17ec19c6a0112f35db8c624cf5b685ef591849f851df9",
+    "rewritten": false,
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1
+    },
+    "gate_history_dir": "er121_output/family_y_production_01/surname_choice/run_01/text\\closing\\gate",
+    "theme_package_sha256": "d1bc9fe2ffa98e5cdd7299525cb5db50187f7394912455c8f3c9e0a7a99eee73",
+    "voice_r0_sha256": "0c55b01d01bd3feed91c505a33789e442db058dab1c0dc3e5fe4a5958fa3091c",
+    "entry": {
+      "module": "er121_family_y_text_core_01.py",
+      "status": "FAMILY_Y_PRODUCTION",
+      "module_sha256": "c96557c62c9ec72b38856f0dc4737884a34d3d91979b6f4167d96eb16c2214bc"
+    }
+  },
+  "verbatim": {
+    "checked": true,
+    "source_dir": "er121_output/family_y_production_01/surname_choice/source_raw",
+    "n_source_files": 3,
+    "n_hits": 0,
+    "hits": {}
+  },
+  "part_sha256": {
+    "lead": "c17b6d085253234cd0a0d2150541f68e6486ddc84c1a82cdb607f9a07b9213af",
+    "closing": "2db7be84691f32bf5ee17ec19c6a0112f35db8c624cf5b685ef591849f851df9",
+    "intro_voice_1": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+    "intro_voice_2": "8e3ba6194b4ec83be2a55b889fa0265640dcc0dd7679b650ecda17587cd665aa",
+    "intro_voice_3": "d599f1786c15551f7a2a9ee8ad230e6bf5935ba57dd058558d7ed2edf6bace11",
+    "voice_voice_1": "7259c2abca33711a5596aab25d3f0cd5dae27209570b73fb02d0452a12713e40",
+    "voice_voice_2": "c21df1012f322191054a063fb66c270ce6b72cb82ac1aea206a968fbb310137e",
+    "voice_voice_3": "814263bf36670118705cb52ffc8e57be697ba51386e63c7a572b2e99d5d22beb"
+  },
+  "article_sha256": "b0c7f0cc6e6718339f78fe48f94c6e8f222ea7ca3a9f2f5d95ac7f0a18e51037",
+  "prompt_files": {
+    "closing": {
+      "file": "closing_general_02.txt",
+      "sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07"
+    },
+    "voice": {
+      "file": "voice_generate_02.txt",
+      "sha256": "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e"
+    },
+    "lead": {
+      "file": "lead_generate_01.txt",
+      "sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21"
+    },
+    "intro": {
+      "file": "persona_intro_01.txt",
+      "sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4"
+    }
+  },
+  "module": {
+    "file": "er121_family_y_text_core_01.py",
+    "sha256": "c96557c62c9ec72b38856f0dc4737884a34d3d91979b6f4167d96eb16c2214bc"
+  }
+}

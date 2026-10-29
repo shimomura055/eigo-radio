@@ -357,3 +357,15 @@ def test_b10_d6_store_reuse_inherited_asr_state():
     assert "ASR_RECORD_MISSING" in run(clip(t), "KP_EN", ctx0).reasons
     ctxn = c.ctx_from_entry({"asr_judgement_inherited": {"state": "FAIL"}}, take=t)
     assert "ADOPTED_TAKE_ASR_NOT_PASS" in run(clip(t), "KP_EN", ctxn).reasons
+
+
+# ---- 委任_12(FZ12): 承認済み固有名詞ALARM方針との整合(ALARM=完成扱い)
+def test_fz12_alarm_state_is_pass_like():
+    import er103_proper_noun_alarm_policy_01 as er103
+    assert er103.STATE_ALARM in c._ASR_PASS_STATES
+    assert "ADOPTED_TAKE_ASR_NOT_PASS" not in run(clip(), ctx={**CTX_OK, "asr_state": er103.STATE_ALARM}).reasons
+    for st in ("NG", "FAIL", "PASS_WITH_PRONUNCIATION_ALARM_X", "UNCERTAIN"):
+        assert "ADOPTED_TAKE_ASR_NOT_PASS" in run(clip(), ctx={**CTX_OK, "asr_state": st}).reasons
+    assert run(clip(), ctx={**CTX_OK, "asr_state": "PASS"}).verdict == c.PASS
+    assert run(clip(), ctx={**CTX_OK, "asr_state": "PASS_WITH_WARNING"}).verdict == c.PASS
+    assert c._ASR_PASS_STATES == frozenset({"PASS", "PASS_WITH_WARNING", er103.STATE_ALARM})
