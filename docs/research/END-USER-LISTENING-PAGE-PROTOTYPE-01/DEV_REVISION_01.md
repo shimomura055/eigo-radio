@@ -45,3 +45,10 @@
 
 ## 7. commit
 - 実装commit(ローカル、未push): `2246d0180`。docs commitは別途。
+
+## 委任_02 統合push・公開検証(2026-10-29)
+
+- 統合: `git merge --no-ff origin/main`、conflictは user_test/dev_enduser_page_01/{app.js,data/ai_island.json,data/moon.json} の3件のみ。ユーザー指示(ChatGPT改修は全面破棄・Claude版を復元)に基づき全て ours(Claude版rev01-b)で解決。ChatGPTのみが追加したファイルは無し(削除0)。`git diff HEAD -- user_test/dev_enduser_page_01/` 空を確認。merge commit e6c32caec、push成功(487eb2cb7..e6c32caec)。
+- 公開反映: live index.html に build-id rev01-b を確認(11:55:30頃、cache無効取得)。取得・検証時刻=2026-10-29T11:59+0900。
+- 公開検証(PC/スマホ、tools/verify_rev_01.py、cache無効): TOTAL 176 / NG 0。10項目すべてPASS(公開列: 全体再生移動/KP英語のみ/意味一覧+解説リンク/日本語訳/ここから再生/In One Line連結/解説拡大/凡例削除ほか)、Regression(ハイライト精度・文クリック再生・シーク・再生停止・レベル切替・横overflow無し・console error 0・4xx/5xx 0)PASS。未確認=実機iOS/Android。
+- 証跡: shots_rev_live/{pc,mobile}_01..10、verify_result_rev_live_01.json。NG是正: 無し。
