@@ -22810,3 +22810,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ユーザー決定(原文=`docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER.md`): Family Z Standard/Advancedのセリフ音声にLR(Local Rewrite)を正式採用。フロー=①ctx②ctx→180秒→③従来Dialogue→LR(最大1回)→④ctx⑤ctx→180秒→⑥従来Dialogue→Human Review(最大TTS6回)。日本語音声・KP音声等のLR対象外区分には拡大しない。Fallback・LR適用一覧は8区分へ整理し「Zセリフ従来方式」の独立行を削除(従来Dialogue Styleそのもの・policy=legacy・ロールバックのコードは維持)。
 - 藪の中Adv part3_c6(武弘・Puck・91語)は既存3試行(#1 ctx NG/#2 ctx 減速後NG/180秒/#3 従来 反復検査NG/HR Lock)を再実行せず、LR段階から正規再開する(3試行は消費済み)。UDR #220=判断済み(LR段階から再開)。
 - 本委任_01は原文保存・SSOT初期反映・現状調査・設計・テスト計画のみ(コード実装禁止・API 0)。実装はOpus条件Aレビュー後。OPEN-602新規、OPEN-592/596へ関連付け。Status=APPROVED_FOR_PRODUCTION・未配線(PRODUCTION_WIREDではない)。
+
+### 2026-10-29 FY-FZ-FEMALE-VOICE-RANK-01 委任_01: Family Y/Z女性Voice候補順位の正式変更(APPROVED_FOR_PRODUCTION・未配線)+本記事Std V2=Leda(原文保存+SSOT初期反映)
+- ユーザー決定(原文=`docs/pm/delegation_log/2026-10-29_FY-FZ-FEMALE-VOICE-RANK-01_USER.md`): 女性Voice候補順位=1 Leda/2 Erinome/3 Sulafat/4 Kore/5 Zephyr(Family Y・Z共通、Std/Adv)。男性候補は不変(Y/Zの承認済み差異も維持)。新規制作に適用、既存の完成音声・承認済みVoice割当・特定Voice明示の配役仕様は順位変更を理由に上書きしない。全4組合せ(Y/Z x Std/Adv)でPRODUCTION_WIREDまで。本記事Std Voice2=Leda(記事固有採用、Adv V2/V1/V3は現行維持)。UDR #221/#222=判断済み。OPEN-606新規、OPEN-603/604関連。
