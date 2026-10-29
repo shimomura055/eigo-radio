@@ -22849,3 +22849,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ## FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_01: 選定4記事の本文・学習項目候補・HR依頼(2026-10-29)
 ユーザー原文(`docs/pm/delegation_log/2026-10-29_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER.md`)に基づき、Family Xの選定4記事(②散らかり/④AI説得広告/⑨Meta Waddle World/⑭JWST謎の輝線)を、既存の`er019_family_x_entertainment_production_runner_01.py`→`er019_family_x_audio_production_runner_01.py --stage scaffold`で実行。Research(web検索)→Ledger→B3→W-1 Writer→Advanced→Standard→Part 2文法・KP・ニュアンス候補まで完了し、V3フォームに8枠(4記事×Std/Adv)を登録(`?a=<slug>__a2|b1b`)。Status=HR待機(ユーザー選定待ち)。TTS以降は委任_02。ユーザーによる記事完成承認ではない。新仕様・品質基準変更・Production code編集なし。実費約¥242.6。④の原記事特定・⑭の別切り口候補の未確認・題と本文軸の乖離はOPEN-612。
+
+### 2026-10-29 NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01 ①②受入・③Trial受入・混入事故記録(委任_03、API 0・Production code編集0)
+- **Fable受入**: ①ニュアンス表示順序・②HR事前チェック=Y PRODUCTION_WIRED(実runtime・live 170 NG0)、X/Z=共通builder配線・stage実行確認済・実記事runtime証拠待ち(X=FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01、Z=次Z記事)。記録=`docs/research/NUANCE-EXPLANATION-PRODUCTION-WIRING-01/FABLE_ACCEPTANCE_NDO01.md`(OPEN-610/611)。③品質改善Trial=ACCEPTED(VALIDATED)、Production採否はUDR #224(提示済み・回答待ち)。記録=`docs/research/NUANCE-QUALITY-IMPROVEMENT-TRIAL-01/FABLE_ACCEPTANCE_01.md`(OPEN-609)。form1_selection_form_v3_test 4件の既存FAILはOPEN-613(別委任で修正)。
+- **混入事故**: 前Worker(NDO02)が22:00:43、別タスク(FAMILY-Y-SOURCE-DEEP-RESEARCH-01)の古い追記(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS[OPEN-613〜615行]/ACTIVE_TASK/USER_DECISION_REGISTER)を作業ツリーへ誤混入(scratchpadの古いssot.py取り違え)。委任_03でEditにより該当追加行のみ除去(HEAD側の正規記録は不変)。stale ssot*.pyは`stale_ssot_py_DO_NOT_RUN/`へ退避。
