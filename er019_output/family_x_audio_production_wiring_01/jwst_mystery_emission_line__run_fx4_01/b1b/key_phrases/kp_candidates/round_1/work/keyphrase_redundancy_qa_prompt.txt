@@ -1,0 +1,111 @@
+以下は、同じ記事から選ばれた10件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。10件から作れる全てのペア(45組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず45組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Not in the Picture, but Its Light Reaches Us! JWST’s “Cosmic Case File”
+
+“We can hear a voice, but we can’t see a face.” A mystery like this, enough to frustrate any detective, has appeared in space. The clue is a “line of light” picked up by JWST’s observing instrument, NIRSpec. But this time, the researchers have turned the usual steps of the investigation upside down.
+
+Normally, they first choose an object to study from an image, then analyze its light in detail. It is like “making a guest list and then talking to each person one by one.” This time, they did the opposite. Instead of relying on a list, they tried to find the source by following the voice that reached them.
+
+In the area they observed, they closed small windows that overlapped with some celestial objects already known, while leaving almost all the others open. They searched for lines of light that appear at a particular wavelength. This was not a search across the whole universe, but within that area, they dropped the rule that only objects in images could be considered.
+
+Then they found a line. But when they checked its position in a deep image, they could not find a matching point-like object. The voice had reached them. But there was no face in the picture. So whose voice was it?
+
+What’s more, the line was detected again and again in data from observations made in different directions. Even so, it was too soon to announce, “A celestial object with no visible form has been found!” Not appearing in an image is not the same as not existing. What they could not confirm was an image showing an object at the line’s position.
+
+Then the investigation took an unexpected turn. The fact that it “doesn’t show up” became evidence in the case. The authors used the line’s absence from the images to estimate that its “equivalent width,” a measure of the line’s features, was at least 7,620 Å. Not “confirmed to be 7,620 Å,” but “at least 7,620 Å.” The blank space had become a clue that could help narrow down the source.
+
+So what was it? Even when they considered well-known types of light lines as possible answers, they could not fully explain the wavelength and equivalent width, or why no other lines had been found. The key line that would solve the mystery has yet to be spoken. The authors conclude that more observations are needed to study the light in greater detail.
+
+The case is unsolved. But there is something to be gained. If we do not decide too firmly from the start who to investigate, we can pick up clues from outside the list. A list is useful. But it may not include everything in the universe. How much closer will the next observation get us to the source of this voice?
+
+## In one line
+JWST detected the same line of light repeatedly, but deep images showed no matching object. That absence helped researchers set a lower limit on the line’s equivalent width, but more observations are needed to identify its source.
+
+【Key Phrase 10件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "equivalent width",
+    "japanese_gloss": "スペクトル線の強さを示す等価幅",
+    "source_sentence": "The authors used the line's absence from the images to estimate that its \"equivalent width,\" a measure of the line's features, was at least 7,620 Å"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "narrow down the source",
+    "japanese_gloss": "発生源を絞り込む",
+    "source_sentence": "The blank space had become a clue that could help narrow down the source"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "set a lower limit",
+    "japanese_gloss": "下限を決める",
+    "source_sentence": "That absence helped researchers set a lower limit on the line's equivalent width, but more observations are needed to identify its source"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "take an unexpected turn",
+    "japanese_gloss": "思わぬ展開になる",
+    "source_sentence": "Then the investigation took an unexpected turn"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "point-like object",
+    "japanese_gloss": "点のように見える物体",
+    "source_sentence": "But when they checked its position in a deep image, they could not find a matching point-like object"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "wavelength",
+    "japanese_gloss": "波長",
+    "source_sentence": "They searched for lines of light that appear at a particular wavelength"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "celestial",
+    "japanese_gloss": "天体の",
+    "source_sentence": "In the area they observed, they closed small windows that overlapped with some celestial objects already known, while leaving almost all the others open"
+  },
+  {
+    "rank": 8,
+    "key_phrase": "absence",
+    "japanese_gloss": "見当たらないこと",
+    "source_sentence": "The authors used the line's absence from the images to estimate that its \"equivalent width,\" a measure of the line's features, was at least 7,620 Å"
+  },
+  {
+    "rank": 9,
+    "key_phrase": "investigation",
+    "japanese_gloss": "調査",
+    "source_sentence": "But this time, the researchers have turned the usual steps of the investigation upside down"
+  },
+  {
+    "rank": 10,
+    "key_phrase": "frustrate",
+    "japanese_gloss": "いら立たせる",
+    "source_sentence": "A mystery like this, enough to frustrate any detective, has appeared in space"
+  }
+]

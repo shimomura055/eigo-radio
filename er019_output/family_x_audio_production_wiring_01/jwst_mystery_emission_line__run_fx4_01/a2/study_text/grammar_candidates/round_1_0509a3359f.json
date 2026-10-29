@@ -1,0 +1,222 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "Not in the Picture, but Its Light Reaches Us! JWST’s “Cosmic Case File”",
+  "text_sha256": "91e34de1c56cc6510f816c3d88f419f55d34e00fe4944a06bd3a1c15cb5553a9",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "80ae690583e8d2433e3aa8cf19edd9997491d52596dd302a66d578661ef85188",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P1",
+      "cls": "APPOS",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "TV=LOW"
+      ],
+      "tv": "LOW",
+      "tv_ja": "",
+      "front_kind": "",
+      "sentence": "NIRSpec, an instrument on JWST, picked up a “line of light.”",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "動名詞句に目的語や修飾語が続くときは、その句全体を主語として捉えてから定動詞を探す。",
+      "front_kind": "",
+      "sentence": "Not seeing something in an image does not mean it does not exist.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "that節を含む名詞句が主語になる文では、節内の主語・動詞と主節の動詞を区別する。",
+      "front_kind": "",
+      "sentence": "The fact that it “doesn’t show up” became evidence.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "APPOS",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "TV=LOW"
+      ],
+      "tv": "LOW",
+      "tv_ja": "",
+      "front_kind": "",
+      "sentence": "The authors used the line’s absence from images to estimate its “equivalent width,” a measure of the line’s features.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P8",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級の基準が明示されない場合、文脈から現在の状態など比較対象を補って読む。",
+      "front_kind": "",
+      "sentence": "How much closer will the next observation bring us to the source of this voice?",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P2",
+    "P3",
+    "P4",
+    "P7"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "43c4bfc9f1a004a50d001634a9be55a49078a3e3124817539f63e4ed68ff15e3",
+    "response_ids": [
+      "resp_0458a9c2cccc0683006ae33f50747c87d08aeefd4f3a3af39e"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3542,
+          "output_tokens": 3932,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2624
+        },
+        "response_id": "resp_0458a9c2cccc0683006ae33f50747c87d08aeefd4f3a3af39e",
+        "elapsed_sec": 34.4,
+        "cost_jpy": 0.3712
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.3712,
+    "generated_at": "2026-10-29T21:43:30+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gd5b0fc2d0f",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P8",
+      "sentence": "How much closer will the next observation bring us to the source of this voice?",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "How much closer",
+      "misread_ja": "closerの比較の基準が明示されていないため、何と比べてどれほど近づくのかを補わずに読む可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級の基準が明示されない場合、文脈から現在の状態など比較対象を補って読む。",
+      "construct_ja": "比較基準が省略された比較級",
+      "points_ja": [
+        "closerは比較級だが、比較の基準は文中に明示されていない。"
+      ],
+      "context_ja": "次の観測で、この声の源にどれほど近づくのかを問いかけている。",
+      "prev": "But it may not include everything in the universe.",
+      "next": "",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        216,
+        295
+      ]
+    },
+    {
+      "candidate_id": "g3595e0b388",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "Not seeing something in an image does not mean it does not exist.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "Not seeing something in an image",
+      "misread_ja": "somethingを主語と取り違え、動名詞句全体がdoes not meanの主語であることを見落とす可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "動名詞句に目的語や修飾語が続くときは、その句全体を主語として捉えてから定動詞を探す。",
+      "construct_ja": "長い動名詞句主語",
+      "points_ja": [
+        "Not seeing something in an image全体が主語。",
+        "主節の動詞はdoes not mean。"
+      ],
+      "context_ja": "画像で何かが見えないことは、それが存在しないことを意味しないと述べている。",
+      "prev": "Still, it was too soon to say, “We have found a space object with no visible form!”",
+      "next": "They could not confirm that an image showed an object where the line was.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        182,
+        247
+      ]
+    },
+    {
+      "candidate_id": "g4491438cc1",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P6",
+      "sentence": "The fact that it “doesn’t show up” became evidence.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "The fact that it “doesn’t show up”",
+      "misread_ja": "that節内のitを主節の主語と取り違え、The fact that it “doesn’t show up”全体が主節の主語であることを見落とす可能性がある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "that節を含む名詞句が主語になる文では、節内の主語・動詞と主節の動詞を区別する。",
+      "construct_ja": "that節を含む長い名詞句主語",
+      "points_ja": [
+        "The fact that it “doesn’t show up”全体が主語。",
+        "主節の動詞はbecame。"
+      ],
+      "context_ja": "画像に現れないという事実が、証拠になったと述べている。",
+      "prev": "Then the investigation took an unexpected turn.",
+      "next": "The authors used the line’s absence from images to estimate its “equivalent width,” a measure of the line’s features.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        48,
+        99
+      ]
+    }
+  ],
+  "top_ids": [
+    "gd5b0fc2d0f",
+    "g3595e0b388"
+  ],
+  "n_eligible": 3,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "0509a3359f0dac6dbb94fa7d8911e33b55826511ed71c01e3637271b66eb7be8",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

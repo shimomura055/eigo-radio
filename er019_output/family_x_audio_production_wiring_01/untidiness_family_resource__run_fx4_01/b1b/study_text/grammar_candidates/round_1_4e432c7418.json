@@ -1,0 +1,125 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "The Trial of “Leaving Things Out” Is Now in Session",
+  "text_sha256": "38fcf8f5943e2c922ad74a9be16f6a1becb5f6d66d12334bd0adb0605fbd2b14",
+  "n_paragraphs": 9,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "aaf47348e09a1295bfa167c1dcb1d8e2a7874634f9758921697c3849b66be9f2",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P6",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い主語の中にある関係節と主節の述語を切り分けて読む。",
+      "front_kind": "",
+      "sentence": "A scorecard that says “the fewer things in sight, the better” could end up taking points away from the ways each home has found to make life work.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "POSTMOD",
+      "tier": null,
+      "eligible": false,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "関係節のあとに続くto不定詞が、どの名詞を後ろから説明しているかを確かめる。",
+      "front_kind": "",
+      "sentence": "A scorecard that says “the fewer things in sight, the better” could end up taking points away from the ways each home has found to make life work.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P7",
+    "P8",
+    "P9"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "44c52c5a0548b86e34f8914035283968eff97fb1ec74bf2d7e2b2c2bf0c281b0",
+    "response_ids": [
+      "resp_0fcc8c6c7cb86b70006ae33f03052487d0ab40b6d5ceb3fd8f"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3556,
+          "output_tokens": 3264,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2588
+        },
+        "response_id": "resp_0fcc8c6c7cb86b70006ae33f03052487d0ab40b6d5ceb3fd8f",
+        "elapsed_sec": 28.8,
+        "cost_jpy": 0.318
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.318,
+    "generated_at": "2026-10-29T21:42:06+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g520745d7a5",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P6",
+      "sentence": "A scorecard that says “the fewer things in sight, the better” could end up taking points away from the ways each home has found to make life work.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "that says",
+      "misread_ja": "that saysを主節の述語と取り、主節の述語could end up takingを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い主語の中にある関係節と主節の述語を切り分けて読む。",
+      "construct_ja": "長い主語",
+      "points_ja": [
+        "主語の中心語はscorecard。",
+        "that says以下が主語に含まれ、主節の述語はcould end up taking。"
+      ],
+      "context_ja": "この文では、見える物が少ないほどよいとするscorecardが、各家庭の生活を成り立たせる工夫から点を差し引く可能性が述べられている。",
+      "prev": "The study offers a different way to look at clutter: it isn’t always a personal failure, and it can also support daily life.",
+      "next": "Do you have any “working things left out” at home?",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        125,
+        271
+      ]
+    }
+  ],
+  "top_ids": [
+    "g520745d7a5"
+  ],
+  "n_eligible": 1,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "4e432c74188031d78b068d0568ef04615eb94dbbd886bb57eafeb521e02b8f8b",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

@@ -1,0 +1,154 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "What Is the AI’s “Job” When It Makes a Recommendation?",
+  "text_sha256": "0ef561d7afa7304c20528cb4acd9f862a18ad750e7cb1c0b7fb38e825e44db18",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "b74b01d95df3026bd54c39900d7ddda57ce2725684561c8d3259b64e01fca60d",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P5",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級の後にwhen節が続く場合、何の頻度をどの条件下で比べているかを補って読む。",
+      "front_kind": "",
+      "sentence": "This was more often than when the book was only near the top of the search results.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級の後にwhen節が続く場合、何の頻度をどの条件下で比べているかを補って読む。",
+      "front_kind": "",
+      "sentence": "It was also more often than when chat-based AI gave a neutral description.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P6",
+    "P7",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "83145c6338ac8bb23e6f11ec97063b36e21696feaac4483f6c06847d3202dc0a",
+    "response_ids": [
+      "resp_04c173b836159938006ae33e1b897487d0bb2b310238129263"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3541,
+          "output_tokens": 2875,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2214
+        },
+        "response_id": "resp_04c173b836159938006ae33e1b897487d0bb2b310238129263",
+        "elapsed_sec": 25.43,
+        "cost_jpy": 0.2867
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.2867,
+    "generated_at": "2026-10-29T21:38:12+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "geaa1c64605",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P5",
+      "sentence": "This was more often than when the book was only near the top of the search results.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "more often than when",
+      "misread_ja": "than when以下を単なる時の比較と捉え、前半の選択頻度と別条件での選択頻度を比べていることを取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級の後にwhen節が続く場合、何の頻度をどの条件下で比べているかを補って読む。",
+      "construct_ja": "比較級とwhen節による比較基準",
+      "points_ja": [
+        "more oftenが人々の選択頻度を表すことを確認する",
+        "than when以下を、検索結果の上位付近に置かれた別条件での比較基準として読む"
+      ],
+      "context_ja": "このテストでの選択頻度を、検索結果の上位付近に本が置かれた場合と比べている。",
+      "prev": "In this test, the study estimated that people chose the promoted book 61.2% of the time.",
+      "next": "It was also more often than when chat-based AI gave a neutral description.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        89,
+        172
+      ]
+    },
+    {
+      "candidate_id": "gb73f6ff163",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P5",
+      "sentence": "It was also more often than when chat-based AI gave a neutral description.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "more often than when",
+      "misread_ja": "than when以下を単なる時の比較と捉え、前半の選択頻度と別条件での選択頻度を比べていることを取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級の後にwhen節が続く場合、何の頻度をどの条件下で比べているかを補って読む。",
+      "construct_ja": "比較級とwhen節による比較基準",
+      "points_ja": [
+        "more oftenが人々の選択頻度を表すことを確認する",
+        "than when以下を、チャット型AIが中立的な説明をした場合の比較基準として読む"
+      ],
+      "context_ja": "このテストでの選択頻度を、チャット型AIが中立的な説明をした場合と比べている。",
+      "prev": "This was more often than when the book was only near the top of the search results.",
+      "next": "When we think about ads competing, it is easy to picture a fight over where they appear.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        173,
+        247
+      ]
+    }
+  ],
+  "top_ids": [
+    "geaa1c64605",
+    "gb73f6ff163"
+  ],
+  "n_eligible": 2,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "14ff473058f5b54cd4562abbd4371a7ec856701ec8fdd91d124538b5c8c98e4f",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

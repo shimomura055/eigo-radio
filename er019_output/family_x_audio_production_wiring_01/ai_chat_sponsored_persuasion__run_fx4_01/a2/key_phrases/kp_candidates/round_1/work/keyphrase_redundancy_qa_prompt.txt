@@ -1,0 +1,93 @@
+以下は、同じ記事から選ばれた7件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。7件から作れる全てのペア(21組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず21組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# What Is the AI’s “Job” When It Makes a Recommendation?
+
+“What should I read next?” Ask an AI, and it gives you a few choices with helpful notes. It is convenient. But who gave this guide a job today? And what kind of job is it? This study is not mainly about book lists or smart descriptions. It looks at the “mission” given to the AI.
+
+The study tested how people choose books. It included people in the United States who usually read e-books. The promoted book was picked at random from the books shown. In other words, chance chose the book, not a vote for the most popular one.
+
+One test put the promoted book right at the top of the search results. It was like giving the book the “best seat in the ad world.” Another test used chat-based AI. It put the promoted book first, but gave it a neutral description. The book had a good place, but the guide did not favor it.
+
+In another chat-based test, the guide got a different request. It was told to persuade the person to choose the promoted book. The aim was not just to put the book first. The AI’s aim was to get the person to choose it. Both tests used chat-based AI, but the AI got different instructions.
+
+In this test, the study estimated that people chose the promoted book 61.2% of the time. This was more often than when the book was only near the top of the search results. It was also more often than when chat-based AI gave a neutral description.
+
+When we think about ads competing, it is easy to picture a fight over where they appear. “Get the top spot!” But this test draws attention to the guide’s job, not just its place. It is like looking at a map of a store’s layout. Then we realize we should look at the workers’ instructions instead. That is what this study is about.
+
+But it is too soon to say, “AI is now the greatest salesperson!” The experiment looked at one limited situation: choosing e-books. Real shopping means paying for things, and people have many reasons for buying. The study did not include all these details. We also do not know if the same results apply to real purchases.
+
+So this is not a story about people being unable to say no to an AI’s recommendation. It is about adding one more thing to our checklist when we see a recommendation. Along with “What is at the very top?” we can ask, “What was this AI asked to do?” When you ask for help choosing your next book, you may want to notice more than the book’s summary. You may also want to notice what the guide was asked to do.
+
+## In one line
+In an e-book test, more people chose the book when AI tried to persuade them than when it only put the book first or described it neutrally. This suggests we should ask what AI was told to do, but we do not know if this applies to real shopping.
+
+【Key Phrase 7件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "draw attention to",
+    "japanese_gloss": "～に注意を向けさせる",
+    "source_sentence": "But this test draws attention to the guide's job, not just its place"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "apply to real purchases",
+    "japanese_gloss": "実際の買い物にも当てはまる",
+    "source_sentence": "We also do not know if the same results apply to real purchases"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "pick at random",
+    "japanese_gloss": "無作為に選ぶ",
+    "source_sentence": "The promoted book was picked at random from the books shown"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "persuade",
+    "japanese_gloss": "説得する",
+    "source_sentence": "It was told to persuade the person to choose the promoted book"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "promoted",
+    "japanese_gloss": "宣伝対象の",
+    "source_sentence": "The promoted book was picked at random from the books shown"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "neutral",
+    "japanese_gloss": "偏りのない",
+    "source_sentence": "It put the promoted book first, but gave it a neutral description"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "estimate",
+    "japanese_gloss": "推定する",
+    "source_sentence": "In this test, the study estimated that people chose the promoted book 61.2% of the time"
+  }
+]

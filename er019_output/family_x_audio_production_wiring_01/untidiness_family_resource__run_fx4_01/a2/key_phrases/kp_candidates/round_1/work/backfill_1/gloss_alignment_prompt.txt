@@ -1,0 +1,125 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。各項目について、日本語グロス(japanese_gloss)を新しく書いてください(全項目、日本語グロスは未生成です)。
+
+日本語グロスは、このkey_phraseが【記事本文】のこの箇所で実際に表している意味を、日本語で短く自然に表したものにしてください。本文固有の固有名詞・数値・この記事だけの出来事はグロスに入れないでください。
+
+【新規生成の規則】
+- source_sentenceと記事本文の前後の文脈は、key_phraseの語義と用法(字義どおりか、比喩・慣用か)を決めるために使ってください(文中の固有名詞・数値・この記事だけの出来事をグロスに入れないでください)。
+
+【範囲の規則(meaning_in_text_enとjapanese_glossの両方に適用)】
+- 本文で使われている語義・用法(字義どおりか、比喩・慣用か)を選んでください。ただし、japanese_glossが表すのはkey_phraseの範囲だけです。key_phraseに含まれていない、本文側の否定・主語・時制・具体的な対象・場面は、japanese_glossに持ち込まないでください(例: 本文が「the plan did not work out」でkey_phraseが「work out」なら、japanese_glossは「うまくいかなかった」ではなく「うまくいく」)。
+
+【意味の決め方(各項目、japanese_glossを書く前に、この順で必ず出力してください)】
+- meaning_in_text_en: 【記事本文】のこの箇所(source_sentenceとその前後の文)でkey_phrase【全体】が表している意味を、平易な英語1文で書く。key_phraseの語をそのまま繰り返さず言い換える。本文の話題の一側面(例: 差の大きさ、時間、量など)だけに絞らず、key_phrase全体が何を言っているかを書く。字義どおりの用法なら字義の意味。比喩・慣用・筆者が作った比喩なら、その比喩が指す一般的な意味(what it stands for)を書く。記事固有の固有名詞・数値は入れない。
+- naive_ja: key_phraseの英単語を、それぞれ日本語の対応語に置き換えただけの訳を、意味の解釈を加えずに書く。
+- naive_ja_conveys: 日本語だけを読む学習者が、naive_jaからmeaning_in_text_enの意味を受け取れるか。yes(同じ意味・同じ比喩が日本語でも通じる、または字義どおりの用法)/ partly(一部が落ちる)/ no(字義の動作・物の像しか伝わらず、本文での意味は伝わらない)。
+- japanese_gloss: yesなら、naive_jaをそのまま写さず、自然で平易な訳(英和辞典の定訳や日本語の慣用表現があればそれ)を選ぶ。partly/noのときは、まず、このkey_phraseのこの語義に日本語の定訳(英和辞典の見出し訳や日本語として定着した言い方。例: cut cornersなら「手を抜く」、break evenなら「収支がとんとんになる」)があればそれを優先し、無い場合だけ、naive_jaの字義の像を使わず、meaning_in_text_enの意味【全体】を日本語の慣用表現か平易な短い言い換えで表す(意味の一部だけを取り出した語にしない)。naive_jaの語を別の語に置き換えるときは、動作主(誰が)・動詞の意味を変えない(例: 「誰も出なかった電話」を「誰もかけたくなかった電話」のように、動詞の意味を別の意味にずらさない)。key_phrase全体(目的語・修飾語を含む)の意味を落とさず、key_phraseと同じ品詞・同じ程度の長さの句にする(説明文・定義文にしない)。
+
+【出力欄の規則】
+- current_gloss_consistent: 全項目で必ずfalse(日本語グロスは未生成のため)。
+- qa_reflects_all_key_phrase_words: japanese_glossがkey_phrase全体の意味を過不足なく反映できている場合のみPASS。
+- added_word_mappings: added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出して書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+- reasoning: 判断の根拠を短く書いてください。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "need another look",
+    "display_phrase_before_canonicalization": "needs another look",
+    "source_sentence": "Its help in daily life needs another look",
+    "added_content_words": [
+      "need"
+    ]
+  },
+  {
+    "rank": 2,
+    "key_phrase": "rush to say",
+    "display_phrase_before_canonicalization": "rush to say",
+    "source_sentence": "But don't rush to say, \"Science proves that if you leave it out, you won't forget",
+    "added_content_words": []
+  },
+  {
+    "rank": 3,
+    "key_phrase": "take up space",
+    "display_phrase_before_canonicalization": "take up space",
+    "source_sentence": "So it does more than take up space",
+    "added_content_words": []
+  },
+  {
+    "rank": 4,
+    "key_phrase": "do its job",
+    "display_phrase_before_canonicalization": "doing its job",
+    "source_sentence": "The other sees a worker still doing its job",
+    "added_content_words": []
+  },
+  {
+    "rank": 5,
+    "key_phrase": "charge",
+    "display_phrase_before_canonicalization": "charge",
+    "source_sentence": "The charge is that it makes the kitchen look bad",
+    "added_content_words": []
+  },
+  {
+    "rank": 6,
+    "key_phrase": "defense",
+    "display_phrase_before_canonicalization": "defense",
+    "source_sentence": "But the defense says, \"If I put it away, I might forget to take it",
+    "added_content_words": []
+  },
+  {
+    "rank": 7,
+    "key_phrase": "innocent",
+    "display_phrase_before_canonicalization": "innocent",
+    "source_sentence": "So the verdict is not, \"Clutter is completely innocent",
+    "added_content_words": []
+  },
+  {
+    "rank": 8,
+    "key_phrase": "question",
+    "display_phrase_before_canonicalization": "questioning",
+    "source_sentence": "it can feel like you are questioning someone in court",
+    "added_content_words": []
+  },
+  {
+    "rank": 9,
+    "key_phrase": "Storage",
+    "display_phrase_before_canonicalization": "Storage",
+    "source_sentence": "Storage: a success",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+# The Trial of “Leaving Things Out” Is Now in Session
+
+A supplement sits alone in the kitchen. It is here again today. It was here yesterday, too. “Left out again!” A lawyer speaks for the “put it away” side. They quickly ask for it to be removed. But the court says, “Not so fast.” This supplement may need a lawyer to speak for it.
+
+The charge is that it makes the kitchen look bad. But the defense says, “If I put it away, I might forget to take it.” So it does more than take up space. When someone can see it, it helps them remember. In a way, it is a “kitchen reminder.”
+
+This comes from a study of homes in New Zealand. Researchers used photos while talking with people in 22 homes. Several people lived together in each home. One person kept supplements where they could see them, so they would not forget to take them.
+
+For the person who wants it put away, it is “something in the way.” For the person who left it there, it is “a sign that helps me remember.” They see the same thing, but in different ways. One sees something to remove. The other sees a worker still doing its job. No wonder the kitchen meeting gets heated.
+
+If you say, “Straight into the cupboard!” and make the person put it away, the kitchen will look neat. But you might also remove the reminder the person relied on. Storage: a success. Its help in daily life needs another look. It is not that simple.
+
+The study gives us another way to look at clutter. It is not always a sign that someone has failed. It can also help people in daily life. A scorecard might say, “The fewer things you can see, the better.” But that could take points away from the ways each home has found to make life work.
+
+Do you have any “things left out that are still doing a job” at home? If you ask, “Why don’t you put that away?” it can feel like you are questioning someone in court. Ask instead, “What does having it there help with?” That can turn the talk into a planning meeting about how to make daily life work.
+
+But don’t rush to say, “Science proves that if you leave it out, you won’t forget!” The person in the study gave that reason. The study did not test whether keeping it in sight works. Many people in the study had a high level of education, too. So we cannot say these results fit every home.
+
+So the verdict is not, “Clutter is completely innocent!” First, ask, “What job is that thing doing there?” Don’t call it wrong just because it is out. Before you bring out the storage box, hear it out. That supplement may be taking its job quite seriously.
+
+## In one line
+A study of homes in New Zealand suggests clutter can sometimes help daily life, as one person kept supplements in sight to remember them. Before putting something away, ask what it helps with. The study did not test whether keeping supplements in sight stops people from missing doses.

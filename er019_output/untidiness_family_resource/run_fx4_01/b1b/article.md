@@ -1,0 +1,22 @@
+# The Trial of “Leaving Things Out” Is Now in Session
+
+A supplement sits alone in the kitchen. It’s here again today. It was here yesterday, too. “Left out again!” The prosecutor, speaking for the side that wants things put away, immediately demands its removal. But the court says, “Not so fast.” This supplement may deserve a defense lawyer.
+
+The charge is “spoiling the look of the kitchen.” But the defense says, “If I put it away, I might forget to take it.” In other words, it isn’t just taking up space. By being in sight, it helps someone remember—in a way, it’s a “kitchen reminder.”
+
+This is an example from a study of homes in New Zealand. Researchers used photos as they talked with people from 22 households where several people lived together. One person kept supplements in a place where they could be seen, to avoid forgetting to take them.
+
+For the person who wants it put away, it’s “something in the way.” For the person who left it there, it’s “a marker that helps me remember.” They’re looking at the same thing, but one sees an item to be removed, while the other sees a staff member still on the job. No wonder the kitchen meeting gets heated.
+
+If you simply order, “Straight into the cupboard!” and force it away, the kitchen will look neat. But you might also remove the reminder the person relied on. Storage: success. Its contribution to daily life: needs another review. It’s not so simple.
+
+The study offers a different way to look at clutter: it isn’t always a personal failure, and it can also support daily life. A scorecard that says “the fewer things in sight, the better” could end up taking points away from the ways each home has found to make life work.
+
+Do you have any “working things left out” at home? If you ask, “Why don’t you put that away?” the conversation can turn into an interrogation. But asking, “What does having it there help with?” could turn it into a planning meeting about how to make daily life work.
+
+But don’t rush to announce, “Science proves that if you leave it out, you won’t forget!” The supplement example is the participant’s own explanation; the study did not test whether keeping it in sight works. Many of the participants had a high level of education, too, so the findings cannot simply be applied to every household.
+
+So the verdict is not, “Clutter is completely innocent!” First, ask, “What job is that thing doing there?” Don’t dismiss it without question just because it’s out. Before bringing out the storage box, hear it out. That supplement may be taking its job quite seriously.
+
+## In one line
+A study of New Zealand households suggests that clutter can sometimes support daily life, as when one person kept supplements in sight to remember them. Before putting something away, ask what it helps with. The study did not test whether keeping supplements visible actually prevents missed doses.

@@ -1,0 +1,20 @@
+# Not in the Picture, but Its Light Reaches Us! JWST’s “Cosmic Case File”
+
+“We hear a voice, but cannot see a face.” This kind of mystery could frustrate any detective. Now it has appeared in space. NIRSpec, an instrument on JWST, picked up a “line of light.” But this time, researchers turned the usual steps around.
+
+Usually, researchers choose an object in an image to study. Then they study its light closely. It is like making a guest list, then talking to each person alone. This time, they did the opposite. They did not use a list. They tried to find the source by following the “voice” that reached them.
+
+In the area they studied, they closed small windows that overlapped with some known space objects. They left almost all the other windows open. They looked for lines of light at a certain wavelength. They did not search the whole universe. But in this area, they no longer limited the search to objects seen in images.
+
+Then they found a line of light. But when they checked a deep image, they found no object like a point at that spot. The voice had reached them. But there was no face in the picture. So whose voice was it?
+
+What’s more, the line appeared again and again in data from observations in different directions. Still, it was too soon to say, “We have found a space object with no visible form!” Not seeing something in an image does not mean it does not exist. They could not confirm that an image showed an object where the line was.
+
+Then the investigation took an unexpected turn. The fact that it “doesn’t show up” became evidence. The authors used the line’s absence from images to estimate its “equivalent width,” a measure of the line’s features. They found it was at least 7,620 Å. This did not mean it was exactly 7,620 Å. It meant it was at least that much. The empty space had become a clue that could help narrow down the source.
+
+So what was it? The researchers considered well-known types of light lines as possible answers. But none fully explained the wavelength and equivalent width. They also could not explain why no other lines had been found. The key line that would solve the mystery has not been heard yet. The authors say more observations are needed to study the light more closely.
+
+The case is still unsolved. But there is something to learn. If we do not decide too early who to investigate, we may find clues outside the list. A list is useful. But it may not include everything in the universe. How much closer will the next observation bring us to the source of this voice?
+
+## In one line
+JWST found the line many times, but deep images showed no object there. That absence helped set a lower limit for its equivalent width, but more observations are needed to find its source.

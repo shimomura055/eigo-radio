@@ -1,0 +1,187 @@
+{
+ "annotated_md_sha256": "022805e0750c511f9f0201cb29a4d757fbfb0bc4346881425d02a851c4ec0898",
+ "core_concept_order": [
+  "C3",
+  "C4",
+  "C5",
+  "C6",
+  "C7",
+  "C11"
+ ],
+ "entries": [
+  {
+   "approved_condition": "観測結果の解釈に精度が関わる数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F06",
+    "F09"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F06",
+    "F09"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "輝線の観測波長そのものを示す値であり、精度を落とすと測定結果の忠実性を損ないます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "16004"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度自体が意味を持つ測定値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F06"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F06"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "波長の不確かさを示す値であり、丸めると測定精度の情報を変えてしまいます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な小数精度が意味や解釈に影響しない場合は、聞き取りやすい概数を用いてよい。",
+   "basis_fact_ids": [
+    "F06"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [
+    "約1.6004:V8b_already_approximate_not_rerounded"
+   ],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F06"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "同じ観測波長のμm表記で、概数にしても波長の大きさを理解するうえで意味は変わりません。16004 Åの値とは別個の表現として保ちます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約1.6004"
+    }
+   ]
+  },
+  {
+   "approved_condition": "観測結果の解釈に関わる数は、精度を変えず維持する。",
+   "basis_fact_ids": [
+    "F06"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F06"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "検出が確認されたスタック数であり、再検出の根拠を示す具体的な回数です。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "4"
+    }
+   ]
+  },
+  {
+   "approved_condition": "観測結果の解釈に関わる数は、精度を変えず維持する。",
+   "basis_fact_ids": [
+    "F06"
+   ],
+   "concept": "C7",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F06"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "検出された観測方向の数であり、再検出の根拠に関わる具体的な回数です。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な精度が解釈に影響しない場合は概数化してよい。",
+   "basis_fact_ids": [
+    "F08"
+   ],
+   "concept": "C11",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F08"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "等価幅の下限値であり、数十Å程度の丸めでは下限の大きさの理解を損ないません。",
+   "surfaces": [
+    {
+     "approx": "約7,600",
+     "surface": "7620"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_044484c6be4e88e3006ae33dab3a3887d08ad20ec4d66c57e9",
+  "sec": 8.2,
+  "usage": {
+   "input_tokens": 4307,
+   "output_tokens": 837,
+   "reasoning_tokens": 195
+  },
+  "user_prompt_sha256": "1e0e7779dfe922b7b0a76cbee2e74ce7b3a4e6aa7ae3e8b2bde08ed3dd7a1a9e"
+ },
+ "n_approximate_ok": 1,
+ "overlay_sha256": "9ae81a17c30355adf2e26f0ed92413dc4c8591d7d64d4f5df14d15384ff99df4",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "795571b9614682f4b535dffa88f0219ca93294cceecbda095d78ab239704d45d",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

@@ -1,0 +1,99 @@
+以下は、同じ記事から選ばれた8件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。8件から作れる全てのペア(28組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず28組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Today's Diary Is Written by a Pet
+
+I opened my diary and picked up a pen. But today’s me has not sent in a first draft. “Did anything happen today that is worth writing about?” The editors’ meeting has already reached a dead end before it starts. What if you could give the writing job to your pet?
+
+Meta’s Waddle World is an app for AI pets in the Philippines. Its official app-store page says you can tell it what happened that day by speaking or typing. It then makes a diary from the pet’s point of view, with doodles that look hand-drawn. You give it the story, and the pet does the writing. It is an interesting way to divide the jobs.
+
+Our job is to tell it what happened today. Then the pet, which was listening just moments before, becomes the storyteller. Some days feel too plain for us to write about. But they can change when another storyteller tells them. Suddenly, we want to read on: “So, how did you write it?”
+
+If I said, for example, “I was tired today,” would it become a sad little story? Or would it focus on something I had missed? We do not know what it will actually make. But it is fun to wait and see what kind of diary your day becomes. It is like opening a package.
+
+The hardest part of keeping a diary comes before you start writing. “Is this worth keeping?” “Should I write it up properly?” Even though no one asked it to, the editor in my head starts judging my day. But when you talk to your pet, you can simply start: “Well, about today...” You can begin with a chat, not a finished piece of writing.
+
+The app also adds doodles that look hand-drawn. You might see them as extras beside the writing. But imagine your pet showing you “today’s diary,” and you start wondering about the pictures too. It feels less like checking a record. It feels more like opening a package when you do not know what is inside.
+
+Of course, the official description alone cannot tell us if the writing or pictures are good. There is no promise that every result will be just what you hoped for. The interesting part is not a promise that every result will be good. It is the idea of changing who tells the diary.
+
+You may feel a day is not worth writing about yourself. But you may want to read about it when your pet tells it. The events stay the same, but the reason to open the page changes. You are the main character, and your pet does the writing. For now, the human only has to bring in the story of the day.
+
+## In one line
+Meta’s Waddle World is an app offered in the Philippines. It turns a person’s account of the day into an AI pet’s diary, with hand-drawn-style doodles. A day too ordinary to write about yourself may become worth reading when your pet tells it.
+
+【Key Phrase 8件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "reach a dead end",
+    "japanese_gloss": "行き詰まる",
+    "source_sentence": "The editors' meeting has already reached a dead end before it starts"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "write it up",
+    "japanese_gloss": "文章にまとめる",
+    "source_sentence": "Should I write it up properly"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "point of view",
+    "japanese_gloss": "視点",
+    "source_sentence": "It then makes a diary from the pet's point of view, with doodles that look hand-drawn"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "account",
+    "japanese_gloss": "話",
+    "source_sentence": "It turns a person's account of the day into an AI pet's diary, with hand-drawn-style doodles"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "ordinary",
+    "japanese_gloss": "ありふれた",
+    "source_sentence": "A day too ordinary to write about yourself may become worth reading when your pet tells it"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "description",
+    "japanese_gloss": "説明文",
+    "source_sentence": "Of course, the official description alone cannot tell us if the writing or pictures are good"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "storyteller",
+    "japanese_gloss": "語り手",
+    "source_sentence": "Then the pet, which was listening just moments before, becomes the storyteller"
+  },
+  {
+    "rank": 8,
+    "key_phrase": "doodle",
+    "japanese_gloss": "気軽に描いた絵",
+    "source_sentence": "It then makes a diary from the pet's point of view, with doodles that look hand-drawn"
+  }
+]
