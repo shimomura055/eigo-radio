@@ -1139,5 +1139,45 @@ class T17_GlossaryHeadingPreferred(unittest.TestCase):
         self.assertEqual([g["ja"] for g in parts[0]["glossary"]], ["警官", "盗賊"])
 
 
+class T18_IrregularVerbEmphasis(unittest.TestCase):
+    """委任_08: asset/DEV app.jsの不規則動詞表(IRR)とmatchPhraseの語形一致(nodeでJS実行。API 0)。"""
+
+    @staticmethod
+    def _run(js_path, heading, text):
+        import subprocess
+        src = Path(js_path).read_text(encoding="utf-8")
+        a = src.index("var IRR = (function")
+        b = src.index("function wrapRanges")
+        code = "var out;" + src[a:b] + "\nprocess.stdout.write(JSON.stringify(matchPhrase(%s,%s,true)));" % (json.dumps(heading), json.dumps(text))
+        r = subprocess.run(["node", "-e", code], capture_output=True, text=True, encoding="utf-8", timeout=60)
+        assert r.returncode == 0, r.stderr
+        return json.loads(r.stdout)
+
+    def _both(self):
+        return [ASSETS / "rev01-e" / "app.js", ROOT / "user_test" / "dev_enduser_page_01" / "app.js"]
+
+    def test_sink_forms_bold(self):
+        for js in self._both():
+            r = self._run(js, "sink for ever", "I sank for ever into the darkness")
+            self.assertEqual(r["n"], 1)
+            self.assertEqual(len(r["ranges"]), 1)
+            self.assertEqual(r["ranges"][0][1] - r["ranges"][0][0], len("sank for ever"))
+            self.assertEqual(self._run(js, "sink", "the stone had sunk")["n"], 1)
+
+    def test_table_size_and_common_verbs(self):
+        src = (ROOT / "user_test" / "dev_enduser_page_01" / "app.js").read_text(encoding="utf-8")
+        g = re.search(r"var g = '(.*?)'\.split", src).group(1).split("|")
+        self.assertGreaterEqual(len(g), 100)
+        for js in self._both():
+            for base, past in [("swim", "swam"), ("steal", "stole"), ("throw", "threw"), ("understand", "understood"), ("wake", "woke")]:
+                self.assertEqual(self._run(js, base, "He " + past + " away")["n"], 1, base)
+
+    def test_failsafe_unchanged(self):
+        for js in self._both():
+            self.assertEqual(self._run(js, "sink", "no such word here")["ranges"], [])
+            self.assertEqual(self._run(js, "one's", "something")["ranges"], [])  # placeholderのみ=特定不可
+            self.assertEqual(self._run(js, "sink", "sank and sink")["ranges"], [])  # 複数候補=非強調
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

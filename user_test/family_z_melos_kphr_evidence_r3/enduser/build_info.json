@@ -43,7 +43,7 @@
  },
  "assets": {
   "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "fe0238bfb9f9be9958d82bb7ae5d91f98db0f0834401959509c7b918e41bae47",
+  "app.js": "7ae1ebfd45d4b89a29091d3e2de515f55378599fcadb3343a3c28e1a3a10d7ac",
   "style.css": "b292eb97418b84c944ed3dfaab28f678ad96c5c263e98933d5606932561eaed9"
  },
  "files": {
@@ -51,7 +51,7 @@
   "data/sync_std.json": "76dd86a5f02b446956bbb000456f355fa3f1efc9ddd2222552b0d8e7339521f4",
   "data/sync_adv.json": "ee26243795bd28070f31354f3985070285048b9e47798d30bcd367bc7164616e",
   "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "fe0238bfb9f9be9958d82bb7ae5d91f98db0f0834401959509c7b918e41bae47",
+  "app.js": "7ae1ebfd45d4b89a29091d3e2de515f55378599fcadb3343a3c28e1a3a10d7ac",
   "style.css": "b292eb97418b84c944ed3dfaab28f678ad96c5c263e98933d5606932561eaed9"
  },
  "sync": {
@@ -73,11 +73,11 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "e251ade26dfff5e6b34996b114b579041c80a460728734052f4fd28a1ad73080",
+   "source_sha256": "4155047960f8a79dc2ef141365770dff5f06bfd64fb16a8ddc5ecb7bd23f42c0",
    "rows": 9,
    "sentences": 62,
    "min_row_ratio": 0.9394,
-   "low_conf_rows": 0
+   "low_conf_rows": 3
   },
   "adv": {
    "engine": "faster-whisper",
@@ -97,11 +97,11 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "57e0df4c8253d6edeaa49f4f98cf3838104739d4425bf5ed18a6ae37b41f8e9d",
+   "source_sha256": "b3c8cd62eaab9c0f6f69d5b63ef324faa47ee76550ac8b49893b870072c066dd",
    "rows": 8,
    "sentences": 70,
-   "min_row_ratio": 0.9685,
-   "low_conf_rows": 1
+   "min_row_ratio": 1.0,
+   "low_conf_rows": 6
   }
  },
  "translation_coverage": {
@@ -146,13 +146,14 @@
  },
  "ja_manuscript": null,
  "warnings": [
-  "adv: 低信頼度境界を持つ行 1件(記録のみ)"
+  "std: 低信頼度境界を持つ行 3件(記録のみ)",
+  "adv: 低信頼度境界を持つ行 6件(記録のみ)"
  ],
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 1.1,
-  "build_wall_s": 0.81,
+  "asr_wall_s": 4.1,
+  "build_wall_s": 0.92,
   "cached_segments": 25
  },
  "episode_check": {
