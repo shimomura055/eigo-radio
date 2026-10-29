@@ -1065,11 +1065,19 @@ def stepb_prompt(selected: list) -> str:
 _CJK_RE = re.compile(r"[　-〿぀-ヿ㐀-䶿一-鿿豈-﫿＀-￯]")
 _ITEM_RE = re.compile(r"(?m)^=====ITEM (\d+)=====\s*$")
 _HEAD_RE = re.compile(r"(?m)^【(.+?)】\s*$")
+_TRAIL_DELIM_RE = re.compile(r"\n?={5,}[ \t\r\n]*$")
+
+
+def strip_trailing_delim(text):
+    """OPEN-591 第2段: LLM終端区切り`=====`(5個以上のみの終端行)を末尾から除去。`=====ITEM n=====`等の非終端・`=====`無しはバイト不変。"""
+    if not isinstance(text, str):
+        return text
+    return _TRAIL_DELIM_RE.sub("", text)
 
 
 def parse_stepb(txt: str, n: int = 1) -> dict:
     items = _ITEM_RE.split(txt or "")
-    res = {int(items[i]): items[i + 1].strip() for i in range(1, len(items), 2)}
+    res = {int(items[i]): strip_trailing_delim(items[i + 1].strip()).strip() for i in range(1, len(items), 2)}   # OPEN-591: 最終itemを含む各item末尾の終端`=====`
     if sorted(res) != list(range(1, n + 1)):
         raise Part2StructureError(f"Step B応答のITEM区切りが不正: {sorted(res)}")
     return res
@@ -1458,7 +1466,7 @@ def render_markdown(result: dict) -> str:
         L += ["## 対象となる本文英文", "", f"> {s['sentence']}", ""]
         for h in EXPLANATION_HEADINGS:
             if h in sec:
-                L += [f"**{h}**", sec[h], ""]
+                L += [f"**{h}**", strip_trailing_delim(sec[h]), ""]   # 表示層の共通防御(凍結データは不変)
     return "\n".join(L)
 
 
@@ -1474,7 +1482,7 @@ def render_html_block(result: dict, *, include_css: bool = True) -> str:
         dl = [f"<dt>対象となる本文英文</dt><dd>{html.escape(s['sentence'], quote=False)}</dd>"]
         for h in EXPLANATION_HEADINGS:
             if h in sec:
-                dl.append(f"<dt>{html.escape(h, quote=False)}</dt><dd>{p1._paragraphs_html(sec[h])}</dd>")
+                dl.append(f"<dt>{html.escape(h, quote=False)}</dt><dd>{p1._paragraphs_html(strip_trailing_delim(sec[h]))}</dd>")   # OPEN-591 表示層の共通防御(凍結データは不変)
         parts.append(f"<div class='study-item'><dl>{''.join(dl)}</dl></div>")
     parts.append("</section>")
     return (p1.STUDY_CSS if include_css else "") + "".join(parts)
