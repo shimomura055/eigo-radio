@@ -3,13 +3,13 @@
 ## 受入記録:
 
 ### (1)当初目的・要求された最終状態(原文`docs/pm/delegation_log/2026-10-29_END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01_USER.md`逐語)
-- L12「承認済みのEnd User向け視聴ページを正式Production経路へ組み込み、PRODUCTION_WIREDまで完了する。」
-- L13「今後の記事完成時に、既存の開発者向け視聴ページとEnd User向け視聴ページの両方を自動生成し、最終報告で両URLを提示する。」
-- L39「**DEV用の仮データ・未承認データを正式Productionへ混入させないこと。**」
-- L56「DEV版の未承認翻訳11ブロックを、そのまま正式採用しない。」
-- L98「**同期データの生成に失敗した場合の扱いは、未承認仕様を追加しないこと。**」
-- L131「実機確認ができない場合は、模擬環境の検証と区別して報告し、実機検証済みとは扱わないでください。」
-- L203「一項目でも未確認なら、PRODUCTION_WIREDと報告しないでください。」(行番号は原文ファイル内の概算でなく、`grep -n`で再確認可能な見出し順の位置。上記は逐語)
+- L15「承認済みのEnd User向け視聴ページを正式Production経路へ組み込み、PRODUCTION_WIREDまで完了する。」
+- L16「今後の記事完成時に、既存の開発者向け視聴ページとEnd User向け視聴ページの両方を自動生成し、最終報告で両URLを提示する。」
+- L45「**DEV用の仮データ・未承認データを正式Productionへ混入させないこと。**」
+- L59「DEV版の未承認翻訳11ブロックを、そのまま正式採用しない。」
+- L105「**同期データの生成に失敗した場合の扱いは、未承認仕様を追加しないこと。**」
+- L127「実機確認ができない場合は、模擬環境の検証と区別して報告し、実機検証済みとは扱わないでください。」
+- L164「一項目でも未確認なら、PRODUCTION_WIREDと報告しないでください。」
 
 ### (2)実際に生成・残存した最終成果物
 - hook: X=`er019_family_x_listening_page_01.py:255-287`(`build_enduser_after_page`、失敗=rc5、`main`末尾287で呼出) / Y=`er121_family_y_runner_01.py:1418-1431`(`_build_enduser_page`)・呼出1459(`stage_page_verify`内) / Z=`er026_family_z_fiction_production_runner_01.py:2747-2806`(`_build_enduser_page`)・呼出2804。共通入口`er135_enduser_page_01.hook_run`。
