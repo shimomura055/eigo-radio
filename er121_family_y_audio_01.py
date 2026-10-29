@@ -759,7 +759,8 @@ def _finish_results(out_dir, results, kp_results, kp_bundle, shared_status, kp_s
     if level == "b1b":
         doc["key_phrase_explanations_text"] = kp_bundle
     save_json(f"{out_dir}/audit/tts_generation_results.json", doc)
-    pww_registry.write_listening_list_safe(out_dir)
+    # JA-ASR-V2-BETA 委任_02A: a2(日本語音声あり)は最終制作報告ブロックを標準出力へも出す(例外を投げない・非ブロッキング)。b1bに日本語音声は無い。
+    pww_registry.write_listening_list_safe(out_dir, completion_label=(f"Family Y {level}(Standard)" if level == "a2" else None))
     summary = {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_status.items()},
                "kp_scaffold_status": kp_status_str, "tts_backend": tts_backend, "family": ys.FAMILY}

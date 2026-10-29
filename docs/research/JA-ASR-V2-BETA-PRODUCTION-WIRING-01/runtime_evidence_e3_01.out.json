@@ -1,0 +1,611 @@
+{
+ "azure_calls": 0,
+ "est_jpy_running": 0.1505,
+ "est_jpy_total_audit_plus_openai_est": 0.1505,
+ "models": {
+  "azure_asr": "azure-speech-stt",
+  "openai_asr": "gpt-4o-mini-transcribe"
+ },
+ "net_hosts": {
+  "api.openai.com": 1
+ },
+ "openai_calls": 3,
+ "paid": true,
+ "phase": "e3",
+ "rows": [
+  {
+   "asr_judgement": {
+    "adapter": {
+     "asr_text_present": true,
+     "azure_real_calls": 0,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     },
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "layers": []
+    },
+    "audio_sha256": "dd3dbc1e630450305b6613e6449395e4ae8ad3885e9c49d9dba8d0c3b3548e19",
+    "canonical_text": "月のしわ、8,000本超！その奥に潜む「岩の上着」の秘密",
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "exclusion_rule": null,
+    "final_gate": {
+     "applied": false
+    },
+    "ja_v2beta": {
+     "active": true,
+     "beta_skipped": "precheck:primary_secondary_value_contradiction",
+     "layers": [],
+     "scope": "X"
+    },
+    "judge_rule_version": "ja_v2beta_r1off_01",
+    "lang": "ja",
+    "length": {
+     "adopted_from": "primary",
+     "adopted_ok": true,
+     "applied": true,
+     "max_len": 58,
+     "primary_len": 26,
+     "primary_ok": true,
+     "secondary_len": null,
+     "surface_len": null
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "primary": {
+     "equivalence_basis": null,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "passed": false,
+     "text": "月野氏は発線900本超。その奥に潜む岩の上着の秘密。",
+     "warning_labels": []
+    },
+    "r5": {
+     "f1": {
+      "demoted_p3": false,
+      "final_gate_rejected": false,
+      "pair_reasons": [],
+      "reading_match_primary_pass": false,
+      "reason_code": null,
+      "rollback_const_READING_MATCH_FINAL_GATE": true,
+      "would_have_passed_before_f1": false
+     },
+     "f2": {
+      "canon_after": null,
+      "canon_before": null,
+      "enabled": false,
+      "fallback": null,
+      "fired": false,
+      "replaced": null,
+      "state_after": null,
+      "text_after": null,
+      "text_before": null
+     },
+     "measurement_error": null,
+     "models": {
+      "primary": {
+       "model": "gpt-4o-mini-transcribe",
+       "provider": "openai_asr"
+      },
+      "secondary": null
+     },
+     "o523_weak_kana_diff_pairs": 0,
+     "o524_part_of_larger_pairs": 0,
+     "version": "r5_v1"
+    },
+    "reason_code": "p1_value_diff",
+    "rescue_basis": null,
+    "role": null,
+    "script_version": "v0",
+    "secondary": {
+     "accepted": null,
+     "cached": false,
+     "called": false,
+     "engine": "azure",
+     "error": null,
+     "label": "",
+     "text": null,
+     "unavailable": false
+    },
+    "segment_key": "",
+    "slot": 1,
+    "state": "NG_PROTECTED",
+    "technical_stop": null,
+    "timing": {
+     "secondary_ms": 0,
+     "total_ms": 0
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "hyp": "900本",
+        "reason": "value_differs",
+        "src": "8,000本",
+        "verdict": "DIFF"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'8,000本'->'900本'"
+      ],
+      "warnings": []
+     }
+    },
+    "verdict": "HR",
+    "warnings": []
+   },
+   "asr_verified": null,
+   "attempts": 1,
+   "audit_cost": {
+    "azure_calls": 0,
+    "azure_seconds": null,
+    "est_jpy": 0.0
+   },
+   "audit_cost_est_jpy_sum": 0.0,
+   "beta": null,
+   "canonical_text": "月のしわ、8,000本超！その奥に潜む「岩の上着」の秘密",
+   "fallback_used": null,
+   "ja_v2beta_error": null,
+   "ja_v2beta_layers": [],
+   "judge_rule_version": "ja_v2beta_r1off_01",
+   "label": "e3_neg_value_8000",
+   "note": "原稿の数値だけを誤りにした負例(同じwav)。期待=NG/HR・rescue_basis無し",
+   "primary_model": null,
+   "primary_text": "月野氏は発線900本超。その奥に潜む岩の上着の秘密。",
+   "r5": {
+    "f1": {
+     "demoted_p3": false,
+     "final_gate_rejected": false,
+     "pair_reasons": [],
+     "reading_match_primary_pass": false,
+     "reason_code": null,
+     "rollback_const_READING_MATCH_FINAL_GATE": true,
+     "would_have_passed_before_f1": false
+    },
+    "f2": {
+     "canon_after": null,
+     "canon_before": null,
+     "enabled": false,
+     "fallback": null,
+     "fired": false,
+     "replaced": null,
+     "state_after": null,
+     "text_after": null,
+     "text_before": null
+    },
+    "measurement_error": null,
+    "models": {
+     "primary": {
+      "model": "gpt-4o-mini-transcribe",
+      "provider": "openai_asr"
+     },
+     "secondary": null
+    },
+    "o523_weak_kana_diff_pairs": 0,
+    "o524_part_of_larger_pairs": 0,
+    "version": "r5_v1"
+   },
+   "reason_code": "p1_value_diff",
+   "rescue_basis": null,
+   "rescue_reason_ja": null,
+   "run_state": {
+    "circuit_open": false,
+    "consecutive_failures": 0,
+    "est_jpy_total": 0.0,
+    "secondary_calls": 0
+   },
+   "scope": "X",
+   "secondary_called": false,
+   "secondary_engine": "azure",
+   "secondary_text": null,
+   "state": "NG_PROTECTED",
+   "status": "STOPPED",
+   "verdict": "HR",
+   "warnings": [],
+   "wav": "er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/a2/narration/attempts/japanese_title_attempt2_customb8f0ff16.wav",
+   "wav_sha256": "dd3dbc1e630450305b6613e6449395e4ae8ad3885e9c49d9dba8d0c3b3548e19",
+   "weak_rank": null
+  },
+  {
+   "asr_judgement": {
+    "adapter": {
+     "asr_text_present": true,
+     "azure_real_calls": 0,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     },
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "layers": []
+    },
+    "audio_sha256": "dd3dbc1e630450305b6613e6449395e4ae8ad3885e9c49d9dba8d0c3b3548e19",
+    "canonical_text": "月のしわ、9,800本超！その奥に潜む「岩の上着」の秘密",
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "exclusion_rule": null,
+    "final_gate": {
+     "applied": false
+    },
+    "ja_v2beta": {
+     "active": true,
+     "beta_skipped": "precheck:primary_secondary_value_contradiction",
+     "layers": [],
+     "scope": "X"
+    },
+    "judge_rule_version": "ja_v2beta_r1off_01",
+    "lang": "ja",
+    "length": {
+     "adopted_from": "primary",
+     "adopted_ok": true,
+     "applied": true,
+     "max_len": 58,
+     "primary_len": 24,
+     "primary_ok": true,
+     "secondary_len": null,
+     "surface_len": null
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "primary": {
+     "equivalence_basis": null,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "passed": false,
+     "text": "月の詩は八千九百本超。その奥に潜む岩の上着の秘密",
+     "warning_labels": []
+    },
+    "r5": {
+     "f1": {
+      "demoted_p3": false,
+      "final_gate_rejected": false,
+      "pair_reasons": [],
+      "reading_match_primary_pass": false,
+      "reason_code": null,
+      "rollback_const_READING_MATCH_FINAL_GATE": true,
+      "would_have_passed_before_f1": false
+     },
+     "f2": {
+      "canon_after": null,
+      "canon_before": null,
+      "enabled": false,
+      "fallback": null,
+      "fired": false,
+      "replaced": null,
+      "state_after": null,
+      "text_after": null,
+      "text_before": null
+     },
+     "measurement_error": null,
+     "models": {
+      "primary": {
+       "model": "gpt-4o-mini-transcribe",
+       "provider": "openai_asr"
+      },
+      "secondary": null
+     },
+     "o523_weak_kana_diff_pairs": 0,
+     "o524_part_of_larger_pairs": 0,
+     "version": "r5_v1"
+    },
+    "reason_code": "p1_value_diff",
+    "rescue_basis": null,
+    "role": null,
+    "script_version": "v0",
+    "secondary": {
+     "accepted": null,
+     "cached": false,
+     "called": false,
+     "engine": "azure",
+     "error": null,
+     "label": "",
+     "text": null,
+     "unavailable": false
+    },
+    "segment_key": "",
+    "slot": 1,
+    "state": "NG_PROTECTED",
+    "technical_stop": null,
+    "timing": {
+     "secondary_ms": 0,
+     "total_ms": 0
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "hyp": "八千九百本",
+        "reason": "value_differs",
+        "src": "9,800本",
+        "verdict": "DIFF"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'9,800本'->'八千九百本'"
+      ],
+      "warnings": []
+     }
+    },
+    "verdict": "HR",
+    "warnings": []
+   },
+   "asr_verified": null,
+   "attempts": 1,
+   "audit_cost": {
+    "azure_calls": 0,
+    "azure_seconds": null,
+    "est_jpy": 0.0
+   },
+   "audit_cost_est_jpy_sum": 0.0,
+   "beta": null,
+   "canonical_text": "月のしわ、9,800本超！その奥に潜む「岩の上着」の秘密",
+   "fallback_used": null,
+   "ja_v2beta_error": null,
+   "ja_v2beta_layers": [],
+   "judge_rule_version": "ja_v2beta_r1off_01",
+   "label": "e3_neg_value_9800",
+   "note": "原稿の数値だけを誤りにした負例(同じwav)。期待=NG/HR・rescue_basis無し",
+   "primary_model": null,
+   "primary_text": "月の詩は八千九百本超。その奥に潜む岩の上着の秘密",
+   "r5": {
+    "f1": {
+     "demoted_p3": false,
+     "final_gate_rejected": false,
+     "pair_reasons": [],
+     "reading_match_primary_pass": false,
+     "reason_code": null,
+     "rollback_const_READING_MATCH_FINAL_GATE": true,
+     "would_have_passed_before_f1": false
+    },
+    "f2": {
+     "canon_after": null,
+     "canon_before": null,
+     "enabled": false,
+     "fallback": null,
+     "fired": false,
+     "replaced": null,
+     "state_after": null,
+     "text_after": null,
+     "text_before": null
+    },
+    "measurement_error": null,
+    "models": {
+     "primary": {
+      "model": "gpt-4o-mini-transcribe",
+      "provider": "openai_asr"
+     },
+     "secondary": null
+    },
+    "o523_weak_kana_diff_pairs": 0,
+    "o524_part_of_larger_pairs": 0,
+    "version": "r5_v1"
+   },
+   "reason_code": "p1_value_diff",
+   "rescue_basis": null,
+   "rescue_reason_ja": null,
+   "run_state": {
+    "circuit_open": false,
+    "consecutive_failures": 0,
+    "est_jpy_total": 0.0,
+    "secondary_calls": 0
+   },
+   "scope": "X",
+   "secondary_called": false,
+   "secondary_engine": "azure",
+   "secondary_text": null,
+   "state": "NG_PROTECTED",
+   "status": "STOPPED",
+   "verdict": "HR",
+   "warnings": [],
+   "wav": "er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/a2/narration/attempts/japanese_title_attempt2_customb8f0ff16.wav",
+   "wav_sha256": "dd3dbc1e630450305b6613e6449395e4ae8ad3885e9c49d9dba8d0c3b3548e19",
+   "weak_rank": null
+  },
+  {
+   "asr_judgement": {
+    "adapter": {
+     "asr_text_present": true,
+     "azure_real_calls": 0,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     },
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "layers": []
+    },
+    "audio_sha256": "dd3dbc1e630450305b6613e6449395e4ae8ad3885e9c49d9dba8d0c3b3548e19",
+    "canonical_text": "月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密",
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "exclusion_rule": null,
+    "final_gate": {
+     "applied": false
+    },
+    "lang": "ja",
+    "length": {
+     "adopted_from": "primary",
+     "adopted_ok": true,
+     "applied": true,
+     "max_len": 58,
+     "primary_len": 25,
+     "primary_ok": true,
+     "secondary_len": null,
+     "surface_len": null
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "primary": {
+     "equivalence_basis": null,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "passed": false,
+     "text": "月野氏は発千九百本超、その奥に潜む岩の上着の秘密。",
+     "warning_labels": []
+    },
+    "r5": {
+     "f1": {
+      "demoted_p3": false,
+      "final_gate_rejected": false,
+      "pair_reasons": [],
+      "reading_match_primary_pass": false,
+      "reason_code": null,
+      "rollback_const_READING_MATCH_FINAL_GATE": true,
+      "would_have_passed_before_f1": false
+     },
+     "f2": {
+      "canon_after": null,
+      "canon_before": null,
+      "enabled": false,
+      "fallback": null,
+      "fired": false,
+      "replaced": null,
+      "state_after": null,
+      "text_after": null,
+      "text_before": null
+     },
+     "measurement_error": null,
+     "models": {
+      "primary": {
+       "model": "gpt-4o-mini-transcribe",
+       "provider": "openai_asr"
+      },
+      "secondary": null
+     },
+     "o523_weak_kana_diff_pairs": 0,
+     "o524_part_of_larger_pairs": 0,
+     "version": "r5_v1"
+    },
+    "reason_code": "p1_value_diff",
+    "role": null,
+    "script_version": "v0",
+    "secondary": {
+     "accepted": null,
+     "cached": false,
+     "called": false,
+     "engine": "azure",
+     "error": null,
+     "label": "",
+     "text": null,
+     "unavailable": false
+    },
+    "segment_key": "",
+    "slot": 1,
+    "state": "NG_PROTECTED",
+    "technical_stop": null,
+    "timing": {
+     "secondary_ms": 0,
+     "total_ms": 0
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "hyp": "千九百本",
+        "reason": "value_differs",
+        "src": "8,900本",
+        "verdict": "DIFF"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'8,900本'->'千九百本'"
+      ],
+      "warnings": []
+     }
+    },
+    "warnings": []
+   },
+   "asr_verified": null,
+   "attempts": 1,
+   "audit_cost": {
+    "azure_calls": 0,
+    "azure_seconds": null,
+    "est_jpy": 0.0
+   },
+   "audit_cost_est_jpy_sum": 0.0,
+   "beta": null,
+   "canonical_text": "月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密",
+   "fallback_used": null,
+   "has_new_keys": {
+    "ja_v2beta": false,
+    "judge_rule_version": false,
+    "rescue_basis": false,
+    "verdict": false
+   },
+   "ja_v2beta_error": null,
+   "ja_v2beta_layers": null,
+   "judge_rule_version": null,
+   "label": "e3_scope_none_positive",
+   "note": "scope外(A/B/C相当): ja_v2beta/verdict/judge_rule_versionのキー自体が無いこと",
+   "primary_model": null,
+   "primary_text": "月野氏は発千九百本超、その奥に潜む岩の上着の秘密。",
+   "r5": {
+    "f1": {
+     "demoted_p3": false,
+     "final_gate_rejected": false,
+     "pair_reasons": [],
+     "reading_match_primary_pass": false,
+     "reason_code": null,
+     "rollback_const_READING_MATCH_FINAL_GATE": true,
+     "would_have_passed_before_f1": false
+    },
+    "f2": {
+     "canon_after": null,
+     "canon_before": null,
+     "enabled": false,
+     "fallback": null,
+     "fired": false,
+     "replaced": null,
+     "state_after": null,
+     "text_after": null,
+     "text_before": null
+    },
+    "measurement_error": null,
+    "models": {
+     "primary": {
+      "model": "gpt-4o-mini-transcribe",
+      "provider": "openai_asr"
+     },
+     "secondary": null
+    },
+    "o523_weak_kana_diff_pairs": 0,
+    "o524_part_of_larger_pairs": 0,
+    "version": "r5_v1"
+   },
+   "reason_code": "p1_value_diff",
+   "rescue_basis": null,
+   "rescue_reason_ja": null,
+   "run_state": {
+    "circuit_open": false,
+    "consecutive_failures": 0,
+    "est_jpy_total": 0.0,
+    "secondary_calls": 0
+   },
+   "scope": null,
+   "secondary_called": false,
+   "secondary_engine": "azure",
+   "secondary_text": null,
+   "state": "NG_PROTECTED",
+   "status": "STOPPED",
+   "verdict": null,
+   "warnings": [],
+   "wav": "er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/a2/narration/attempts/japanese_title_attempt2_customb8f0ff16.wav",
+   "wav_sha256": "dd3dbc1e630450305b6613e6449395e4ae8ad3885e9c49d9dba8d0c3b3548e19",
+   "weak_rank": null
+  }
+ ]
+}

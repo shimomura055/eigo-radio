@@ -21,6 +21,19 @@ PROTECTED_REASON_PREFIXES = (
 )
 
 
+# JA-ASR-V2-BETA-PRODUCTION-WIRING-01 委任_02A(Opus M-4): v2読み規則+B-light β(新方式)が合否に寄与した音声の再利用規則。
+# 新方式の印(`ja_v2beta`/`judge_rule_version`/`rescue_basis`/JA_NEWLAYER_*警告)が**無い**entryでは新moduleをimportしない(A/B/C・旧資産は従来どおり)。
+_JA_V2B_MARK_KEYS = ("ja_v2beta", "judge_rule_version", "rescue_basis")
+
+
+def _ja_v2b_marked(aj) -> bool:
+    if not isinstance(aj, dict):
+        return False
+    if any(k in aj for k in _JA_V2B_MARK_KEYS):
+        return True
+    return any(str(w).startswith("JA_NEWLAYER_") for w in (aj.get("warnings") or []))
+
+
 def has_ja_chars(text) -> bool:
     return bool(text and _JA_CHAR_RE.search(str(text)))
 
@@ -78,6 +91,25 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
     if (_xz.ukus_contributed(entry.get("asr_judgement")) or _xz.ukus_contributed(entry.get("asr_judgement_inherited"))) and not _xz.is_ukus_active_for_run():
         out.update(blocked=True, applicable=True, reason=_xz.UKUS_OUT_OF_SCOPE_BLOCK_REASON)
         return out
+    # JA-ASR-V2-BETA-PRODUCTION-WIRING-01 委任_02A(Opus M-4): 日本語ASR v2+β(新方式)が合否に寄与した音声。配置はkp_vote_gate_follows早期returnより前(ortho/UKUSと同じ)。
+    #  (1) X/Y/Z run scope外・flag OFFでは再利用しない(Master Audio StoreはA/B/Cとも共有。scope外の判定では新方式の受理を再現できない)→再生成。
+    #  (2) scope内で判定規則の版(judge_rule_version)が現行と同じなら保存判定を信頼する(J11と同じ方針。Reading Resolver=LLMで分類が揺れて正しい資産が再生成されるのを避ける)。
+    #  (3) 版が異なる/欠落する寄与recordは**API 0**(Resolverなし・Secondary新規呼出なし)で現行規則により再判定し、不成立なら再生成。判定不能(保存データ欠落)はfail-closed(再生成)。
+    #  `asr_judgement`と`asr_judgement_inherited`の**両方**を見る。印のないentryには作用しない。
+    _ajs_v2b = [a for a in (entry.get("asr_judgement"), entry.get("asr_judgement_inherited")) if _ja_v2b_marked(a)]
+    if _ajs_v2b:
+        import er078_ja_v2beta_01 as _v2b
+        _contrib = [a for a in _ajs_v2b if _v2b.contributed(a)]
+        if _contrib:
+            if not _v2b.is_active_for_run():
+                out.update(blocked=True, applicable=True, reason=_v2b.OUT_OF_SCOPE_BLOCK_REASON)
+                return out
+            for _a in _contrib:
+                if _a.get("judge_rule_version") != _v2b.JUDGE_RULE_VERSION:
+                    _ok, _why = _v2b.rejudge_contributed(_a)
+                    if not _ok:
+                        out.update(blocked=True, applicable=True, reason=f"JA_V2BETA_REJUDGE_NG:{_why}")
+                        return out
     if kp_vote_gate_follows:
         out.update(applicable=False, reason="KP_EN_VOTE_GATE_DECIDES")
         return out

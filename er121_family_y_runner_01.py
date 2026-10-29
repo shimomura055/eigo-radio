@@ -1258,6 +1258,27 @@ def stage_pages(ctx) -> dict:
     p2res = _assert_study_ready(ctx, "stage_pages")           # Part 1/Part 2(Advanced)の存在・最新性・確定との一致(未確定=rc=4、古い=STOP)
     p2res_std = _assert_std_study_ready(ctx, "stage_pages")   # Standardの学習テキスト(Part 1[display_spec付きのみ]+Part 2)。ページ専用=ここ(pages/page_verify)だけで確認する
     hl_results = _resolve_highlights_or_stop(ctx, "stage_pages")  # SLOT-23: display_spec付きlevelだけ。特定不能(ISSUE)はページ生成(mp3化)前にSTOP。マーク無しlevelは空=従来とバイト同一
+def _y_pww_aux_html(ctx, audience: str, cp) -> str:
+    """JA-ASR-V2-BETA-PRODUCTION-WIRING-01 委任_02A(Opus OK-6): Y試聴ページに『事後試聴リスト(PASS_WITH_WARNING)』節を連結する(X/Zと同じ補助表示。従来はJSONのみで欠落)。
+    日本語音声があるのはStandard(a2)のみ。公開(public)ページには出さない(内部の判定情報を公開物へ載せない。レポートはJSON/標準出力/dev試聴ページ)。
+    非ブロッキング: 導出失敗は『導出失敗(要確認)』表示で、ページ生成は失敗させない。"""
+    if audience == cp.AUDIENCE_PUBLIC:
+        return ""
+    import er078_pass_with_warning_registry_01 as pww
+    run_dir = f"{ctx.out_dir}/{STD_LEVEL}"
+    if not os.path.isdir(f"{run_dir}/audit"):
+        return ""
+    pages_dir = ctx.pages_dir
+
+    def _href(e):
+        p = e.get("audio_path") or ""
+        try:
+            return os.path.relpath(os.path.abspath(p), os.path.abspath(pages_dir)).replace("\\", "/") if p else ""
+        except ValueError:
+            return p
+    return "<h3>Standard</h3>" + pww.render_html_section(pww.load_listening_list(run_dir), href_fn=_href)
+
+
     study_by_level = {}
     for lv, p2r in ((ADV_LEVEL, p2res), (STD_LEVEL, p2res_std)):
         part1_html = ""
@@ -1279,7 +1300,7 @@ def stage_pages(ctx) -> dict:
         pre = meaning_by_lv.get(lv, "")
         if html_by_id.get(lvd["id"]) or pre:
             lvd["study_html"] = pre + (html_by_id.get(lvd["id"]) or "")
-    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio"),      # 候補が無ければ空(従来と同一)
+    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio") + _y_pww_aux_html(ctx, audience, cp),      # 候補が無ければ空(従来と同一)
                                  show_notice=show_notice, audience=audience, highlight=bool(hl_results))
     # 委任_11(ユーザー原文_02 §3・§4): 試聴ページ(報告資料)は実Chunk境界の⏸・LR赤・Fallback濃青を持つのが正。旧「public=⏸ 0件」STOP(FAMILY_Y_PUBLIC_PAGE_HAS_CHUNK_MARKER)は撤去
     page = f"{ctx.pages_dir}/index.html" if audience == cp.AUDIENCE_PUBLIC else f"{ctx.pages_dir}/index_dev.html"      # devは公開用index.htmlを上書きしない

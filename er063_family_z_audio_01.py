@@ -1627,7 +1627,7 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     # AUW 委任_03: 生成完了hook。results確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
     # audit/pass_with_warning_listening_list.jsonへ出力(失敗しても生成は失敗させない、非ブロッキング)。
     import er078_pass_with_warning_registry_01 as _pww
-    _pww.write_listening_list_safe(level_dir)
+    _pww.write_listening_list_safe(level_dir, completion_label=f"Family Z {level}")   # JA-ASR-V2-BETA 委任_02A: 最終制作報告ブロックも標準出力へ(例外を投げない・非ブロッキング)
     if os.path.exists(_checkpoint_path(level_dir)):
         os.remove(_checkpoint_path(level_dir))        # 最終results確定後は途中経過を残さない(古い内容で上書きされない)
     ev_path = f"{level_dir}/audit/runtime_evidence_{SUB_TASK_ID}.json"

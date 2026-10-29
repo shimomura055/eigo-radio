@@ -553,6 +553,99 @@ def _numeric_value_equivalence(canonical_text: str, asr_text: Optional[str], cls
         reason="数値の値と単位が同値(表記差のみ)で、数値以外の部分は完全一致(値ガードEQUAL)")
 
 
+# ============================================================
+# JA-ASR-V2-BETA-PRODUCTION-WIRING-01 委任_02A: v2読み規則 + B-light β(R-1 OFF)の配線helper(正式採用 2026-10-29)。
+# 新ロジックは `er078_ja_v2beta_01.py`(X/Y/Z run scope内でのみimport。scope外は本helperが即None=従来コードパス・出力byte同一)。
+# seamは本関数内の S0(begin)/S1P/S1S(_value_layer)/S2(_v2b_post_judge)/S3(_v2b_finalize)のみ。unified_judge本体は無改変。
+# seam内の例外(新moduleのimport失敗・依存lib欠落・実行時例外)は従来判定(L0)へ戻し、`ja_v2beta.error`へ記録する(無言で従来挙動に戻さない)。
+# 設定不備(is_config_stop_error)は握りつぶさず再送出する。
+# ============================================================
+_V2B_SCOPES = ("X", "Y", "Z")
+_V2B_BETA_FINAL_STATUS = "JA_SECONDARY_VALUE_PRIMARY_READING_COMPOSITE"
+_V2B_BETA_FINAL_STATUS_REASON = "ja_beta_composite"   # er078_ja_v2beta_01.BETA_REASON_CODE と同値(testで突合)
+
+
+class _V2bInert:
+    """新module(er078_ja_v2beta_01)のimport/初期化に失敗した(M-5)ときの代役。新層は一切動かない(従来判定)が、失敗はauditへ記録する。"""
+    active = False
+    usable = False
+
+    def __init__(self, error: str, scope):
+        self.error, self.scope, self.errors, self.layers = error, scope, [], []
+
+
+def _v2b_mod():
+    import er078_ja_v2beta_01 as _m
+    return _m
+
+
+def _v2b_begin(canonical_text, primary_asr_text, e3, e4, expected_readings):
+    """S0。X/Y/Z scope外はNone(新moduleをimportしない)。scope内は状態object(flag定数OFFならactive=False+disabled_by)。"""
+    try:
+        import er109_xz_scope_01 as _xz
+        scope = _xz.current_scope()
+    except Exception:  # noqa: BLE001  scope判定自体が不能=従来どおり(新層なし)
+        return None
+    if scope not in _V2B_SCOPES:
+        return None
+    try:
+        return _v2b_mod().begin(canonical_text, primary_asr_text, e3=e3, e4=e4, expected_readings=expected_readings,
+                                value_label=NUMERIC_VALUE_EQUIVALENT_MATCH)
+    except Exception as e:  # noqa: BLE001  M-5: 依存欠落等=従来判定+記録
+        if unified_judge_mod.is_config_stop_error(e):
+            raise
+        return _V2bInert(f"begin:{type(e).__name__}: {e}", scope)
+
+
+def _value_layer(canon, asr, cls, side, v2b):
+    """S1P/S1S: `_numeric_value_equivalence`位置の層。新層が使えない/例外のときは従来関数(L0)そのもの。"""
+    if v2b is None or not getattr(v2b, "usable", False):
+        return _numeric_value_equivalence(canon, asr, cls)
+    try:
+        return _v2b_mod().value_layer(canon, asr, cls, side, v2b, _numeric_value_equivalence)
+    except Exception as e:  # noqa: BLE001
+        if unified_judge_mod.is_config_stop_error(e):
+            raise
+        v2b.errors.append(f"value_layer[{side}]:{type(e).__name__}: {e}")
+        return _numeric_value_equivalence(canon, asr, cls)
+
+
+def _v2b_post_judge(v2b, jr, *, ctx, canonical_text, primary_asr_text, length_ok, secondary_fn, expected_readings):
+    """S2: (1) NGのβ救済 (2) Secondary側v2寄与の警告付与・PASS->PASS_W格上げ。どちらの例外もその段だけ従来判定へ戻す。"""
+    if v2b is None or not getattr(v2b, "usable", False):
+        return jr
+    m = _v2b_mod()
+    try:
+        jr = m.maybe_beta_rescue(v2b, jr, ctx=ctx, canonical_text=canonical_text, primary_text=primary_asr_text, length_ok=length_ok,
+                                 secondary_fn=secondary_fn, no_speech_sentinel=NO_SPEECH_SENTINEL, expected_readings=expected_readings)
+    except Exception as e:  # noqa: BLE001
+        if unified_judge_mod.is_config_stop_error(e):
+            raise
+        v2b.errors.append(f"beta:{type(e).__name__}: {e}")
+    try:
+        jr = m.apply_secondary_layer_contribution(v2b, jr)
+    except Exception as e:  # noqa: BLE001
+        if unified_judge_mod.is_config_stop_error(e):
+            raise
+        v2b.errors.append(f"secondary_layer:{type(e).__name__}: {e}")
+    return jr
+
+
+def _v2b_finalize(v2b, audit, jr, human_review_required) -> None:
+    """S3。scope外(v2b is None)は何も追加しない(キー自体を作らない)。"""
+    if v2b is None:
+        return
+    try:
+        if isinstance(v2b, _V2bInert):
+            audit["ja_v2beta"] = {"active": False, "scope": v2b.scope, "error": v2b.error}
+            return
+        _v2b_mod().finalize_audit(v2b, audit, jr, human_review_required=bool(human_review_required))
+    except Exception as e:  # noqa: BLE001
+        if unified_judge_mod.is_config_stop_error(e):
+            raise
+        audit["ja_v2beta"] = {"active": False, "scope": getattr(v2b, "scope", None), "error": f"finalize:{type(e).__name__}: {e}"}
+
+
 def evaluate_attempt_ja_with_cascade_detail(
     canonical_text: str, primary_asr_text: Optional[str], wav_path: str,
     cascade_enabled: bool = FEATURE_FLAG_JA_PRIMARY_OPENAI,
@@ -587,12 +680,13 @@ def evaluate_attempt_ja_with_cascade_detail(
         return result  # 後方互換: 統一judgeを通らない(従来のclassify結果そのまま)
 
     actx = dict(attempt_ctx or {})
+    v2b = _v2b_begin(canonical_text, primary_asr_text, _ce_rej, _ce_casc, expected_readings)   # S0(X/Y/Z scope外=None=従来コードパス)
     result["stop_retrying"] = False  # DESIGN_01 §4-2/§4-9: 同一音声のASR再試行/4段尽きHR直行は廃止(再生成は通算上限が担保)
     result["cost_guard_triggered"] = False
     is_tcm = cls.classification == "TRUE_CONTENT_MISMATCH"
 
     # ---- Primary側の追加層: 数値の値等価 ----
-    eq_cls = None if cls.should_pass else _numeric_value_equivalence(canonical_text, primary_asr_text, cls)
+    eq_cls = None if cls.should_pass else _value_layer(canonical_text, primary_asr_text, cls, "primary", v2b)   # S1P(新層無効=従来の値等価層そのもの)
     if eq_cls is not None:
         cls = eq_cls
         is_tcm = False
@@ -630,7 +724,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     basis = "READING_MATCH" if (primary_passed and cls.classification in _READING_MATCH_CLASSIFICATIONS) else None
     primary = unified_judge_mod.PrimaryResult(
         passed=primary_passed, text=primary_asr_text, label=cls.classification, equivalence_basis=basis,
-        warning_labels=(), signals=signals)
+        warning_labels=(v2b.primary_warning_labels() if (v2b is not None and getattr(v2b, "usable", False)) else ()), signals=signals)
 
     sha = _ja_wav_sha256(wav_path)
     run_cache, run_state = _shared_run_cache_and_state()
@@ -674,10 +768,13 @@ def evaluate_attempt_ja_with_cascade_detail(
             return True, cls_s.classification
         if JA_SECONDARY_VALUE_EQUIVALENCE_ENABLED:
             # R4是正: Primaryと同じ値等価層(`_numeric_value_equivalence`)をSecondary転写にも適用(CURRENT_SPEC.md:2931)。
-            eq_s = _numeric_value_equivalence(canon, stext, cls_s)
+            _n_layers = len(v2b.layers) if (v2b is not None and getattr(v2b, "usable", False)) else 0
+            eq_s = _value_layer(canon, stext, cls_s, "secondary", v2b)   # S1S
             if eq_s is not None:
                 captured["cls_s"] = eq_s
                 captured["secondary_value_equivalence"] = True
+                if v2b is not None and getattr(v2b, "usable", False) and len(v2b.layers) > _n_layers:
+                    v2b.secondary_layer_accepted = True   # Secondary受理が新層(v2)による(実効判定は確定経路で行う)
                 return True, eq_s.classification
         cls_s2 = _apply_variant_layer_voicing_upgrade(canon, stext, cls_s)
         if primary_orth_ok and _orthographic_reading_confirmed(cls_s2):
@@ -690,6 +787,8 @@ def evaluate_attempt_ja_with_cascade_detail(
 
     jr = unified_judge_mod.unified_judge(ctx, primary, _secondary_fn, lang="ja", role=None,
                                          secondary_accept_fn=_secondary_accept)
+    jr = _v2b_post_judge(v2b, jr, ctx=ctx, canonical_text=canonical_text, primary_asr_text=primary_asr_text, length_ok=length_ok,
+                         secondary_fn=_secondary_fn, expected_readings=expected_readings)   # S2(β救済・Secondary側v2の警告/PASS_W格上げ。無効時はjrそのまま)
     audit = jr.audit_record
     sec = audit.get("secondary") or {}
     secondary_ran = bool(sec.get("called") or sec.get("cached") or sec.get("error"))
@@ -735,7 +834,14 @@ def evaluate_attempt_ja_with_cascade_detail(
     result["verified"] = bool(jr.verified)
     if jr.verified:
         if not primary_passed:  # Secondary独立確認で採用(PASS_WITH_WARNING)
-            if captured.get("orth"):
+            if jr.reason_code == _V2B_BETA_FINAL_STATUS_REASON:
+                # R-1: β(値=Secondary/読み=Primary)の成立。SCG文言(Secondaryが原稿と一致)ではなくβ専用ラベルにする。
+                beta_cls = javal.ClassificationResultJA(
+                    _V2B_BETA_FINAL_STATUS, cls.similarity_ratio, javal.ProtectedCheckResultJA(passed=True), should_pass=True, should_retry=False,
+                    reason="B-light β: 値=Secondary(Azure)転写・読み=Primary(OpenAI)転写で原稿と同等(R-1 OFF。PASS_WITH_WARNING・非ブロッキング)")
+                beta_cls.scg_info = scg_info
+                result.update(final_status=_V2B_BETA_FINAL_STATUS, classification=beta_cls)
+            elif captured.get("orth"):
                 result.update(final_status=ORTHOGRAPHIC_VARIANT_CONFIRMED, classification=captured["cls_s"])
             elif is_tcm:
                 scg_cls = javal.ClassificationResultJA(
@@ -781,6 +887,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     if _ce_casc:
         audit["candidate_e_cascade_return"] = {"diffs": _ce_casc,
                                                "note": "OPEN-333 E4: Candidate Eが残したcascade_eligible差分(カタカナ/略語・濁点のみ差)を即PASSにせずCascade(Azure再確認)へ戻した(読取専用記録、判定不変)"}
+    _v2b_finalize(v2b, audit, jr, result["human_review_required"])   # S3(scope外=何も追加しない)
     audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else [])
                         + (["secondary_numeric_value_equivalence"] if captured.get("secondary_value_equivalence") else []),
                         "azure_real_calls": 1 if sec.get("called") else 0, "cost_guard_triggered": state["cost_guard"],

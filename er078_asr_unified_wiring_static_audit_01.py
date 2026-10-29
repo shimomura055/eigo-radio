@@ -231,6 +231,8 @@ def category_for(mod: str, fn: str, nm: str, phase: str = "post_wiring") -> tupl
     if phase == "post_wiring":
         if mod == "er007_ja_secondary_asr_01":
             return CAT_ADAPTER_INTERNAL, "JA統一judge adapter本体(AUW 委任_04): Primary(classify_ja_asr_match)とSecondary許容集合判定。判定は全てunified_judge経由"
+        if mod == "er078_ja_v2beta_01":
+            return CAT_ADAPTER_INTERNAL, "JA統一judge adapterの内部module(JA-ASR-V2-BETA 委任_02A): v2読み規則/B-light βの純関数。入口はer007のseam(S0/S1P/S1S/S2/S3)のみで、判定は全てunified_judge経由(unified_judge無改変)。X/Y/Z scope外では呼ばれない"
         if mod == "er019_family_x_validation_inheritance_01":
             return CAT_J11_UNIFIED_ENTRY, "J11 引継ぎ・再利用の再判定(AUW 委任_04): 保存転写のPrimary再導出後にunified_judge(最終ANDゲート)を通す。API 0・Secondary新規呼出なし"
         if mod == "er013_family_c_production_runner_01":
@@ -442,7 +444,7 @@ def test_post_wiring_ja_phase_dependent_wiring():
     # JA判定の直接呼出(classify_ja_asr_matchなど)はJA adapter内部(er007_ja_secondary_asr_01)のみ
     for e in al["entries"]:
         if e["callee"].split(".")[-1] in ("classify_ja_asr_match", "evaluate_attempt_ja_with_cascade_detail"):
-            assert e["module"] == "er007_ja_secondary_asr_01" and e["category"] == CAT_ADAPTER_INTERNAL, e
+            assert e["module"] in ("er007_ja_secondary_asr_01", "er078_ja_v2beta_01") and e["category"] == CAT_ADAPTER_INTERNAL, e   # 後者=adapter内部module(委任_02A)
     assert [e for e in al["entries"] if e["category"] in DEFERRED_CATEGORIES] == []
 
 

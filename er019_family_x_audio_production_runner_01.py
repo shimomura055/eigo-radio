@@ -2266,7 +2266,7 @@ def generate_family_x_a2_segments(
                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
     # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
     # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
-    pww_registry.write_listening_list_safe(out_dir)
+    pww_registry.write_listening_list_safe(out_dir, completion_label="Family X a2(Standard)")   # JA-ASR-V2-BETA 委任_02A: a2(日本語音声あり)は最終制作報告ブロックも標準出力へ(例外を投げない・非ブロッキング)
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
