@@ -135,6 +135,10 @@ PROCESS_MODEL_MAP = {
     # 候補抽出(Step A'')と解説生成(Step B)。SUPPORT_MODEL=gpt-6-luna(Trial-07/08と同一、新規モデルなし)。
     "STUDY_TEXT_GRAMMAR_EXTRACT": SUPPORT_MODEL,
     "STUDY_TEXT_GRAMMAR_EXPLAIN": SUPPORT_MODEL,
+    # NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02A(2026-10-29、ニュアンス解説、ユーザーAPPROVED_FOR_PRODUCTION)で追加(追加のみ、既存キー不変)。
+    # 候補生成(er134 generate_candidate)と主題重複判定の段2(er134 judge_overlap。生成とは別call・別Prompt)。SUPPORT_MODEL=gpt-6-luna(新規モデルなし)。
+    "NUANCE_EXPLANATION": SUPPORT_MODEL,
+    "NUANCE_OVERLAP_JUDGE": SUPPORT_MODEL,
     # RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C1(2026-10-10、ユーザーGo)で追加(追加のみ、既存キー不変)。
     # model名はリテラル固定(WRITER_MODEL等の他定数を経由しない=他定数の変更に連動しない)。環境変数での上書きなし。
     #   FAMILY_X_RF_LUNA / FAMILY_X_RF_GEMINI : Risk Flagger 4条件(Luna A3/A4・Gemini A3/A4)

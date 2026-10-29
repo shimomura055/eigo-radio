@@ -1,0 +1,97 @@
+{
+  "schema": "nuance_candidate_v1",
+  "family": "X",
+  "article_id": "paycheck_personality",
+  "level": "Standard",
+  "level_key": "a2",
+  "generated_at": "2026-10-29T08:54:20+0900",
+  "candidate": null,
+  "no_candidate_reason": "model_returned_none",
+  "kp_word_basis": {
+    "status": "provisional",
+    "items": [
+      "conscientiousness",
+      "weak link",
+      "come first",
+      "none other than",
+      "pay raise"
+    ],
+    "provisional_ids": [
+      "pc_std_1",
+      "pc_std_2",
+      "pc_std_3",
+      "pc_std_4",
+      "pc_std_5"
+    ],
+    "pool_ids": [
+      {
+        "id": "pc_std_1",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_2",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_3",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_4",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_5",
+        "kind": "phrase"
+      }
+    ],
+    "candidates_sha256": "a7719c8b55c7fd13bb8f5dfc2eaa4a6a381c113633afc80e1389408dcd8f79e4",
+    "pool_identity_sha": "0b5f398f8447d93a956fbbb0888e96f67dd3841e91b83a1481ef049d5f2ec666",
+    "grammar_identity_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "text_sha256": "37513946c17d85216dfd2e352eb9317009ca869daf5973dc595223fc8fc8bfdc",
+  "model": "gpt-6-luna",
+  "prompt_sha": "a0b31f114c30f4845fb191524cc57a4b766face034442ea47da1abaf8eea660c",
+  "judge_prompt_sha": "643c857a6ca5c9c0cf608f4595e19e399e86ed04b13422d6fb689efea4322d39",
+  "generation": {
+    "prompt_sha256": "86e1bf402304b1a8e42f6287ba6eebbe5dc13ec653488a9a721fa6e82cd9f925",
+    "rejected_candidates": [
+      {
+        "expression": "may have affected both",
+        "focus": "mayが原因について確定を避ける含み",
+        "reason": "grammar_structure",
+        "note": "助動詞による可能性の表し方が中心となるため"
+      },
+      {
+        "expression": "not always",
+        "focus": "alwaysが示す一般化の強さ",
+        "reason": "too_basic",
+        "note": "基礎的な語義の範囲で説明でき、独立した解説としての価値が弱いため"
+      }
+    ],
+    "model_reason_ja": "候補になりそうな表現はありますが、文法コーナーと重なるか、基礎的な語義の説明にとどまります。条件を明確に満たすニュアンス解説はありません。"
+  },
+  "status": "NO_CANDIDATE",
+  "usage": {
+    "input_tokens": 2639,
+    "output_tokens": 647,
+    "cost_jpy": 0.094,
+    "n_calls": 1,
+    "calls": [
+      {
+        "process": "NUANCE_EXPLANATION",
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 2639,
+          "output_tokens": 647,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 430
+        },
+        "response_id": "resp_08d52b4c8654fc0d006ae28b2d56a087d08c4dd27592d0ebac",
+        "elapsed_sec": 9.54,
+        "cost_jpy": 0.094
+      }
+    ]
+  }
+}

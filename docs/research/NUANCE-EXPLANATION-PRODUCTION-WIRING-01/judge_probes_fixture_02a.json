@@ -1,0 +1,29 @@
+{
+  "note": "判定プローブ固定fixture(R-8、委任_02A)。実生成物ではない人工候補。expected: fail=暫定選定とhard overlap / pass_with_grammar_conflict=verdictはpass・grammar_conflictsに文法Top1 / pass=非重複",
+  "probes": [
+    {"id": "p1_synonym_of_kp", "target": "ai_island_std", "expected": "fail",
+     "candidate": {"expression": "pass on", "focus": "情報や経験を次の期間・次の人に引き継ぐ意味",
+       "quote_en": "But the work area with the AI's notes and programs carried over to the next hour.",
+       "explanation_ja": "pass on は「次に渡す」、carry over は「持ち越す」です。どちらも前の時間の内容が次の時間に残ることを表しますが、pass on は人から人へ渡す場面で、carry over は期間をまたいで残る場面でよく使います。ここでは作業エリアが次の1時間に残ることを述べています。"}},
+    {"id": "p2_part1_comparison_type", "target": "ai_island_std", "expected": "fail",
+     "candidate": {"expression": "take a detour vs go around", "focus": "take a detourと近い表現go aroundの使い分け",
+       "quote_en": "Those that had taken a detour were now one step ahead.",
+       "explanation_ja": "take a detour は目的地へ向かう途中で別の道を通る、go around は障害物を避けて回り込むという違いがあります。どちらも遠回りを表しますが、take a detour は計画的に道を変える含みが強く、go around は物理的に避ける場面で自然です。"}},
+    {"id": "p3_same_idiom_other_form", "target": "tth_std", "expected": "fail",
+     "candidate": {"expression": "chill someone to the bone", "focus": "恐怖で体の芯が冷えるような強い衝撃を表す比喩",
+       "quote_en": "That vulture's eye made my blood turn cold.",
+       "explanation_ja": "この文は、目を見て語り手が強い恐怖を感じたことを、血が冷たくなるという体感の比喩で表しています。chill someone to the bone も同じ種類の比喩で、ぞっとする恐怖を表します。どちらも寒さを恐怖の強さにたとえる点が共通です。"}},
+    {"id": "p4_same_focus_as_grammar_top1", "target": "ai_island_std", "expected": "pass_with_grammar_conflict",
+     "candidate": {"expression": "did better", "focus": "than以下が省略された比較表現の読み取り(誰と比べているか)",
+       "quote_en": "The experienced group did better.",
+       "explanation_ja": "did better は「よりうまくやった」という比較の表現ですが、比べる相手(than ...)が書かれていません。読者は前の文脈から、経験のないグループと比べていると補って読みます。比較対象が省略されても、文脈から相手を補うのが自然な読み方です。"}},
+    {"id": "p5_non_overlap_at_least", "target": "ai_island_std", "expected": "pass",
+     "candidate": {"expression": "at least", "focus": "主張の範囲を限定し一般化を避ける at least",
+       "quote_en": "For this AI, at least, remembering that way helped it build towers.",
+       "explanation_ja": "ここでの at least は数の下限ではなく、このAIについて言える範囲に主張を限る表現です。他のAIにも当てはまるとは言っていません。日本語の「少なくとも」と同じ訳に引きずられると、数量の話だと誤解しやすい点に注意しましょう。"}},
+    {"id": "p6_non_overlap_should_have_seen", "target": "tth_std", "expected": "pass",
+     "candidate": {"expression": "You should have seen ...", "focus": "助言ではなく、過去の場面を強調して語る表現",
+       "quote_en": "You should have seen my patience—he never even moved!",
+       "explanation_ja": "You should have seen ... は「見るべきだった」という助言ではなく、「見せたかったくらいだ」と自分の様子をほめて強調する語り方です。should have の義務の意味に引きずられると、聞き手を責める言い方だと誤解しやすい表現です。"}}
+  ]
+}

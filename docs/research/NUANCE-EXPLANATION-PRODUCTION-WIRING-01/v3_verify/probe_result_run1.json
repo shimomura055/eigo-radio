@@ -1,0 +1,111 @@
+[
+ {
+  "id": "p1_synonym_of_kp",
+  "target": "ai_island_std",
+  "expected": "fail",
+  "verdict": "fail",
+  "required_conflicts": [
+   "carry over"
+  ],
+  "pool_conflicts": [],
+  "grammar_conflicts": [],
+  "stage1_auto": [],
+  "closest": {
+   "item_id": "p_1a2370a6af",
+   "label": "K2",
+   "why": "carry over の「期間をまたいで残る」用法を取り上げており、pass on との使い分けも含めているため最も近いです。"
+  },
+  "cost_jpy": 0.0444,
+  "judge_skipped": false
+ },
+ {
+  "id": "p2_part1_comparison_type",
+  "target": "ai_island_std",
+  "expected": "fail",
+  "verdict": "fail",
+  "required_conflicts": [
+   "take a detour"
+  ],
+  "pool_conflicts": [],
+  "grammar_conflicts": [],
+  "stage1_auto": [
+   "take a detour"
+  ],
+  "closest": {},
+  "cost_jpy": 0,
+  "judge_skipped": true
+ },
+ {
+  "id": "p3_same_idiom_other_form",
+  "target": "tth_std",
+  "expected": "fail",
+  "verdict": "fail",
+  "required_conflicts": [
+   "make one's blood turn cold"
+  ],
+  "pool_conflicts": [],
+  "grammar_conflicts": [],
+  "stage1_auto": [],
+  "closest": {
+   "item_id": "p_c4e00460ea",
+   "label": "K1",
+   "why": "どちらも恐怖を寒さの身体感覚で表す比喩で、学習上の焦点が同じです。"
+  },
+  "cost_jpy": 0.0396,
+  "judge_skipped": false
+ },
+ {
+  "id": "p4_same_focus_as_grammar_top1",
+  "target": "ai_island_std",
+  "expected": "pass_with_grammar_conflict",
+  "verdict": "pass",
+  "required_conflicts": [],
+  "pool_conflicts": [],
+  "grammar_conflicts": [
+   "比較対象が明示されない比較表現",
+   "比較対象が明示されない比較表現"
+  ],
+  "stage1_auto": [],
+  "closest": {
+   "item_id": "gc74d4a5e22",
+   "label": "G1",
+   "why": "候補とG1は、比較対象が省略された比較表現の読み取りを扱っており、学習上の焦点が同じです。"
+  },
+  "cost_jpy": 0.061,
+  "judge_skipped": false
+ },
+ {
+  "id": "p5_non_overlap_at_least",
+  "target": "ai_island_std",
+  "expected": "pass",
+  "verdict": "pass",
+  "required_conflicts": [],
+  "pool_conflicts": [],
+  "grammar_conflicts": [],
+  "stage1_auto": [],
+  "closest": {
+   "item_id": "p_dc8803926c",
+   "label": "K6",
+   "why": "どちらも範囲に関わる副詞ですが、separately は個別に扱うことを示し、at least は主張の適用範囲を限定するため焦点は異なります。"
+  },
+  "cost_jpy": 0.0407,
+  "judge_skipped": false
+ },
+ {
+  "id": "p6_non_overlap_should_have_seen",
+  "target": "tth_std",
+  "expected": "pass",
+  "verdict": "pass",
+  "required_conflicts": [],
+  "pool_conflicts": [],
+  "grammar_conflicts": [],
+  "stage1_auto": [],
+  "closest": {
+   "item_id": "p_d6ebe899c6",
+   "label": "K5",
+   "why": "どちらも話し手の様子を表す点では近いものの、K5は声を大きくする動作、候補は過去の様子を見せたかったほどだと強調する表現が焦点です。"
+  },
+  "cost_jpy": 0.0433,
+  "judge_skipped": false
+ }
+]

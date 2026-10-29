@@ -40,6 +40,7 @@ class TestSharedFunctionsUnchanged(unittest.TestCase):
 class TestImportersAreOnlyXZRunners(unittest.TestCase):
     ALLOWED = {"er019_family_x_audio_production_runner_01.py", "er026_family_z_fiction_production_runner_01.py",
                "er120_part2_wiring_01.py",
+               "er134_nuance_explanation_01.py",   # NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02A: ニュアンス解説の共通核(X/Y/Z共通。A/B/C非接触。rv.auto_selectとrv.candidates_sha256のみ参照)
                "er128_kp_confirmed_content_01.py"}   # 委任_03: 文法(Part 2)配線module(X/Z runner共通の1経路) / KP-CONFIRMED-CONTENT-PROTECTION-01 委任_02A: 確定内容保護の共通核(core/CLIから遅延import。A/B/C非接触)
 
     def test_only_x_z_runners_import_er119(self):

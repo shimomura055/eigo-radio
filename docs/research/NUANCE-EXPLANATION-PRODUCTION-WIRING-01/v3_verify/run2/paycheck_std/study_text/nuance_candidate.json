@@ -1,0 +1,109 @@
+{
+  "schema": "nuance_candidate_v1",
+  "family": "X",
+  "article_id": "paycheck_personality",
+  "level": "Standard",
+  "level_key": "a2",
+  "generated_at": "2026-10-29T08:57:01+0900",
+  "candidate": null,
+  "no_candidate_reason": "model_returned_none",
+  "kp_word_basis": {
+    "status": "provisional",
+    "items": [
+      "conscientiousness",
+      "weak link",
+      "come first",
+      "none other than",
+      "pay raise"
+    ],
+    "provisional_ids": [
+      "pc_std_1",
+      "pc_std_2",
+      "pc_std_3",
+      "pc_std_4",
+      "pc_std_5"
+    ],
+    "pool_ids": [
+      {
+        "id": "pc_std_1",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_2",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_3",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_4",
+        "kind": "phrase"
+      },
+      {
+        "id": "pc_std_5",
+        "kind": "phrase"
+      }
+    ],
+    "candidates_sha256": "a7719c8b55c7fd13bb8f5dfc2eaa4a6a381c113633afc80e1389408dcd8f79e4",
+    "pool_identity_sha": "0b5f398f8447d93a956fbbb0888e96f67dd3841e91b83a1481ef049d5f2ec666",
+    "grammar_identity_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "text_sha256": "37513946c17d85216dfd2e352eb9317009ca869daf5973dc595223fc8fc8bfdc",
+  "model": "gpt-6-luna",
+  "prompt_sha": "0cb5e9495ece99905cecf7e6968e55205e402b91250a09d1fec3787bc4e699d4",
+  "judge_prompt_sha": "643c857a6ca5c9c0cf608f4595e19e399e86ed04b13422d6fb689efea4322d39",
+  "generation": {
+    "prompt_sha256": "6e3f0f621b5e4ebf7ab73ad457cf21c04e1f39c7679f3d4e3e56eb64f11b58ef",
+    "rejected_candidates": [
+      {
+        "expression": "the arrow does not point only one way",
+        "focus": "関連が一方向だけではないことを矢印の比喩で示す",
+        "reason": "kp_word_overlap",
+        "note": "「weak link」の解説と同じく、関連の方向性を扱うため。"
+      },
+      {
+        "expression": "Coming first vs being the cause",
+        "focus": "出来事の順序と原因を区別する",
+        "reason": "kp_word_overlap",
+        "note": "Key Phraseの「come first」と焦点が重なるため。"
+      },
+      {
+        "expression": "may have affected both",
+        "focus": "原因を断定せず可能性として述べる",
+        "reason": "grammar_overlap",
+        "note": "助動詞mayの確信度の説明になり、文法コーナーと重なるため。"
+      },
+      {
+        "expression": "That's just my personality",
+        "focus": "justが性格を変えられないものとして扱う印象",
+        "reason": "low_value",
+        "note": "本文の文脈には沿うが、表現の語用的な差としての学習価値が十分でないため。"
+      }
+    ],
+    "model_reason_ja": "有力な候補は、Key Phraseや文法コーナーと焦点が重なるか、文脈解釈にとどまり、独立したニュアンス解説としての学習価値が十分ではありません。"
+  },
+  "status": "NO_CANDIDATE",
+  "usage": {
+    "input_tokens": 2749,
+    "output_tokens": 1077,
+    "cost_jpy": 0.1301,
+    "n_calls": 1,
+    "calls": [
+      {
+        "process": "NUANCE_EXPLANATION",
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 2749,
+          "output_tokens": 1077,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 702
+        },
+        "response_id": "resp_0887ba98f8f651f4006ae28bce543487d083d46d495ca861d2",
+        "elapsed_sec": 12.83,
+        "cost_jpy": 0.1301
+      }
+    ]
+  }
+}
