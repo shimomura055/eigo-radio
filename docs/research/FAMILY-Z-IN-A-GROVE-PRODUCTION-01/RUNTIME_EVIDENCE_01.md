@@ -148,3 +148,10 @@ Writer〜std_adjust〜plan〜support(委任_06まで)+ kp(委任_06 約1.6+委�
 - 詳細=`HR_ROUTE_PART3_C6_01.md`。stop_scope_check rc=0。有料run 0。
 - 時系列: #1 ctx 14:55:44(NG_BOTH)/#2 ctx 14:56:43(1次PASS・減速後再検証NG_BOTH 14:58:06)/180秒待機(179.941s)/#3 Fallback(legacy_fallback、input_tokens 554)15:01:06(ASR PASS・repetition d'0.73s>0.6s flagged)/通算3回→TERMINAL_NG→Review Lock。LRはZ_DLG_CTX `lr=False`(er127_tts_block_policy_01.py:114、CURRENT_SPEC:3178)で対象外。
 - 結論=(A)既存ルート正常通過。未実行の承認済み救済工程・経路不具合なし。残る自動救済なし(再生成はer011:475の人間承認1回)。補足: Z dialogue終端はHRQ行を書かない仕様(ROW_MAPPING_01 Z_DLG_CTX=Lock→HR/STOP)。
+
+## 委任_08(2026-10-29、API 0・追加費用0): End User asset 不規則動詞表IRR拡充+既公開4記事+藪の中のenduser/再生成
+- stop_scope_check rc=0。有料run 0。判断=Fable(委任_07候補A=承認済みrev01-e強調仕様の表の不完全という不具合の是正[11-8]。asset版管理[rev01-f]不採用、単一asset版維持、Z個別回避不可)。
+- 修正: `user_test/dev_enduser_page_01/app.js`のIRRを元46形群→152形群に拡充(sink/sank/sunk/sunken、swim、steal、throw、understand、wake、wear、win、write等。動詞のみ。語が複数群に属する場合は和集合[lie/lay/laid等]。placeholder除外・曖昧時非強調のfail-safe・英文無改変は不変)。`enduser_page_assets/derive_assets_01.py --write`でrev01-e再派生(許可リストEDITSのみ。app.js sha256 fe0238bf…→7ae1ebfd…、index.html/style.css不変)。他Workerの未commit差分とは無関係(dev_enduser_page_01/app.jsは本件だけが差分。er120/er134は未接触)。
+- test: er135_enduser_page_test_01.py T18(node実行3件: sink for ever→sank for everの太字範囲1件・sunk、表規模>=100形群と代表動詞5語、fail-safe[一致0/placeholderのみ/複数候補=非強調])。er135 page/hook/sync/dropout計182 PASS。
+- 再生成(produce、ASRはcache hit、runner再起動なし): 月/再配達料/メロス/姓/藪の中すべてrc=0・Playwright(PC+mobile模擬)全項目OK・verify-consistency ok。dev index.html(git未変更)。月のsync_std 1要素0.03秒差のみ(固有名詞prompt自動使用に伴うcache再計算)。姓のbuild_info id/article.jsonのidが"pages"→公開dir名に正規化(produce経路の仕様)。
+- 藪の中: End User生成・公開(`enduser_FAILED_browser_bold_sink_for_ever_01`は記録後に削除)。
