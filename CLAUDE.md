@@ -190,6 +190,7 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   (7)`/clear`は自動実行しない、(8)ユーザー向け報告は`★★★★報告ここから★★★★`〜`★★★★報告ここまで★★★★`マーカーで囲む(PM_GOVERNANCE 9-8、2026-10-12再徹底)。復帰直後の最初の報告から適用する。(1)(2)の省略は禁止(ACTIVE_TASKのみ読んで再開しない)。
   報告運用=PM_GOVERNANCE 12節(2026-10-28改定12-14: 中間報告なし・タスク単位完了報告・例外のみ即時)。
   端末表示最小化(USER_02, 2026-10-28): 長文file(委任文・成果物)はWriteでなくBash heredocまたはWorker作成、Agent promptは短く(詳細は委任fileへ)、進行中narrationなし、Read全文表示を避けgrep/偏った範囲読み。ユーザー側設定=viewMode focus+tui fullscreen(`docs/research/PM-REPORTING-RULES-01/REPORTING_RULES_REFLECTION_01.md`参照)。
+- Human Review要求は到達経路7項目を必須(対象/適用ルート/通過工程と判定/retry・fallback・LRの発動有無と理由/直接原因/残る自動救済/判断依頼内容)とし、「正常通過」か「不具合・未実行工程」かを区別する。Fableが十分性を確認。新Gateではない。正本=`docs/pm/PM_GOVERNANCE.md` 30節(2026-10-29ユーザー正式決定)。
 - 開発・評価用途の最新モデル原則(2026-10-09ユーザー正式採用、PM-DEV-EVAL-LATEST-MODEL-RULE-01): 検証・比較・方式評価等では原則として最新世代の最上位系/推奨系モデルを使い、旧/下位モデルは明確な例外理由を実行前に明記する。評価・Trialの報告には使用モデル名/最新か/最新でない場合の理由を必ず記載。本番ラインのモデル選定は別判断。正本は`docs/pm/PM_GOVERNANCE.md` 25節(ここへは全文を複製しない)。
 - 開発時間最小化・並列実行原則(2026-10-06ユーザー正式採用、
   PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01): 各タスク開始時に依存関係・

@@ -3733,7 +3733,32 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 ### 29-6. 範囲外・不変事項
 本決定は運用Charter・文書整備であり、次を変更しない: Production承認原則(APPROVED_FOR_PRODUCTION)、品質基準、安全Gate、予算Cap(7-6・7-7・7-8・7-9・各run)、STOP/STOP通知(26節)、PM Gate(Gate 1〜7)、11-3 Opus Gate、11-7限定例外、Production runtime(未検証・未変更)。
 
+## 30. Human Review到達経路の報告ルール(2026-10-29ユーザー正式決定、FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_16)
+
+ユーザー指示原文(逐語)=`docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_CHECK_01.md`。**新たな品質基準・Gate・追加検査・追加のユーザー判断ではない**。既存の処理経路と判断根拠を報告するための運用ルールで、既存ログを最大限活用する。
+
+### 30-1. 適用範囲
+全Family・全レベル・全工程で、AI(Worker/Fable)がHuman Review(HR)をユーザーに求める(試聴採用・再生成承認・HR Lock・HRQ等)すべての場面。
+
+### 30-2. 必須7項目(HR要求の報告に必ず含める)
+1. 対象(記事・Family・レベル・音声/工程)
+2. 適用された承認済みProductionルート(CURRENT_SPEC節・file:line・実装関数)
+3. 実際に通過した工程と各工程の判定結果(時系列: 時刻・経路[通常/再試行/Fallback/LR]・方式・各Gate判定・費用)
+4. retry/fallback/LR等の救済処理の発動・非発動と理由(対象外/未配線/上限到達のいずれか)
+5. HRに至った直接原因
+6. 残っている自動救済手段の有無
+7. ユーザーに具体的に何を判断してほしいか
+
+### 30-3. 区分の明示(必須)
+報告冒頭で「**既存ルートを正常に通過した結果のHR**」か「**不具合・未実行工程によるHR**」かを区別する。後者(未実行の承認済み救済工程・経路上の不具合)が見つかった場合は、ユーザー判断を求める前に、既存仕様・予算・安全条件内で原因究明→修正→検証(必要なら救済工程の実行)まで進める(11-8)。安全上の試行上限の迂回・未承認仕様変更は不可。
+
+### 30-4. 運用
+- WorkerはRESULT_PACKETにHR要求時の7項目と区分を書く(`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`の報告節)。**Fableは受入時に7項目の充足と、「正常通過」の主張が実ログ(attempt state・review_lock_state・attempt_history・cost_log等)と整合することを確認**し、不足ならユーザー提示せず差戻す(UDR発行前チェック27-3/P3の一部として扱う。新Gateではない)。
+- 適用例(初回)=`docs/research/FAMILY-Z-IN-A-GROVE-PRODUCTION-01/HR_ROUTE_PART3_C6_01.md`(Adv part3_c6: ctx→ctx→180秒→Fallback、LR対象外=Z dialogueは未配線[CURRENT_SPEC:3178]、正常通過と判定)。
+
 ## 変更履歴
+
+- 2026-10-29(`FAMILY-Z-IN-A-GROVE-PRODUCTION-01` 委任_16、ユーザー正式決定): 30節新設(Human Review到達経路の報告ルール: 必須7項目+正常通過/不具合・未実行の区分+Fable十分性確認。新Gate・新品質基準ではない)。テンプレート報告節・`CLAUDE.md`ポインタを追随。
 
 - 2026-10-24(`ASR-TIME-NUMERAL-EQUIVALENCE-01` 委任_04、ユーザー指示§7『Open Item運用の是正』への対応。既存規則の明確化のみ・実質変更0): 11-8『ラベル運用』へ『Open Item登録は作業完了でも停止理由でもない。既存仕様の不具合で委任範囲内なら登録後そのまま修正へ進む(分類→修正→検証→反映→SSOT追跡)。新規OPEN登録時は分類と次アクションを付す』を1文追記(29-3 C-14・11-8・Charter原則4の運用明記。新しいGate・STOP・検査工程は追加しない)。
 - 2026-10-19(`FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01` 委任_04、ユーザー指示§5「大原則に従って行動できなかった原因分析」への対応。既存規則の明確化のみ・実質変更0): 11-8(不具合判定テストと扱い・ラベル運用・停止根拠の明示)・14-7(HR依頼の必須4要素)を新設、29-3へC-14〜C-18を追加。`DELEGATION_STANDARD_TEMPLATE.md`(修正範囲の書き方)・`sandwich-pm.md`(手順3・4-2・STOP節の整合)へ参照を追記。新しいGate・STOP・待機は追加しない。検査=`docs/pm/tools/check_defect_vs_spec_rule_01.py`。

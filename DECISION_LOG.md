@@ -22794,3 +22794,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ### 2026-10-29 FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01 委任_03C: KP verifyのハイフン表記差を比較側で正規化(不具合是正、API 0)
 - 承認済み「選定どおりの音声」と矛盾するverify誤STOP(OPEN-599)を、比較側`_kp_text_norm`(er119、er128 G2も使用)で是正。TTS記録・Prompt・閾値は不変、語・順序の差は従来どおりSTOP。page_verify単独再実行PASS。候補ページ=`user_test/family_y_production_surname_choice_01/`(ユーザー試聴待ち、OPEN-598)。
+
+### 2026-10-29 FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_16: Human Review到達経路の報告ルール(ユーザー正式決定)+Adv part3_c6の経路確認(API 0)
+- ユーザー確認指示(原文=`docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_CHECK_01.md`)に基づき、Adv `full_story_part3_c6`の実処理経路を既存ログで照合: ctx#1(NG_BOTH)→ctx#2(減速後再検証NG_BOTH)→180秒→#3 Fallback従来方式(ASR PASS・repetition d'短lag 0.73s>0.6s)→通算3回上限→Review Lock。LRはZ dialogue未配線(CURRENT_SPEC:3178)で対象外=正しく非発動。**結論(A)既存ルートを正常に通過した結果のHR**、未実行の承認済み救済工程・経路不具合なし(証跡=`docs/research/FAMILY-Z-IN-A-GROVE-PRODUCTION-01/HR_ROUTE_PART3_C6_01.md`)。
+- 新ルール: 全Family/レベルでHR要求時は到達経路7項目+正常通過/不具合・未実行の区分を必須とし、Fableが十分性確認。**新Gate・新品質基準ではない**。正本=`docs/pm/PM_GOVERNANCE.md` 30節、テンプレート・`CLAUDE.md`ポインタ追随。ユーザーのc6採用/再生成判断(UDR #220)は調査完了まで保留の指示で、以後は新ルール形式で提示。
