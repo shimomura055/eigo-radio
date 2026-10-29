@@ -70,7 +70,11 @@ def main():
                      "mp3_bytes": os.path.getsize(os.path.join(AUD, "part2_fallback_take_adopted.mp3")), "model": res["model"], "instruction": res["instruction_label"],
                      "asr_class": res.get("post_slowdown_final_classification"), "slowdown_actual_pct": res["slowdown_info"]["slowdown_pct_actual"]}
     rows = ""
+    import er_hr_listing_policy_01 as hrl   # 委任_05(PM_GOVERNANCE 30-5): 掲載はユーザー判断対象のみ。本ページは承認Style NG take(比較判断の対象)を判断要求として明示(掲載は不変)
+    _listed_ids = {t["id"] for t in hrl.select_listing_takes([{"id": i, "asr_state": "NG_BOTH", "user_judgment_requested": True} for i, _a in enumerate(logs, 1)])[0]}
     for i, a in enumerate(logs, 1):
+        if i not in _listed_ids:
+            continue
         wf = a["attempt_audio_path"]
         wf = wf if os.path.isabs(wf) else os.path.join(ROOT, wf)
         dst = "part2_style_attempt%d.mp3" % i

@@ -5906,15 +5906,15 @@
     ]
   },
   "full_story_part3_c6": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "fe82ad9a74e96cc63f8a999644cf312fd95322531652cfaaaa817716cd5f0181",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "b1b",
     "segment_id": "full_story_part3_c6",
-    "updated_at": "2026-10-29T18:30:25",
-    "reason": "最終status=STOPPED。文脈・感情付きTTS方式の通算6回の試行(上限6回=ブロック3回x2[LRを挟む]、各ブロックの1〜2回目=文脈・感情付き、3回目=従来方式)でもASR検証に合格しませんでした(この呼出のmax_attempts=3、phase=B2)",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-29T19:49:15",
+    "reason": "個別Human Approval(2026-10-29T19:49:15、FZ-DIALOGUE-LR-ADOPTION-01 委任_05)。ユーザーがHRで③(LR前本文・従来Dialogue、attempt4)を採用。この1segment・1attemptのみ(一般的なASR/QA検査免除ではない)。cumulative_tts_attempts=6は保持。原文=docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER_02.md",
+    "final_status": "HUMAN_APPROVED",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/full_story_part3_c6.wav",
     "cumulative_tts_attempts": 6,
     "cumulative_asr_calls": 6,
@@ -6380,6 +6380,11 @@
         "dialogue_tts_policy": "fz_ctx_v1",
         "dialogue_block_depth": 1
       }
-    ]
+    ],
+    "prior_state": "HUMAN_REVIEW_REQUIRED",
+    "prior_final_status": "STOPPED",
+    "adopted_attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt4_englishstyleprefixwidemargin.wav",
+    "adopted_audio_sha256": "edc168f6bbbee7be62dfc98990764f7d827173f1e87f297fc10ca2d579b6bc1d",
+    "adopted_attempt_wav_sha256": "9119acaf435b98d9395931b1648c17f48e1c067feab0c26d682983a1ea52a217"
   }
 }

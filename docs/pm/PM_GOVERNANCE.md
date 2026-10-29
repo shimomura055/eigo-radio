@@ -3764,8 +3764,13 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 - WorkerはRESULT_PACKETにHR要求時の7項目と区分を書く(`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`の報告節)。**Fableは受入時に7項目の充足と、「正常通過」の主張が実ログ(attempt state・review_lock_state・attempt_history・cost_log等)と整合することを確認**し、不足ならユーザー提示せず差戻す(UDR発行前チェック27-3/P3の一部として扱う。新Gateではない)。
 - 適用例(初回)=`docs/research/FAMILY-Z-IN-A-GROVE-PRODUCTION-01/HR_ROUTE_PART3_C6_01.md`(Adv part3_c6: ctx→ctx→180秒→Fallback、LR対象外=Z dialogueは未配線[CURRENT_SPEC:3178]、正常通過と判定)。 **2026-10-29以降はZ dialogueもLR対象**(ユーザー正式採用`FZ-DIALOGUE-LR-ADOPTION-01`、最大TTS6・LR1・待機2)。この適用例は採用前の履歴であり、以後のZセリフHR報告は必須項目4にLR発動/非発動(LR不可=NO_USABLE_LR_INPUT/NO_CANDIDATE_PASSED_QA/確定内容保護)を記載する。新形式の適用例=`docs/research/FZ-DIALOGUE-LR-ADOPTION-01/HR_ROUTE_PART3_C6_02.md`(藪の中Adv part3_c6、LR発動後④⑤⑥NG)。
 
+### 30-5. 試聴ページの掲載対象(2026-10-29ユーザー正式決定、FZ-DIALOGUE-LR-ADOPTION-01 委任_05。ユーザー原文=`docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER_02.md` §2)
+**掲載対象=ユーザーが聴いて判断する音声のみ**。HRページには判断対象の音声だけを掲載し、ASR NGで比較判断を求めない失敗Take・不採用Take・確認不要Takeは掲載しない(理由は簡潔に説明)。技術的な試行履歴・NG理由・全Takeの証拠は内部ログ(attempt state・review_lock・HRQ・EVIDENCE)に**そのまま保持**する(削除しない。ユーザー向け表示を必要十分にする指示であり、新Gate・品質基準変更ではない)。完成候補ページは最終採用音声を中心に提示し、HR採用の事実は事後確認節に簡潔に示す(再生UIは本文の再生順スクリプトの行にある最終音声のみ)。適用範囲=Family X/Y/Z・Standard/Advanced。
+実装(共通関数)=`er_hr_listing_policy_01.py`(`select_listing_takes`=掲載/非掲載の振分け・`omitted_internal_record`=非掲載の内部記録・`render_hr_adoption_section`/`collect_hr_adoptions`=候補ページの事後確認節)。組込み=Z候補ページ(`er026_family_z_fiction_production_runner_01.stage_pages`)・`er019_mey_hr_page_02.py`・`er019_pp_hr_page_01.py`・`docs/research/FZ-DIALOGUE-LR-ADOPTION-01/tools/build_hr_page_03.py`。新規HRページ生成scriptは同関数を通すこと(`DELEGATION_STANDARD_TEMPLATE.md`に1行追記)。ASR NGでも『耳で読み誤りかを判断してほしい』場合は`user_judgment_requested=True`を明示して掲載できる。test=`er_hr_listing_policy_01_test_01.py`。
+
 ## 変更履歴
 
+- 2026-10-29(`FZ-DIALOGUE-LR-ADOPTION-01` 委任_05、ユーザー正式決定USER_02 §2): 30-5新設(試聴ページの掲載対象=判断対象音声のみ。内部記録は維持。共通関数`er_hr_listing_policy_01.py`+test)。テンプレート1行追随。新Gate・品質基準変更なし。
 - 2026-10-29(`FAMILY-Z-IN-A-GROVE-PRODUCTION-01` 委任_16、ユーザー正式決定): 30節新設(Human Review到達経路の報告ルール: 必須7項目+正常通過/不具合・未実行の区分+Fable十分性確認。新Gate・新品質基準ではない)。テンプレート報告節・`CLAUDE.md`ポインタを追随。
 
 - 2026-10-24(`ASR-TIME-NUMERAL-EQUIVALENCE-01` 委任_04、ユーザー指示§7『Open Item運用の是正』への対応。既存規則の明確化のみ・実質変更0): 11-8『ラベル運用』へ『Open Item登録は作業完了でも停止理由でもない。既存仕様の不具合で委任範囲内なら登録後そのまま修正へ進む(分類→修正→検証→反映→SSOT追跡)。新規OPEN登録時は分類と次アクションを付す』を1文追記(29-3 C-14・11-8・Charter原則4の運用明記。新しいGate・STOP・検査工程は追加しない)。

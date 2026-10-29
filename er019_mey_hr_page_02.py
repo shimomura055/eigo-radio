@@ -55,7 +55,9 @@ def main():
     sup = rj(os.path.join(a2, "a2_support_texts.json"))
     expected = sup["comment_2"]
     att = []
-    for i in (1, 2, 3):
+    import er_hr_listing_policy_01 as hrl   # 委任_05(PM_GOVERNANCE 30-5): 掲載はユーザー判断対象のみ。本ページは3回ともASR NGだが『耳で読み誤りか判断してほしい』ため判断要求を明示(掲載は不変)
+    _listed, _omitted = hrl.select_listing_takes([{"id": i, "asr_state": "NG_BOTH", "user_judgment_requested": True} for i in (1, 2, 3)])
+    for i in [t["id"] for t in _listed]:
         wf = glob.glob(os.path.join(a2, "narration", "attempts", "comment_2_attempt%d_*.wav" % i))[0]
         j = rj(wf[:-4] + ".json")
         dst = "comment_2_attempt%d.mp3" % i

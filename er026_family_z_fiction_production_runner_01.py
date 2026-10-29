@@ -2683,6 +2683,17 @@ def stage_pages(ctx) -> dict:
     if _al_text:
         print(_al_text, flush=True)
         extra["post_check_html"] = _al_html
+    # FZ-DIALOGUE-LR-ADOPTION-01 委任_05(ユーザー決定USER_02 §2、PM_GOVERNANCE 30-5): HR採用clipの事後確認節(最終採用音声中心・簡潔。不採用Takeは載せない。HR採用なし=空=従来とバイト同一)
+    import er_hr_listing_policy_01 as _hrl
+    _hr_res = {}
+    for _lv in LEVELS:
+        _rp = f"{ctx.out_dir}/{_lv}/audit/tts_generation_results.json"
+        if os.path.exists(_rp):
+            with open(_rp, encoding="utf-8") as _f:
+                _hr_res[_lv] = json.load(_f).get("segments") or {}
+    _hr_html = _hrl.render_hr_adoption_section(_hrl.collect_hr_adoptions(_hr_res))
+    if _hr_html:
+        extra["post_check_html"] = extra.get("post_check_html", "") + _hr_html
     if hl_by_level:
         extra["highlights_by_level"] = hl_by_level   # 無い(旧run)=キー自体を渡さない=従来とバイト同一
     return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=cfg["page_title_ja"],

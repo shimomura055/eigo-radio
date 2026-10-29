@@ -119,6 +119,7 @@ import実行される事故防止(CONSOLIDATION-124)。)
 
 ### HR(Human Review)をユーザーに求める場合の必須7項目(PM_GOVERNANCE 30節、2026-10-29)
 対象/適用された承認済みProductionルート(spec節・file:line)/通過工程と各判定(時系列)/retry・fallback・LRの発動・非発動と理由/HRの直接原因/残る自動救済手段の有無/ユーザーに判断してほしい具体事項。冒頭で「既存ルートを正常に通過した結果のHR」か「不具合・未実行工程によるHR」かを区別する(後者はユーザー判断前に是正)。Fableは受入時に十分性を確認する。新Gateではない。
+**HR試聴ページ・完成候補ページの掲載対象(PM_GOVERNANCE 30-5、2026-10-29)**: ユーザーが聴いて判断する音声だけを掲載(ASR NGで比較判断を求めない失敗Take・不採用Take・確認不要Takeは非掲載、試行履歴・NG理由・全Takeの証拠は内部ログに保持)。共通関数=`er_hr_listing_policy_01.py`。完成候補ページは最終採用音声中心(HR採用は事後確認節に簡潔に)。
 
 ### 記事完成報告(Family X/Y/Z・Std/Adv完成候補の提出)の必須項目(PM_GOVERNANCE 9-16、2026-10-29 END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01)
 **開発者向けURL(`…/<dir>/index.html`)+End User向けURL(`…/<dir>/enduser/index.html`)+両ページの公開・動作検証結果(開発者向け=既存verify、End User向け=`er135_enduser_page_01.py verify-only`[PC+モバイル模擬]と`verify-consistency`、実機iOS/Android未実施なら模擬と区別)**をセットで報告する。End Userページが生成されていない(`ENDUSER_*`でSTOP)場合は完成報告にせず、STOP理由付きで報告する。別報告・別ユーザー判断を増やさない。
