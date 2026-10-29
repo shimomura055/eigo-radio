@@ -1,0 +1,200 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "In a Grove",
+  "text_sha256": "6aa5c86dd0d674b36ba5e5280de674922b809e2b36a543b5537d312e45c6210c",
+  "n_paragraphs": 14,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "9d2286a5cca00c198a99db500338789555f1765838bade134a05a3ddbecd83a0",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P3",
+      "cls": "APPOS",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "コンマで補足される名詞句が、直前の名詞を言い換える同格句かどうかを見分ける。",
+      "front_kind": "",
+      "sentence": "I caught Tajomaru, the famous bandit,” the constable said.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P4",
+      "cls": "APPOS",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "コンマ後の名詞句が、主語やその補語を補足する同格句として働くことを捉える。",
+      "front_kind": "",
+      "sentence": "Takehiro was my daughter’s husband, a kind samurai,” the old woman said.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "APPOS",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "文末の名詞句が、直前の目的語を言い換える同格句かどうかを見分ける。",
+      "front_kind": "",
+      "sentence": "His cold eyes looked down on me, his own wife.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P5",
+    "P6",
+    "P8",
+    "P9",
+    "P10",
+    "P11",
+    "P12",
+    "P13",
+    "P14"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "5ab7e67c77ac46c7878ff36b4c3849f86332a64cbfa3775edaa3b7792dd2768e",
+    "response_ids": [
+      "resp_0e734871ea3e229f006ae1f2d45f5487d09ff7311df3724772"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3560,
+          "output_tokens": 5400,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 4542
+        },
+        "response_id": "resp_0e734871ea3e229f006ae1f2d45f5487d09ff7311df3724772",
+        "elapsed_sec": 59.59,
+        "cost_jpy": 0.489
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.489,
+    "generated_at": "2026-10-28T22:05:19+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gfc812ca542",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "APPOS",
+      "para": "P3",
+      "sentence": "I caught Tajomaru, the famous bandit,” the constable said.",
+      "front_kind": "",
+      "misread_target": "MODIFIEE",
+      "misread_quote": "the famous bandit",
+      "misread_ja": "コンマ後の名詞句を独立した目的語のように読み、Tajomaruの言い換えとして結び付けないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "コンマで補足される名詞句が、直前の名詞を言い換える同格句かどうかを見分ける。",
+      "construct_ja": "同格句",
+      "points_ja": [
+        "the famous bandit は Tajomaru を説明する同格句。",
+        "the constable said は発話を伝える部分。"
+      ],
+      "context_ja": "巡査は、タジョマルを捕らえたと述べている。",
+      "prev": "“",
+      "next": "“He had Takehiro’s bow.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        1,
+        59
+      ]
+    },
+    {
+      "candidate_id": "gebcce7c1c9",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "APPOS",
+      "para": "P4",
+      "sentence": "Takehiro was my daughter’s husband, a kind samurai,” the old woman said.",
+      "front_kind": "",
+      "misread_target": "MODIFIEE",
+      "misread_quote": "a kind samurai",
+      "misread_ja": "コンマ後の名詞句を前の内容から切り離し、Takehiroを補足説明する同格句として結び付けないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "コンマ後の名詞句が、主語やその補語を補足する同格句として働くことを捉える。",
+      "construct_ja": "同格句",
+      "points_ja": [
+        "a kind samurai は Takehiro についての補足説明。",
+        "my daughter’s husband は was の補語。"
+      ],
+      "context_ja": "老女はTakehiroが娘の夫であると述べ、彼を親切な侍と説明している。",
+      "prev": "“",
+      "next": "“Masago is nineteen.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        1,
+        73
+      ]
+    },
+    {
+      "candidate_id": "gba599d4609",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "APPOS",
+      "para": "P7",
+      "sentence": "His cold eyes looked down on me, his own wife.",
+      "front_kind": "",
+      "misread_target": "MODIFIEE",
+      "misread_quote": "his own wife",
+      "misread_ja": "his own wife を別の目的語のように読み、me を言い換える同格句として結び付けないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "文末の名詞句が、直前の目的語を言い換える同格句かどうかを見分ける。",
+      "construct_ja": "同格句",
+      "points_ja": [
+        "me は前置詞 on の目的語。",
+        "his own wife は me を言い換える同格句。"
+      ],
+      "context_ja": "Masagoは、夫の冷たい目が自分を見下ろしていたと述べている。",
+      "prev": "I asked him to die with me.",
+      "next": "“The dagger was in my hand.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        142,
+        188
+      ]
+    }
+  ],
+  "top_ids": [
+    "gfc812ca542",
+    "gebcce7c1c9"
+  ],
+  "n_eligible": 3,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "c9124ec57bc3a2fa86e4a357078ca9a367cc043c692fa189c61a5310c42f7b6e",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

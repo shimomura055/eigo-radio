@@ -499,3 +499,8 @@ scope外の行の新キー有無: [{'ja_v2beta': False, 'judge_rule_version': Fa
 
 **実wavの再ASR(§2)**: 同じ6本を新たにASRすると PASS_W は draw別に [3, 2, 2] / 6(OpenAI miniの転写が呼出しごとに変わるため。保存転写の4/6は上限に近い値)。6本すべてが機械PASSになることは合格条件にしない(ユーザー原文§5)。
 
+
+## Z 実runner(藪の中 run_sf_prod_01 tts_a2、2026-10-29 11:01-11:15、HEAD 9cdf9af3b)でのv2+β発火記録
+- 発火: JA判定record 7件/有効7/定数OFF0/E3E4ブロック0/エラー無効化0(ja_v2beta_completion_block.json health)。`judge_rule_version`=`ja_v2beta_r1off_01`(a2/audit/tts_generation_results.json 7件、review_lock_state.json 9件)。
+- verdict: 6件=PASS(primary_pass)。comment_3(JA)のみ全3試行TRUE_CONTENT_MISMATCH(人名タジョマル/真砂を太郎丸/政子等に誤認)→rescue_basis無し(count_by_rescue_basis={})、HR Lock+JA HR queue 1行。新方式PASS_W 0件(β 0/v2 0/garble 0)、βモデル呼出0=β費用0(cost_log tts_a2にβ該当provider呼出なし、監査一致)。
+- 備考: tts_b1b(Adv)は英語levelのためJA判定0件(委任_07)。b1bのJAは未稼働のまま。

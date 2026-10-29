@@ -1,0 +1,123 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part2_c5",
+  "theme_id": "run_sf_prod_01",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part2_c5.wav",
+  "saved_at": "2026-10-29T11:13:47",
+  "sha256": "356eba7fcb07b6e8392ecec66d0e4ee1845a126fa256cd50d83d9beb592d9902",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "My Sago sat at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 20.4,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 55,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9964,
+          "time_a_seconds": 15.59,
+          "time_b_seconds": 18.24,
+          "lag_seconds": 2.65,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9934,
+          "time_a_seconds": 2.17,
+          "time_b_seconds": 9.62,
+          "lag_seconds": 7.45,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9922,
+          "time_a_seconds": 2.17,
+          "time_b_seconds": 20.23,
+          "lag_seconds": 18.06,
+          "run_length_seconds_at_thresh_0.85": 0.04
+        },
+        {
+          "similarity": 0.9918,
+          "time_a_seconds": 5.3,
+          "time_b_seconds": 12.65,
+          "lag_seconds": 7.35
+        },
+        {
+          "similarity": 0.9914,
+          "time_a_seconds": 3.94,
+          "time_b_seconds": 16.88,
+          "lag_seconds": 12.94
+        }
+      ],
+      "best_run_length_seconds": 0.04,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.4,
+      "time_a": 14.27,
+      "lag": 1.85,
+      "similarity_at_start": 0.755,
+      "best_run_length_seconds": 0.4,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "My Sago sat at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Masago said at the temple. The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife. He moved his lips while I held my dagger. Kill me, he said. So I stabbed him. I could not stand those eyes.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}

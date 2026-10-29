@@ -53,3 +53,15 @@ Writer〜std_adjust〜plan〜support(委任_06まで)+ kp(委任_06 約1.6+委�
 - API呼出=0、費用増分=0。累計 59.5989円 / Cap 90円(残30.40)。run出力・STOP・LOCK変更なし。
 - HEAD(判定時)=afc63717d。ja_v2beta配線は含まれる(judge_rule_version等の記録有無は実run未実施のため未確認)。
 - 再開条件: er026 runner/er121の未commit差分がcommitまたは解消された後、`--approved-budget-jpy 90` で `--stages tts_a2` を1起動 → 150秒以上空けて `--stages provision_shell,gate,assemble,pages,page_verify`。注意: NUANCE配線がHEADに入るとpages/page_verifyでニュアンス解説ブロックが期待される(in_a_grove側のnuance採否は今回未確認、要Fable確認)。
+
+## 委任_09r(2026-10-29): 起動A tts_a2 = STOP(FamilyZTtsClipFailedStop、2 clip HR)。起動Bは未実施
+- 前提確認: `git status --porcelain -- er026_*.py er120_*.py er128_*.py er121_*.py er003_*.py` = tracked変更0(`??`のer003_v1_p2*のみ、無視)。HEAD=9cdf9af3b。stop check(stop_check_09r_A.json)rc=0 stop=false。
+- 起動A: 11:01:32 `--stages tts_a2 --approved-budget-jpy 90 --mode real --tts-execution-mode STANDARD`(run_launch_log pid 26904)。11:15:29終了。`[STOP] FamilyZTtsClipFailedStop: FAMILY_Z_TTS_CLIPS_NOT_OK(a2): {comment_3: STOPPED, full_story_part1_c3: STOPPED}`。STOP/STOP_ALL/RESTART_STORM sentinel生成なし。e2e_stage_log.jsonlにtts_a2行なし(stage失敗のため)。再起動せず(委任文: 各起動1回のみ)。
+- 費用(compute_cost_jpy_so_far on cost_log.jsonl): 累計 **86.3468円 / Cap 90円**(a2分 +26.7479円。provider内訳 openai 39.85 / gemini 31.49 / openai_asr 3.46 / azure 11.55)。残り3.65円。a2はb1b(20.19円)より大きい: 3回試行+180秒cooldown(part1_c3 ctx x2 + legacy x1 の pro TTS、comment_3 flash-lite x3)の再試行分を含む。
+- tts_generation_results.json(a2) 27 segment: OK 25 / STOPPED 2。ASR(英語: 20、JA 7)。OK25内訳: PASS 22 / PASS_WITH_WARNING 3(part1_c10 secondary_confirmed、part2_c5 secondary_confirmed、part3_c2 primary_pass+SECONDARY_ASR_CORROBORATED)/ HR 2(STOPPED)/ 固有名詞ALARM 0。
+- STOPPED 2件(既存retry/fallbackを使い切り。人手判定変更なし):
+  1. comment_3(日本語、narrator Aoede flash-lite): 全3試行(standard 2+fallback 1)TRUE_CONTENT_MISMATCH。原文「タジョマルと真砂では…」→ASR「太郎丸と政子」「多助丸と雅子」「多十丸と政子」。人名の読み(タジョマル/マサゴ)をASRが別名に誤認。JA HR queue 1行+HR Lock。JA v2+β: 同clipはlock(ja_v2beta_completion_blockのhr.lock参照)。
+  2. full_story_part1_c3(英語、woodcutter Algieba pro): ASRは3試行とも原文と完全一致(NORMALIZED_MATCH, primary_pass)だが、repetition_qa(method_d' spectral_short_lag, 閾値0.6秒/sim 0.7)が3試行すべてflagged(run 1.24s/0.82s/0.80s、冒頭0.3〜0.7秒付近、lag 0.59〜0.76秒)で verified=false。method_a(n-gram)/method_d(長lag)はflagged=false。ctx x2→legacy_fallback x1とも同傾向=閾値0.6秒を僅かに超える短lag自己類似(Algieba声質に起因する疑い、真の繰返しかは未聴取)。
+- JA-ASR v2+β稼働: JA判定record 7件/有効7/定数OFF0/E3E4ブロック0/エラー無効化0。`judge_rule_version`=`ja_v2beta_r1off_01`(tts_generation_results.jsonに7件、review_lock_state.jsonに9件)。新方式(v2/β)PASS_W 0件(β 0 / v2 0 / garble 0)、β費用0。6件=PASS(primary_pass)。comment_3のみ全試行不一致でHR。
+- 声割当(送信実証、a2): narrator Aoede(flash-lite)、woodcutter Algieba、monk Schedar、constable Fenrir、old_woman Zephyr、tajomaru Orus、masago Kore、takehiro Puck(いずれもpro、voice_assignment.jsonと一致)。
+- 次の一手候補(Fable判断。Cap残3.65円): `--only-clips comment_3,full_story_part1_c3`で2 clipのみ再実行(runner提示の既存手段)。ただし(1)part1_c3は同一repetition_qaで再flagされる確率が高く(3/3)、(2)comment_3はASRの人名誤認でTTS側の問題でない可能性が高い。推奨: 原因別にFableが判断(repetition_qa閾値・JA人名はPromptや閾値の変更=承認事項に触れるため独断せず)。

@@ -1,0 +1,100 @@
+以下は、同じ記事から選ばれた7件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。7件から作れる全てのペア(21組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず21組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+“I found him in the bushes this morning,” the woodcutter said. “He lay near the mountain road, stabbed once in the chest. The blood was already dry when I saw him. Broken bamboo and marks on the ground showed a fight. I found no sword or bow, only rope and a comb.”
+
+“I saw the couple yesterday at noon,” the traveling monk said. “He carried a sword and bow, and his wife rode beside him.”
+
+“I caught the famous bandit Tajomaru near the bridge,” the constable said. “He had fallen off a horse, but still had Takehiro’s bow. Find the wife and ask her what he did.”
+
+“Takehiro, a kind samurai, married my daughter Masago,” the old woman said. “She is proud and only nineteen. Please find her before you send me home without news.”
+
+“I killed him fairly,” Tajomaru said. “The wind lifted her face covering, and I wanted her. I promised him buried treasure and led him into the bushes. There I tied him to a cedar tree. She fought with her dagger.
+
+“She held my arm and begged for one of us to die. She would leave with the man who lived. I freed him for a fair sword fight. Twenty-three blows—no other man had lasted twenty! She was gone when he fell. I took his weapons and left.”
+
+“I crawled towards my husband,” Masago said at the temple. “The bandit had left him tied up. I begged him to die with me. His cold eyes said I was nothing, even though I was his wife.
+
+“He moved his lips while I held my dagger. ‘Kill me,’ he said, so I stabbed him. I could not stand those eyes.
+
+“I later tried drowning myself, but I failed. Where can I go after that?”
+
+“I heard him speaking kindly to her,” Takehiro’s spirit said through a medium. “She asked him to take her anywhere. Then she pointed at me: ‘Kill that man.’
+
+“He pushed her away and asked if she should live or die. I nearly forgave him then, but she ran away. He cut one rope and left me.
+
+“I got up beside the cedar and picked up her small dagger. She had dropped it there. I pushed it into my own chest.
+
+“The bushes around me grew quiet. Someone came slowly towards me on silent feet. A hand I could not see quietly pulled the dagger from my chest.
+
+“I sank into the darkness and never came back.”
+
+【Key Phrase 7件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "through a medium",
+    "japanese_gloss": "霊媒を通して",
+    "source_sentence": "I heard him speaking kindly to her,\" Takehiro's spirit said through a medium"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "on silent feet",
+    "japanese_gloss": "足音を立てずに",
+    "source_sentence": "Someone came slowly towards me on silent feet"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "sink into the darkness",
+    "japanese_gloss": "死の闇へ沈んでいく",
+    "source_sentence": "I sank into the darkness and never came back"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "constable",
+    "japanese_gloss": "警官",
+    "source_sentence": "I caught the famous bandit Tajomaru near the bridge,\" the constable said"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "drown",
+    "japanese_gloss": "溺れる",
+    "source_sentence": "I later tried drowning myself, but I failed"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "dagger",
+    "japanese_gloss": "短剣",
+    "source_sentence": "She fought with her dagger"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "bandit",
+    "japanese_gloss": "盗賊",
+    "source_sentence": "I caught the famous bandit Tajomaru near the bridge,\" the constable said"
+  }
+]
