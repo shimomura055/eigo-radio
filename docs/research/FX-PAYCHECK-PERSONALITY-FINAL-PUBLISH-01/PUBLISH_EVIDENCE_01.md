@@ -19,3 +19,4 @@ https://shimomura055.github.io/eigo-radio/user_test/paycheck_personality_e2e_02/
 - 解説表示(live html Grep): Key Phrase 16 / Preview 6 / Full Story Part 1 2 / Part 2 2 / Comment 1-4 各2 / In One Line 4(Std/Adv)。
 ## 注意(判断不要の記録)
 - ページ冒頭に「状態: 正式完成候補・ユーザー試聴待ち」の文言が残る(prix_pascal/tesla/moon等の前例も同様に未改変)。試聴物の同一性を保つため改変しない。必要なら別途文言更新を次委任で提案可。
+- 2026-10-29 公開ページ見出し文言修正 commit 0dee99374: live確認 HTTP 200・旧文言(試聴待ち/完成候補)0件・新文言「正式公開(2026-10-29)」2箇所
