@@ -46,7 +46,7 @@
   }
   function card(title, body, opts) {
     opts = opts || {};
-    return '<section class="card"' + (opts.part != null ? ' data-part="' + opts.part + '"' : '') + (opts.id ? ' id="' + opts.id + '"' : '') + '>' +
+    return '<section class="card' + (opts.cls ? ' ' + opts.cls : '') + '"' + (opts.part != null ? ' data-part="' + opts.part + '"' : '') + (opts.id ? ' id="' + opts.id + '"' : '') + '>' +
       (opts.label ? '<span class="label">' + esc(opts.label) + '</span>' : '') +
       '<div class="sectionhead"><h2>' + esc(title) + '</h2>' + (opts.btn || '') + '</div>' + body + '</section>';
   }
@@ -97,13 +97,19 @@
         var mean = (it.fields.filter(function (f) { return f.label === '本文中の意味'; })[0] || {}).html || '';
         return '<details class="vi" id="vi-' + lv + '-' + vi + '"' + (wide ? ' open' : '') + '><summary><b class="vh">' + esc(it.heading) + '</b><span class="vm">' + mean + '</span></summary><dl>' +
           it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></details>';
-      }).join(''), { label: 'WORDS', id: 'vocab' });
+      }).join(''), { label: 'WORDS', id: 'vocab', cls: 'blk-vocab' });
     }
     if (L.grammar && L.grammar.length) {   // 採用0件ならコーナーごと非表示
       var ph = L.grammar_source === 'placeholder_for_layout_check';   // rev01-c: 表示確認用の仮データ(DEVページのみ・本文と内容は無関係)
       out += card('Grammar & Sentence Structure', (ph ? '<div class="phnote" data-grammar-source="placeholder_for_layout_check">【仮データ・表示確認用】他記事(月のしわ Advanced)の文法解説を流用しています。記事本文とは内容が対応しません。レイアウト・文字サイズ確認専用で、正式な文法解説ではありません。</div>' : '') + L.grammar.map(function (it) {
         return '<div class="gr"><dl>' + it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></div>';
-      }).join(''), { label: ph ? 'GRAMMAR(仮)' : 'GRAMMAR', id: 'grammar' });
+      }).join(''), { label: ph ? 'GRAMMAR(仮)' : 'GRAMMAR', id: 'grammar', cls: 'blk-grammar' });
+    }
+    if (L.nuance && L.nuance.length) {   // rev01-d: ニュアンス解説(DEV仮表示。採用0件ならコーナーごと非表示)
+      var nph = L.nuance_source === 'placeholder_for_layout_check';
+      out += card('ニュアンス解説', (nph ? '<div class="phnote" data-nuance-source="placeholder_for_layout_check">【仮データ・表示確認用】他記事のニュアンス解説を流用。記事本文とは内容が対応しません。</div>' : '') + L.nuance.map(function (it) {
+        return '<div class="gr"><h4 class="nh">' + esc(it.heading) + '</h4><dl>' + it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></div>';
+      }).join(''), { label: nph ? 'NUANCE(仮)' : 'NUANCE', id: 'nuance', cls: 'blk-nuance' });
     }
     $('content').innerHTML = out;
     sentEls = {};
@@ -212,14 +218,13 @@
     $('eyebrow').textContent = 'English Your Way · ' + LEVEL_NAME[lv];
     $('playAll').textContent = '▶ 全体を再生(' + fmt(L.total_sec) + ')';
     Array.prototype.forEach.call($('tabs').children, function (b) { b.setAttribute('aria-selected', b.dataset.lv === lv ? 'true' : 'false'); });
-    document.title = '【DEV試作】' + art.title_ja + '｜' + LEVEL_NAME[lv];
+    document.title = '[DEV] ' + art.title_ja + '｜' + LEVEL_NAME[lv];
     var u = new URL(location.href); u.searchParams.set('a', art.id); u.searchParams.set('lv', lv); history.replaceState(null, '', u);
     render(); labels(); loadSync();
   }
   function init(aid) {
     fetchJson('data/' + aid + '.json').then(function (j) {
       art = j;
-      $('devArticle').value = aid;
       $('jaTitle').textContent = art.title_ja; $('enTitle').textContent = art.topic_en;
       $('tabs').innerHTML = Object.keys(art.levels).map(function (k) { return '<button type="button" role="tab" data-lv="' + k + '">' + LEVEL_NAME[k] + '</button>'; }).join('');
       var want = Q.get('lv'); setLevel(art.levels[want] ? want : Object.keys(art.levels)[0]);
@@ -244,7 +249,6 @@
   });
   $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-lv]'); if (b && b.dataset.lv !== lv) setLevel(b.dataset.lv); });
   $('playAll').addEventListener('click', function () { playFull(0); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-  $('devArticle').addEventListener('change', function () { var u = new URL(location.href); u.searchParams.set('a', this.value); u.searchParams.delete('lv'); location.href = u.href; });
   $('pp').addEventListener('click', function () { if (A.paused) { if (!A.src) playFull(0); else playNow(); } else A.pause(); });
   $('back10').addEventListener('click', function () { A.currentTime = Math.max(0, A.currentTime - 10); tick(); });
   $('fwd10').addEventListener('click', function () { A.currentTime = Math.min(dur() - 0.05, A.currentTime + 10); tick(); });

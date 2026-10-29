@@ -60,3 +60,13 @@ URL=https://shimomura055.github.io/eigo-radio/user_test/dev_enduser_page_01/inde
 - 公開検証(Playwright、PC1280/スマホ390x844、公開URL): 216チェック NG 0。①見出し文字列PASS ②DOM順(script→gloss→tr)・視覚順・「日本語訳」タグ・解説リンク維持PASS ③停止ボタンが各「ここから再生」の隣(11/10/10個)、停止で再生停止(currentTime固定)、パート境界を跨ぐ連続再生中の停止、停止後の再開(ここから再生/固定バー)・シーク・1文ハイライト、KP再生中の停止 PASS ④AI島Std/Advに仮コーナー+明示文言+data marker、横溢れなし、月Advは実データ表示のまま PASS。既存Regression(rev01-b 176チェック相当: KP英語のみ/意味一覧/リンク/日本語訳/連続再生/Full Story連結/ハイライト精度/シーク/タブ/overflow/console error 0/4xx 0)全PASS。
 - 検証スクリプト=tools/verify_rev_c_01.py(verify_rev_01.pyから順序・ボタン構成・仮文法に合わせ期待値を更新)。結果=verify_result_rev_c_live_01.json、shots_rev_c_live/。ローカル初回は期待値側の誤り6件(仮文法dt数を4と誤指定・月Advにリンク0件)のみNG→期待値修正し、公開で全件再実行しPASS(ローカル再実行は未実施)。
 - 未確認: 実機iOS/Androidの実機操作、ローカル再実行(修正後)。
+
+## § 追加5項目(rev01-d、委任_04、2026-10-29)
+原文=`docs/pm/delegation_log/2026-10-29_END-USER-LISTENING-PAGE-DEV-REVISION-01_USER_03.md`。ビルドID rev01-d。変更=`user_test/dev_enduser_page_01/`のみ(Production・API 0)。
+1. 上部「DEV試作」バー・フッターの「DEV試作…」を削除(`<title>`は`[DEV]`のみ)。同期状態表示`#syncState`は検証用に非表示(hidden)で保持。
+2. 記事切替UI(select・見出し)削除。`?a=`/`?lv=`による記事・レベル指定は維持(既定=AI島)。Std/Advタブは維持。
+3. 「■ 停止」を赤系→濃グレー黒系(#2f343d地・白字)。文言・機能不変。
+4. 学習ブロックを枠線+淡背景: Vocabulary=黄(#fffbea/#e6c84a)・Grammar=青(#f1f6ff/#8fb2ee)・ニュアンス解説=緑(#f1faf3/#86c795)。添付イメージ未受領のため淡色背景+同系細枠で統一。
+5. ニュアンス解説仮表示: AI島Std/Adv・月Advに「ニュアンス解説」コーナー(文法の後)。出典=02C証拠`NUANCE-EXPLANATION-PRODUCTION-WIRING-01/evidence/X_nxm1_..._standard__nuance_fragment.html`(Std)・`X_nxm2_..._advanced__nuance_fragment.html`(Adv)の採用1件。dataに`nuance_source=placeholder_for_layout_check`、画面に「【仮データ・表示確認用】他記事のニュアンス解説を流用。記事本文とは内容が対応しません。」。生成: `tools/build_rev_d_01.py`。DEV data以外に接続なし。
+注記: 日本語訳ラベル「(DEV訳・未承認)」は既存の維持対象(日本語訳)のためそのまま。
+検証: `tools/verify_rev_d_01.py`(rev_c全項目継承+D1-D5)。ローカル274チェック中NG6=「DEV文字列なし」判定が`(DEV訳・未承認)`に反応した検査側の過剰判定(正規表現を修正済み)。結果は公開検証`verify_result_rev_d_live_01.json`。
