@@ -22813,3 +22813,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ### 2026-10-29 FY-FZ-FEMALE-VOICE-RANK-01 委任_01: Family Y/Z女性Voice候補順位の正式変更(APPROVED_FOR_PRODUCTION・未配線)+本記事Std V2=Leda(原文保存+SSOT初期反映)
 - ユーザー決定(原文=`docs/pm/delegation_log/2026-10-29_FY-FZ-FEMALE-VOICE-RANK-01_USER.md`): 女性Voice候補順位=1 Leda/2 Erinome/3 Sulafat/4 Kore/5 Zephyr(Family Y・Z共通、Std/Adv)。男性候補は不変(Y/Zの承認済み差異も維持)。新規制作に適用、既存の完成音声・承認済みVoice割当・特定Voice明示の配役仕様は順位変更を理由に上書きしない。全4組合せ(Y/Z x Std/Adv)でPRODUCTION_WIREDまで。本記事Std Voice2=Leda(記事固有採用、Adv V2/V1/V3は現行維持)。UDR #221/#222=判断済み。OPEN-606新規、OPEN-603/604関連。
+
+### 2026-10-29 END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_03: End User向け視聴ページ runner hook(X/Y/Z)・正式runtime evidence・live検証・SSOT(API 0、Status=PRODUCTION_WIRED_PENDING_FABLE)
+- 実装: hook(X `main`/Y `stage_page_verify`/Z `stage_page_verify`、新stage名なし、mock/dry-runのみskip・real必須)・`produce`/`publish-copy`・設計§6-2(4)(5)・ASR dropout補修・level一覧glossary。同期=faster-whisper medium直接整列、閾値は02A確定値のまま。失敗は`ENDUSER_*`でSTOP(dev index.html・既存enduser/不変)。commit 1b4b41afb(コード)+本SSOT commit。
+- 証拠: 正式hook発火×4(X月/Y fee/Y姓/Zメロス、rc=0、API 0、同期gate全PASS、再実行ASR 0)、公開4ページへ`enduser/`追加(dev index.html・音声バイト不変)、live検証 168/162/170/162 NG 0(模擬。実機未実施)。`docs/research/END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01/EVIDENCE_01.md`。
+- 是正した不具合: Y fee std_18のWhisper語欠落(10語/4.2秒)→窓再ASR(閾値不変)、Yのlevel末③意味一覧、Z devページの行欠落に対する全編長照合、相対path、検証scriptの揺れ、既存runの陳腐化md(OPEN-591の終端`=====`、決定論re-render)。
+- 完成報告規則: 記事完成報告=開発者向けURL+End User向けURL+両検証結果(PM_GOVERNANCE 9-16)。量産単価増分=API 0円・CPU約6.5分/セット。
+- 新たな判断候補: なし(未承認の新仕様・品質基準変更なし)。Fable独立受入待ち。
