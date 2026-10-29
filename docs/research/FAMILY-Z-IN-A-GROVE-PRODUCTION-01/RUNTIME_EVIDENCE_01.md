@@ -46,3 +46,10 @@
 
 ## 5. 費用内訳(累計)
 Writer〜std_adjust〜plan〜support(委任_06まで)+ kp(委任_06 約1.6+委任_07 約2.45)+ tts_b1b 20.19 = 累計 **59.5989円 / Cap 70円**。日次(JST 10-29)合算は本agent未集計。
+
+## 委任_08(2026-10-29): tts_a2 未実施(並行Worker未commit差分との競合回避待機が60分を超過)
+- stop_check_08.json(08:27頃)=stop false、rc=0。run Cap 70→90円(Fable判断、BUDGET_PLAN_01.md末尾追記。runnerはE2EBudgetが起動ごとに`--approved-budget-jpy`をlimitとしspent_fnはcost_log累計を読むため再計上なし: er026_family_z_fiction_production_runner_01.py:1237-1258,3073)。
+- 競合確認(`git status --porcelain -- er007 er078_* er109 er063 er026_runner er121`)を2分間隔で30回(08:31〜09:29、最大60分)実施。初回9件→最大11件dirty。09:30:35にafc63717d(JA-ASR v2+β配線: er007/er063/er078系)がcommitされ、09:31時点の残差分=`er026_family_z_fiction_production_runner_01.py`(26行)と`er121_family_y_runner_01.py`(53行)のみ。内容はNUANCE-EXPLANATION配線(stage_pages/_verify_part2_outputsでnuance_for_display・count_nuance_blocks・NUANCE_HEADINGを使用)で本作とは別Workerの作業中差分。本runの起動対象ファイル(er026 runner)がdirtyのため、委任_08手順2に従いtts_a2は起動していない。
+- API呼出=0、費用増分=0。累計 59.5989円 / Cap 90円(残30.40)。run出力・STOP・LOCK変更なし。
+- HEAD(判定時)=afc63717d。ja_v2beta配線は含まれる(judge_rule_version等の記録有無は実run未実施のため未確認)。
+- 再開条件: er026 runner/er121の未commit差分がcommitまたは解消された後、`--approved-budget-jpy 90` で `--stages tts_a2` を1起動 → 150秒以上空けて `--stages provision_shell,gate,assemble,pages,page_verify`。注意: NUANCE配線がHEADに入るとpages/page_verifyでニュアンス解説ブロックが期待される(in_a_grove側のnuance採否は今回未確認、要Fable確認)。
