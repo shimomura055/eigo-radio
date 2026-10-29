@@ -22820,3 +22820,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 是正した不具合: Y fee std_18のWhisper語欠落(10語/4.2秒)→窓再ASR(閾値不変)、Yのlevel末③意味一覧、Z devページの行欠落に対する全編長照合、相対path、検証scriptの揺れ、既存runの陳腐化md(OPEN-591の終端`=====`、決定論re-render)。
 - 完成報告規則: 記事完成報告=開発者向けURL+End User向けURL+両検証結果(PM_GOVERNANCE 9-16)。量産単価増分=API 0円・CPU約6.5分/セット。
 - 新たな判断候補: なし(未承認の新仕様・品質基準変更なし)。Fable独立受入待ち。
+
+### 2026-10-29 FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01 委任_01(1/2): 人物紹介一般化方式B+E正式採用(APPROVED_FOR_PRODUCTION、Family Y Std/Adv)
+- ユーザー決定: B+E(紹介=テーマとの関わりを中心に、属性自体が立場を表すなら具体属性を維持。原則5項目)をStd/Adv両方でAPPROVED_FOR_PRODUCTION、目標PRODUCTION_WIRED、追加Trial不要。時期語の決定論検査は追加しない。情報源に無い事実の補完を一律NGにしない(明確な矛盾・不自然な創作・立場との不整合は既存Gateで防止)。X/Z不適用。既存完成記事は再生成しない(姓記事V1は別承認の固定文で是正済み)。Trial確定成果物(RESULT_01/02、CLAUSE_E)が正本。UDR #221(一般化方式)判断済み。原文=`docs/pm/delegation_log/2026-10-29_FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01_USER.md`。実装・evidenceは委任_01(2/2)。
