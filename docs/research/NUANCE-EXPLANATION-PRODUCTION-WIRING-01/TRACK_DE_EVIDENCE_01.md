@@ -80,3 +80,9 @@ HTML断片・集計JSON=`evidence/<label>__summary.json`、`evidence/<label>__<l
 ## 9. 公開済み0件ページ
 
 既に公開済みの0件ページ15本(委任文の記載どおり)は**再生成しない**。既存run(本機能導入前にKP reviewが作られたrun)はLEGACYのまま遡及しない(M-2)。今後の新規run(KP review新規作成)からN0が自動発行される。
+
+## 10. テスト結果(origin/main統合後に再実行。pytest -p no:cacheprovider)
+
+- 新規: `er134_nuance_runner_wiring_test_01.py` 29 PASS(N0/N1/finalize/resume/LEGACY/採否保持/重複規則[KP・Word重複NG・文法重複は警告]/0件非表示/CLI=フォームと同結果/runner契約X・Y・Z/既定OFF隔離)、`er134_nuance_y_mock_e2e_test_01.py` 4 PASS(Y実stage経路)、`er134_nuance_z_mock_e2e_test_01.py` 4 PASS(Z実stage経路、約14分)。
+- 既存(02A 45・02B 49を含む g4群 535中): 全PASS。関連回帰の失敗は **既知の旧失敗7件のみ**(HEAD `0902f3f08` でも同一集合): `er121_y_highlight_wiring…test_golden_existing_run_without_mark_pages_html_byte_identical`、`er019_x_highlight_wiring…test_golden_existing_run_player_byte_identical_to_before_change`、`er003_kp_general_explanation…ZPart1Tests::test_kp_expression_change_needs_two_step_regeneration_with_hints`、`er119_grammar_review…TestStaticBoundaries::test_public_builder_and_standard_never_call_part2`、`er119_isolation…test_only_x_z_runners_import_er119`、`er128_kp_confirmed_content…TestIsolation::test_abc_and_shared_functions_do_not_import_er128`(OPEN-588系の構造testの陳腐化: er121/er123/er124/er129が許可リスト外)、`er119_z_wiring…test_part1_items_follow_vocab_confirmed_five`(`_part1_items_b1b`属性不在)。
+- 群別(通過数): Y g1=147 / X g3=181 / core g4=534 / Z g5=283 / mock E2E 8。環境依存の旧失敗(seedの改行コード・ignoredデータ欠落)は、Windows worktreeのseedをLF化・narration 36 wavをコピーして解消(コミット対象外)。
