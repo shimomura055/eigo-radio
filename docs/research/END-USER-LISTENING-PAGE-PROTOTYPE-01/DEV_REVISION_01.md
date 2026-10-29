@@ -79,3 +79,4 @@ URL=https://shimomura055.github.io/eigo-radio/user_test/dev_enduser_page_01/inde
 - 文法: 構文名の指定がデータにないため、「文法・構文の仕組み」解説内の「…」で囲まれた英語2語以上の語句のうち、引用英文に一意に一致する最初のものを対象とする。
 - 太字件数(Std/Adv): AI島Std Vocab5/5・ニュアンス1/1・文法1/1、AI島Adv Vocab5/5・ニュアンス1/1・文法1/1、月Adv Vocab5/5・ニュアンス1/1・文法1/1。文法の特定不可=0件(仮データ3件とも「what matters」を太字化)。
 - 検証: `tools/verify_rev_e_01.py`(rev01-d全チェック継承+(a)〜(e)+汎用性単体テスト)。ローカル342チェックNG0(`verify_result_rev_e_local_01.json`)。transcript署名比較の基準=公開rev01-dページから取得した`rev_e_baseline_signature_01.json`。PC/スマホ=Playwright 1280/390幅。CSSは幅依存の変更なし。実機iOS/Androidは未確認。
+- 公開検証(live rev01-e、cache無効): https://shimomura055.github.io/eigo-radio/user_test/dev_enduser_page_01/index.html (build-id rev01-e)。PC1280+スマホ390x844、342チェック NG0(rev01-d全チェック継承+太字(a)〜(e)+汎用単体テスト)。`verify_result_rev_e_live_01.json`、`shots_rev_e_live/`。
