@@ -76,7 +76,7 @@ runnerへのN0/N1挿入・M-1/M-2、finalizeでの `nuance_result.json` 書込�
 | 7 | `er128_kp_confirmed_content…::TestIsolation::test_abc_and_shared_functions_do_not_import_er128` | 既存失敗(HEADで同様。別委任のer129がer128をimport)。 |
 | 8 | `er119_grammar_review…::test_grammar_files_not_tracked_dirs` | 環境起因。`er119_output/`(未追跡)が2026-10-25から実リポジトリに存在する(本委任のtestが作ったものではない。日付で確認)。 |
 | 9-14 | `er121_*::test_no_network_or_real_client_attempts` ×4・`FullMockRun::test_api_boundary_only_mock_kinds_and_no_real_client`・`StageFramework::test_default_mode_is_dry_run…`+ 1 teardown error(`NoResidualReferences`) | 1プロセスにまとめて走らせたときだけ出る順序依存の汚染。これらのtestは単独実行で全PASS。**HEADのcleanなworktreeでも、`er003統合`または`er119`のtest群の直後に`er121_family_y_audio_chunk_test_01.py`を走らせると同じ`test_no_network_or_real_client_attempts`が失敗する**ことを再現(= 本委任の変更に依存しない)。ブロック発生元は`er121_family_y_audio_chunk_test_01.py`のTestPlan/TestGenerateAndAssemble(実client生成を遮断カウンタが検出。blockwatch計測で7 testが+1〜+2ずつ加算)。 |
-| 15 | `er121_family_y_voice_table…::test_existing_run_01_and_public_pages_not_modified` | 本委任の変更(`user_test/selection_form_v3/form_logic.js`・`index.html`=公開フォームの更新)が**未commit**の間だけ失敗する「tracked公開ファイルを変更していない」検査。commit後に解消する想定(commit後に再確認する)。 |
+| 15 | `er121_family_y_voice_table…::test_existing_run_01_and_public_pages_not_modified` | 本委任の変更(`user_test/selection_form_v3/form_logic.js`・`index.html`=公開フォームの更新)が**未commit**の間だけ失敗する「tracked公開ファイルを変更していない」検査。commit(1f9ad586d)後に `er121_family_y_voice_table_test_01.py` 9 PASSを確認済み。 |
 
 HEAD側の比較は、(a) HEADのworktree(93ad8ee76。ignoredな`erXXX_output`が無いため多数のtestがartifact不在で別途失敗する)で同じ失敗ID集合を実行、(b) `er121_*` 17ファイル全体をmainとHEADで並走(main=2 failed[上記6,15のみ]/HEAD=14 failed[artifact不在含む])、(c) 順序依存の再現、で確認した。新たに「mainだけで失敗し、原因が本委任の変更」と特定されたtestは無い。
 
