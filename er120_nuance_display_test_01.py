@@ -111,6 +111,19 @@ class T1_Matrix(_Fx):
                             n_cases += 1
         self.assertEqual(n_cases, 3 * 2 * 2 * 5 * 2)
 
+    def test_display_order_is_heading_expression_quote_translation_point_explanation(self):
+        """ユーザー正式決定2026-10-29(NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01 ①): 見出し->学習表現->本文の英文->日本語訳->ポイント->解説(全Family・全level共通builder)。"""
+        for fam in ("x", "y", "z"):
+            for level in ("a2", "b1b"):
+                sd, paras, gres = self.make(fam, level, "selected")
+                write_nuance(sd, nuance_result(level))
+                html = p2w.compose_page_html(PART1_BLOCK, gres, nuance=p2w.nuance_for_display(sd, level=level))
+                blk = html[html.index(f"<h3>{g.NUANCE_HEADING}</h3>"):]
+                marks = [f"<h3>{g.NUANCE_HEADING}</h3>", "<h4>at least</h4>", "<dt>本文の英文</dt>", "<dt>日本語訳</dt>", "<dt>ポイント</dt>", "<dt>解説</dt>"]
+                pos = [blk.index(m) for m in marks]
+                self.assertEqual(pos, sorted(pos), (fam, level))
+                self.assertEqual(len(set(pos)), 6)
+
     def test_adopted_block_is_a_separate_corner_with_the_approved_heading_only(self):
         sd, paras, gres = self.make("x", "b1b", "selected")
         write_nuance(sd, nuance_result("b1b"))

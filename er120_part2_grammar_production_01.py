@@ -1532,10 +1532,11 @@ def render_nuance_html_block(nuance, *, include_css: bool = True) -> str:
     if not nuance_is_adopted(nuance):
         return ""
     c = nuance_candidate_of(nuance)
-    dl = [f"<dt>ポイント</dt><dd>{html.escape(c['focus'], quote=False)}</dd>",
-          f"<dt>解説</dt><dd>{p1._paragraphs_html(c['explanation_ja'])}</dd>",
-          f"<dt>本文の英文</dt><dd>{html.escape(c['quote_en'], quote=False)}</dd>",
-          f"<dt>日本語訳</dt><dd>{html.escape(c['quote_ja'], quote=False)}</dd>"]
+    # 表示順(ユーザー正式決定2026-10-29 NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01 ①): 見出し(h3) -> 学習表現(h4) -> 本文の英文 -> 日本語訳 -> ポイント -> 解説。dev/End User(adapterはdt順を保持)の共通builder
+    dl = [f"<dt>本文の英文</dt><dd>{html.escape(c['quote_en'], quote=False)}</dd>",
+          f"<dt>日本語訳</dt><dd>{html.escape(c['quote_ja'], quote=False)}</dd>",
+          f"<dt>ポイント</dt><dd>{html.escape(c['focus'], quote=False)}</dd>",
+          f"<dt>解説</dt><dd>{p1._paragraphs_html(c['explanation_ja'])}</dd>"]
     body = f"<div class='study-item'><h4>{html.escape(c['expression'], quote=False)}</h4><dl>{''.join(dl)}</dl></div>"
     return (p1.STUDY_CSS if include_css else "") + f"<section class='study'><h3>{NUANCE_HEADING}</h3>{body}</section>"
 

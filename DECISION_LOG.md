@@ -22842,3 +22842,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ## FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01 委任_06: ニュアンス解説2候補の暫定反映(2026-10-29)
 ユーザー原文(`docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_04.md`)に基づき、Adv=`at least`・Std=`at least a little`を解説本文確認のため`nuance-select --choice adopt`で暫定確定し、pages/page_verify(API 0)・publish-copy(dev+enduser)・live検証を実施。**正式なProduction採用・最終承認ではなく、最終採否はUSER_DECISION_REQUIRED(UDR #223、OPEN-598)。**本文・音声52ファイル・Voice配役・KP/追加解説/文法・V1紹介文は不変(音声sha一致、HTMLはニュアンス節の挿入のみ)。費用0円。ユーザーの最終採否まで記事の完成承認・Closeoutは行わない。
+
+## NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01 委任_01: ニュアンス解説の表示順序変更(①)・Human Review事前チェック(②)をAPPROVED_FOR_PRODUCTIONとして配線開始(2026-10-29)
+ユーザー原文(`docs/pm/delegation_log/2026-10-29_NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01_USER.md`)。①表示順序=見出し→学習表現→本文の英文→日本語訳→ポイント→解説(X/Y/Z×Std/Adv共通builderで変更)、②HR事前チェック=対象レベル・学習表現・本文英文・日本語訳・ポイント・解説全文・採否を提示(既存のN0/N1/HR/finalize機構を再利用し不足分のみ追加)。③品質改善Trialは別管理ID NUANCE-QUALITY-IMPROVEMENT-TRIAL-01(Production採用はユーザー判断)。PRODUCTION_WIREDはFable独立受入後。OPEN-610/611。

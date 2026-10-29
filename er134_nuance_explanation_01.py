@@ -1018,8 +1018,8 @@ def render_request_md(doc: dict, *, level: str, run_hint: str) -> str:
     oc = cand.get("overlap_check") or {}
     lines = ["# ニュアンス解説 Human Review 依頼", "", f"- level: {level}({LEVELS.get(level)}) / 最大1件・採用するか不採用かを決めます(不採用でも代替候補は自動補充されません)",
              f"- 候補ID: nuance_{str(cand.get('candidate_sha256') or '')[:16]} / candidate_sha256: {cand.get('candidate_sha256')}", "",
-             f"## {cand.get('expression')}", f"- 焦点: {cand.get('focus')}", "", cand.get("explanation_ja") or "", "",
-             f"- 本文の英文: {cand.get('quote_en')}", f"- 日本語訳: {cand.get('quote_ja')}", "",
+             f"## {cand.get('expression')}", f"- 本文の英文: {cand.get('quote_en')}", f"- 日本語訳: {cand.get('quote_ja')}", f"- ポイント: {cand.get('focus')}", "",
+             "解説(全文):", cand.get("explanation_ja") or "", "",
              f"- 重複判定(KP/Word): {oc.get('verdict')} / {oc.get('reason')}"]
     if cand.get("pool_conflicts"):
         lines.append(f"- 重複アラーム(確認用・非停止): 次の提示候補と焦点が重複する可能性があります。選んでも採用/確定は止まらず、アラームとして記録されます: {cand['pool_conflicts']}")

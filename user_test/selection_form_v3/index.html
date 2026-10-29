@@ -98,7 +98,7 @@ function renderNuance(d,st){
   if((n.grammar_conflicts||[]).length)warn+='<div class="notice">参考: 文法候補と焦点が近い可能性があります（警告のみ。採用はできます）。</div>';
   if((n.shared_terms||[]).length)warn+='<div class="notice">参考: 他の選定項目と共通する語があります（警告のみ）。'+n.shared_terms.map(function(t){return esc(t.item||'')+'：'+esc(t.term||'')}).join('、')+'</div>';
   B.innerHTML=warn+'<div class="grammar '+(dec==='adopt'?'selected':'')+'"><label><input type="radio" name="nuance" data-nuance="adopt" '+(dec==='adopt'?'checked':'')+'> <span class="rank">候補</span><strong>'+esc(n.expression)+'</strong></label>'+
-    '<p><b>ポイント：</b>'+esc(n.focus)+'</p><p>'+esc(n.explanation_ja)+'</p><div class="sample">'+esc(n.quote_en)+'<br>'+esc(n.quote_ja)+'</div>'+(n.overlap_summary_ja?'<p class="muted">重複確認: '+esc(n.overlap_summary_ja)+'</p>':'')+'<p class="muted">この解説をページに載せる場合は左の「採用」を選びます。</p></div>'+
+    '<p class="muted">対象レベル：'+esc(d.level_label||d.level||'')+'</p><div class="sample"><b>本文の英文：</b>'+esc(n.quote_en)+'<br><b>日本語訳：</b>'+esc(n.quote_ja)+'</div><p><b>ポイント：</b>'+esc(n.focus)+'</p><p><b>解説：</b>'+esc(n.explanation_ja)+'</p>'+(n.overlap_summary_ja?'<p class="muted">重複確認: '+esc(n.overlap_summary_ja)+'</p>':'')+'<p class="muted">この解説をページに載せる場合は左の「採用」を選びます。</p></div>'+
     '<div class="grammar gnone '+(dec==='reject'?'selected':'')+'"><label><input type="radio" name="nuance" data-nuance="reject" '+(dec==='reject'?'checked':'')+'> <strong>不採用（載せない）</strong></label><p class="muted">この解説は載せません。次点の候補は出しません。</p></div>';
   document.querySelectorAll('input[data-nuance]').forEach(function(el){el.addEventListener('change',function(e){
     if(e.target.checked){FL.chooseNuance(st,e.target.dataset.nuance,d);save();render()}})});

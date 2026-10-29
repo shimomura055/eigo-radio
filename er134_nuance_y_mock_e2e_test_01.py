@@ -185,7 +185,7 @@ class T2_LegacyAndAuto(YBase):
             self.assertFalse(any(os.path.exists(f"{self.sd(ctx, lv)}/{n}") for n in NUANCE_FILES), lv)   # 副作用ファイル0
         html = self.index_html(ctx)
         self.assertEqual(g.count_nuance_blocks(html), 0)
-        self.assertNotIn(g.NUANCE_HEADING, html)
+        self.assertNotIn(f"<h3>{g.NUANCE_HEADING}</h3>", html)   # コーナー見出しの不在(事後確認の重複アラーム節の文言には「ニュアンス解説」が出る)
         self.assertTrue(json.load(open(f"{ctx.out_dir}/page_verify_local.json", encoding="utf-8"))["ok"])
 
     def test_auto_adopted_run_generates_nothing_and_page_completes_without_corner(self):
