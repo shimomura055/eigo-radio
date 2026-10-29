@@ -448,11 +448,11 @@
     {
       "candidate_id": "p_f62d54274f",
       "selection_phrase": "old-fashioned about it",
-      "used_form": "old-fashioned about it",
-      "japanese_gloss": "そのことについて考え方が古い",
+      "used_form": "old-fashioned",
+      "japanese_gloss": "考え方が古い",
       "source_sentence": "They were not old-fashioned about it",
       "source_sentence_id": "S14",
-      "word_count": 3,
+      "word_count": 1,
       "reason_ja": "ある事柄について保守的だと表す言い回し。",
       "origin": "call1",
       "raw_rank": 5,
@@ -461,27 +461,27 @@
         "source_span": "old-fashioned about it",
         "source_sentence": "They were not old-fashioned about it",
         "display_phrase": "old-fashioned about it",
-        "key_phrase": "old-fashioned about it",
-        "used_form": "old-fashioned about it",
-        "japanese_gloss": "そのことについて考え方が古い",
-        "japanese_gloss_tts": "そのことについて考え方が古い",
-        "changed_from_display_phrase": false,
+        "key_phrase": "old-fashioned",
+        "used_form": "old-fashioned",
+        "japanese_gloss": "考え方が古い",
+        "japanese_gloss_tts": "考え方が古い",
+        "changed_from_display_phrase": true,
         "normalization_reason": "none",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
-          "qa_no_residual_context_word": "FAIL",
+          "qa_no_residual_context_word": "PASS",
           "qa_meaning_or_usage_unchanged": "PASS",
           "qa_reusable_other_context": "PASS",
           "qa_traceable_contiguous_span": "PASS",
           "qa_listening_blocker_value_preserved": "PASS",
-          "qa_standalone_comprehensibility": "FAIL",
+          "qa_standalone_comprehensibility": "PASS",
           "qa_not_over_minimized": "PASS",
           "qa_context_sufficiency": "PASS",
           "qa_core_meaning_preserved": "PASS",
           "qa_no_semantic_role_loss": "PASS",
           "qa_person_reference_generalized": "PASS"
         },
-        "qa_overall_status": "REVIEW_REQUIRED",
+        "qa_overall_status": "PASS",
         "reasoning": "about it を除くと「それについて古風な考えを持つ」という用法が失われます。it は規則上一般化できないため、表層形を保ちます。",
         "kp_extends_beyond_candidate": false,
         "gloss_review_hint": false,
@@ -505,9 +505,9 @@
         "gloss_alignment": {
           "version": "ER-003-KP-GLOSS-ALIGN-02",
           "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
+          "original_japanese_gloss": "そのことについて考え方が古い",
           "current_gloss_consistent_verdict": false,
-          "reasoning": "その件への考え方が伝統的で、時代にそぐわないという意味です。",
+          "reasoning": "「そのことについて」は候補表現の about it に当たる意味で、最終的な key phrase には含まれません。「考え方が古い」で old-fashioned の意味を表せます。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -520,20 +520,13 @@
             "pass": true,
             "note": "必須内容語なし(機械検査対象外)"
           },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "Having a traditional outlook on the matter.",
-          "naive_ja": "それについて古風な",
-          "naive_ja_conveys": "partly",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
+          "attempts_count": 1
         },
         "gloss_alignment_status": "ALIGNED"
       },
-      "kind": "phrase",
+      "kind": "word",
       "flags": {
-        "qa_fail": true,
+        "qa_fail": false,
         "gloss_hr_pending": false,
         "similar_to_ng": false,
         "redundant_with": []
@@ -541,14 +534,26 @@
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "REVIEW_REQUIRED",
+        "canonicalization": "PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
-      "auto_eligible": false,
+      "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 5
+      "ai_rank": 5,
+      "requalified": {
+        "tool": "apply_user_decision_surname_choice_01",
+        "from": "old-fashioned about it",
+        "to": "old-fashioned",
+        "user_ref": "docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md",
+        "user_spec": "§2 変更後: `old-fashioned`(原文 docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md の『今回の記事への適用』節 / §6 Standard)",
+        "by": "user_transcribed_by_sonnet",
+        "old_item_sha256": "9ba9ceebc46f66139abd1a64e7964df8ac87c0f0e6134c803af225c4df7b7f31",
+        "old_kind": "phrase",
+        "new_kind": "word",
+        "old_gloss": "そのことについて考え方が古い"
+      }
     },
     {
       "candidate_id": "p_275b3ec316",
@@ -1198,10 +1203,10 @@
         "rank_a": 1,
         "rank_b": 4,
         "meaning_overlap": "FAIL",
-        "usage_context_overlap": "FAIL",
+        "usage_context_overlap": "PASS",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "どちらもこの文脈では、息子との近さや関係を手放す・失うという親の感覚を表しています。文法的な型は異なりますが、記事内で担う「親が何かを手放す」という内容は実質的に重なります。"
+        "reasoning": "どちらも記事では、親が息子との近さや関係を手放すように感じることを表す点で重なります。「息子を手放す」と「何かを諦める」は表現の範囲は異なりますが、記事内の中心概念は実質的に近いです。"
       }
     ],
     "model_id": "gpt-6-luna"
@@ -1274,5 +1279,29 @@
   "text_sha256": "4e31c2d632915882647ef57fee20a05d0f2e3c9935e843391f41bc120a54fb00",
   "schema": "kp_candidates_v1",
   "kind": "kp",
-  "candidates_sha256": "0e236adcd79e982005bd72c66be7f667b260d7a047348d4796aae04d7844de17"
+  "candidates_sha256": "e3a472696bf6bccdb24b0b899ef3d0de59c575120a8e21df4a3742826eea03a1",
+  "requalify_provenance": {
+    "tool": "apply_user_decision_surname_choice_01",
+    "user_ref": "docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md",
+    "candidate_id": "p_f62d54274f",
+    "from": "old-fashioned about it",
+    "to": "old-fashioned",
+    "previous_candidates_sha256": "0e236adcd79e982005bd72c66be7f667b260d7a047348d4796aae04d7844de17",
+    "previous_redundancy_qa": {
+      "status": "REDUNDANCY_NG",
+      "duplicate_pairs": [
+        {
+          "rank_a": 1,
+          "rank_b": 4,
+          "meaning_overlap": "FAIL",
+          "usage_context_overlap": "FAIL",
+          "grammatical_teaching_value_overlap": "PASS",
+          "conceptual_role_overlap": "FAIL",
+          "reasoning": "どちらもこの文脈では、息子との近さや関係を手放す・失うという親の感覚を表しています。文法的な型は異なりますが、記事内で担う「親が何かを手放す」という内容は実質的に重なります。"
+        }
+      ],
+      "model_id": "gpt-6-luna"
+    },
+    "presentable_filter_version": "presentable_v1_2026-10-29"
+  }
 }

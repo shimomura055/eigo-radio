@@ -5,36 +5,65 @@
   "text_sha256": "975c98267084cebd0fc701f474213639d75cd409c038c516b70fe4e353e4115b",
   "candidates_sha256": "df69c2469a1585cb5e532a8a8a7f9a745b26be29a60e3831149514f16c99a51f",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 3,
   "article_key": {
     "family": "y",
     "slug": "surname_choice",
     "level": "b1b"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_85cbe0223d",
+      "p_6714fc2917",
+      "p_f932b7703a"
+    ],
+    "vocab": [
+      "p_85cbe0223d",
+      "p_6714fc2917",
+      "p_f932b7703a",
+      "p_bb5820f386",
+      "p_74789f7c2d"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_85cbe0223d": null,
-    "p_6714fc2917": null,
-    "p_bb5820f386": null,
-    "p_07ed712929": null,
-    "p_74789f7c2d": null,
-    "p_224027b3ab": null,
-    "p_edb2175ddf": null,
-    "p_5b0df6a8b9": null,
-    "p_54bb9bd5dd": null,
-    "p_54c1c68edd": null,
-    "p_f932b7703a": null,
-    "p_22a7567030": null
+    "p_85cbe0223d": "SELECTED_KP",
+    "p_6714fc2917": "SELECTED_KP",
+    "p_bb5820f386": "SELECTED_VOCAB",
+    "p_07ed712929": "NOT_SELECTED",
+    "p_74789f7c2d": "SELECTED_VOCAB",
+    "p_224027b3ab": "NOT_SELECTED",
+    "p_edb2175ddf": "NOT_SELECTED",
+    "p_5b0df6a8b9": "NOT_SELECTED",
+    "p_54bb9bd5dd": "NOT_SELECTED",
+    "p_54c1c68edd": "NOT_SELECTED",
+    "p_f932b7703a": "SELECTED_KP",
+    "p_22a7567030": "NOT_SELECTED"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-29T15:13:23.864521+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "25c7c9535a327c51397415c9083f0f9ec895225e62f35392853e67056cc188db"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -45,8 +74,93 @@
         "round": 1,
         "candidates_sha256": "df69c2469a1585cb5e532a8a8a7f9a745b26be29a60e3831149514f16c99a51f"
       }
+    },
+    {
+      "at": "2026-10-29T15:13:23.864565+09:00",
+      "event": "select",
+      "by": "user_transcribed_by_sonnet",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_85cbe0223d",
+            "p_6714fc2917",
+            "p_f932b7703a"
+          ],
+          "vocab": [
+            "p_85cbe0223d",
+            "p_6714fc2917",
+            "p_f932b7703a",
+            "p_bb5820f386",
+            "p_74789f7c2d"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-29T15:13:23.864627+09:00",
+      "event": "redundancy_alarm",
+      "by": "user_transcribed_by_sonnet",
+      "detail": {
+        "n": 2,
+        "pairs": [
+          [
+            "p_6714fc2917",
+            "p_bb5820f386"
+          ],
+          [
+            "p_6714fc2917",
+            "p_224027b3ab"
+          ]
+        ],
+        "blocking": false
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "cf1a3fb2fac64fb5194a5543df4ba3ce31d94cf2ff6d5d8434809620420e2515",
+  "std_part1": true,
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_6714fc2917",
+      "candidate_id_b": "p_bb5820f386",
+      "used_form_a": "let go of",
+      "used_form_b": "hold one's son back",
+      "ai_rank_a": 2,
+      "ai_rank_b": 3,
+      "slot_a": "key_phrase",
+      "slot_b": "extra_explanation",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "追加解説(②)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "厳密には「手放す」は執着を弱めること、「hold back」は妨げることですが、本文ではどちらも息子の選択を受け入れ、親が干渉しない姿勢を表しています。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_6714fc2917",
+      "candidate_id_b": "p_224027b3ab",
+      "used_form_a": "let go of",
+      "used_form_b": "give something up",
+      "ai_rank_a": 2,
+      "ai_rank_b": 6,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「息子を手放す」と「何かをあきらめる」は、本文では親が息子の独立に伴って何かを手放す・譲る感覚を表す点で実質的に重なります。句動詞の型や具体的な意味の焦点は異なります。",
+      "source": "candidate_qa"
+    }
+  ]
 }

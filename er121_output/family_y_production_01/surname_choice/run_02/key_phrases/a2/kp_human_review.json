@@ -3,37 +3,66 @@
   "kind": "kp",
   "level": "a2",
   "text_sha256": "4e31c2d632915882647ef57fee20a05d0f2e3c9935e843391f41bc120a54fb00",
-  "candidates_sha256": "0e236adcd79e982005bd72c66be7f667b260d7a047348d4796aae04d7844de17",
+  "candidates_sha256": "e3a472696bf6bccdb24b0b899ef3d0de59c575120a8e21df4a3742826eea03a1",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 4,
   "article_key": {
     "family": "y",
     "slug": "surname_choice",
     "level": "a2"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_f62d54274f",
+      "p_f932b7703a",
+      "p_d89972fe17"
+    ],
+    "vocab": [
+      "p_f62d54274f",
+      "p_f932b7703a",
+      "p_d89972fe17",
+      "p_224027b3ab",
+      "p_275b3ec316"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_6f9b2bdca8": null,
-    "p_07ed712929": null,
-    "p_be39c95a7f": null,
-    "p_224027b3ab": null,
-    "p_f62d54274f": null,
-    "p_275b3ec316": null,
-    "p_f932b7703a": null,
-    "p_d89972fe17": null,
-    "p_a0a0789011": null,
-    "p_1d13fb68dd": null,
-    "p_b81f4a81f3": null
+    "p_6f9b2bdca8": "NOT_SELECTED",
+    "p_07ed712929": "NOT_SELECTED",
+    "p_be39c95a7f": "NOT_SELECTED",
+    "p_224027b3ab": "SELECTED_VOCAB",
+    "p_f62d54274f": "SELECTED_KP",
+    "p_275b3ec316": "SELECTED_VOCAB",
+    "p_f932b7703a": "SELECTED_KP",
+    "p_d89972fe17": "SELECTED_KP",
+    "p_a0a0789011": "NOT_SELECTED",
+    "p_1d13fb68dd": "NOT_SELECTED",
+    "p_b81f4a81f3": "NOT_SELECTED"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-29T15:15:08.836682+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "d3d17fb9d36f2604583850349de93e1e37990073001180574ef51a3376e2a239"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -44,8 +73,82 @@
         "round": 1,
         "candidates_sha256": "0e236adcd79e982005bd72c66be7f667b260d7a047348d4796aae04d7844de17"
       }
+    },
+    {
+      "at": "2026-10-29T15:14:53.460606+09:00",
+      "event": "requalify_user_decision",
+      "by": "user_transcribed_by_sonnet",
+      "detail": {
+        "candidate_id": "p_f62d54274f",
+        "from": "old-fashioned about it",
+        "to": "old-fashioned",
+        "user_ref": "docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md",
+        "user_spec": "§2 変更後: `old-fashioned`(原文 docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md の『今回の記事への適用』節 / §6 Standard)",
+        "old_candidates_sha256": "0e236adcd79e982005bd72c66be7f667b260d7a047348d4796aae04d7844de17"
+      }
+    },
+    {
+      "at": "2026-10-29T15:15:08.836698+09:00",
+      "event": "select",
+      "by": "user_transcribed_by_sonnet",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_f62d54274f",
+            "p_f932b7703a",
+            "p_d89972fe17"
+          ],
+          "vocab": [
+            "p_f62d54274f",
+            "p_f932b7703a",
+            "p_d89972fe17",
+            "p_224027b3ab",
+            "p_275b3ec316"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-29T15:15:08.836742+09:00",
+      "event": "redundancy_alarm",
+      "by": "user_transcribed_by_sonnet",
+      "detail": {
+        "n": 1,
+        "pairs": [
+          [
+            "p_6f9b2bdca8",
+            "p_224027b3ab"
+          ]
+        ],
+        "blocking": false
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "2e6a475eb49440f76dc8c25aa49cf51bb4966a402e17599c4268460359aaf1ce",
+  "std_part1": true,
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_6f9b2bdca8",
+      "candidate_id_b": "p_224027b3ab",
+      "used_form_a": "let one's son go",
+      "used_form_b": "give something up",
+      "ai_rank_a": 1,
+      "ai_rank_b": 4,
+      "slot_a": "meaning_display",
+      "slot_b": "extra_explanation",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "追加解説(②)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "PASS",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "どちらも記事では、親が息子との近さや関係を手放すように感じることを表す点で重なります。「息子を手放す」と「何かを諦める」は表現の範囲は異なりますが、記事内の中心概念は実質的に近いです。",
+      "source": "candidate_qa"
+    }
+  ]
 }

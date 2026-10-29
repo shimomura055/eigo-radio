@@ -34,3 +34,4 @@
 | B5: retry/fallback/resume/再判定との整合を確認済み | 達成(設計)/部分(配線未。合意再試行は承認済み仕様『同一音声ASR再試行廃止』の変更=UDR #204。保存drawのみから再現するtest済み) | 委任_03 proto test 48件 |
 | B6: 実行費用と量産単価への影響を提示済み | 達成(Phase 2/3 実費約¥2.5〜3.5、単価影響は区間提示) | 委任_03 §13 |
 STOP条件: Production採用はユーザーのみ/公開差替えは記事単位承認/承認記録注入はユーザー回答後/予算 日次1,000円。
+(S追記 2026-10-29 委任_03B)Adv(b1b)/Std(a2)HR確定済み(Std old-fashionedはrequalify全PASS)。kp finalize〜pages完了、gate PASS(全PASS)。**page_verifyでSTOP: FAMILY_Y_KP_SELECTION_OUTPUT_MISMATCH(a2) TTS記録text『old fashioned』(ハイフン→空白、er003_v1_n3_01_tts_generate.py:1105)vs確定『old-fashioned』(er119_kp_human_review_01.py:1385-1392)**=コード修正待ち(03B編集禁止)。候補ページ未公開。詳細=docs/pm/RESULT_PACKET_YSC03B.md
