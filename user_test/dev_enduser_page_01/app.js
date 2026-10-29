@@ -8,7 +8,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var A = $('aud'), Q = new URLSearchParams(location.search);
   var art = null, lv = null, L = null, parts = [];
-  var mode = 'full', curIdx = null;               // 'full'(通し) / 'part'(segment)
+  var mode = 'full', curIdx = null, kpEnd = null;   // 'full'(全体音声) / 'kp'(Key Phrase英語区間のみ)
   var sync = [], syncKind = 'none', sentEls = {}, activeSid = null;
   var raf = 0, lastUserScroll = 0, syncIndex = null;
   var LEVEL_NAME = { std: 'Standard', adv: 'Advanced' };
@@ -17,7 +17,8 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; }); }
   function fmt(t) { t = Math.max(0, t || 0); var m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
   function audioUrl(p) { return new URL(art.audio_base + p, location.href).href; }
-  function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' (' + r.status + ')'); return r.json(); }); }
+  var BUILD = (document.querySelector('meta[name=build-id]') || {}).content || '';
+  function fetchJson(u) { return fetch(u + (u.indexOf('?') < 0 ? '?v=' + BUILD : '')).then(function (r) { if (!r.ok) throw new Error(u + ' (' + r.status + ')'); return r.json(); }); }
 
   /* ---------- 描画 ---------- */
   function sentHtml(p) {
@@ -28,22 +29,26 @@
     }).join('');
   }
   function btns(p) {
-    return '<span class="btns"><button type="button" class="seek" data-act="full" data-i="' + p.idx + '" aria-label="ここから再生">▶ ここから再生</button></span>';
+    return '<span class="btns"><button type="button" class="seek from" data-act="full" data-i="' + p.idx + '" aria-label="' + esc(p.label) + ' から再生">▶ ここから再生</button></span>';
+  }
+  function trHtml(p) {   // 英語本文の直後に日本語訳(承認済み日本語原稿の対応段落 / DEV訳(未承認))
+    if (!p.ja || !p.ja.length) return '';
+    var dev = p.ja_source === 'dev_translation_unapproved';
+    return '<div class="tr" lang="ja" data-src="' + esc(p.ja_source) + '"><span class="trtag">日本語訳' + (dev ? '<em>(DEV訳・未承認)</em>' : '') + '</span>' +
+      p.ja.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>';
+  }
+  function glossHtml(p) {   // 本文直下の意味一覧(下線対象 + Key Phrase/Word + Vocabulary。簡潔な日本語の意味のみ)
+    if (!p.glossary || !p.glossary.length) return '';
+    return '<div class="gloss" data-gloss="' + p.idx + '"><div class="gh">この部分の表現</div><ul>' + p.glossary.map(function (g) {
+      return '<li><span class="ge">' + esc(g.en) + '</span><span class="gj">' + esc(g.ja) + '</span>' +
+        (g.vi != null ? '<a class="glink" href="#vi-' + lv + '-' + g.vi + '" data-vi="' + g.vi + '">解説</a>' : '') + '</li>';
+    }).join('') + '</ul></div>';
   }
   function card(title, body, opts) {
     opts = opts || {};
     return '<section class="card"' + (opts.part != null ? ' data-part="' + opts.part + '"' : '') + (opts.id ? ' id="' + opts.id + '"' : '') + '>' +
       (opts.label ? '<span class="label">' + esc(opts.label) + '</span>' : '') +
       '<div class="sectionhead"><h2>' + esc(title) + '</h2>' + (opts.btn || '') + '</div>' + body + '</section>';
-  }
-  function translation(p) { return p.translation_ja ? '<div class="jp translation" lang="ja"><span class="translation-label">日本語訳</span><p>' + esc(p.translation_ja) + '</p></div>' : ''; }
-  function wordBox(p) {
-    var ms=(p.meanings||[]).slice();
-    var kp=parts.filter(function(x){return x.kind==='kp';}).reduce(function(a,x){return a.concat(x.kp||[]);},[]);
-    kp.forEach(function(k){ if ((p.paragraphs||[]).some(function(pa){return pa.some(function(s){return (s.text||'').toLowerCase().includes(k.en.toLowerCase());});}) && !ms.some(function(m){return m.toLowerCase().startsWith(k.en.toLowerCase()+' ');})) { var it=(L.vocab||[]).find(function(v){return v.heading.toLowerCase()===k.en.toLowerCase();}); var f=it && it.fields.find(function(v){return v.label==='本文中の意味';}); ms.push(k.en+' ＝ '+(f?f.html.replace(/<[^>]*>/g,''):k.text)); }});
-    (L.vocab||[]).forEach(function(v){var term=v.heading, seen=(p.paragraphs||[]).some(function(pa){return pa.some(function(s){return (s.text||'').toLowerCase().includes(term.toLowerCase());});});if(seen&&!ms.some(function(m){return m.toLowerCase().startsWith(term.toLowerCase()+' ')})){var f=v.fields.find(function(x){return x.label==='本文中の意味';});if(f)ms.push(term+' ＝ '+f.html.replace(/<[^>]*>/g,''));}});
-    if(!ms.length)return '';
-    return '<div class="wordbox"><ul class="meanings">'+ms.map(function(m){var s=m.split(/\s*[＝=]\s*/);var term=s[0],detail=(L.vocab||[]).find(function(v){return v.heading.toLowerCase()===term.toLowerCase();});return '<li>'+esc(term)+' ＝ '+esc(s.slice(1).join('＝'))+(detail?' <a href="#vocab" aria-label="'+esc(term)+'の詳しい解説へ">詳しい解説 ↓</a>':'')+'</li>';}).join('')+'</ul></div>';
   }
   function render() {
     var by = function (k) { return parts.filter(function (p) { return p.kind === k; }); };
@@ -67,37 +72,36 @@
         return p.kp.map(function (k) {
           return '<div class="kpitem" data-part="' + p.idx + '"><div><span class="th">' + esc(hdr[0]) + '</span><b>' + esc(k.en) + '</b></div>' +
                  '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + '</div>' +
-                 '<button type="button" class="seek part" data-act="part" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button></div>';
+                 '<button type="button" class="seek part" data-act="kp" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button></div>';
         }).join('');
-      }).join('') + '</div>';
+      }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、下線付きで表示されます。</p>';
       out += card('Key Phrases', body, { label: 'KEY PHRASES' });
     }
     var full = parts.filter(function (p) { return p.kind === 'comment' || p.kind === 'story'; });
     if (full.length) {
-      var b = '';
-      b += full.map(function (p) {
+      // Full Story と In One Line は1つの連続したまとまり(同一カード内。Comment 4 の直後に In One Line)
+      var b = full.map(function (p) {
         if (p.kind === 'comment') {
-          var ja = JA.test(p.paragraphs.map(function (x) { return x.map(function (s) { return s.text; }).join(''); }).join(''));
-          return '<div class="comment" data-part="' + p.idx + '"><div class="ch"><strong>' + esc(p.label) + '</strong>' + btns(p) + '</div>' + sentHtml(p) + translation(p) + '</div>';
+          return '<div class="comment" data-part="' + p.idx + '"><div class="ch"><strong>' + esc(p.label) + '</strong>' + btns(p) + '</div>' + sentHtml(p) + trHtml(p) + '</div>';
         }
-        var m = wordBox(p);
-        return '<div class="partblock" data-part="' + p.idx + '"><div class="ph"><b>' + esc(p.label) + '</b>' + btns(p) + '</div>' + sentHtml(p) + translation(p) + m + '</div>';
+        return '<div class="partblock" data-part="' + p.idx + '"><div class="ph"><b>' + esc(p.label) + '</b>' + btns(p) + '</div>' + sentHtml(p) + trHtml(p) + glossHtml(p) + '</div>';
       }).join('');
-      b += by('oneline').map(function(p){return '<div class="partblock oneline" data-part="'+p.idx+'"><div class="ph"><b>In One Line</b>'+btns(p)+'</div>'+sentHtml(p)+translation(p)+'</div>';}).join('');
+      by('oneline').forEach(function (p) {
+        b += '<div class="partblock oneline" data-part="' + p.idx + '"><div class="ph"><h3>In One Line</h3>' + btns(p) + '</div>' + sentHtml(p) + trHtml(p) + glossHtml(p) + '</div>';
+      });
       out += card('Full Story', b, { label: 'FULL STORY', id: 'fullstory' });
     }
-    // In One Line は Full Story と同じカードに続けて表示する。
     if (L.vocab && L.vocab.length) {
       var wide = window.matchMedia('(min-width: 700px)').matches;
-      out += card('Vocabulary & Expressions', L.vocab.map(function (it) {
+      out += card('Vocabulary & Expressions', L.vocab.map(function (it, vi) {
         var mean = (it.fields.filter(function (f) { return f.label === '本文中の意味'; })[0] || {}).html || '';
-        return '<details class="vi" id="word-' + esc(it.heading.toLowerCase().replace(/[^a-z0-9]+/g,'-')) + '"' + (wide ? ' open' : '') + '><summary>' + esc(it.heading) + '<span>' + mean + '</span></summary><dl>' +
+        return '<details class="vi" id="vi-' + lv + '-' + vi + '"' + (wide ? ' open' : '') + '><summary><b class="vh">' + esc(it.heading) + '</b><span class="vm">' + mean + '</span></summary><dl>' +
           it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></details>';
       }).join(''), { label: 'WORDS', id: 'vocab' });
     }
     if (L.grammar && L.grammar.length) {   // 採用0件ならコーナーごと非表示
       out += card('Grammar & Sentence Structure', L.grammar.map(function (it) {
-        return '<div class="gr"><dl style="margin:0">' + it.fields.map(function (f) { return '<dt style="font-size:12px;font-weight:700;color:var(--accent);margin-top:10px">' + esc(f.label) + '</dt><dd style="margin:2px 0 0">' + f.html + '</dd>'; }).join('') + '</dl></div>';
+        return '<div class="gr"><dl>' + it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></div>';
       }).join(''), { label: 'GRAMMAR', id: 'grammar' });
     }
     $('content').innerHTML = out;
@@ -109,19 +113,28 @@
   function ensureSrc(url) { if (A.src !== url) { A.src = url; A.load(); } }
   function withMeta(fn) { if (A.readyState >= 1) fn(); else A.addEventListener('loadedmetadata', function h() { A.removeEventListener('loadedmetadata', h); fn(); }); }
   function playNow() { var pr = A.play(); if (pr && pr.catch) pr.catch(function (e) { if (e.name !== 'AbortError') console.warn('play()', e.name); }); }
-  function playFull(at) { mode = 'full'; curIdx = null; ensureSrc(audioUrl(L.main)); withMeta(function () { if (at != null) A.currentTime = at; playNow(); }); labels(); }
-  function playPart(i) { mode = 'part'; curIdx = i; ensureSrc(audioUrl(parts[i].seg)); withMeta(function () { A.currentTime = 0; playNow(); }); labels(); }
+  function playFull(at) { mode = 'full'; curIdx = null; kpEnd = null; ensureSrc(audioUrl(L.main)); withMeta(function () { if (at != null) A.currentTime = at; playNow(); }); labels(); }
+  /* Key Phrase の発音: 既存KP区間mp3(番号→英語→日本語の意味(Advは英語解説)→英語再掲)のうち、最初の英語発話の区間だけを再生し、終端で停止(音声ファイルは不変) */
+  function playKp(i, k) {
+    var kk = parts[i].kp[k || 0], ea = kk && kk.en_audio; if (!ea) return;
+    mode = 'kp'; curIdx = i; kpEnd = ea.end; ensureSrc(audioUrl(parts[i].seg));
+    withMeta(function () { A.currentTime = ea.start; playNow(); }); labels();
+  }
+  function endKp() {   // 英語区間の終端: 停止して通し再生の状態へ戻す(意味・再掲は再生されない)
+    var i = curIdx; A.pause(); mode = 'full'; kpEnd = null; curIdx = null;
+    ensureSrc(audioUrl(L.main)); withMeta(function () { A.currentTime = parts[i].start; tick(); });
+  }
   function dur() {
-    var d = mode === 'part' && curIdx != null ? parts[curIdx].dur : L.total_sec;
+    var d = mode === 'kp' && curIdx != null ? parts[curIdx].dur : L.total_sec;
     return (isFinite(A.duration) && A.duration > 0 && A.readyState >= 1) ? A.duration : d;
   }
-  function gt() { return (mode === 'part' && curIdx != null ? parts[curIdx].start : 0) + (A.currentTime || 0); }
+  function gt() { return (mode === 'kp' && curIdx != null ? parts[curIdx].start : 0) + (A.currentTime || 0); }
   function labels() {
     var pi = currentPartIdx();
-    $('nowLabel').textContent = (mode === 'part' && curIdx != null) ? ('パート再生: ' + parts[curIdx].label) : ('全体' + (pi != null && A.currentTime > 0 && parts[pi].kind !== 'sfx' && parts[pi].kind !== 'fixed' ? ' · ' + parts[pi].label : ''));
+    $('nowLabel').textContent = (mode === 'kp' && curIdx != null) ? ('英語音声: ' + parts[curIdx].label) : ('全体' + (pi != null && A.currentTime > 0 && parts[pi].kind !== 'sfx' && parts[pi].kind !== 'fixed' ? ' · ' + parts[pi].label : ''));
   }
   function currentPartIdx() {
-    if (mode === 'part') return curIdx;
+    if (mode === 'kp') return curIdx;
     var g = gt(), r = null;
     for (var i = 0; i < parts.length; i++) { if (g >= parts[i].start - 0.001) r = i; else break; }
     return r;
@@ -145,6 +158,7 @@
     return null;                                  // 文と文の間・長い無音・終了後は強調なし
   }
   function tick() {
+    if (mode === 'kp' && kpEnd != null && !A.paused && (A.currentTime || 0) >= kpEnd) { endKp(); return; }
     var d = dur(), c = A.currentTime || 0;
     $('seek').value = d ? Math.min(1000, Math.round(c / d * 1000)) : 0; $('tCur').textContent = fmt(c);
     $('tTot').textContent = fmt(d);
@@ -156,12 +170,9 @@
     if (sync.length) highlight(findActive(gt()));
     window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src };
   }
-  function seekSentence(sid) {   // 文クリック: その文の先頭から再生(同一パート再生中はパート内シーク、それ以外は通し再生)
+  function seekSentence(sid) {   // 文クリック: その文の先頭から全体音声を再生
     var r = sync.filter(function (x) { return x.sid === sid; })[0]; if (!r) return;
-    var key = sid.split('-')[0], pi = -1;
-    parts.forEach(function (p, i) { if (p.key === key) pi = i; });
-    if (mode === 'part' && curIdx === pi) { A.currentTime = Math.max(0, r.start - parts[pi].start); playNow(); tick(); }
-    else playFull(r.start);
+    playFull(r.start);
   }
   function loop() { tick(); raf = A.paused ? 0 : requestAnimationFrame(loop); }
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
@@ -195,7 +206,7 @@
   /* ---------- レベル切替・初期化 ---------- */
   function setLevel(next) {
     lv = next; L = art.levels[lv]; parts = L.parts;
-    A.pause(); mode = 'full'; curIdx = null; activeSid = null;
+    A.pause(); mode = 'full'; curIdx = null; kpEnd = null; activeSid = null;
     ensureSrc(audioUrl(L.main));
     $('eyebrow').textContent = 'English Your Way · ' + LEVEL_NAME[lv];
     $('playAll').textContent = '▶ 全体を再生(' + fmt(L.total_sec) + ')';
@@ -218,9 +229,16 @@
   $('content').addEventListener('click', function (e) {
     var se = e.target.closest('.sent');
     if (se && !e.target.closest('button') && syncKind !== 'none') { seekSentence(se.dataset.sid); return; }
+    var gl = e.target.closest('a.glink');
+    if (gl) {   // 意味一覧の「解説」: 該当表現の解説(Vocabulary項目)へ直接移動し、開く
+      e.preventDefault();
+      var t = $('vi-' + lv + '-' + gl.dataset.vi);
+      if (t) { t.open = true; t.scrollIntoView({ block: 'start', behavior: 'smooth' }); t.classList.add('flash'); setTimeout(function () { t.classList.remove('flash'); }, 2200); }
+      return;
+    }
     var b = e.target.closest('button[data-act]'); if (!b) return;
     var i = Number(b.dataset.i);
-    if (b.dataset.act === 'part') playPart(i); else playFull(parts[i].start);
+    if (b.dataset.act === 'kp') playKp(i, 0); else playFull(parts[i].start);
   });
   $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-lv]'); if (b && b.dataset.lv !== lv) setLevel(b.dataset.lv); });
   $('playAll').addEventListener('click', function () { playFull(0); window.scrollTo({ top: 0, behavior: 'smooth' }); });
