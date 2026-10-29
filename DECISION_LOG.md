@@ -22823,3 +22823,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ### 2026-10-29 FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01 委任_01(1/2): 人物紹介一般化方式B+E正式採用(APPROVED_FOR_PRODUCTION、Family Y Std/Adv)
 - ユーザー決定: B+E(紹介=テーマとの関わりを中心に、属性自体が立場を表すなら具体属性を維持。原則5項目)をStd/Adv両方でAPPROVED_FOR_PRODUCTION、目標PRODUCTION_WIRED、追加Trial不要。時期語の決定論検査は追加しない。情報源に無い事実の補完を一律NGにしない(明確な矛盾・不自然な創作・立場との不整合は既存Gateで防止)。X/Z不適用。既存完成記事は再生成しない(姓記事V1は別承認の固定文で是正済み)。Trial確定成果物(RESULT_01/02、CLAUSE_E)が正本。UDR #221(一般化方式)判断済み。原文=`docs/pm/delegation_log/2026-10-29_FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01_USER.md`。実装・evidenceは委任_01(2/2)。
+
+### 2026-10-29 FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01 委任_01(2/2): B+E方式 Family Y Std/Adv 正式配線・runtime evidence(Status=PRODUCTION_WIRED_PENDING_FABLE)
+- 実装: `persona_intro_01.txt`にB+E 2箇条(sha a5da099a…、旧787794d6…)、`person_block`へ話題との関わり行。role_patterns・check_intro・補助Gate・schemaは不変(Trial B/E全候補が既存検査を通過=緩和なし)。時期語検査は追加せず。X/Z不変、既存記事再生成0。
+- 証拠: 正式runner text+translate(copy-run再配達料、gpt-6.1-sol/high、prompt_sha a5da099a…、1call、check_intro違反0、補助Gate PASS、英訳Adv/Std中立表現で性別矛盾なし、費用¥4.29)。resumeは保存input_keyの再計算一致(同一run 300秒内3起動でRESTART_STORMのSTOPがcopy-runに作成=Worker自身の起動による。API 0、解除せず残置)。
+- 限界: 乖離型・中間型の正式経路runtimeは未実施(Trial出力golden+Prompt同一性testで代替)。Fable独立受入待ち。新たな判断候補なし。

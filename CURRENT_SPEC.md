@@ -3267,3 +3267,9 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 - **完成報告**: 記事完成報告は開発者向けURL+End User向けURL+両検証結果を必須(PM_GOVERNANCE 9-16、`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`、`.claude/agents/sandwich-pm.md`)。
 - **量産単価**: API 0円/セット。ローカルCPU 約6.5分/セット(初回のみ、再実行はキャッシュで約6秒)。
 - **実測(commit 1b4b41afb(コード)+本SSOT commit)**: 4記事(X月・Y再配達料・Y姓・Zメロス)×Std/Adv=同期gate全PASS、live(GitHub Pages)Playwright検証 168/162/170/162チェック NG 0、`verify_consistency` ok、再実行ASR 0・stale検出ok。**未実施**: 実機iOS Safari/Android Chrome(模擬のみ)、Zの正式1起動(gate/assemble含む)、藪の中(OPEN-592修正後)。
+
+## Family Y 人物紹介 B+E方式(2026-10-29ユーザー正式決定`APPROVED_FOR_PRODUCTION`、到達`PRODUCTION_WIRED_PENDING_FABLE`、`FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01`、Std/Adv、Family X/Z不適用。原文=`docs/pm/delegation_log/2026-10-29_FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01_USER.md`、OPEN-603、UDR #221)
+- **方式**: 紹介は『その人物が今回のテーマとどう関わっているか(立場・経験)』を中心に書く。職業・家族関係・社会的立場などの属性自体が立場を表すときは具体属性を維持する。原則5項目=①リアリティと自然さ ②テーマとの関わり・経験・立場が伝わる ③主張と紹介の整合 ④属性の機械的転記も不必要な抽象化もしない ⑤人物像を自然にする合理的補完を許容(情報源に無い事実を足したという理由だけで一律NGにしない。明確な事実矛盾・不自然な創作・立場や主張との不整合は既存Gateで防ぐ)。**元情報にない時期語を理由とする決定論検査は追加しない**(ユーザー決定)。過剰抽象化のA方式へ戻さない。
+- **3類型(回帰基準)**: 乖離型(夫が妻の姓を選ぶとき=『父親』より妻の姓を選んだ経験)/一致型(再配達料=『宅配ドライバー』維持)/中間型(SNS年齢制限=属性+関わり)。
+- **実装**: `er121_prompts/persona_intro_01.txt`の`【書き方】`直後へ2箇条(一般化原則・属性がそのまま立場のとき)、sha=`a5da099a2d7b44392f118f61a97f3538933cf2e3354d0024b3bbcf697a12fbe5`(旧`787794d6…`)、`person_block`(`er121_family_y_text_core_01.py:1650`)へ`話題との関わり`(=`contact_point_ja`、既存必須key)行。紹介生成は記事単位text stage一本(`generate_intros`:1665、route `FAMILY_Y_PERSONA_INTRO`=gpt-6.1-sol/high)でStd/Adv英訳の双方へ流れる。`check_intro`・字数・補助Gate(luna)・Theme Package schemaは不変。retry・`--regenerate-stage text`・resumeは同一経路(cache keyに紹介Prompt sha)。既存完成記事は再利用manifestにより再生成しない(姓記事V1は別承認の固定文で是正済み)。
+- **証拠**: `docs/research/FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01/EVIDENCE_01.md`(copy-run正式runner text+translate、再配達料、費用¥4.29、test 13+既存169)。Fable独立受入待ち。

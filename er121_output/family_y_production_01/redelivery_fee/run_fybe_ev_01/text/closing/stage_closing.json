@@ -1,0 +1,60 @@
+{
+  "input_key": "fdfb5ab43ff81f2f8dba9a66bf6188c08a64e02e6ff61ca5d90051a654fa1ae6",
+  "result": {
+    "text": "午前を指定した人の家にも、不在票が入っていた。受け取り方を選べる人には、再配達の料金は工夫を促す合図になる。でも、受け取る人が払うだけでは、配達の遅れや日時の知らせ方は変わらない。送料をいくらにして、運ぶ人にいくら回すかも、受け取る人の手では変えられない。あなたが家にいられず困ったとき、受け取り方は選べたか、届く日時は分かっていたか？その困りごとは、受け取る人に料金を求めて変えられることだろうか？",
+    "record": {
+      "source": "fixed_user_approved",
+      "general_method_used": false,
+      "slug": "redelivery_fee",
+      "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER.md §2-3 (案B「料金は何を動かせるか」を当該記事のみ個別正式採用)",
+      "text_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+      "registry_sha256": "d47cb9e953b2d0804aedd1829a8e9e6d7d1c4c9594fed8117821bb55c1643920",
+      "theme_package_sha256": "f0d0af367950735bb0264162d3cb45e3ef330759d8077e9d6f9bb5c3dadf0288",
+      "voice_r0_sha256": "566ebd97d7ba1c81dcaa64305c8e5f02228a44cf1b5aa64f5f0105b1e5498a89",
+      "generation_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+      "final_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+      "rewritten": false,
+      "gate": {
+        "status": "PASS",
+        "n_judgements": 1,
+        "rewritten": false,
+        "source": "judged_this_run",
+        "judgements": [
+          {
+            "attempt": 1,
+            "tension_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+            "any_flagged": false,
+            "n_fail_fields": 0,
+            "fail_fields": [],
+            "model": "gpt-6-luna",
+            "effort": "high",
+            "prompt_sha256": "1a71c3754f2d5b7f19d705c26f328196fe6e54409f920d04588fbfed169995d2"
+          }
+        ]
+      },
+      "n_judgements": 1,
+      "judgements": [
+        {
+          "attempt": 1,
+          "tension_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+          "any_flagged": false,
+          "n_fail_fields": 0,
+          "fail_fields": [],
+          "model": "gpt-6-luna",
+          "effort": "high",
+          "prompt_sha256": "1a71c3754f2d5b7f19d705c26f328196fe6e54409f920d04588fbfed169995d2"
+        }
+      ],
+      "model_id": null,
+      "routing_key": null,
+      "prompt_sha256": null,
+      "status": "PASS",
+      "note": "案B固定注入。Prompt 02による一般化生成は使っていない(受入条件3は別記事の一般化経路evidenceで担保)。Gate: 既存の再判定機構(判定<=3回・本文書換えなし・残存FAILは公開せずFIXED_CLOSING_RESIDUAL_FAIL=STOP。USER_02 ②)。例外: 残存FAIL項目が承認済みの leak_evidence_memorable のみ・本文byte一致・書換えなしの場合に限り、個別Human承認(USER_03 §1)でPASS_BY_HUMAN_APPROVAL",
+      "entry": {
+        "module": "er121_family_y_text_core_01.py",
+        "status": "FAMILY_Y_PRODUCTION",
+        "module_sha256": "525183897e744509872447587f68971d6290f3cdd13beec64cea9d5ad288a103"
+      }
+    }
+  }
+}

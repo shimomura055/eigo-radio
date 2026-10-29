@@ -1063,7 +1063,7 @@ PROMPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "er121_pro
 ARTICLE_PROMPTS = {
     "voice": ("voice_generate_02.txt", "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e"),
     "lead": ("lead_generate_01.txt", "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21"),
-    "intro": ("persona_intro_01.txt", "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4"),
+    "intro": ("persona_intro_01.txt", "a5da099a2d7b44392f118f61a97f3538933cf2e3354d0024b3bbcf697a12fbe5"),   # B+E(FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01、2026-10-29。旧787794d6)
 }
 
 
@@ -1652,7 +1652,8 @@ def person_block(slot: str, sheets: dict, voices: dict) -> str:
     sh = sheets[slot]
     daily = re.sub(r"(\(出来事は経験欄にあるものだけ\)|（出来事は経験欄にあるものだけ）)", "", sh["daily_life_ja"]).strip()
     cue = re.sub(r"\(.*?\)", "", sh["identity_cue_ja"]).strip()
-    return (f"【人物{i}】{sh['role_ja']}\n  暮らしの様子: {daily}\n  人物の出し方の目安: {cue}\n"
+    contact = sh["contact_point_ja"].strip()          # B+E: 話題との関わり(REQUIRED_SHEET_KEYSの必須key)。紹介は属性より『テーマとの関わり』を主にする材料
+    return (f"【人物{i}】{sh['role_ja']}\n  話題との関わり: {contact}\n  暮らしの様子: {daily}\n  人物の出し方の目安: {cue}\n"
             f"  本人の語り(整合を取るための読み取り専用。内容を先取りしない): {voices[slot]}")
 
 

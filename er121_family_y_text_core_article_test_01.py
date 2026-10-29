@@ -171,7 +171,7 @@ class TestPromptFiles(unittest.TestCase):
     def test_literal_sha_values(self):
         self.assertEqual(c.ARTICLE_PROMPTS["voice"][1], "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e")
         self.assertEqual(c.ARTICLE_PROMPTS["lead"][1], "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21")
-        self.assertEqual(c.ARTICLE_PROMPTS["intro"][1], "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4")
+        self.assertEqual(c.ARTICLE_PROMPTS["intro"][1], "a5da099a2d7b44392f118f61a97f3538933cf2e3354d0024b3bbcf697a12fbe5")   # B+E(FY-SPEAKER-INTRO-BE-PRODUCTION-WIRING-01、2026-10-29。旧787794d6…)
 
     def test_mismatch_stops_and_crlf_is_normalised(self):
         with tempfile.TemporaryDirectory() as d:
@@ -317,6 +317,8 @@ class TestEqualsDev(unittest.TestCase):
 
     def test_intro_template_and_prompt_equal_dev(self):
         parts = c.load_article_prompt("intro")
+        # B+E(2026-10-29): 追加2箇条(一般化原則・E節)と人物ブロックの『話題との関わり』行を除いた残りがDEV(旧委任_28)と一致=旧部分は不変
+        parts = dict(parts, user_template="\n".join(ln for ln in parts["user_template"].split("\n") if not ln.startswith(("- 【人物紹介の一般化原則】", "- 【属性がそのまま立場のとき】"))))
         self.assertEqual(parts["developer"], self.rev.INTRO_DEVELOPER)
         self.assertEqual(c.INTRO_SCHEMA, self.rev.INTRO_SCHEMA)
         spec = c.intro_spec(self.red, self.explicit_checks())
@@ -325,7 +327,7 @@ class TestEqualsDev(unittest.TestCase):
         if have("er110_output/family_y_opinion_based_03/redelivery_fee/run_01/article_ja.md"):
             r0 = self.rr.load_r0()
             voices = {s: r0[s] for s in c.SLOTS}
-            self.assertEqual(c.build_intro_prompt(self.red, self.rr.PREMISE_JA, voices, parts, spec), self.rev.build_intro_prompt(self.rev.load_theme_sheets(), voices))
+            self.assertEqual(re.sub(r"  話題との関わり: .*\n", "", c.build_intro_prompt(self.red, self.rr.PREMISE_JA, voices, parts, spec)), self.rev.build_intro_prompt(self.rev.load_theme_sheets(), voices))
 
     def test_check_intro_equals_dev_with_explicit_spec(self):
         spec = c.intro_spec(self.red, self.explicit_checks())
