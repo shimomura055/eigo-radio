@@ -1650,7 +1650,7 @@ Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在し
 ## Family Z セリフTTS 文脈・感情付き方式+Fallback(2026-10-26ユーザー正式採用`APPROVED_FOR_PRODUCTION`、`FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01`、OPEN-528、Status=`PRODUCTION_WIRED`[Family Z限定・Std/Adv、2026-10-26 Fable判定])
 
 - **対象**: Family Z dialogue clip(Std=a2・Adv=b1b)のみ。X/Y/B/C・narrator・KPは不変(`attempt_hook=None`/`prior_generations`既定0のgolden fixtureで一致確認)。ユーザー原文=`docs/pm/delegation_log/2026-10-26_FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md`。
-- **試行列(総3回)**: 1回目=文脈・感情付き(ctx)→NGなら2回目=ctx(待機0)→NGなら固定600秒cooldown(`er020.COOLDOWN_SECONDS`、実時間)→3回目=従来方式(`style_prefix_override=None`、CONTEXT/話者/前後セリフ/mannerを完全除外。prompt sha256は従来`build_tts_prompt(text, ENGLISH_STYLE_PREFIX)`出力とバイト一致)。3回NGは STOPPED→Review Lock(HUMAN_REVIEW_REQUIRED)→STOP(stage例外`FamilyZTtsClipFailedStop` rc=2。runner既存仕様でsentinelファイルは作らない)。4回目なし。**Z dialogueにLocal Rewriteは未配線**(3回NG→HR Lock/STOP直行。LR新設は新仕様=別承認事項)。「NG」は既存のASR/disfluency/repetition QA(Advは減速後再検証を含む)の採否そのもの。ASR表記違いのみを理由とする再生成は行わない(既存方針)。 【履歴(2026-10-26統一前の記述)。X/Y/Z scope内の正式経路は2026-10-27以降、本ファイル末尾『TTS Retry/Fallback/Local Rewrite 統一仕様(X/Y/Z)』節が正(待機=180秒、LR後も3回ブロック、Adv③は短文Style、旧「LR後1回」「Adv技術エラー時のみStyle切替」は廃止)。本記述はA/B/C(scope外・Legacy凍結)と過去run解釈用に残置】
+- **試行列(総3回)**: 1回目=文脈・感情付き(ctx)→NGなら2回目=ctx(待機0)→NGなら固定600秒cooldown(`er020.COOLDOWN_SECONDS`、実時間)→3回目=従来方式(`style_prefix_override=None`、CONTEXT/話者/前後セリフ/mannerを完全除外。prompt sha256は従来`build_tts_prompt(text, ENGLISH_STYLE_PREFIX)`出力とバイト一致)。3回NGは STOPPED→Review Lock(HUMAN_REVIEW_REQUIRED)→STOP(stage例外`FamilyZTtsClipFailedStop` rc=2。runner既存仕様でsentinelファイルは作らない)。4回目なし。**Z dialogueにLocal Rewriteは未配線**(3回NG→HR Lock/STOP直行。LR新設は新仕様=別承認事項)。「NG」は既存のASR/disfluency/repetition QA(Advは減速後再検証を含む)の採否そのもの。ASR表記違いのみを理由とする再生成は行わない(既存方針)。 【履歴(2026-10-26統一前の記述)。X/Y/Z scope内の正式経路は2026-10-27以降、本ファイル末尾『TTS Retry/Fallback/Local Rewrite 統一仕様(X/Y/Z)』節が正(待機=180秒、LR後も3回ブロック、Adv③は短文Style、旧「LR後1回」「Adv技術エラー時のみStyle切替」は廃止)。本記述はA/B/C(scope外・Legacy凍結)と過去run解釈用に残置】 【履歴・2026-10-29改定】Zセリフは同日LR(最大1回)を正式採用し最大TTS6・待機2へ統一(下記『TTS Retry/Fallback/Local Rewrite 統一仕様』のZ_DLG_CTX行・8区分一覧が現行)。『Z dialogueにLocal Rewriteは未配線』『3回NG→HR直行』『600秒』は履歴。
 - **感情・文脈notes(正式経路)**: Trialと同一Prompt(rule 1-10)・モデル(`gpt-6-luna`、reasoning low)・CONTEXT書式、level単位で1 call(+失敗時1回再試行、再失敗は技術STOP[再開可])。保存=`<level>/audit/dialogue_ctx_notes.json`(run内不変)。**Trialでの目視レビューは撤去し、決定論検査(逐語引用一致・語数・新規固有名詞・強度語)の3値[ACCEPTED/NO_EXPLICIT_CUE/DISCARDED]を自動受理する工程置換**(Trial決定済み77件で判定一致100%・覆し0。品質基準の緩和ではない)。leakageは観測のみ。module=`er122_fz_ctx_notes_01.py`/`er122_fz_ctx_policy_01.py`(Trial module `er118_*`をimportしない)。
 - **状態の永続化・再開**: attempt状態=`<level>/audit/dialogue_ctx_attempt_state.json`(TTS呼出前に`n_started`を書く=TTS中に落ちても消費済み)。再開は消費済み試行を再実行せず、cooldown起点(前回NG確定時刻)から残りだけ実時間で待機(10分未満にならない)。明示再生成信号(`--only-clips`対象・`consuming_regenerate_approval`・本文/policy/ctx style不一致)のときだけ新規サイクル。run単位policy=`<run>/audit/dialogue_tts_policy.json`(既存run state有=legacy、新規=`fz_ctx_v1`、ロールバック=`Z_DIALOGUE_CTX_POLICY_DEFAULT`)。ctx試行内の技術失敗minimal fallbackは既存安全装置として許容し`minimal_fallback_in_ctx_attempt`と記録。 【履歴(2026-10-26統一前の記述)。X/Y/Z scope内の正式経路は2026-10-27以降、本ファイル末尾『TTS Retry/Fallback/Local Rewrite 統一仕様(X/Y/Z)』節が正(待機=180秒、LR後も3回ブロック、Adv③は短文Style、旧「LR後1回」「Adv技術エラー時のみStyle切替」は廃止)。本記述はA/B/C(scope外・Legacy凍結)と過去run解釈用に残置】
 - **M-3=(ii)採用**: 実TTSは3回を超えない。Advで行会計により従来方式へ到達せず終わる稀ケース(M-3(i)併発シナリオ)は安全側でSTOPPED→HR Lock(`terminal_before_fallback`)。(i)(外側ループ会計のpolicy準拠化)は既存A2予算規則変更のため未実施=ユーザー判断事項(非blocking)。
@@ -3160,7 +3160,7 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 
 - **ユーザー決定原文**: `docs/pm/delegation_log/2026-10-26_TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01_USER.md`。設計=`docs/research/TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01/{DESIGN_01,DESIGN_02,ROW_MAPPING_01,SPEC_LEDGER_01}.md`、Opus条件Aレビュー=同`OPUS_REVIEW_01.md`(M-1〜M-11/R-1〜R-7、`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-TRU-*)。
 - **基本フロー(1ブロック=最大3回)**: ①②=呼出元が指定したStyle(同一)で最大2回→②NG後に**180秒**待機→③=Fallback Style。LRあり部位は③NG後にLocal Rewriteを**最大1回**(再入禁止・深さ1)行い、書換え後の文で同じ3回ブロックをもう1回(①'②'=元Style→180秒→③'=Fallback)。最大TTS 6回・待機最大2回(360秒)。LRなし部位は3回・待機最大1回(180秒)。待機は省略しない。ASR起因/非ASR起因を問わず品質NGは同じフロー。技術エラーの即時再試行は別枠(ordinalを1つ消費、待機なし)。
-- **部位別表(`ROW_MAPPING_01.md` §2・49行の9 policy。`er127_tts_block_policy_01.PROFILES`)**:
+- **部位別表(`ROW_MAPPING_02.md`[2026-10-29。旧`ROW_MAPPING_01.md`は履歴]・正式47行の8 policy+互換`Z_DLG_LEGACY`[履歴・独立行なし]。`er127_tts_block_policy_01.PROFILES`)**:
 
 | policy(行数) | ①② | 待機 | ③ | LR | 最大TTS/待機 | 終端NG |
 |---|---|---|---|---|---|---|
@@ -3169,15 +3169,28 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 | JA_STD(8) | 日本語Style同一 | ②NG後・③前に180秒(新規。旧=待機なし) | 日本語短文Style(JA minimal)・LRなし | なし | 3/1回 | ③NG→Lock+日本語HRQ→Gate BLOCK/STOP |
 | KP_EN(6) | 前段Style(X/Z=K2、Y=MINIMAL)で2回 | ②NG後・ENGLISH_LOCK段の直前に180秒 | ENGLISH_LOCK 2回(**2+180+2=4回**、後段2回は既存) | なし | 4/1回 | ④NG→Lock+英語HRQ(slot4) |
 | KP_EXPL(3、Adv KP英語解説) | 解説Style同一 | ②NG後・③前に180秒 | 短文Style(適合性確認済み=DESIGN_01 §8) | なし(新設しない) | 3/1回 | ③NG→Lock+英語HRQ→Gate BLOCK |
-| Z_DLG_CTX(2、Zセリフ) | ctx Style(文脈・感情付き)2回 | ②NG後・③前に180秒(旧600秒) | 従来Dialogue Style(`style_prefix_override=None`、legacy③) | なし(今回追加しない) | 3/1回 | ③NG→Lock→TERMINAL_NG→HR/STOP(rc=2) |
-| Z_DLG_LEGACY(2) | 従来Dialogue Style | ②NG後・③前に180秒 | 従来Dialogue Style(同一) | なし | 3/1回 | ③NG→Lock→HR/STOP |
+| Z_DLG_CTX(2、Zセリフ) | ctx Style(文脈・感情付き)2回 | ②NG後・③前に180秒 | 従来Dialogue Style(`style_prefix_override=None`、legacy③) | **あり(2026-10-29 APPROVED_FOR_PRODUCTION。最大1回・深さ1・入力=現サイクル同一shaのASR内容不一致NG転写[新しい順・確定内容と重なる転写は除外]・候補は確定内容と重なるものを除外。LR後は元のctx Style①'②'→180秒→従来Dialogue③')** | 6/2回 | LR後③'NG→Lock→TERMINAL_NG→HRQ1行→HR/STOP(rc=2)。LR不可(入力なし・確定内容と重なる・候補全滅)=TTS 0でHR |
 | SHELL_EN(3、表外) | 現行維持(同一Style3回・F-Techのみ) | なし | 同一Style | なし | 3/0回 | 現行どおり |
 | NO_TTS(1) | TTSなし(固定mp3) | — | — | — | 0 | — |
 
   Z冒頭英語(`topic_intro_en` Std/Adv)はEN_LR_STD/ADVへ是正(D11、scope内限定・旧=未分類でcooldown/LR非適用。OPEN-538)。日本語(JA)の短文Styleは日本語専用(英語minimalの流用なし)。
 - **LR安全条件**: 再入禁止・深さ1(`BlockCtx.depth`、`lr_recover`入口で外側guard実行中をassert、`LocalRewriteContractError`)。LR block内のTTSは**元のrole Style**(Voice・Styleを脱落させない)で①②、③=Fallback。書換え本文は`BlockProgress`に保存しresume時にLR LLMを再実行しない。LR後も同じASR・Natural English QA・Gate。LRが適用不可(NO_NG_SPAN等)と0 APIで判定できる場合は無益な後続処理をせず即HR(③NG後。ただし180秒待機・再試行フローは省略しない)。LRなし部位へ独断でLRを追加しない。
 - **Adv ③の短文StyleとVoice**: Adv③はminimal(短文)Style。L1(`generate_charon_english`)の③はVoiceを保持(Charon、Aoedeへ置換しない。Opus M-10)。Std chunkは減速を各attempt内で実施(減速後NG→次attemptへ。案A、Opus M-6)。③/LR採用音声は既存fail-closed Gate(X M3 Gate・Y `y_style_gate`)がBLOCK対象として検知(`ADV_MINIMAL_FALLBACK`・`STD_FALLBACK_USED_OR_UNKNOWN`・`LOCAL_REWRITE_RECOVERY`等。**Gate・QA blocking条件は無変更**。HR増は『Gate緩和』を提案する場合のみユーザー承認事項)。
-- **JA短文Style・LRなし / Zセリフ**: JAはLRなし(③NGでLock+日本語HRQ)。Zセリフは文脈・感情Style2回→180秒→従来Dialogue 1回(LRなし・計3回。OPEN-528 Deferred(1)=LR新設せず確定)。Zセリフモデルは`gemini-2.5-pro-preview-tts`不変。
+- **JA短文Style・LRなし / Zセリフ(2026-10-29改定)**: JAはLRなし(③NGでLock+日本語HRQ)。Zセリフは文脈・感情Style2回→180秒→従来Dialogue 1回→**LR(最大1回)**→①'②'ctx→180秒→③'従来Dialogue→HR(最大TTS6・LR1・待機2)。Zセリフモデルは`gemini-2.5-pro-preview-tts`不変。ユーザー原文=`docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER.md`(`APPROVED_FOR_PRODUCTION`、OPEN-602)。実装=`er122_fz_ctx_policy_01.py`(state v2: phase B1/LR/B2・ng_transcripts・cooldowns)+`er063_family_z_audio_01.py`(外側guard `_dialogue_ctx_flow`)+`er127_tts_block_policy_01.py`(Profile `Z_DLG_CTX`=LR True・6・6・2)+`er129_lr_display_reflection_01.py`(確定内容の事前保護)。UDR-TRA-1・OPEN-528 Deferred(1)(Z dialogue LR新設なし)はsupersede。`Z_DLG_LEGACY`は『Zセリフ従来方式』の独立行ではなく履歴(policy=legacyの既存run再現・互換用の内部定義。従来Dialogue Style自体は3回目・6回目のFallbackとして現行正式経路で使用中=撤去していない)。
+- **正式Fallback・LR適用一覧(8区分。2026-10-29ユーザー原文§4)**:
+
+| # | 対象 | 3回目のFallback Style | LR | 最大TTS |
+|---|---|---|---|---|
+| 1 | X/Y/Z Standard 英語本文・Voice等 | 英語短文Style(Minimal) | ○ | 6回 |
+| 2 | X/Y/Z Advanced 英語本文・Voice等 | 英語短文Style(Minimal) | ○ | 6回 |
+| 3 | **Zセリフ・文脈感情方式(Std/Adv)** | **従来Dialogue Style** | **○** | **6回** |
+| 4 | X/Y/Z 日本語音声 | 日本語短文Style(Minimal) | × | 3回 |
+| 5 | X/Y/Z Key Phrase英語(Std/Adv) | ENGLISH_LOCK(3・4回目) | × | 4回 |
+| 6 | X/Y/Z Advanced KP英語解説音声 | 英語短文Style(Minimal) | × | 3回 |
+| 7 | X/Y/Z 英語固定案内音声 | 通常Styleのまま | × | 3回 |
+| 8 | 固定MP3(Family Y) | なし | — | 0回 |
+
+  ZセリフのLR発火時は、最終確認資料(候補ページの事後確認節)にLR Before/After(変更箇所=赤字)・変更理由・対象音声区間・最終採用がLR後かを表示し、Fallback採用は濃い青(両方該当は双方)。TTS Prompt・ASR正解原稿・学習者向け本文へは混入しない。
 - **終端NG1件=HRQ1行**: `register_terminal_hr`(重複は`is_duplicate_queue_entry`で抑止)。技術STOP(`TECHNICAL_STOP_STATES`)はLR/HRに入れない(再開可能STOP維持)。減速後終端NG・LR不可・LR block最終NG・LR例外で登録。
 - **cooldown**: 180秒を`er127.cooldown_core`の1箇所で定義(実時間`sleep`、5秒刻みでSTOP確認[登録済みrunner stop+絶対path`er026_output/family_z_production_e2e_01/STOP_ALL`]、attempt開始前にもSTOP確認)。STOP時は`TtsBlockStopError(BaseException)`を最上位まで伝播(STOPPED結果の保存・record_outcomeなし。IN_PROGRESSのまま残りresume可)。resume時は消費済みattemptを再生成せず、**残り待機時間のみ**待つ(`BlockProgress`: segment単位file`<level_dir>/audit/tts_block_progress/<segment_id>.json`、key=segment+元原稿sha+Style/backend/policy指紋、TTS呼出**前**にn_started永続化、古いIN_PROGRESS[6時間超]は新規サイクル)。`er020.COOLDOWN_SECONDS`(600)は`LEGACY_COOLDOWN_SECONDS`の別名としてA/B/C用に残置、`maybe_cooldown_before_attempt`はscope内に来たら`cooldown_core`へ委譲。
 - **単一読取関数と適用範囲**: `er127.unified_flow_active()`(=`er109_xz_scope_01.current_scope() in {X,Y,Z}`)が唯一の判定。scope内でpolicy解決不能は`BlockPolicyError`でfail-closed(legacyへ落とさない)。**A/B/C(scope外・単体呼出)は従来コードのまま**(golden 80ケースbyte同一)。Trial/tool(er113/er114/er118/er019_clobber_restore等)がscope内で実生成する場合は新flowになる(Opus R-4、`IMPLEMENTATION_01.md` §5)。flag・env・起動scriptによる切替は存在しない。

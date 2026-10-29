@@ -3752,7 +3752,7 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 1. 対象(記事・Family・レベル・音声/工程)
 2. 適用された承認済みProductionルート(CURRENT_SPEC節・file:line・実装関数)
 3. 実際に通過した工程と各工程の判定結果(時系列: 時刻・経路[通常/再試行/Fallback/LR]・方式・各Gate判定・費用)
-4. retry/fallback/LR等の救済処理の発動・非発動と理由(対象外/未配線/上限到達のいずれか)
+4. retry/fallback/LR等の救済処理の発動・非発動と理由(対象外/未配線/上限到達/LR不可[入力なし・確定内容と重なる・候補全滅]のいずれか。ZセリフもLR対象[2026-10-29以降])
 5. HRに至った直接原因
 6. 残っている自動救済手段の有無
 7. ユーザーに具体的に何を判断してほしいか
@@ -3762,7 +3762,7 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 
 ### 30-4. 運用
 - WorkerはRESULT_PACKETにHR要求時の7項目と区分を書く(`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`の報告節)。**Fableは受入時に7項目の充足と、「正常通過」の主張が実ログ(attempt state・review_lock_state・attempt_history・cost_log等)と整合することを確認**し、不足ならユーザー提示せず差戻す(UDR発行前チェック27-3/P3の一部として扱う。新Gateではない)。
-- 適用例(初回)=`docs/research/FAMILY-Z-IN-A-GROVE-PRODUCTION-01/HR_ROUTE_PART3_C6_01.md`(Adv part3_c6: ctx→ctx→180秒→Fallback、LR対象外=Z dialogueは未配線[CURRENT_SPEC:3178]、正常通過と判定)。
+- 適用例(初回)=`docs/research/FAMILY-Z-IN-A-GROVE-PRODUCTION-01/HR_ROUTE_PART3_C6_01.md`(Adv part3_c6: ctx→ctx→180秒→Fallback、LR対象外=Z dialogueは未配線[CURRENT_SPEC:3178]、正常通過と判定)。 **2026-10-29以降はZ dialogueもLR対象**(ユーザー正式採用`FZ-DIALOGUE-LR-ADOPTION-01`、最大TTS6・LR1・待機2)。この適用例は採用前の履歴であり、以後のZセリフHR報告は必須項目4にLR発動/非発動(LR不可=NO_USABLE_LR_INPUT/NO_CANDIDATE_PASSED_QA/確定内容保護)を記載する。新形式の適用例=`docs/research/FZ-DIALOGUE-LR-ADOPTION-01/HR_ROUTE_PART3_C6_02.md`(藪の中Adv part3_c6、LR発動後④⑤⑥NG)。
 
 ## 変更履歴
 

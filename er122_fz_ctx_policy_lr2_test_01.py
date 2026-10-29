@@ -455,3 +455,48 @@ def test_m6_injector_drives_lr_boundary_and_marks_every_record_injected(env, hrq
     assert rows and all(r.get("INJECTED") is True and r["clip_id"] == C3 for r in rows) and {r["n"] for r in rows} == {1, 2, 3}
     man = json.load(open(inj.manifest_path, encoding="utf-8"))
     assert man["INJECTED"] is True and man["ng_attempts"] == [1, 2, 3]
+
+
+def test_level_facts_unfinished_quote_clip_is_not_merged_into_kp_list_sentence(tmp_path):
+    """委任_03 是正: results未収録の引用clip(`,"`終わり)をlevel_textへ足すとき、後続のparts文字列(KP一覧)と1文に結合して偽のT2重なり(全dialogue clipがLR不可)を作らない。
+    結果に既にある本文は重ねて足さない(台帳 build_lr_ledger と同じ連結)。本物の出典文(bandit等を含むclip)は引き続き保護される。"""
+    import er129_lr_display_reflection_01 as er129
+    import er020_tts_retry_local_rewrite_01 as er020
+    ld = str(tmp_path / "a2")
+    os.makedirs(f"{ld}/audit")
+    clip_a = '"I found him in the bushes this morning,"'
+    clip_b = '"I caught the famous bandit Tajomaru near the bridge,"'
+    res = {"segments": {"tag_a": {"status": "OK", "canonical_text": "the woodcutter said."}, "tag_b": {"status": "OK", "canonical_text": "the constable said."}}}
+    res["key_phrases"] = {"1": {"english": {"path": "kp1_en.wav", "canonical_text": "on silent feet 足音 drown 溺れる bandit 盗賊"}}}   # 文末記号なしで終わるKP entry(実run)
+    json.dump(res, open(f"{ld}/audit/tts_generation_results.json", "w", encoding="utf-8"))
+    json.dump({"kp": "on silent feet 足音 drown 溺れる bandit 盗賊 x"}, open(f"{ld}/parts.json", "w", encoding="utf-8"))
+    sel = {"items": [{"candidate_id": "p_kp", "kind": "phrase", "used_form": "on silent feet", "display_phrase": "on silent feet", "key_phrase": "on silent feet"},
+                     {"candidate_id": "p_b", "kind": "word", "used_form": "bandit", "display_phrase": "bandit", "key_phrase": "bandit"}]}
+
+    def protected(text):
+        asr = text.replace("morning", "mornin") if "morning" in text else text.replace("famous", "famouse")
+        span = er020.identify_ng_span(text, asr)
+        return er129.input_overlaps_confirmed(text, span, asr, sel, er129.level_facts(ld, text))["protected"]
+
+    assert protected(clip_a) is False                       # 確定内容と無関係な文はLR可(偽T2なし)
+    assert protected(clip_b) is True                        # 確定語句banditを含む文は引き続き保護
+    texts = [er129.level_facts(ld, "the woodcutter said.")["level_text"]]
+    assert texts[0].count("the woodcutter said.") == 1       # 既にあるentry本文は二重に足さない
+    # resultsの最後のentryが引用clip(`,"`終わり)のとき(再生成でdictの末尾に入り直す実run)も、parts文字列と1文に結合しない(台帳と同じ連結[文境界つき])
+    res["segments"]["clip_a"] = {"status": "OK", "canonical_text": clip_a}
+    json.dump(res, open(f"{ld}/audit/tts_generation_results.json", "w", encoding="utf-8"))
+    assert protected(clip_a) is False and protected(clip_b) is True
+
+
+def test_candidate_filter_unwraps_prompt_quote_doubling_only_for_quoted_segments():
+    """LR候補生成Promptは原文を"..."で囲むため、引用符で囲まれたZセリフ原文では候補が二重引用符("")になる(E1 c6 / E3 Adv実測)。Z限定filterで原文の形へ戻す。
+    引用符で囲まれていない原文・既に同形の候補は変更しない。"""
+    import er129_lr_display_reflection_01 as er129
+    flt = er129.make_candidate_filter(None)
+    canon = '"Yes, I killed him,"'
+    recs = [{"adoptable": True, "rewritten_segment": '""Yes, I did him in,""'}, {"adoptable": True, "rewritten_segment": '"Yes, I did him in,"'}]
+    out = flt(canon, [dict(r) for r in recs])
+    assert out[0]["rewritten_segment"] == '"Yes, I did him in,"' and out[0].get("prompt_quote_unwrapped") is True
+    assert out[1]["rewritten_segment"] == '"Yes, I did him in,"' and "prompt_quote_unwrapped" not in out[1]
+    plain = flt("He left the room.", [{"adoptable": True, "rewritten_segment": '""He left the room.""'}])
+    assert plain[0]["rewritten_segment"] == '""He left the room.""'      # 原文が引用符で囲まれていない場合は触らない

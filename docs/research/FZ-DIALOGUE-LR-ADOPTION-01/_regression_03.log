@@ -1,0 +1,264 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 15%]
+........................................................................ [ 20%]
+........................................................................ [ 25%]
+........................................................................ [ 30%]
+............................................................................................................................... [ 39%]
+........................................................................ [ 45%]
+............................................................ [ 49%]
+...................................................F................ [ 54%]
+...................................................F........................................................................................ [ 64%]
+........................F............................................... [ 69%]
+........................................................................ [ 74%]
+................F.................................................................................................................................................................F......................... [ 89%]
+........................................................................ [ 94%]
+....F......................................................F............ [ 99%]
+.........                                                                [100%]
+================================== FAILURES ===================================
+________________ RegressionCorpusTest.test_recorded_candidates ________________
+
+self = <er020_tts_retry_local_rewrite_fullseg_test_01.RegressionCorpusTest testMethod=test_recorded_candidates>
+
+    def test_recorded_candidates(self):
+        # TEST-HYGIENE-02(2026-10-22): 対象は「現行rule導入前に記録された」er011 corpus。次のrunはFamily Z E2E
+        # (2026-10-12以降)で、記録時点の`is_full_segment_format_valid`が現行ruleの判定そのもの(False=現行ruleが
+        # 正当に拒否した過剰改変候補)であり、「旧rule拒否→現行でPASSへ救済」の前提が成り立たないため除外する。
+        # (対象外: run_e2e_01/run_e2e_02/run_kgcpw_z_e2e_01。除外後も旧True>=70/旧False>=14を満たす)
+        _EXCLUDED_POST_RULE_RUNS = ("run_e2e_01", "run_e2e_02", "run_kgcpw_z_e2e_01")
+        files = [f for f in sorted(glob.glob(os.path.join(
+            "er011_output", "local_rewrite_recovery", "**", "local_rewrite_recovery_*.json"),
+            recursive=True))
+            if not any(part in _EXCLUDED_POST_RULE_RUNS for part in os.path.normpath(f).split(os.sep))]
+        if not files:
+            self.skipTest("er011 records not present")
+        n_old_true = n_old_false = 0
+        for f in files:
+            with open(f, encoding="utf-8") as fh:
+                d = json.load(fh)
+            for c in d["candidates"]:
+                ng = d.get("ng_span") or {}
+                pr = (m.find_problem_span_token_range(d["canonical_text"], " ".join(ng.get("canonical_changed_words") or []))
+                      if ng.get("found") else {"found": False})
+                ngt = pr["canon_tokens"][pr["start"]:pr["end"]] if pr.get("found") else []
+                ok = m.validate_candidate_is_full_segment(d["canonical_text"], c["rewritten_segment"],
+                                                          ng_changed_tokens=ngt)
+                old = c.get("is_full_segment_format_valid")
+                if old is True:
+                    n_old_true += 1
+                    self.assertTrue(ok, (f, c["id"]))
+                elif old is False:
+                    n_old_false += 1
+>                   self.assertTrue(ok, (f, c["id"]))  # 実際は全文(置換句のみではない)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   AssertionError: False is not true : ('er011_output\\local_rewrite_recovery\\coffee_prices__run_tru_ev_b8_x_std_2b\\a2\\local_rewrite_recovery_topic_intro.json', '5')
+
+er020_tts_retry_local_rewrite_fullseg_test_01.py:191: AssertionError
+__________________ WiringTest.test_preview_comment_kp_styles __________________
+
+self = <er063_family_z_audio_01_test_01.WiringTest testMethod=test_preview_comment_kp_styles>
+
+    def test_preview_comment_kp_styles(self):
+        import er003_v1_sing01_voice01_generate as v1
+        import er003_v1_n3_01_tts_generate as n3
+        with mock.patch.object(v1, "generate_charon_english", return_value={"status": "OK"}) as m:
+            z.real_generators()["preview"](self._spec("b1b", "preview"), "x/b1b/narration/preview.wav")
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["E1"])
+            z.real_generators()["comment"](self._spec("b1b", "comment"), "x/b1b/narration/comment_1.wav")
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._E2_UPBEAT)
+        with mock.patch.object(n3, "generate_a2_japanese_with_reading_safety", return_value={"status": "OK"}) as m:
+            z.real_generators()["preview"](self._spec("a2", "preview"), "x/a2/narration/preview.wav")
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["S3"])
+            z.real_generators()["kp_ja"](self._spec("a2", "kp_ja"), "x/a2/narration/kp1_ja.wav")
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["P8_KP"])
+        import er003_v1_repro01_main_generate as repro
+        with mock.patch.object(repro, "generate_narration_snippet_verified_strict", return_value={"status": "OK"}) as m:
+            z.real_generators()["kp_en"](self._spec("a2", "kp_en"), "x/a2/narration/kp1_en.wav")
+>           self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["K2"])
+                             ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'kwargs'
+
+er063_family_z_audio_01_test_01.py:700: AttributeError
+____ test_w11b_non_dialogue_generators_source_unchanged_vs_baseline_commit ____
+
+    def test_w11b_non_dialogue_generators_source_unchanged_vs_baseline_commit():
+        """narrator/topic_intro/preview/comment/japanese_title/kp_* generator(real_generators内の関数)のソースが基準commit(ab111631c)と同一。"""
+        try:
+            base = subprocess.run(["git", "show", "ab111631c:er063_family_z_audio_01.py"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=True).stdout
+        except Exception:
+            pytest.skip("git基準commitを取得できない")
+        cur = open(os.path.join(ROOT, "er063_family_z_audio_01.py"), encoding="utf-8").read()
+    
+        def inner(src):
+            tree = ast.parse(src)
+            rg = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "real_generators")
+            return {n.name: ast.get_source_segment(src, n) for n in rg.body if isinstance(n, ast.FunctionDef)}
+        b, c = inner(base), inner(cur)
+>       assert set(b) == set(c)
+E       AssertionError: assert {'_kp_en_two_... 'kp_en', ...} == {'_kp_en_two_..._simple', ...}
+E         
+E         Extra items in the right set:
+E         '_narrator_inner'
+E         Use -v to get more diff
+
+er063_fz_ctx_wiring_test_01.py:518: AssertionError
+________ test_e2_forced_ng_1_2_then_cooldown_then_real_legacy_attempt _________
+
+self = <openai.resources.responses.responses.Responses object at 0x0000026590FF0590>
+args = ()
+kwargs = {'model': 'gpt-6-luna', 'reasoning': {'effort': 'high'}, 'text': {'format': {'type': 'json_schema', 'name': 'local_rew...ure\']):\n"are you sure"\n\nPropose the candidates as described in the system instructions. Return the JSON object.'}]}
+
+    def patched_create(self, *args, **kwargs):
+        attempt = _next_attempt("openai", "responses.create")
+        t0 = time.time()
+        try:
+>           response = original_create(self, *args, **kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+er005_cost_logger.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+er005_cost_logger.py:134: in patched_create
+    record({
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'provider': 'openai', 'api': 'responses.create', 'model_id': 'gpt-6-luna', 'response_id': 'resp_07ab8225fbf26491006ae31a75c90c87d0b95c92570a4cfdb7', ...}
+
+    def record(entry: dict) -> None:
+        if _LOG_PATH is None:
+>           raise RuntimeError("init_logger()が呼ばれていません")
+E           RuntimeError: init_logger()が呼ばれていません
+
+er005_cost_logger.py:78: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+env = <er063_fz_ctx_wiring_test_01.env.<locals>.E object at 0x0000026590FF0440>
+
+    def test_e2_forced_ng_1_2_then_cooldown_then_real_legacy_attempt(env):
+>       w, rec = _run_with_driver(env, [True, True, True, True], [OK, OK, OK, OK], "E-2")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+er122_fzcw_runtime_evidence_test_01.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+er122_fzcw_runtime_evidence_test_01.py:201: in _run_with_driver
+    z._run_tts_stage_impl(env.run_dir, "a2", story_plan("a2"), generators=gens(), story_key="the_monkeys_paw")
+er063_family_z_audio_01.py:1703: in _run_tts_stage_impl
+    entry = generate_or_reuse_z(
+er063_family_z_audio_01.py:890: in generate_or_reuse_z
+    return generate_fn()
+           ^^^^^^^^^^^^^
+er078_secondary_run_scope_01.py:48: in _g
+    return generate_fn(*a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+er063_family_z_audio_01.py:1705: in <lambda>
+    lambda spec=spec, out_path=out_path, gen_fn=gen_fn: build_entry(spec, out_path, gen_fn(spec, out_path)))
+                                                                                    ^^^^^^^^^^^^^^^^^^^^^^
+er063_fz_ctx_wiring_test_01.py:124: in dlg
+    return d(spec, out_path)
+           ^^^^^^^^^^^^^^^^^
+er063_family_z_audio_01.py:1149: in dialogue
+    return generate_dialogue_ctx(spec, out_path, text, _dctx)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+er063_family_z_audio_01.py:945: in generate_dialogue_ctx
+    r = _dialogue_ctx_guarded_fn()(text, out_path, spec, dctx, policy, sty)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+er011_human_review_lock_01.py:695: in wrapper
+    result = fn(text, out_path, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+er063_family_z_audio_01.py:1074: in _dialogue_ctx_flow
+    recovered = er127.lr_recover(adapter, text=text, out_path=out_path, last_asr_text=last_asr, block_call=_block_call, merge=_merge,
+er127_tts_block_policy_01.py:823: in lr_recover
+    recovery = retry_primitive.run_local_rewrite_recovery(
+er020_tts_retry_local_rewrite_01.py:800: in run_local_rewrite_recovery
+    gen = call_luna_candidate_gen(client, role_label, canonical_text, ng_span,
+er020_tts_retry_local_rewrite_01.py:512: in call_luna_candidate_gen
+    response = client.responses.create(
+er005_cost_logger.py:121: in patched_create
+    record({
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+entry = {'provider': 'openai', 'api': 'responses.create', 'model_id': 'gpt-6-luna', 'attempt_number': 1, ...}
+
+    def record(entry: dict) -> None:
+        if _LOG_PATH is None:
+>           raise RuntimeError("init_logger()が呼ばれていません")
+E           RuntimeError: init_logger()が呼ばれていません
+
+er005_cost_logger.py:78: RuntimeError
+_________________ test_u8_no_production_module_imports_er129 __________________
+
+    def test_u8_no_production_module_imports_er129():
+        # 許可リスト(U8_ALLOWED_USERS)以外のmoduleからimportされていない(TTS/ASR/KP表示/Style Prompt/公開ページ生成器は直接importしない)
+        offenders = []
+        for f in os.listdir(ROOT):
+            if f.endswith(".py") and f not in U8_ALLOWED_USERS:
+                try:
+                    with open(os.path.join(ROOT, f), encoding="utf-8") as fh:
+                        if "er129_lr_display_reflection_01" in fh.read():
+                            offenders.append(f)
+                except OSError:
+                    pass
+>       assert offenders == []
+E       AssertionError: assert ['er122_fz_ct...t_test_01.py'] == []
+E         
+E         Left contains 2 more items, first extra item: 'er122_fz_ctx_policy_lr2_test_01.py'
+E         Use -v to get more diff
+
+er129_lr_display_reflection_01_test_01.py:436: AssertionError
+___________ test_layer4_no_fhr_tokens_in_public_html_and_check_spec ___________
+
+    def test_layer4_no_fhr_tokens_in_public_html_and_check_spec():
+        dirs = [os.path.join(ROOT, d) for d in PUBLIC if os.path.isdir(os.path.join(ROOT, d))]
+        if not dirs:
+            pytest.skip("no public html")
+        r = m.scan_public_html(dirs)
+>       assert r["files"] > 0 and r["hits"] == [], r["hits"][:3]
+E       AssertionError: [{'file': 'C:\\Users\\tensh\\eigo-radio\\user_test/family_x_ai_island_form_01\\index.html', 'tokens': ['LR_REWRITTEN']}]
+E       assert (21 > 0 and [{'file': 'C:..._REWRITTEN']}] == []
+E         
+E         Left contains one more item: {'file': 'C:\\Users\\tensh\\eigo-radio\\user_test/family_x_ai_island_form_01\\index.html', 'tokens': ['LR_REWRITTEN']}
+E         Use -v to get more diff)
+
+er131_final_human_report_01_test_01.py:266: AssertionError
+____ test_public_page_scan_flags_exactly_the_known_publication_mismatches _____
+
+    def test_public_page_scan_flags_exactly_the_known_publication_mismatches():
+        pages = _published_pages()
+        if not pages:
+            pytest.skip("user_test pages absent")
+        flagged = {os.path.relpath(p, ROOT).replace("\\", "/"): m.public_leak_hits(open(p, encoding="utf-8", errors="ignore").read()) for p in pages}
+        flagged = {k: v for k, v in flagged.items() if v}
+        known = {"user_test/family_z_melos_01/advanced.html", "user_test/family_z_monkeys_paw_01/standard.html"}   # 既公開4件のうちZ注記(LR横断監査W4。B7の是正対象)
+>       assert set(flagged) <= known, flagged
+E       AssertionError: {'user_test/family_x_ai_island_form_01/index.html': ['LR_REWRITTEN'], 'user_test/family_z_melos_01/advanced.html': ['note_local_rewrite', 'note_lr_fallback_jp']}
+E       assert {'user_test/f...dvanced.html'} <= {'user_test/f...tandard.html'}
+E         
+E         Extra items in the left set:
+E         'user_test/family_x_ai_island_form_01/index.html'
+
+er132_lr_overlay_pages_01_test_01.py:379: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\google\genai\types.py:42
+  C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+
+er122_fz_ctx_policy_lr2_test_01.py::test_m6_inject_harness_is_isolated_from_production_modules
+er131_final_human_report_01_test_01.py::test_layer1_no_other_module_imports_er131
+er131_final_human_report_01_test_01.py::test_layer1_no_other_module_imports_er131
+er132_lr_overlay_pages_01_test_01.py::test_er132_is_not_imported_by_any_existing_module
+  <unknown>:6: SyntaxWarning: "\S" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\S"? A raw string is also an option.
+
+er131_final_human_report_01_test_01.py::test_layer1_no_other_module_imports_er131
+er132_lr_overlay_pages_01_test_01.py::test_er132_is_not_imported_by_any_existing_module
+  <unknown>:3: SyntaxWarning: "\S" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\S"? A raw string is also an option.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED er020_tts_retry_local_rewrite_fullseg_test_01.py::RegressionCorpusTest::test_recorded_candidates
+FAILED er063_family_z_audio_01_test_01.py::WiringTest::test_preview_comment_kp_styles
+FAILED er063_fz_ctx_wiring_test_01.py::test_w11b_non_dialogue_generators_source_unchanged_vs_baseline_commit
+FAILED er122_fzcw_runtime_evidence_test_01.py::test_e2_forced_ng_1_2_then_cooldown_then_real_legacy_attempt
+FAILED er129_lr_display_reflection_01_test_01.py::test_u8_no_production_module_imports_er129
+FAILED er131_final_human_report_01_test_01.py::test_layer4_no_fhr_tokens_in_public_html_and_check_spec
+FAILED er132_lr_overlay_pages_01_test_01.py::test_public_page_scan_flags_exactly_the_known_publication_mismatches
+7 failed, 1393 passed, 7 warnings, 193 subtests passed in 345.13s (0:05:45)

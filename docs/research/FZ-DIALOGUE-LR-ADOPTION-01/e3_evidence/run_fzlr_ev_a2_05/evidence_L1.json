@@ -1,0 +1,218 @@
+{
+  "management_id": "FZ-DIALOGUE-LR-ADOPTION-01",
+  "INJECTED": true,
+  "note": "NG注入evidence(成果物の品質根拠にしない)",
+  "case": {
+    "level": "a2",
+    "run": "run_fzlr_ev_a2_05",
+    "clip": "full_story_part1_c6",
+    "ng": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "stage": "tts_a2",
+    "budget": 20
+  },
+  "launch_tag": "L1",
+  "argv": [
+    "--story",
+    "in_a_grove",
+    "--run",
+    "run_fzlr_ev_a2_05",
+    "--mode",
+    "real",
+    "--approved-budget-jpy",
+    "20",
+    "--tts-execution-mode",
+    "STANDARD",
+    "--stages",
+    "tts_a2",
+    "--only-clips",
+    "full_story_part1_c6"
+  ],
+  "rc": 2,
+  "exception": null,
+  "started_at": "2026-10-29T19:02:17",
+  "ended_at": "2026-10-29T19:09:39",
+  "wall_seconds": 442.3,
+  "pid": 32416,
+  "tts_resolve": [],
+  "tts_resolve_count": 0,
+  "tts_api_calls": 6,
+  "sleep_total_seconds": 0.0,
+  "cooldowns": [
+    {
+      "label": "full_story_part1_c6",
+      "requested_seconds": 180.0,
+      "actual_seconds": 179.954,
+      "started_at": "2026-10-29T19:02:32",
+      "ended_at": "2026-10-29T19:05:31",
+      "resumed": false,
+      "attempt_before": null,
+      "attempt_after": null,
+      "total_elapsed_since_ref_seconds": 180.0,
+      "wall_start_epoch": 1793268152.0027626
+    },
+    {
+      "label": "full_story_part1_c6",
+      "requested_seconds": 180.0,
+      "actual_seconds": 179.95,
+      "started_at": "2026-10-29T19:06:33",
+      "ended_at": "2026-10-29T19:09:33",
+      "resumed": false,
+      "attempt_before": null,
+      "attempt_after": null,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "wall_start_epoch": 1793268393.4493
+    }
+  ],
+  "lr_calls": [
+    {
+      "segment_id": "full_story_part1_c6",
+      "depth": 0,
+      "status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED",
+      "ng_span_found": true,
+      "ng_span": {
+        "found": true,
+        "diff_tag": "replace",
+        "canonical_span_with_context": "he carried a sword and",
+        "asr_span_with_context": "he carriee a sword and",
+        "canonical_changed_words": [
+          "carried"
+        ],
+        "asr_changed_words": [
+          "carriee"
+        ],
+        "context_window_word_indices": [
+          0,
+          5
+        ]
+      },
+      "model": null,
+      "rewritten_text": "\"He bore a sword and bow, and his wife rode beside him.\"",
+      "elapsed_s": 240.83,
+      "last_asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    }
+  ],
+  "judges": [],
+  "post_judges": [],
+  "injection_records": [
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:02:26",
+      "kind": "transcribe",
+      "n": 1,
+      "doctored_text": "\"He carriee a sword and bow, and his wife rode beside him.\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:02:26",
+      "kind": "evaluate",
+      "n": 1,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:02:31",
+      "kind": "transcribe",
+      "n": 2,
+      "doctored_text": "\"He carriee a sword and bow, and his wife rode beside him.\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:02:31",
+      "kind": "evaluate",
+      "n": 2,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:05:38",
+      "kind": "transcribe",
+      "n": 3,
+      "doctored_text": "\"He carriee a sword and bow, and his wife rode beside him.\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:05:38",
+      "kind": "evaluate",
+      "n": 3,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:06:26",
+      "kind": "transcribe",
+      "n": 4,
+      "doctored_text": "\"He carriee a sword and bow, and his wife rode beside him.\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:06:26",
+      "kind": "evaluate",
+      "n": 4,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:06:33",
+      "kind": "transcribe",
+      "n": 5,
+      "doctored_text": "\"He carriee a sword and bow, and his wife rode beside him.\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:06:33",
+      "kind": "evaluate",
+      "n": 5,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:09:39",
+      "kind": "transcribe",
+      "n": 6,
+      "doctored_text": "\"He carriee a sword and bow, and his wife rode beside him.\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part1_c6",
+      "at": "2026-10-29T19:09:39",
+      "kind": "evaluate",
+      "n": 6,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"He carriee a sword and bow, and his wife rode beside him.\""
+    }
+  ],
+  "stop_checks": {
+    "cooldown": 0,
+    "attempt": 0,
+    "other": 0
+  }
+}

@@ -1,5 +1,5 @@
 {
- "schema": "fz_dialogue_ctx_attempt_state_v1",
+ "schema": "fz_dialogue_ctx_attempt_state_v2",
  "clips": {
   "full_story_part1_c1": {
    "clip_id": "full_story_part1_c1",
@@ -10201,7 +10201,7 @@
    "policy": "fz_ctx_v1",
    "ctx_style_sha256": "3eb5d8bae91c38afece84280fc01f1e980422aadf393494014683ece5678e271",
    "status": "TERMINAL_NG",
-   "n_started": 3,
+   "n_started": 6,
    "attempts": [
     {
      "n": 1,
@@ -10756,21 +10756,538 @@
        "dialogue_tts_policy": "fz_ctx_v1"
       }
      ]
+    },
+    {
+     "n": 4,
+     "mode": "ctx",
+     "block": 1,
+     "ordinal": 1,
+     "started_epoch": 1793265885.443139,
+     "started_at": "2026-10-29T18:24:45",
+     "finished": true,
+     "verified": false,
+     "counted": true,
+     "rows": 1,
+     "finished_epoch": 1793265942.0214152,
+     "finished_at": "2026-10-29T18:25:42",
+     "technical_failure": false,
+     "instruction_type": "english_style_prefix_wide_margin",
+     "effective_mode": "ctx",
+     "log_rows": [
+      {
+       "attempt": 1,
+       "status": "OK",
+       "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+       "asr_judgement": {
+        "state": "PASS_WITH_WARNING",
+        "reason_code": "primary_pass",
+        "slot": 4,
+        "script_version": "v1",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part3_c6",
+        "audio_sha256": "9516127954414daedcf7ece0579f2b2c142895f2594d501a542377b561c6bbc0",
+        "primary": {
+         "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+         "passed": true,
+         "label": "NORMALIZED_MATCH",
+         "equivalence_basis": null,
+         "warning_labels": []
+        },
+        "secondary": {
+         "called": false,
+         "cached": false,
+         "engine": "azure",
+         "text": null,
+         "label": "",
+         "accepted": null,
+         "error": null,
+         "unavailable": false
+        },
+        "value_guard": {
+         "primary": {
+          "kind": "EQUAL",
+          "pairs": [
+           {
+            "src": "1",
+            "hyp": "1",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+           }
+          ],
+          "reasons": [],
+          "warnings": []
+         }
+        },
+        "negation_guard": {
+         "primary": false
+        },
+        "final_gate": {
+         "applied": true,
+         "value_guard": "EQUAL",
+         "negation_diff": false
+        },
+        "warnings": [
+         "LR_REWRITTEN"
+        ],
+        "exclusion_rule": null,
+        "cost": {
+         "azure_calls": 0,
+         "azure_seconds": null,
+         "est_jpy": 0.0
+        },
+        "timing": {
+         "total_ms": 1,
+         "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "length": {
+         "applied": true,
+         "primary_len": 466,
+         "secondary_len": null,
+         "max_len": 494,
+         "adopted_from": "primary",
+         "adopted_ok": true,
+         "surface_len": null,
+         "primary_ok": true
+        },
+        "adapter": {
+         "layers": [],
+         "azure_real_calls": 0,
+         "cost_guard_triggered": false,
+         "language": "en-US",
+         "segment_id": "full_story_part3_c6",
+         "asr_text_present": true,
+         "cache": {
+          "calls": 0,
+          "hits": 0
+         }
+        }
+       },
+       "instruction_type": "english_style_prefix_wide_margin",
+       "audio_classification": "NORMALIZED_MATCH",
+       "connected_speech_info": null,
+       "length_ok": true,
+       "final_length_ok": true,
+       "verified": false,
+       "trim_info": {
+        "raw_duration_seconds": 43.491,
+        "raw_leading_silence_seconds": 0.28,
+        "raw_trailing_silence_seconds": 0.34,
+        "trimmed_duration_seconds": 43.491,
+        "leading_margin_retained_seconds": 0.28,
+        "trailing_margin_retained_seconds": 0.34
+       },
+       "disfluency_checked": false,
+       "disfluency_evidence": null,
+       "repetition_qa_checked": true,
+       "repetition_qa_evidence": {
+        "flagged": true,
+        "duration_seconds": 43.491,
+        "method_a_ngram": {
+         "matches": [],
+         "flagged": false,
+         "flagged_matches": [],
+         "word_count": 90,
+         "canonical_known": true,
+         "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+         "top_matches": [
+          {
+           "similarity": 0.9978,
+           "time_a_seconds": 22.06,
+           "time_b_seconds": 32.09,
+           "lag_seconds": 10.03,
+           "run_length_seconds_at_thresh_0.85": 0.02
+          },
+          {
+           "similarity": 0.9959,
+           "time_a_seconds": 22.06,
+           "time_b_seconds": 32.45,
+           "lag_seconds": 10.39,
+           "run_length_seconds_at_thresh_0.85": 0.02
+          },
+          {
+           "similarity": 0.9954,
+           "time_a_seconds": 28.68,
+           "time_b_seconds": 32.45,
+           "lag_seconds": 3.77,
+           "run_length_seconds_at_thresh_0.85": 0.02
+          },
+          {
+           "similarity": 0.9951,
+           "time_a_seconds": 22.06,
+           "time_b_seconds": 28.88,
+           "lag_seconds": 6.82
+          },
+          {
+           "similarity": 0.995,
+           "time_a_seconds": 22.06,
+           "time_b_seconds": 28.69,
+           "lag_seconds": 6.63
+          }
+         ],
+         "best_run_length_seconds": 0.02,
+         "min_lag_seconds": 1.0,
+         "sim_threshold": 0.85,
+         "decision_threshold_seconds": 0.12,
+         "acoustic_flagged": false,
+         "local_asr_confirmation": null,
+         "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+         "run_length_seconds": 0.68,
+         "time_a": 14.84,
+         "lag": 1.64,
+         "similarity_at_start": 0.7305,
+         "best_run_length_seconds": 0.68,
+         "lag_range_seconds": [
+          0.5,
+          2.0
+         ],
+         "sim_threshold": 0.7,
+         "decision_threshold_seconds": 0.6,
+         "flagged": true
+        },
+        "method_c_v2_window_check": null
+       },
+       "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt5_englishstyleprefixwidemargin.wav",
+       "tts_mode": "ctx",
+       "overall_attempt_n": 4,
+       "dialogue_tts_policy": "fz_ctx_v1",
+       "dialogue_block_depth": 1,
+       "style_prefix": {
+        "len": 3680,
+        "sha256": "3eb5d8bae91c38afece84280fc01f1e980422aadf393494014683ece5678e271",
+        "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+       }
+      }
+     ]
+    },
+    {
+     "n": 5,
+     "mode": "ctx",
+     "block": 1,
+     "ordinal": 2,
+     "started_epoch": 1793265942.0485375,
+     "started_at": "2026-10-29T18:25:42",
+     "finished": true,
+     "verified": false,
+     "counted": true,
+     "rows": 1,
+     "finished_epoch": 1793265994.9179513,
+     "finished_at": "2026-10-29T18:26:34",
+     "technical_failure": false,
+     "instruction_type": "english_style_prefix_wide_margin",
+     "effective_mode": "ctx",
+     "log_rows": [
+      {
+       "attempt": 2,
+       "status": "OK",
+       "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent, then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sunk forever into the darkness.",
+       "asr_judgement": {
+        "state": "NG_BOTH",
+        "reason_code": "secondary_not_accepted",
+        "slot": 5,
+        "script_version": "v1",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part3_c6",
+        "audio_sha256": "5ddb511dc1e03f73084d16c7cac5c62463818a35a6bf6e0ce8a4f202d682639f",
+        "primary": {
+         "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent, then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sunk forever into the darkness.",
+         "passed": false,
+         "label": "TRUE_CONTENT_MISMATCH",
+         "equivalence_basis": null,
+         "warning_labels": []
+        },
+        "secondary": {
+         "called": true,
+         "cached": false,
+         "engine": "azure",
+         "text": "My wife said take me anywhere.Then she pointed at me. Kill that man.He pushed her away and asked me whether she should live or die.For that, I almost forgave him, but she fled.He cut one rope and left.I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dogger from my chest. I sunk forever into the darkness.",
+         "label": "TRUE_CONTENT_MISMATCH",
+         "accepted": false,
+         "error": null,
+         "unavailable": false
+        },
+        "value_guard": {
+         "primary": {
+          "kind": "EQUAL",
+          "pairs": [
+           {
+            "src": "1",
+            "hyp": "1",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+           }
+          ],
+          "reasons": [],
+          "warnings": []
+         },
+         "secondary": {
+          "kind": "EQUAL",
+          "pairs": [
+           {
+            "src": "1",
+            "hyp": "1",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+           }
+          ],
+          "reasons": [],
+          "warnings": []
+         }
+        },
+        "negation_guard": {
+         "primary": false,
+         "secondary": false
+        },
+        "final_gate": {
+         "applied": false
+        },
+        "warnings": [],
+        "exclusion_rule": null,
+        "cost": {
+         "azure_calls": 1,
+         "azure_seconds": 39.021,
+         "est_jpy": 1.7778,
+         "est_jpy_known": true
+        },
+        "timing": {
+         "total_ms": 17676,
+         "secondary_ms": 17636
+        },
+        "technical_stop": null,
+        "length": {
+         "applied": true,
+         "primary_len": 465,
+         "secondary_len": 460,
+         "max_len": 494,
+         "adopted_from": "primary",
+         "adopted_ok": true,
+         "surface_len": 362,
+         "primary_ok": true
+        },
+        "p3_entry": "p3_primary_ng",
+        "pronunciation_alarm_eval": {
+         "accepted": false,
+         "reason": "PRIMARY_NOT_ENTITY_ONLY",
+         "detail": {
+          "classification": "TRUE_CONTENT_MISMATCH"
+         }
+        },
+        "adapter": {
+         "layers": [],
+         "azure_real_calls": 1,
+         "cost_guard_triggered": false,
+         "language": "en-US",
+         "segment_id": "full_story_part3_c6",
+         "asr_text_present": true,
+         "cache": {
+          "calls": 2,
+          "hits": 0
+         }
+        }
+       },
+       "instruction_type": "english_style_prefix_wide_margin",
+       "audio_classification": "TRUE_CONTENT_MISMATCH",
+       "connected_speech_info": null,
+       "length_ok": true,
+       "final_length_ok": true,
+       "verified": false,
+       "trim_info": {
+        "raw_duration_seconds": 39.251,
+        "raw_leading_silence_seconds": 0.58,
+        "raw_trailing_silence_seconds": 0.28,
+        "trimmed_duration_seconds": 39.021,
+        "leading_margin_retained_seconds": 0.35,
+        "trailing_margin_retained_seconds": 0.28
+       },
+       "disfluency_checked": false,
+       "disfluency_evidence": null,
+       "repetition_qa_checked": false,
+       "repetition_qa_evidence": null,
+       "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt6_englishstyleprefixwidemargin.wav",
+       "tts_mode": "ctx",
+       "overall_attempt_n": 5,
+       "dialogue_tts_policy": "fz_ctx_v1",
+       "dialogue_block_depth": 1,
+       "style_prefix": {
+        "len": 3680,
+        "sha256": "3eb5d8bae91c38afece84280fc01f1e980422aadf393494014683ece5678e271",
+        "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+       }
+      }
+     ]
+    },
+    {
+     "n": 6,
+     "mode": "legacy_fallback",
+     "block": 1,
+     "ordinal": 3,
+     "started_epoch": 1793266174.9391854,
+     "started_at": "2026-10-29T18:29:34",
+     "finished": true,
+     "verified": false,
+     "counted": true,
+     "rows": 1,
+     "finished_epoch": 1793266225.5502105,
+     "finished_at": "2026-10-29T18:30:25",
+     "technical_failure": false,
+     "instruction_type": "english_style_prefix_wide_margin",
+     "effective_mode": "legacy_fallback",
+     "log_rows": [
+      {
+       "attempt": 3,
+       "status": "OK",
+       "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him. But he fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+       "asr_judgement": {
+        "state": "NG_BOTH",
+        "reason_code": "secondary_not_accepted",
+        "slot": 6,
+        "script_version": "v1",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part3_c6",
+        "audio_sha256": "10354071981ab0361f129984ad82c2e78ab7f8ef32154e7302007e3a9b5e0300",
+        "primary": {
+         "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him. But he fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+         "passed": false,
+         "label": "TRUE_CONTENT_MISMATCH",
+         "equivalence_basis": null,
+         "warning_labels": []
+        },
+        "secondary": {
+         "called": true,
+         "cached": false,
+         "engine": "azure",
+         "text": "My wife said take me anywhere. Then she pointed at me. Killed that man.He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest.The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dogger from my chest. I sank forever into the darkness.",
+         "label": "TRUE_CONTENT_MISMATCH",
+         "accepted": false,
+         "error": null,
+         "unavailable": false
+        },
+        "value_guard": {
+         "primary": {
+          "kind": "EQUAL",
+          "pairs": [
+           {
+            "src": "1",
+            "hyp": "1",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+           }
+          ],
+          "reasons": [],
+          "warnings": []
+         },
+         "secondary": {
+          "kind": "EQUAL",
+          "pairs": [
+           {
+            "src": "1",
+            "hyp": "1",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+           }
+          ],
+          "reasons": [],
+          "warnings": []
+         }
+        },
+        "negation_guard": {
+         "primary": false,
+         "secondary": false
+        },
+        "final_gate": {
+         "applied": false
+        },
+        "warnings": [],
+        "exclusion_rule": null,
+        "cost": {
+         "azure_calls": 1,
+         "azure_seconds": 37.411,
+         "est_jpy": 1.6889,
+         "est_jpy_known": true
+        },
+        "timing": {
+         "total_ms": 16561,
+         "secondary_ms": 16547
+        },
+        "technical_stop": null,
+        "length": {
+         "applied": true,
+         "primary_len": 464,
+         "secondary_len": 464,
+         "max_len": 494,
+         "adopted_from": "primary",
+         "adopted_ok": true,
+         "surface_len": 364,
+         "primary_ok": true
+        },
+        "p3_entry": "p3_primary_ng",
+        "pronunciation_alarm_eval": {
+         "accepted": false,
+         "reason": "PRIMARY_NOT_ENTITY_ONLY",
+         "detail": {
+          "classification": "TRUE_CONTENT_MISMATCH"
+         }
+        },
+        "adapter": {
+         "layers": [],
+         "azure_real_calls": 1,
+         "cost_guard_triggered": false,
+         "language": "en-US",
+         "segment_id": "full_story_part3_c6",
+         "asr_text_present": true,
+         "cache": {
+          "calls": 4,
+          "hits": 0
+         }
+        }
+       },
+       "instruction_type": "english_style_prefix_wide_margin",
+       "audio_classification": "TRUE_CONTENT_MISMATCH",
+       "connected_speech_info": null,
+       "length_ok": true,
+       "final_length_ok": true,
+       "verified": false,
+       "trim_info": {
+        "raw_duration_seconds": 37.411,
+        "raw_leading_silence_seconds": 0.26,
+        "raw_trailing_silence_seconds": 0.28,
+        "trimmed_duration_seconds": 37.411,
+        "leading_margin_retained_seconds": 0.26,
+        "trailing_margin_retained_seconds": 0.28
+       },
+       "disfluency_checked": false,
+       "disfluency_evidence": null,
+       "repetition_qa_checked": false,
+       "repetition_qa_evidence": null,
+       "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt7_englishstyleprefixwidemargin.wav",
+       "tts_mode": "legacy_fallback",
+       "overall_attempt_n": 6,
+       "dialogue_tts_policy": "fz_ctx_v1",
+       "dialogue_block_depth": 1
+      }
+     ]
     }
    ],
    "cooldown": {
-    "required_before_n": 3,
-    "ref_epoch": 1793253486.8317363,
-    "ref_at": "2026-10-29T14:58:06",
+    "required_before_n": 6,
+    "ref_epoch": 1793265994.9179513,
+    "ref_at": "2026-10-29T18:26:34",
     "requested_seconds": 180.0,
-    "started_epoch": 1793253486.8662605,
-    "started_at": "2026-10-29T14:58:06",
-    "ended_epoch": 1793253666.8320718,
-    "waited_seconds_this_process": 179.941,
+    "started_epoch": 1793265994.9478004,
+    "started_at": "2026-10-29T18:26:34",
+    "ended_epoch": 1793266174.9185615,
+    "waited_seconds_this_process": 179.944,
     "resumed": false,
     "process_starts": 1,
-    "ended_at": "2026-10-29T15:01:06",
-    "total_elapsed_since_ref_seconds": 180.0
+    "ended_at": "2026-10-29T18:29:34",
+    "total_elapsed_since_ref_seconds": 180.001
    },
    "done": null,
    "history": [
@@ -10787,7 +11304,337 @@
    ],
    "created_at": "2026-10-29T14:55:44",
    "cycle": 2,
-   "updated_at": "2026-10-29T15:01:54"
+   "updated_at": "2026-10-29T18:30:25",
+   "phase": "B2",
+   "ng_transcripts": [
+    {
+     "n": 1,
+     "source": "pre_slowdown",
+     "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet, and unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "canonical_text_sha256": "fe82ad9a74e96cc63f8a999644cf312fd95322531652cfaaaa817716cd5f0181",
+     "recorded_at": "2026-10-29T18:23:08",
+     "source_ref": {
+      "kind": "state.log_rows",
+      "attempt_n": 1
+     }
+    },
+    {
+     "n": 2,
+     "source": "post_slowdown",
+     "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. An unseen hand quietly drew the dagger from my chest. I sink forever into the darkness.",
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "canonical_text_sha256": "fe82ad9a74e96cc63f8a999644cf312fd95322531652cfaaaa817716cd5f0181",
+     "recorded_at": "2026-10-29T18:23:08",
+     "source_ref": {
+      "kind": "attempt_history",
+      "line": 20128,
+      "run_id": "d420bbe8-3a95-49fe-81d8-02504ba1759d",
+      "timestamp": "2026-10-29T14:58:06",
+      "match": "segment+level+theme+time_window+PROCEED(sha)"
+     }
+    },
+    {
+     "n": 5,
+     "source": "pre_slowdown",
+     "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent, then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sunk forever into the darkness.",
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "canonical_text_sha256": "fe82ad9a74e96cc63f8a999644cf312fd95322531652cfaaaa817716cd5f0181",
+     "recorded_at": "2026-10-29T18:26:34"
+    },
+    {
+     "n": 6,
+     "source": "pre_slowdown",
+     "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him. But he fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "canonical_text_sha256": "fe82ad9a74e96cc63f8a999644cf312fd95322531652cfaaaa817716cd5f0181",
+     "recorded_at": "2026-10-29T18:30:25"
+    }
+   ],
+   "cooldowns": {
+    "3": {
+     "required_before_n": 3,
+     "ref_epoch": 1793253486.8317363,
+     "ref_at": "2026-10-29T14:58:06",
+     "requested_seconds": 180.0,
+     "started_epoch": 1793253486.8662605,
+     "started_at": "2026-10-29T14:58:06",
+     "ended_epoch": 1793253666.8320718,
+     "waited_seconds_this_process": 179.941,
+     "resumed": false,
+     "process_starts": 1,
+     "ended_at": "2026-10-29T15:01:06",
+     "total_elapsed_since_ref_seconds": 180.0
+    },
+    "6": {
+     "required_before_n": 6,
+     "ref_epoch": 1793265994.9179513,
+     "ref_at": "2026-10-29T18:26:34",
+     "requested_seconds": 180.0,
+     "started_epoch": 1793265994.9478004,
+     "started_at": "2026-10-29T18:26:34",
+     "ended_epoch": 1793266174.9185615,
+     "waited_seconds_this_process": 179.944,
+     "resumed": false,
+     "process_starts": 1,
+     "ended_at": "2026-10-29T18:29:34",
+     "total_elapsed_since_ref_seconds": 180.001
+    }
+   },
+   "lr": {
+    "state": "UNRESOLVED",
+    "text": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+    "text_sha": "60e6b681b2b2d0b3750468f31a6a2eb1df0c7d8d07c9df70f036f9237ed75fa6",
+    "migration": {
+     "id": "fzlr-1793265788-93742772",
+     "management_id": "FZ-DIALOGUE-LR-ADOPTION-01",
+     "at": "2026-10-29T18:23:08",
+     "authorization_ref": "docs/pm/delegation_log/2026-10-29_FZ-DIALOGUE-LR-ADOPTION-01_USER.md §3",
+     "from": {
+      "status": "TERMINAL_NG",
+      "n_started": 3,
+      "schema": "fz_dialogue_ctx_attempt_state_v1",
+      "phase": null
+     },
+     "consumed": {
+      "n": 3,
+      "attempt_ns": [
+       1,
+       2,
+       3
+      ],
+      "rows": 3,
+      "lock_cumulative_tts_attempts": 3
+     },
+     "approve_regenerate": {
+      "approved_by": "user:FZ-DIALOGUE-LR-ADOPTION-01 原文§3",
+      "consumed_by_next_generation": true
+     },
+     "transcripts_sources": [
+      {
+       "kind": "state.log_rows",
+       "attempt_n": 1
+      },
+      {
+       "kind": "attempt_history",
+       "line": 20128,
+       "run_id": "d420bbe8-3a95-49fe-81d8-02504ba1759d",
+       "timestamp": "2026-10-29T14:58:06",
+       "match": "segment+level+theme+time_window+PROCEED(sha)"
+      }
+     ],
+     "steps_done": [
+      "state",
+      "lock",
+      "history"
+     ],
+     "complete": true
+    },
+    "input": {
+     "n": 1,
+     "source": "pre_slowdown",
+     "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet, and unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+     "ng_changed_words": [
+      "an"
+     ],
+     "skipped": [
+      {
+       "n": 2,
+       "source": "post_slowdown",
+       "reason": "OVERLAPS_CONFIRMED_CONTENT",
+       "stops": [
+        "T1",
+        "T2"
+       ],
+       "ng_span": "my chest i sank for ever into the darkness"
+      }
+     ]
+    },
+    "audit": {
+     "schema": "lr_selection_audit_v1",
+     "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+     "segment_id": "full_story_part3_c6",
+     "canonical_text": "\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. An unseen hand quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"",
+     "ng_span": {
+      "found": true,
+      "diff_tag": "replace",
+      "canonical_span_with_context": "on soft feet an unseen hand quietly",
+      "asr_span_with_context": "on soft feet and unseen hand quietly",
+      "canonical_changed_words": [
+       "an"
+      ],
+      "asr_changed_words": [
+       "and"
+      ],
+      "context_window_word_indices": [
+       71,
+       78
+      ]
+     },
+     "selected": {
+      "id": "1",
+      "rewritten_segment": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+      "changed_span_before": "An",
+      "changed_span_after": "Some",
+      "rationale": "Keeps the hand indefinite and unseen while making only a one-word change.",
+      "seven_gates": {
+       "1_meaning_preserved": true,
+       "2_role_preserved": true,
+       "3_fact_non_contradiction": true,
+       "4_context_connection": true,
+       "5_natural_english_gate": true,
+       "6_localized_minimal_change": true,
+       "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+       "meaning_preserved": "“Some unseen hand” retains the original idea of an unidentified hand drawing out the dagger.",
+       "role_preserved": "It remains part of the story’s first-person narration.",
+       "fact_non_contradiction": "Nothing in the rewrite conflicts with the segment’s events.",
+       "context_connection": "It follows naturally after someone approaches and leads into the narrator’s final line.",
+       "natural_english": "“Some unseen hand” is a natural literary phrase in this narration."
+      }
+     },
+     "selection_rationale": "全7 Gate PASSの候補は2件(['1', '3'])。unchanged_ratio=0.9892(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Some unseen hand” is a natural literary phrase in this narration.",
+     "candidates": [
+      {
+       "id": "1",
+       "rewritten_segment": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+       "changed_span_before": "An",
+       "changed_span_after": "Some",
+       "rationale": "Keeps the hand indefinite and unseen while making only a one-word change.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“Some unseen hand” retains the original idea of an unidentified hand drawing out the dagger.",
+        "role_preserved": "It remains part of the story’s first-person narration.",
+        "fact_non_contradiction": "Nothing in the rewrite conflicts with the segment’s events.",
+        "context_connection": "It follows naturally after someone approaches and leads into the narrator’s final line.",
+        "natural_english": "“Some unseen hand” is a natural literary phrase in this narration."
+       }
+      },
+      {
+       "id": "2",
+       "rewritten_segment": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. A hidden hand quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+       "changed_span_before": "An unseen hand",
+       "changed_span_after": "A hidden hand",
+       "rationale": "A natural, concise equivalent that avoids the problematic wording.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": false,
+       "sentence_count_unchanged": true,
+       "adoptable": false,
+       "qa_reasons": {
+        "meaning_preserved": "“A hidden hand” conveys that the hand is not visible as it draws out the dagger.",
+        "role_preserved": "It remains part of the story’s first-person narration.",
+        "fact_non_contradiction": "Nothing in the rewrite conflicts with the segment’s events.",
+        "context_connection": "The sentence still follows the approach and leads into the narrator’s final line.",
+        "natural_english": "“A hidden hand” sounds less idiomatic here and can suggest a metaphorical hidden influence."
+       }
+      },
+      {
+       "id": "3",
+       "rewritten_segment": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. A hand I couldn't see quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+       "changed_span_before": "An unseen hand",
+       "changed_span_after": "A hand I couldn't see",
+       "rationale": "Preserves the narrator's inability to see the hand in natural spoken phrasing.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "The hand remains unseen, expressed from the narrator’s perspective.",
+        "role_preserved": "It remains part of the story’s first-person narration.",
+        "fact_non_contradiction": "Nothing in the rewrite conflicts with the segment’s events.",
+        "context_connection": "It follows naturally after someone approaches and leads into the narrator’s final line.",
+        "natural_english": "“A hand I couldn’t see” is a natural way to describe this in first-person narration."
+       }
+      },
+      {
+       "id": "4",
+       "rewritten_segment": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. A hand hidden from view quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+       "changed_span_before": "An unseen hand",
+       "changed_span_after": "A hand hidden from view",
+       "rationale": "Retains the detail that the hand was not visible, with a natural phrase rewrite.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": false,
+       "sentence_count_unchanged": true,
+       "adoptable": false,
+       "qa_reasons": {
+        "meaning_preserved": "A hand hidden from view preserves the original idea that it was unseen.",
+        "role_preserved": "It remains part of the story’s first-person narration.",
+        "fact_non_contradiction": "Nothing in the rewrite conflicts with the segment’s events.",
+        "context_connection": "The sentence still follows the approach and leads into the narrator’s final line.",
+        "natural_english": "“A hand hidden from view” is understandable but sounds stiff and over-explanatory in this narration."
+       }
+      },
+      {
+       "id": "5",
+       "rewritten_segment": "\"\"My wife said, 'Take me anywhere.' Then she pointed at me. 'Kill that man.' \"He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. \"I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. \"The thicket fell silent. Then someone crept towards me on soft feet. A hand out of sight quietly drew the dagger from my chest. \"I sank for ever into the darkness.\"\"",
+       "changed_span_before": "An unseen hand",
+       "changed_span_after": "A hand out of sight",
+       "rationale": "Uses a different idiomatic expression for a hand that the narrator cannot see.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": false,
+       "sentence_count_unchanged": true,
+       "adoptable": false,
+       "qa_reasons": {
+        "meaning_preserved": "“A hand out of sight” conveys that the hand was not visible.",
+        "role_preserved": "It remains part of the story’s first-person narration.",
+        "fact_non_contradiction": "Nothing in the rewrite conflicts with the segment’s events.",
+        "context_connection": "The sentence still follows the approach and leads into the narrator’s final line.",
+        "natural_english": "“A hand out of sight” sounds awkward in this sentence; a native speaker would more naturally say “an unseen hand.”"
+       }
+      }
+     ]
+    },
+    "saved_at": "2026-10-29T18:24:45",
+    "outcome_status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED",
+    "ended_at": "2026-10-29T18:30:25"
+   }
   }
  }
 }

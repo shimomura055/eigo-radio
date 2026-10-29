@@ -409,6 +409,12 @@ def make_candidate_filter(confirmed_selection: dict | None, grammar: list | None
     重ならない候補・既にadoptable=Falseの候補は変更しない。"""
     def _flt(canonical_text: str, records: list) -> list:
         for r in records:
+            # LR候補生成Prompt(er020.build_candidate_gen_prompt)は原文を"..."で囲んで渡すため、原文自体が引用符で囲まれたZセリフでは
+            # 候補が外側の引用符を再現して二重("")になる。Zセリフ限定のこのfilterで、原文と同じ引用符の形へ戻す(共有Promptは無変更。語列は不変)。
+            rs = r.get("rewritten_segment")
+            if isinstance(rs, str) and canonical_text.startswith('"') and canonical_text.endswith('"') and not canonical_text.startswith('""')                     and len(rs) > 4 and rs.startswith('""') and rs.endswith('""'):
+                r["rewritten_segment"] = rs[1:-1]
+                r["prompt_quote_unwrapped"] = True
             if not r.get("adoptable"):
                 continue
             pc = precheck_candidate_overlap(canonical_text, r.get("rewritten_segment") or "", confirmed_selection, grammar, facts)
@@ -454,14 +460,32 @@ def input_overlaps_confirmed(canonical_text: str, ng_span: dict, asr_text: str, 
     return {"protected": bool(stops), "stops": stops, "hits": {t: (ov.get(t) or {}).get("hits") for t in stops}}
 
 
+def _level_text_from(results: dict, parts, clip_text: str = "") -> str:
+    """T2(出典文)判定用のlevel_text。台帳(`build_lr_ledger`)とLR事前保護(`level_facts`)が**同一関数**で組む(両者の不一致を作らない)。
+    本文系segment群 → KP等entry群 → parts文字列 の各群の境界を文境界(" . ")で区切る。区切りが無いと、文末記号なしで終わるentry(`,"`終わりの引用clipや
+    KP一覧)が次の群と1文に結合し、確定語句を含む偽の『出典文』ができて全dialogue clipが偽T2でLR不可になる(2026-10-29 FZ-DIALOGUE-LR-ADOPTION-01 委任_03で実測・是正)。
+    `clip_text`(事前保護対象の本文)がresultsに無いときだけ、前後を文境界で閉じて足す(あれば重ねて足さない)。"""
+    seg_texts = [e.get("canonical_text") for e in (results.get("segments") or {}).values() if isinstance(e, dict) and isinstance(e.get("canonical_text"), str)]
+    other = [e.get("canonical_text") for sid, e, _ in _iter_entries(results) if not sid_is_segment(results, sid) and isinstance(e.get("canonical_text"), str)]
+    if clip_text and clip_text not in seg_texts and clip_text not in other:
+        seg_texts = seg_texts + [". " + clip_text.rstrip() + " ."]
+    level_text = " ".join(seg_texts)
+    if other:
+        level_text += " . " + " ".join(other)
+    if isinstance(parts, dict):
+        level_text += " . " + " ".join(t for _, t in _string_leaves(parts))
+    return level_text
+
+
+def sid_is_segment(results: dict, sid: str) -> bool:
+    return sid in (results.get("segments") or {})
+
+
 def level_facts(level_dir: str, clip_text: str = "") -> dict:
     """Zセリフの確定保護用 facts({"entities","level_text"})を台帳(`build_lr_ledger`)と同じ出典から組む。取れない項目は空(SKIPPED扱い)。"""
     results = _jl(os.path.join(level_dir, "audit", "tts_generation_results.json")) or {}
-    texts = [e.get("canonical_text") for _, e, _ in _iter_entries(results) if isinstance(e.get("canonical_text"), str)]
-    level_text = " ".join(texts + ([clip_text] if clip_text else []))
     parts = _jl(os.path.join(level_dir, "parts.json"))
-    if isinstance(parts, dict):
-        level_text += " " + " ".join(t for _, t in _string_leaves(parts))
+    level_text = _level_text_from(results, parts, clip_text)
     return {"entities": _entities_from_run(level_dir), "level_text": level_text}
 
 
@@ -1023,10 +1047,8 @@ def build_lr_ledger(run_dir: str, level: str, *, results_path: str | None = None
     hr = _hr_records(level_dir)
     sel = _jl(os.path.join(level_dir, "audit", "confirmed_selection.json"))
     entries = list(_iter_entries(results))
-    level_text = " ".join(e.get("canonical_text") for _, e, _ in entries if isinstance(e.get("canonical_text"), str))
     parts = _jl(os.path.join(level_dir, "parts.json"))
-    if isinstance(parts, dict):
-        level_text += " " + " ".join(t for _, t in _string_leaves(parts))
+    level_text = _level_text_from(results, parts)
     facts = {"entities": _entities_from_run(level_dir), "level_text": level_text}
     clips, skipped = [], 0
     for sid, e, _ in entries:

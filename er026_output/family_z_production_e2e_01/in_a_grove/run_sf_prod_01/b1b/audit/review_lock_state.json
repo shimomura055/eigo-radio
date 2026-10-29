@@ -5912,29 +5912,29 @@
     "theme_id": "run_sf_prod_01",
     "level": "b1b",
     "segment_id": "full_story_part3_c6",
-    "updated_at": "2026-10-29T15:01:54",
-    "reason": "最終status=STOPPED。文脈・感情付きTTS方式の通算3回の試行(上限3回、1〜2回目=文脈・感情付き、3回目=従来方式)でもASR検証に合格しませんでした(この呼出のmax_attempts=1)",
+    "updated_at": "2026-10-29T18:30:25",
+    "reason": "最終status=STOPPED。文脈・感情付きTTS方式の通算6回の試行(上限6回=ブロック3回x2[LRを挟む]、各ブロックの1〜2回目=文脈・感情付き、3回目=従来方式)でもASR検証に合格しませんでした(この呼出のmax_attempts=3、phase=B2)",
     "final_status": "STOPPED",
     "wav_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/full_story_part3_c6.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 6,
+    "cumulative_asr_calls": 6,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. An unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+        "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
         "asr_judgement": {
-          "state": "PASS",
+          "state": "PASS_WITH_WARNING",
           "reason_code": "primary_pass",
-          "slot": 1,
-          "script_version": "v0",
+          "slot": 4,
+          "script_version": "v1",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part3_c6",
-          "audio_sha256": "9119acaf435b98d9395931b1648c17f48e1c067feab0c26d682983a1ea52a217",
+          "audio_sha256": "9516127954414daedcf7ece0579f2b2c142895f2594d501a542377b561c6bbc0",
           "primary": {
-            "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him. But she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. An unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+            "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that, I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
             "passed": true,
             "label": "NORMALIZED_MATCH",
             "equivalence_basis": null,
@@ -5973,7 +5973,9 @@
             "value_guard": "EQUAL",
             "negation_diff": false
           },
-          "warnings": [],
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 0,
@@ -5987,9 +5989,9 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 464,
+            "primary_len": 466,
             "secondary_len": null,
-            "max_len": 490,
+            "max_len": 494,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
@@ -6003,7 +6005,7 @@
             "segment_id": "full_story_part3_c6",
             "asr_text_present": true,
             "cache": {
-              "calls": 6,
+              "calls": 0,
               "hits": 0
             }
           }
@@ -6015,19 +6017,19 @@
         "final_length_ok": true,
         "verified": false,
         "trim_info": {
-          "raw_duration_seconds": 37.851,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.28,
-          "trimmed_duration_seconds": 37.851,
-          "leading_margin_retained_seconds": 0.24,
-          "trailing_margin_retained_seconds": 0.28
+          "raw_duration_seconds": 43.491,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.34,
+          "trimmed_duration_seconds": 43.491,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.34
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": true,
-          "duration_seconds": 37.851,
+          "duration_seconds": 43.491,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -6039,40 +6041,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9966,
-                "time_a_seconds": 2.09,
-                "time_b_seconds": 31.83,
-                "lag_seconds": 29.74,
-                "run_length_seconds_at_thresh_0.85": 0.04
-              },
-              {
-                "similarity": 0.9966,
-                "time_a_seconds": 15.34,
-                "time_b_seconds": 25.32,
-                "lag_seconds": 9.98,
+                "similarity": 0.9978,
+                "time_a_seconds": 22.06,
+                "time_b_seconds": 32.09,
+                "lag_seconds": 10.03,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.996,
-                "time_a_seconds": 15.34,
-                "time_b_seconds": 31.81,
-                "lag_seconds": 16.47,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9955,
-                "time_a_seconds": 15.33,
-                "time_b_seconds": 20.44,
-                "lag_seconds": 5.11
+                "similarity": 0.9959,
+                "time_a_seconds": 22.06,
+                "time_b_seconds": 32.45,
+                "lag_seconds": 10.39,
+                "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
                 "similarity": 0.9954,
-                "time_a_seconds": 7.53,
-                "time_b_seconds": 19.85,
-                "lag_seconds": 12.32
+                "time_a_seconds": 28.68,
+                "time_b_seconds": 32.45,
+                "lag_seconds": 3.77,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9951,
+                "time_a_seconds": 22.06,
+                "time_b_seconds": 28.88,
+                "lag_seconds": 6.82
+              },
+              {
+                "similarity": 0.995,
+                "time_a_seconds": 22.06,
+                "time_b_seconds": 28.69,
+                "lag_seconds": 6.63
               }
             ],
-            "best_run_length_seconds": 0.04,
+            "best_run_length_seconds": 0.02,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -6081,11 +6083,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.73,
-            "time_a": 25.67,
-            "lag": 1.49,
-            "similarity_at_start": 0.7191,
-            "best_run_length_seconds": 0.73,
+            "run_length_seconds": 0.68,
+            "time_a": 14.84,
+            "lag": 1.64,
+            "similarity_at_start": 0.7305,
+            "best_run_length_seconds": 0.68,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -6096,10 +6098,287 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt4_englishstyleprefixwidemargin.wav",
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt5_englishstyleprefixwidemargin.wav",
+        "tts_mode": "ctx",
+        "overall_attempt_n": 4,
+        "dialogue_tts_policy": "fz_ctx_v1",
+        "dialogue_block_depth": 1,
+        "style_prefix": {
+          "len": 3680,
+          "sha256": "3eb5d8bae91c38afece84280fc01f1e980422aadf393494014683ece5678e271",
+          "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent, then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sunk forever into the darkness.",
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 5,
+          "script_version": "v1",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c6",
+          "audio_sha256": "5ddb511dc1e03f73084d16c7cac5c62463818a35a6bf6e0ce8a4f202d682639f",
+          "primary": {
+            "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent, then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sunk forever into the darkness.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "My wife said take me anywhere.Then she pointed at me. Kill that man.He pushed her away and asked me whether she should live or die.For that, I almost forgave him, but she fled.He cut one rope and left.I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dogger from my chest. I sunk forever into the darkness.",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 39.021,
+            "est_jpy": 1.7778,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 17676,
+            "secondary_ms": 17636
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 465,
+            "secondary_len": 460,
+            "max_len": 494,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 362,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": false,
+            "reason": "PRIMARY_NOT_ENTITY_ONLY",
+            "detail": {
+              "classification": "TRUE_CONTENT_MISMATCH"
+            }
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c6",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 39.251,
+          "raw_leading_silence_seconds": 0.58,
+          "raw_trailing_silence_seconds": 0.28,
+          "trimmed_duration_seconds": 39.021,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.28
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt6_englishstyleprefixwidemargin.wav",
+        "tts_mode": "ctx",
+        "overall_attempt_n": 5,
+        "dialogue_tts_policy": "fz_ctx_v1",
+        "dialogue_block_depth": 1,
+        "style_prefix": {
+          "len": 3680,
+          "sha256": "3eb5d8bae91c38afece84280fc01f1e980422aadf393494014683ece5678e271",
+          "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+        }
+      },
+      {
+        "attempt": 3,
+        "status": "OK",
+        "asr_text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him. But he fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 6,
+          "script_version": "v1",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c6",
+          "audio_sha256": "10354071981ab0361f129984ad82c2e78ab7f8ef32154e7302007e3a9b5e0300",
+          "primary": {
+            "text": "My wife said, Take me anywhere. Then she pointed at me. Kill that man. He pushed her away and asked me whether she should live or die. For that I almost forgave him. But he fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest. The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dagger from my chest. I sank forever into the darkness.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "My wife said take me anywhere. Then she pointed at me. Killed that man.He pushed her away and asked me whether she should live or die. For that I almost forgave him, but she fled. He cut one rope and left. I rose from the cedar and picked up the small dagger she had dropped. I stabbed myself in the chest.The thicket fell silent. Then someone crept towards me on soft feet. Some unseen hand quietly drew the dogger from my chest. I sank forever into the darkness.",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 37.411,
+            "est_jpy": 1.6889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 16561,
+            "secondary_ms": 16547
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 464,
+            "secondary_len": 464,
+            "max_len": 494,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 364,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": false,
+            "reason": "PRIMARY_NOT_ENTITY_ONLY",
+            "detail": {
+              "classification": "TRUE_CONTENT_MISMATCH"
+            }
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c6",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 37.411,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.28,
+          "trimmed_duration_seconds": 37.411,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.28
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c6_attempt7_englishstyleprefixwidemargin.wav",
         "tts_mode": "legacy_fallback",
-        "overall_attempt_n": 3,
-        "dialogue_tts_policy": "fz_ctx_v1"
+        "overall_attempt_n": 6,
+        "dialogue_tts_policy": "fz_ctx_v1",
+        "dialogue_block_depth": 1
       }
     ]
   }

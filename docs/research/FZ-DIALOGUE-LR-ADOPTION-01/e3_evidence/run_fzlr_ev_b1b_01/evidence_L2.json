@@ -1,0 +1,134 @@
+{
+  "management_id": "FZ-DIALOGUE-LR-ADOPTION-01",
+  "INJECTED": true,
+  "note": "NG注入evidence(成果物の品質根拠にしない)",
+  "case": {
+    "level": "b1b",
+    "run": "run_fzlr_ev_b1b_01",
+    "clip": "full_story_part2_c1",
+    "ng": [
+      1,
+      2,
+      3
+    ],
+    "stage": "tts_b1b",
+    "budget": 20
+  },
+  "launch_tag": "L2",
+  "argv": [
+    "--story",
+    "in_a_grove",
+    "--run",
+    "run_fzlr_ev_b1b_01",
+    "--mode",
+    "real",
+    "--approved-budget-jpy",
+    "20",
+    "--tts-execution-mode",
+    "STANDARD",
+    "--stages",
+    "tts_b1b",
+    "--only-clips",
+    "full_story_part2_c1"
+  ],
+  "rc": 0,
+  "exception": null,
+  "started_at": "2026-10-29T18:41:33",
+  "ended_at": "2026-10-29T18:42:52",
+  "wall_seconds": 78.6,
+  "pid": 15044,
+  "tts_resolve": [],
+  "tts_resolve_count": 0,
+  "tts_api_calls": 2,
+  "sleep_total_seconds": 0.0,
+  "cooldowns": [
+    {
+      "label": "full_story_part2_c1",
+      "requested_seconds": 180.0,
+      "actual_seconds": 28.635,
+      "started_at": "2026-10-29T18:41:36",
+      "ended_at": "2026-10-29T18:42:05",
+      "resumed": true,
+      "attempt_before": null,
+      "attempt_after": null,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "wall_start_epoch": 1793266896.5905018
+    }
+  ],
+  "lr_calls": [
+    {
+      "segment_id": "full_story_part2_c1",
+      "depth": 0,
+      "status": "RESOLVED_BY_LOCAL_REWRITE",
+      "ng_span_found": true,
+      "ng_span": {
+        "found": true,
+        "diff_tag": "replace",
+        "canonical_span_with_context": "yes i killed him",
+        "asr_span_with_context": "yes i killee him",
+        "canonical_changed_words": [
+          "killed"
+        ],
+        "asr_changed_words": [
+          "killee"
+        ],
+        "context_window_word_indices": [
+          0,
+          4
+        ]
+      },
+      "model": null,
+      "rewritten_text": "\"\"Yes, I did him in,\"\"",
+      "elapsed_s": 41.62,
+      "last_asr_text": "\"Yes, I killee him,\""
+    }
+  ],
+  "judges": [
+    {
+      "clip": "full_story_part2_c1",
+      "kind": "en",
+      "slot": 4,
+      "ok_real": true,
+      "stop_real": false,
+      "cls_real": "NORMALIZED_MATCH",
+      "force_secondary": false,
+      "is_last_slot": false,
+      "script_version": "v1",
+      "forced_ng": false,
+      "asr_text_head": "Yes, I did him in."
+    }
+  ],
+  "post_judges": [
+    {
+      "clip": "full_story_part2_c1",
+      "slot": 4,
+      "verified_real": true,
+      "forced_ng": false
+    }
+  ],
+  "injection_records": [
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part2_c1",
+      "at": "2026-10-29T18:42:10",
+      "kind": "transcribe",
+      "n": 3,
+      "doctored_text": "\"Yes, I killee him,\"",
+      "real_asr_called": false
+    },
+    {
+      "INJECTED": true,
+      "clip_id": "full_story_part2_c1",
+      "at": "2026-10-29T18:42:10",
+      "kind": "evaluate",
+      "n": 3,
+      "forced": "TRUE_CONTENT_MISMATCH",
+      "asr_text": "\"Yes, I killee him,\""
+    }
+  ],
+  "stop_checks": {
+    "cooldown": 0,
+    "attempt": 0,
+    "other": 0
+  }
+}
