@@ -978,7 +978,7 @@
       "disfluency_checked": false,
       "asr_text": null,
       "slowdown_applied": null,
-      "z_adoption": "failed",
+      "z_adoption": "human_review_adopted",
       "segment_id": "comment_3",
       "narration_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/comment_3.wav",
       "role": "COMMENT",
@@ -1075,7 +1075,9 @@
         "adopted_identification": "legacy_heuristic(take_unresolved)",
         "expected_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33"
       },
-      "duration_seconds": 10.24
+      "duration_seconds": 10.24,
+      "FZIG10_HUMAN_APPROVAL_NOTE": "[2026-10-29T12:37:39] 個別Human Approval: attempt3採用。status=STOPPEDとASR/QAのNG記録は維持。置換前=comment_3.pre_fzig10_adopt.wav。TTS/ASR 0。原文=docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_HR_01.md",
+      "FZIG11_SELECTION_NOTE": "comment_3=ユーザー指定#3(従来方式/fallback)。原文=docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_HR_01.md"
     },
     "full_story_part1_c1": {
       "status": "OK",
@@ -1520,13 +1522,13 @@
     "full_story_part1_c3": {
       "status": "STOPPED",
       "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part1_c3.wav",
-      "sha256": "b6d8117b7e548b34480af2b7cf9221f3ee5b364286be27ea266ce8be4e832412",
+      "sha256": "dba66c455269dfd33e49cfeae2cdc94ed097500b986fb132ec7bc52415560e23",
       "canonical_text": "\"He lay near the mountain road, stabbed once in the chest. The blood was already dry when I saw him. Broken bamboo and marks on the ground showed a fight. I found no sword or bow, only rope and a comb.\"",
       "text": "\"He lay near the mountain road, stabbed once in the chest. The blood was already dry when I saw him. Broken bamboo and marks on the ground showed a fight. I found no sword or bow, only rope and a comb.\"",
       "disfluency_checked": false,
       "asr_text": null,
       "slowdown_applied": null,
-      "z_adoption": "failed",
+      "z_adoption": "human_review_adopted",
       "segment_id": "full_story_part1_c3",
       "narration_path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_part1_c3.wav",
       "role": "FULL_STORY",
@@ -1702,7 +1704,9 @@
         "emotion_prompt_sha256": "6727df4839660ff08e0018d32b8d2ac5d65d38f90751f4899fe981c4f5191c51",
         "terminal_before_fallback": false
       },
-      "duration_seconds": 15.451
+      "duration_seconds": 17.741,
+      "FZIG10_HUMAN_APPROVAL_NOTE": "[2026-10-29T12:37:43] 個別Human Approval: attempt2採用。status=STOPPEDとASR/QAのNG記録は維持。置換前=full_story_part1_c3.pre_fzig10_adopt.wav。TTS/ASR 0。原文=docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_HR_01.md",
+      "FZIG11_SELECTION_NOTE": "part1_c3=ユーザー全PASS(#1-#3)→Fable選定#2(ctx方式で他clipと方式が揃い再利用性、ctx2試行中repetition値が小さい 0.82s/lag0.76s)。原文=同上"
     },
     "full_story_part1_c4": {
       "status": "OK",
@@ -5636,6 +5640,125 @@
         }
       },
       "duration_seconds": 4.701
+    },
+    "welcome": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/welcome.wav",
+      "sha256": "1d3e9a740fb2fa086b87a91e72517a43a6ff719f86f651d6365d2e7a7e94fdb5",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "welcome",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "preview_intro": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/preview_intro.wav",
+      "sha256": "c12297e84758e3b9b572932cc3041a3b17f9da9a839f396ff52b24429e182d07",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "preview_intro",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "key_phrases_intro": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/key_phrases_intro.wav",
+      "sha256": "840e75b60b21c9b813dfa466eb98982c9bd26e8aca727491b1a4fae8b3c549b7",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "key_phrases_intro",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "full_story_intro": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/full_story_intro.wav",
+      "sha256": "c624a331fd17652e45d6ec887b00716212fd0cb15c4e555ce7e1c28236be1b0b",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "full_story_intro",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "kp1_number": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp1_number.wav",
+      "sha256": "820234eb7b58011e5636d299c960e34cfdcdfc855382348e2726089662533e69",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "kp1_number",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "kp2_number": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp2_number.wav",
+      "sha256": "0ab8554a1691c98134ba860421a9072abc1ccdf2180ce9be33d396cca2557a5e",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "kp2_number",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "kp3_number": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/narration/kp3_number.wav",
+      "sha256": "70a1070d29dd145611cdcec1d2c91bdcfcb6b05e95b5841c2eacfcab3d50555c",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "kp3_number",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
     }
   },
   "key_phrases": {
