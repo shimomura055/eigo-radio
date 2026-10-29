@@ -41,6 +41,7 @@
     var ms=(p.meanings||[]).slice();
     var kp=parts.filter(function(x){return x.kind==='kp';}).reduce(function(a,x){return a.concat(x.kp||[]);},[]);
     kp.forEach(function(k){ if ((p.paragraphs||[]).some(function(pa){return pa.some(function(s){return (s.text||'').toLowerCase().includes(k.en.toLowerCase());});}) && !ms.some(function(m){return m.toLowerCase().startsWith(k.en.toLowerCase()+' ');})) { var it=(L.vocab||[]).find(function(v){return v.heading.toLowerCase()===k.en.toLowerCase();}); var f=it && it.fields.find(function(v){return v.label==='本文中の意味';}); ms.push(k.en+' ＝ '+(f?f.html.replace(/<[^>]*>/g,''):k.text)); }});
+    (L.vocab||[]).forEach(function(v){var term=v.heading, seen=(p.paragraphs||[]).some(function(pa){return pa.some(function(s){return (s.text||'').toLowerCase().includes(term.toLowerCase());});});if(seen&&!ms.some(function(m){return m.toLowerCase().startsWith(term.toLowerCase()+' ')})){var f=v.fields.find(function(x){return x.label==='本文中の意味';});if(f)ms.push(term+' ＝ '+f.html.replace(/<[^>]*>/g,''));}});
     if(!ms.length)return '';
     return '<div class="wordbox"><ul class="meanings">'+ms.map(function(m){var s=m.split(/\s*[＝=]\s*/);var term=s[0],detail=(L.vocab||[]).find(function(v){return v.heading.toLowerCase()===term.toLowerCase();});return '<li>'+esc(term)+' ＝ '+esc(s.slice(1).join('＝'))+(detail?' <a href="#vocab" aria-label="'+esc(term)+'の詳しい解説へ">詳しい解説 ↓</a>':'')+'</li>';}).join('')+'</ul></div>';
   }
