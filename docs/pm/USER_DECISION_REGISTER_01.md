@@ -582,3 +582,6 @@
 - `#212 **判断済み**(2026-10-29): 最終一覧19件(国内10・海外9)すべてをFamily Y正式情報源としてAPPROVED_FOR_PRODUCTION。選択肢(b)相当・全件指定。境界=情報源としての利用承認であり無条件の転載・翻案許可ではない/各サイトの確認済み利用条件・取得制限を遵守/Repo登録とProduction収集経路の確認は区別し、配線・検証未完了のためPRODUCTION_WIREDではない。SSOT=SOURCE_REGISTRY_01 §7・CURRENT_SPEC Family Y節・DECISION_LOG FAMILY-Y-SOURCE-ADOPTION-10-THEMES-01-DECISION-01・OPEN-587(commit ed3312d02)。`
 - `#213 **判断済み(採用部分)**(2026-10-29): 19件全採用により、Debate系(公的・オープンライセンス系)と体験談・掲示板系の両方が正式情報源となり、組合せ方式の採否は「両系を併用可(各サイトの条件遵守)」で解消。**残る部分**=音声ラジオでのCC BY/OGL/PDL等の出典表示方式は未設計(別件として残す。新規の判断要求はしない。設計案ができた時点でFableが提示要否を仕分け)。`
 - `#208・#214・#215は任意のまま変更なし。`
+
+### 2026-10-29 FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_04 追記
+- `#217 **新規・未回答・分類D**(2026-10-29): 月のしわ Std/Adv 試聴PASS/NG。URL=https://shimomura055.github.io/eigo-radio/user_test/family_x_moon_shrinking_reselect_01/ 。Std題=承認済み音声(run_ms_03 attempt 2)再利用、HR 2音声(ms_03 a1・reselect a3)は不使用。Grammar解説末尾に区切り文字列`=====`が各レベル1箇所残る(OPEN-591、コード是正別委任)点を含めて判断を求める。SSOT=OPEN-517。`
