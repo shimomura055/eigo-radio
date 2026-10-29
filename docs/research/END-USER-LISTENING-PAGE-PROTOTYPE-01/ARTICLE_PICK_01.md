@@ -34,3 +34,9 @@
 
 ## segment構成(例: AI島Std、timeline.jsonより。Advも同型でKP=英語+英語解説、Comment/Previewは英語)
 Intro / Welcome / Topic intro(英) / Japanese title / Notification 1 / Preview intro / Preview / Notification 2 / Key phrases intro / KP1-3 / Notification 3 / Full story intro / Comment1 / Full Story Part1(3 chunk) / Comment2 / Part2(2 chunk) / Comment3 / Part3(3 chunk) / Comment4 / In One Line / Outro。Stdの Preview・Comment・Japanese title は日本語、Advは英語。
+
+## 同期データ(追記、委任_01a C項、2026-10-29)
+- 場所: `docs/research/END-USER-LISTENING-PAGE-PROTOTYPE-01/sync/std/`(AI島Std)・`sync/adv/`(AI島Adv)・`sync/moon_adv/`(月Adv)。各dirに `<part>.sentences.json`(topic_intro/preview/comment_1..4/full_story_part1..3/in_one_line、Stdはjapanese_titleも)と `index.json`・`VERIFY.json`。
+- 時刻の基準: **そのsegment mp3の先頭からの秒**(`audio`フィールドが公開ページの`audio/std_NN.mp3`等を指す)。全編mp3再生中は `part_start_in_episode_s + start`(全31 segmentで相互相関により位置一致を検証済み)。
+- 各文: `sentence_id/chunk_id/text(TTS入力)/display_text(公開ページの表示本文。文数が31/31 segmentで一致)/start/end/confidence/source/asr_raw`。
+- 使い方: 現在文=`start<=t`の最後の文。文間の無音(0.08〜1.2秒)は直前文のハイライトを保持し次文の`start`で切替。詳細=`SYNC_METHOD_01.md`。
