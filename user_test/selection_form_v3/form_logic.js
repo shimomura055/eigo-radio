@@ -63,14 +63,14 @@
     return v === 'adopt' ? 'adopt' : v === 'reject' ? 'reject' : 'undecided';
   }
   function chooseNuance(st, v, d) { if (v !== 'adopt' && v !== 'reject') return false; st.nuance = v; var n = nuanceOf(d); st.nuance_sha = n ? n.candidate_sha256 : ''; return true; }
-  // 採用時のみ: 選択中の①②(区分1・2)のうち、ニュアンス候補と焦点が重複するもの(pool_conflicts)の項目名。非空なら送信/コピーを止める(Python側N2が最終権威)
+  // 採用時のみ: 選択中の①②(区分1・2)のうち、ニュアンス候補と焦点が重複するもの(pool_conflicts)の項目名。アラーム表示用(2026-10-29 仕様②: 重複は送信/コピーを止めない。Python側N2も確定を止めず重複アラームとして記録する)
   function nuanceConflicts(d, st) {
     var n = nuanceOf(d); if (!n || nuanceDecision(d, st) !== 'adopt') return [];
     var pc = n.pool_conflicts || [], ch = choicesOf(d, st), out = [];
     allItems(d).forEach(function (it) { var c = ch[it.term]; if ((c === 1 || c === 2) && pc.indexOf(candIdOf(it)) >= 0) out.push(it.term); });
     return out;
   }
-  function nuanceBlocked(d, st) { return nuanceDecision(d, st) === 'undecided' || nuanceConflicts(d, st).length > 0; }
+  function nuanceBlocked(d, st) { return nuanceDecision(d, st) === 'undecided'; }   // 重複(nuanceConflicts)では止めない(仕様②)
   // 人間可読コピー内のニュアンス本文(候補本文の逐語。Python nuance_body_text と同一)
   function nuanceBodyText(n) { return ['表現：' + n.expression, 'ポイント：' + n.focus, '解説：', n.explanation_ja, '本文の英文：' + n.quote_en, '日本語訳：' + n.quote_ja].join('\n'); }
   function chooseGrammar(st, gids, id) {            // ラジオ操作: 他を外して1件にする

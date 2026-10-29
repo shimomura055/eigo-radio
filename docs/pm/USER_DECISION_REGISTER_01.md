@@ -600,3 +600,6 @@
 ### 2026-10-29 FAMILY-Z-IN-A-GROVE-PRODUCTION-01 委任_13 追記
 - `#218 判断済み(2026-10-29): 藪の中 Std/Adv 完成候補の試聴=NG(修正指示①多襄丸の発言範囲とVoice配役[Std/Adv]、②Std KP constable→bandit・constableは追加解説)。原文=docs/pm/delegation_log/2026-10-29_FAMILY-Z-IN-A-GROVE-PRODUCTION-01_USER_FIX_01.md。SSOT=OPEN-592/596。`
 - `#220 **登録済み・未提示・分類D**(2026-10-29、委任_15で内容更新): 藪の中 Adv full_story_part3_c6(武弘Puck 91語)の扱い=(1)既存3試行のいずれかを試聴採用 or (2)再生成1回承認(見込み数円・Cap135内、成功保証なし)。試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/family_z_in_a_grove_hr_02/ 。回答後に残stage(gate/assemble/pages/page_verify)を実行し、修正版Std/Adv完成候補(user_test/family_z_in_a_grove_01/)の試聴PASS/NG判断へ進む。`
+### 2026-10-29 HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01 委任_03A 追記
+- `#190 判断済み(2026-10-29): KP正規化REVIEW_REQUIRED等のQA不合格候補は、人間確認(選定)の前に提示前で解決する(仕様①。不合格候補は選択可能な候補として提示しない)。人間が選定した後の重複アラームは表示・記録のみで確定/Productionを止めない(仕様②)。原文=docs/pm/delegation_log/2026-10-29_HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01_USER.md §2-§3(APPROVED_FOR_PRODUCTION)。SSOT=OPEN-600、CURRENT_SPEC.md「KP等の選定フロー」行。注記: 『KP選定失敗エスカレーション』に該当するUDRとして#190(REVIEW_REQUIRED時の人間確認前の運用)を当てた。別UDRを指す場合はFableが訂正。`
+

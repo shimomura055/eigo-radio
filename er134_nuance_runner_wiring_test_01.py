@@ -298,7 +298,7 @@ class T3_Overlap(WBase):
             self.assertEqual(res["status"], nx.ST_RESULT_NONE)
             assert_no_corner(self, html)
 
-    def test_pool_conflict_chosen_at_hr_blocks_adoption_but_reject_is_accepted(self):
+    def test_pool_conflict_chosen_at_hr_is_alarm_only_adoption_proceeds_spec2(self):
         with Env(self.tmp) as env:
             sd, cands = self.ready(env)
             inp = self.mk_inputs(sd)
@@ -311,12 +311,50 @@ class T3_Overlap(WBase):
             pl = self._payload(cands, cat1=list(ranks), cat2=[], grammar=self.gram(pick=(0,)))
             pl["selection"]["nuance"] = self.nz(doc, "adopt")
             pl["schema_minor"] = 2
-            with self.assertRaises(rv.ConfirmedContentIssue):                              # 重複するKP/Wordを選んだままの採用=NG(最終確認)
-                self.confirm(pl)
-            self.assertIsNone(self.rec())
-            pl["selection"]["nuance"] = self.nz(doc, "reject")
-            self.confirm(pl, "p2.json")                                                    # 不採用は常に受理
-            self.assertEqual(self.rec()["nuance"]["decision"], "rejected")
+            self.confirm(pl)                                                               # 仕様②: 重複するKP/Wordを選んだままの採用でも確定は止まらない(アラームのみ)
+            rec = self.rec()
+            self.assertEqual(rec["nuance"]["decision"], "adopted")
+            side = jl(os.path.join(sd, "confirmed_nuance.json"))
+            self.assertEqual([a["item_id"] for a in side["redundancy_alarms"]], [pool_only["id"]])
+            self.assertTrue(all(a["blocking"] is False for a in side["redundancy_alarms"]))
+            al = jl(os.path.join(sd, "nuance_redundancy_alarm.json"))
+            self.assertEqual((al["alarm_count"], al["nonblocking"]), (1, True))
+            html, res = self.page(sd)                                                      # ページ生成(finalize_stage)も止まらない・結果にアラームが残る
+            self.assertEqual(res["status"], nx.ST_RESULT_ADOPTED)
+            self.assertEqual(res["final_overlap_check"]["verdict"], "alarm")
+            self.assertEqual([a["item_id"] for a in res["redundancy_alarms"]], [pool_only["id"]])
+            self.assertEqual(g.count_nuance_blocks(html), 1)
+
+    def test_no_pool_conflict_records_empty_alarm_file_and_pass_spec2(self):
+        with Env(self.tmp) as env:
+            sd, cands = self.ready(env)
+            self.n1(sd, review_existed=False)
+            self.form_confirm(sd, "adopt")
+            self.assertEqual(jl(os.path.join(sd, "nuance_redundancy_alarm.json"))["alarm_count"], 0)
+            html, res = self.page(sd)
+            self.assertEqual((res["status"], res["final_overlap_check"]["verdict"], res["redundancy_alarms"]), (nx.ST_RESULT_ADOPTED, "pass", []))
+
+    def test_kp_set_changed_after_nuance_confirm_is_alarm_not_stale_stop_spec2(self):
+        """確定後にKP/Word確定集合が変わっていても(旧: NuanceStaleでSTOP)、ページ生成は止まらず set_changed と重複アラームを記録する。"""
+        import unittest.mock as um
+        with Env(self.tmp) as env:
+            sd, cands = self.ready(env)
+            self.n1(sd, review_existed=False)
+            self.form_confirm(sd, "adopt")
+            cc = rv._cc()
+            real = cc.nuance_state
+
+            def changed(study_dir):
+                st = real(study_dir)
+                if st is not None:
+                    st = dict(st, sidecar=dict(st["sidecar"], confirmed_against={"kp_word": ["p_old_removed"], "grammar": []}))
+                return st
+            with um.patch.object(cc, "nuance_state", changed):
+                html, res = self.page(sd)
+            self.assertEqual(res["status"], nx.ST_RESULT_ADOPTED)
+            self.assertTrue(res["final_overlap_check"]["nonblocking"])
+            self.assertTrue(res["final_overlap_check"]["kp_word_set_changed_after_confirm"])
+            self.assertEqual(g.count_nuance_blocks(html), 1)
 
     def test_grammar_overlap_is_warning_only_and_adoption_proceeds(self):
         with Env(self.tmp) as env:

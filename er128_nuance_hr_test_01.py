@@ -166,18 +166,32 @@ class T2_CoverageAndConflicts(NBase):
             out = self.confirm(self.payload_with(cands, self.nz(doc, "reject")), "p_rej.json")           # 不採用は人間判断を覆さず受理
             self.assertEqual(out["nuance"], "rejected")
 
-    def test_pool_conflict_blocks_adopt_when_that_item_is_chosen_but_not_otherwise(self):
+    def test_pool_conflict_is_alarm_only_when_that_item_is_chosen_spec2(self):
+        """仕様②(2026-10-29): 人間が選んだ②が候補の焦点と重複(pool_conflicts)しても確定は止めず、アラームを記録する。選ばなければアラーム0。"""
         with Env(self.tmp) as env:
             cands0 = self._gen(env)
             conflict = self.pool_rank(cands0, 7)                                                        # 暫定選定(rank1-5)ではないpool項目
             sd, inp, doc, cands = self.nuance_doc(env, same=(conflict,))
             self.assertEqual(doc["status"], "CANDIDATE")
             self.assertIn(conflict, doc["candidate"]["pool_conflicts"])
-            with self.assertRaises(rv.ConfirmedContentIssue):                                           # ②で選ぶと採用不可
-                self.confirm(self.payload_with(cands, self.nz(doc, "adopt"), cat2=(4, 7)))
-            self.assertIsNone(self.rec())
-            self.confirm(self.payload_with(cands, self.nz(doc, "adopt")), "p_ok.json")                   # 選ばなければ採用できる
+            out = self.confirm(self.payload_with(cands, self.nz(doc, "adopt"), cat2=(4, 7)))              # ②で選んでも確定する
+            self.assertEqual(out["nuance"], "adopted")
+            self.assertEqual([a["item_id"] for a in out["nuance_redundancy_alarms"]], [conflict])
             self.assertEqual(self.rec()["nuance"]["decision"], "adopted")
+            side = jl(os.path.join(sd, cc.FILE_NUANCE))
+            self.assertEqual([a["item_id"] for a in side["redundancy_alarms"]], [conflict])
+            self.assertEqual(jl(os.path.join(sd, cc.FILE_NUANCE_ALARM))["alarm_count"], 1)
+            self.assertFalse(os.path.exists(cc.paths_of(self.kp_dir)["issue_json"]))                      # ISSUE停止なし
+
+    def test_redundancy_alarm_helper_is_deterministic_and_nonblocking_spec2(self):
+        with Env(self.tmp) as env:
+            cands0 = self._gen(env)
+            conflict = self.pool_rank(cands0, 7)
+            sd, inp, doc, cands = self.nuance_doc(env, same=(conflict,))
+            alarms = cc.nuance_redundancy_alarms(doc["candidate"], [conflict, "x_not_judged"])
+            self.assertEqual([(a["kind"], a["item_id"], a["blocking"]) for a in alarms], [("nuance_vs_kp_word", conflict, False), ("nuance_vs_kp_word_unjudged", "x_not_judged", False)])
+            self.assertEqual(cc.nuance_redundancy_alarms(doc["candidate"], []), [])
+            self.assertEqual(cc.nuance_redundancy_alarms(None, [conflict]), [])
 
     def test_grammar_conflict_is_a_warning_only_and_never_blocks(self):
         with Env(self.tmp) as env:
@@ -490,7 +504,7 @@ class T7_FormJsAndRestore(unittest.TestCase):
                         json.dumps(self.files["none"][2], ensure_ascii=False))
         self.assertEqual(out2, ["n/a", False])                                                              # 候補なしは回答不要
 
-    def test_pool_conflict_blocks_adopt_in_form_logic(self):
+    def test_pool_conflict_is_alarm_only_and_never_blocks_in_form_logic_spec2(self):
         d = copy.deepcopy(self.files["adopt"][2])
         it = d["phrases"][1]
         d["nuance"]["pool_conflicts"] = [it.get("candidate_id") or it["id"]]
@@ -499,7 +513,7 @@ class T7_FormJsAndRestore(unittest.TestCase):
               "process.stdout.write(JSON.stringify([FL.nuanceConflicts(d,mk(1,'adopt')),FL.nuanceBlocked(d,mk(1,'adopt')),FL.nuanceBlocked(d,mk(1,'reject')),FL.nuanceBlocked(d,mk(3,'adopt'))]));")
         out = run_node(js, json.dumps(d, ensure_ascii=False), it["term"])
         self.assertEqual(out[0], [it["term"]])
-        self.assertEqual(out[1:], [True, False, False])                                                     # 採用+その項目を①②で選ぶ=止める。不採用/選ばない=止めない
+        self.assertEqual(out[1:], [False, False, False])                                                    # 仕様②: 重複(採用+その項目を①②で選ぶ)はアラーム表示のみ=送信/コピーを止めない
 
 
 class T8_ExporterKeys(unittest.TestCase):
@@ -544,7 +558,7 @@ class T9_FormHtmlUi(unittest.TestCase):
 
     def test_static_elements_and_guard_present(self):
         h = self.html
-        for needle in ('id="nuanceH"', 'id="nuanceNotice"', 'id="nuances"', "function renderNuance", "FL.nuanceDecision(D,get())==='undecided'", "FL.nuanceConflicts(D,get())", "data-nuance=\"adopt\"", "data-nuance=\"reject\""):
+        for needle in ('id="nuanceH"', 'id="nuanceNotice"', 'id="nuances"', "function renderNuance", "FL.nuanceDecision(D,get())==='undecided'", "FL.nuanceConflicts(d,st)", "data-nuance=\"adopt\"", "data-nuance=\"reject\""):
             self.assertIn(needle, h)
         self.assertLess(h.index('id="grammars"'), h.index('id="nuanceH"'))                                 # 文法の直後
         self.assertLess(h.index('id="nuanceH"'), h.index("自由コメント"))                                  # 自由コメントの前

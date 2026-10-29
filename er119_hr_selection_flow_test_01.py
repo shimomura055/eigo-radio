@@ -578,6 +578,10 @@ class TestSurnameChoiceTool(unittest.TestCase):
 
     def setUp(self):
         import tempfile
+        # 実run_02 a2が確定済み(REVIEWED。委任_03以降にユーザー決定を適用後)なら、PENDING前提の差替えtoolのtestは対象外(toolはPENDINGの間だけ動く設計)
+        _live = rv.load_review(os.path.join(RUN02, "key_phrases", "a2"))
+        if _live is not None and _live.get("status") != "PENDING_REVIEW":
+            self.skipTest(f"実run_02 a2は既に{_live.get('status')}(差替えはPENDING_REVIEWの間だけ。適用済みのため本testは対象外)")
         self.tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.tmp, True)
         p = mock.patch.object(rv, "STORE_ROOT", os.path.join(self.tmp, "store"))

@@ -760,7 +760,7 @@ def decide(inputs: dict, cand: dict, stage1: dict, judge: dict | None) -> dict:
     - 項目(KP/Word)のsame_focus = 段1自動NG or 段2same(段2 fail優先。段2 passは自動NGでない段1ヒットに優先)
     - verdict = fail: 暫定選定(必須NG対象①②)のどれかがsame_focus
                 unverified: 必須NGは無いが段2が不能(judge is None or not ok)
-                pass: 上記以外。pool項目(非暫定)のsame_focusは pool_conflicts(HRで採用不可の連動に使う)
+                pass: 上記以外。pool項目(非暫定)のsame_focusは pool_conflicts(HRでそれらを選んだ場合の重複アラームの元。確定は止めない=仕様②)
     - 文法Top1/Top2のsame_focusは grammar_conflicts(警告)。verdictには影響させない(F-1/R-1)。
     - judgeを呼ばなかった(段1でfail)場合はjudge=Noneで、auto_ngだけで算出する。"""
     auto_by_id = {a["item_id"]: a for a in stage1.get("auto_ng") or []}
@@ -804,7 +804,7 @@ def decide(inputs: dict, cand: dict, stage1: dict, judge: dict | None) -> dict:
     else:
         reason = "暫定選定のKey Phrase・Wordとは学習上の焦点が別と判定しました。"
         if pool_conflicts:
-            reason += "ただし、その他の提示候補" + "・".join(f"『{names[i]}』" for i in pool_conflicts) + "と同じ焦点です(HRでそれらを選ぶと採用不可)。"
+            reason += "ただし、その他の提示候補" + "・".join(f"『{names[i]}』" for i in pool_conflicts) + "と同じ焦点の可能性があります(HRでそれらを選んでも止まらず、重複アラームとして記録します)。"
         if grammar_conflicts:
             gnames = {x["id"]: x["title"] for x in inputs["grammar"]}
             reason += "文法候補" + "・".join(f"『{gnames[i]}』" for i in grammar_conflicts) + "と近い焦点です(警告)。"
@@ -1022,7 +1022,7 @@ def render_request_md(doc: dict, *, level: str, run_hint: str) -> str:
              f"- 本文の英文: {cand.get('quote_en')}", f"- 日本語訳: {cand.get('quote_ja')}", "",
              f"- 重複判定(KP/Word): {oc.get('verdict')} / {oc.get('reason')}"]
     if cand.get("pool_conflicts"):
-        lines.append(f"- 注意: 次の提示候補と焦点が重複します。これらを選ぶと採用できません: {cand['pool_conflicts']}")
+        lines.append(f"- 重複アラーム(確認用・非停止): 次の提示候補と焦点が重複する可能性があります。選んでも採用/確定は止まらず、アラームとして記録されます: {cand['pool_conflicts']}")
     if cand.get("grammar_conflicts"):
         lines.append(f"- 警告(文法候補との重複の可能性。採否は妨げません): {cand['grammar_conflicts']}")
     lines += ["", "## 決め方", "- V3フォーム: 『ニュアンス解説』欄で採用/不採用を選び、KP・文法と一緒に送信(推奨)",
@@ -1144,11 +1144,15 @@ def finalize_stage(study_dir: str, paragraphs: list, *, level: str, kp_dir: str,
                 raise NuanceStale(f"確定したニュアンス解説の引用が現在の本文に逐語で見つかりません({q['reason']})。本文が変わった可能性があります。"
                                   f"`py er128_kp_confirmed_content_01.py revoke --run {run_hint} --level {level} ...` で確定を取り消して選び直してください(人間の採用を自動で覆しません)")
             live_ids = sorted(i["candidate_id"] for i in st["rec"].get("items") or [] if i.get("category") in (1, 2))
-            if sorted((side.get("confirmed_against") or {}).get("kp_word") or []) != live_ids:
-                raise NuanceStale("ニュアンス解説の確定後にKey Phrase・Wordの確定集合が変わっています(重複の最終確認が成立しません)。revoke→再確認してください")
+            # 仕様②(2026-10-29): 確定後にKP/Wordの確定集合が変わっていても、重複は止める理由にしない(旧: NuanceStaleでSTOP)。
+            # 現在のlive集合に対し、確定時に保存した候補の重複判定(pool_conflicts/against[])から決定論でアラームを再計算して記録し、続行する(LLM 0)
+            alarms = cc.nuance_redundancy_alarms(cand, live_ids)
+            set_changed = sorted((side.get("confirmed_against") or {}).get("kp_word") or []) != live_ids
             out = dict(base, status=ST_RESULT_ADOPTED, reason=None, candidate_sha256=side["candidate_sha256"],
                        candidate={k: (q["verbatim"] if k == "quote_en" else cand[k]) for k in ("expression", "focus", "explanation_ja", "quote_en", "quote_ja")},
-                       final_overlap_check={"verdict": "pass", "against_kp_word": live_ids, "stage": "N3_deterministic", "n1_overlap_check": (cand.get("overlap_check") or {}).get("verdict")},
+                       final_overlap_check={"verdict": ("alarm" if alarms else "pass"), "against_kp_word": live_ids, "stage": "N3_deterministic", "n1_overlap_check": (cand.get("overlap_check") or {}).get("verdict"),
+                                    "nonblocking": True, "kp_word_set_changed_after_confirm": set_changed},
+                       redundancy_alarms=alarms,
                        model=(doc or {}).get("model"), prompt_sha=(doc or {}).get("prompt_sha"))
         elif decision == "rejected":
             out = dict(base, status=ST_RESULT_REJECTED, reason="human_rejected", candidate_sha256=side.get("candidate_sha256"))

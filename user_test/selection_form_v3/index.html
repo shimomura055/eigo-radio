@@ -93,8 +93,8 @@ function renderNuance(d,st){
   N.hidden=false;
   N.textContent='ニュアンス解説の候補は1件です。ページに「ニュアンス解説」コーナーとして載せるか、載せないかを選んでください（採用した解説は文法とは別に表示されます）。'+(dec==='undecided'?'　※未決定のままでは送信・コピーできません。':'')+(n.previous_decision&&!(st.nuance&&(!st.nuance_sha||st.nuance_sha===n.candidate_sha256))?'　※前回の確定は「'+(n.previous_decision==='adopt'?'採用':'不採用')+'」でした（既定表示。送信には選択の確認が必要です）。':'');
   var warn='',conf=FL.nuanceConflicts(d,st);
-  if(conf.length)warn+='<div class="notice" style="background:#fdeaea;color:#8a1f1f">この解説は、選択中の「'+conf.map(esc).join('」「')+'」と同じ焦点です。採用するなら、それらを①②から外してください（このままでは送信・コピーできません）。</div>';
-  else if((n.pool_conflicts||[]).length)warn+='<div class="notice">この解説は、他の提示候補と同じ焦点のものがあります。それらを①②で選ぶと、この解説は採用できません。</div>';
+  if(conf.length)warn+='<div class="notice" style="background:#fff4e0;color:#7a4a00">重複アラーム（確認用・送信は止まりません）: この解説は、選択中の「'+conf.map(esc).join('」「')+'」と同じ焦点の可能性があります。そのまま送信でき、確定時にアラームとして記録されます。</div>';
+  else if((n.pool_conflicts||[]).length)warn+='<div class="notice">この解説は、他の提示候補と同じ焦点のものがあります。それらを①②で選んでも止まりませんが、重複アラームとして記録されます。</div>';
   if((n.grammar_conflicts||[]).length)warn+='<div class="notice">参考: 文法候補と焦点が近い可能性があります（警告のみ。採用はできます）。</div>';
   if((n.shared_terms||[]).length)warn+='<div class="notice">参考: 他の選定項目と共通する語があります（警告のみ）。'+n.shared_terms.map(function(t){return esc(t.item||'')+'：'+esc(t.term||'')}).join('、')+'</div>';
   B.innerHTML=warn+'<div class="grammar '+(dec==='adopt'?'selected':'')+'"><label><input type="radio" name="nuance" data-nuance="adopt" '+(dec==='adopt'?'checked':'')+'> <span class="rank">候補</span><strong>'+esc(n.expression)+'</strong></label>'+
@@ -132,8 +132,6 @@ function guard(){
   if(!D){status('この記事枠には選定結果がありません。');return false}
   if(FL.grammarBlocked(D,get())){status('文法が未決定です。Top 1・Top 2のどちらかを1件選ぶか、「適切な候補なし（0件）」を選んでから送信・コピーしてください。');return false}
   if(FL.nuanceDecision(D,get())==='undecided'){status('ニュアンス解説が未決定です。「採用」か「不採用」を選んでから送信・コピーしてください。');return false}
-  var nc=FL.nuanceConflicts(D,get());
-  if(nc.length){status('ニュアンス解説を採用する場合、同じ焦点の「'+nc.join('」「')+'」を①②から外してください（外すか、ニュアンス解説を不採用にしてから送信・コピーしてください）。');return false}
   return true;
 }
 $('copy').addEventListener('click',function(){

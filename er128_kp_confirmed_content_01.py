@@ -68,6 +68,7 @@ FLAG_NAME = "EIGO_KP_CONFIRMED_PROTECTION"
 FILE_RECORD = "confirmed_selection.json"
 FILE_GRAMMAR = "confirmed_grammar.json"
 FILE_NUANCE = "confirmed_nuance.json"                  # ニュアンス解説の採否sidecar(level別。<study_dir>に文法sidecarと同じ規約で置く。NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02B)
+FILE_NUANCE_ALARM = "nuance_redundancy_alarm.json"       # 選定後の重複アラーム(確認用・非停止。0件でも書く)
 FILE_NUANCE_SPEC = "nuance_spec.json"                  # 新規run(新規KP review作成時)に発行されるマーク。無い=LEGACY(ニュアンス解説の全工程を無効)
 FILE_NUANCE_CANDIDATE = "nuance_candidate.json"        # N1(HR提示前)が書く候補doc(er134)
 DIR_SOURCE = "confirmed_selection_source"
@@ -1522,6 +1523,7 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
             "grammar_status": GRAMMAR_PENDING if gv.get("pending") else "confirmed",
             "grammar_payload_ignored": gv.get("ignored", 0),
             "nuance": (None if nv is None else nv["decision"]),
+            "nuance_redundancy_alarms": ([] if nv is None else list(nv.get("redundancy_alarms") or [])),
             "next": ("KP/KWを確定しました。文法は選定待ちです(0件確定ではありません)。文法の選定後に `confirm --grammar-from-form <payload>` で文法だけを確定してください"
                      if gv.get("pending") else "制作コマンドを同じまま再実行してください(finalize→後続が進みます)")}
 
@@ -1689,12 +1691,30 @@ def _nuance_text_sha_of_grammar(study_dir: str) -> Optional[str]:
         return None
 
 
+def nuance_redundancy_alarms(cand: Optional[dict], live_ids: list) -> list:
+    """仕様②(重複はアラームのみ・非ブロッキング): 人間が選定した①②(live_ids)のうち、ニュアンス候補と焦点が重複する(pool_conflicts)もの、
+    および候補の比較済み集合(overlap_check.against[])に無いid(判定されていない=重複の有無が不明)をアラームdictで返す。決定論・API 0。確定は止めない。"""
+    if not isinstance(cand, dict):
+        return []
+    oc = cand.get("overlap_check") or {}
+    against = {a.get("item_id"): a for a in (oc.get("against") or []) if a.get("kind") != "grammar"}
+    pc = set(cand.get("pool_conflicts") or [])
+    out = []
+    for i in sorted(live_ids or []):
+        if i in pc:
+            a = against.get(i) or {}
+            out.append({"kind": "nuance_vs_kp_word", "item_id": i, "item": a.get("item"), "note": a.get("note") or "ニュアンス解説と学習上の焦点が重複する可能性", "blocking": False})
+        elif i not in against:
+            out.append({"kind": "nuance_vs_kp_word_unjudged", "item_id": i, "item": None, "note": "ニュアンス候補の重複判定の対象外(重複の有無は未確認)", "blocking": False})
+    return out
+
+
 def _validate_form_nuance(run: str, kp_dir: str, level: str, study_dir: Optional[str], nuance: Any, *, confirmed_ids: list, cands: dict,
                           grammar_ids: Optional[list] = None) -> Optional[dict]:
     """フォームのニュアンス採否(payload selection.nuance)を、候補doc(nuance_candidate.json)と照合する(N2。何も書かない。ISSUE記録を除く)。
     戻り: None=仕様マーク(nuance_spec.json)なし=LEGACY(ニュアンス解説の扱いなし。payloadにnuanceがあれば拒否) / dict=確定内容{"study_dir","decision":adopted|rejected|none,...}。
     照合(M-3/M-4): 提示した候補のcandidate_sha256==現在の候補doc / 候補docの比較pool同一性(pool_identity_sha)==現在のKP候補docの提示pool /
-      採用時のみ: overlap_check.verdict==pass・確定した①②の全idが比較済み集合(against[])に含まれる(被覆。欠ければISSUE)・pool_conflictsと確定①②の交差が空。
+      採用時のみ: overlap_check.verdict==pass・確定した①②の全idが比較済み集合(against[])に含まれる(被覆。欠ければISSUE)。pool_conflictsと確定①②の交差は**アラームとして記録するのみ**(確定を止めない=仕様②。redundancy_alarmsを返す)。
     不採用は『見た候補と同じ』ことだけを確認して常に受理(人間判断を覆す検査はしない)。候補ありで未回答=ISSUE(黙って不採用にしない)。SUPPRESSEDは廃止(R-4。人間の採用を自動で覆さない)。"""
     spec = bool(study_dir) and os.path.exists(os.path.join(study_dir, FILE_NUANCE_SPEC))
     if not spec:
@@ -1705,6 +1725,7 @@ def _validate_form_nuance(run: str, kp_dir: str, level: str, study_dir: Optional
         raise CliError("payloadの selection.nuance はオブジェクトである必要があります")
     cp = os.path.join(study_dir, FILE_NUANCE_CANDIDATE)
     diffs, proposal = [], []
+    alarms: list = []
 
     def d(field, confirmed, observed, where="payload.selection.nuance vs nuance_candidate.json"):
         diffs.append({"candidate_id": None, "field": field, "confirmed": confirmed, "observed": observed, "where": where})
@@ -1760,15 +1781,13 @@ def _validate_form_nuance(run: str, kp_dir: str, level: str, study_dir: Optional
                     if missing:   # M-4: 判定済み集合(against[])に無いidを人間が選んだ場合に素通りさせない
                         d("coverage(against[])", "確定したKey Phrase・Wordの全idが重複判定済み", f"判定されていないid: {missing}")
                         proposal.append("確定した項目の一部が、ニュアンス候補の重複判定の対象に含まれていません。ニュアンス候補を作り直すか、ニュアンス解説を不採用にして再送信してください")
-                    hit = sorted(set(confirmed_ids) & set(cand.get("pool_conflicts") or []))
-                    if hit:
-                        d("pool_conflicts", "確定①②と焦点が重複しない", f"重複: {hit}")
-                        proposal.append("このニュアンス解説は選択した項目と学習上の焦点が重複します。該当項目を外すか、ニュアンス解説を不採用にして再送信してください")
+                    # 仕様②(2026-10-29 APPROVED_FOR_PRODUCTION): 人間が選定した①②と焦点が重複しても確定を止めない(旧: pool_conflicts交差でISSUE)。アラームとして記録する
+                    alarms = nuance_redundancy_alarms(cand, confirmed_ids)
     if diffs:
         raise_issue(kp_dir, level, "フォームのニュアンス解説の採否が、現在のニュアンス候補doc/KP・Word候補と一致しない、または未回答です(重複の表示・黙った不採用を防ぐため確定しません)。", diffs,
                     proposal=proposal or ["現在のニュアンス候補でフォームを作り直して再送信してください"], next_steps=["現在の候補docでフォームを作り直して再送信"])
     return {"study_dir": study_dir, "decision": decision, "doc": doc, "cand": cand if decision != "none" else None, "doc_sha256": _jsha(doc), "pool_identity_sha": cur_pool_sha,
-            "kp_word_ids": sorted(confirmed_ids), "grammar_ids": sorted(grammar_ids or [])}
+            "kp_word_ids": sorted(confirmed_ids), "grammar_ids": sorted(grammar_ids or []), "redundancy_alarms": alarms}
 
 
 def _archive_prior_nuance_files(study_dir: str) -> None:
@@ -1786,12 +1805,18 @@ def _write_nuance_sidecar(run: str, rec: dict, nv: dict, kp_dir: str, *, level: 
             "nuance_id": nuance_id_of(cand) if cand else None, "candidate_sha256": (cand or {}).get("candidate_sha256"), "candidate": copy.deepcopy(cand) if cand else None,
             "confirmed_against": {"kp_word": list(nv["kp_word_ids"]), "grammar": list(nv["grammar_ids"])},
             "pool_identity_sha": nv["pool_identity_sha"], "nuance_doc_status": doc.get("status"), "no_candidate_reason": doc.get("no_candidate_reason"),
-            "nuance_doc_sha256": nv["doc_sha256"], "text_sha256_at_confirm": doc.get("text_sha256"), "by": by, "user_ref": user_ref, "decided_at": rv._now()}
+            "nuance_doc_sha256": nv["doc_sha256"], "text_sha256_at_confirm": doc.get("text_sha256"), "by": by, "user_ref": user_ref, "decided_at": rv._now(),
+            "redundancy_alarms": list(nv.get("redundancy_alarms") or [])}
     side["kp_dir_rel"] = os.path.relpath(os.path.abspath(kp_dir), os.path.abspath(sd)).replace(os.sep, "/")   # 文法側(study_dir)から確定レコードを辿る相対path(runごとコピーしても有効)
     side["content_sha256"] = _jsha({"decision": side["decision"], "candidate_sha256": side["candidate_sha256"], "candidate": side["candidate"]})
     side["sidecar_sha256"] = _jsha({k: v for k, v in side.items() if k != "sidecar_sha256"})
     p = os.path.join(sd, FILE_NUANCE)
     _write(p, side)
+    try:   # 監査用(確認用・非停止): 0件でも書く。書込失敗は確定を止めない
+        _write(os.path.join(sd, FILE_NUANCE_ALARM), {"schema": "nuance_redundancy_alarm_v1", "level": level, "nonblocking": True, "decision": side["decision"],
+                                                      "confirmation_id": side["confirmation_id"], "alarms": side["redundancy_alarms"], "alarm_count": len(side["redundancy_alarms"]), "at": side["decided_at"]})
+    except OSError:
+        pass
     return {"path_rel": os.path.relpath(p, run).replace(os.sep, "/"), "sidecar_sha256": side["sidecar_sha256"], "decision": side["decision"], "level": level, "schema": SCHEMA_NUANCE}
 
 
@@ -1999,6 +2024,7 @@ def cmd_nuance_select(run: str, level: str, choice: str, candidate_sha256: str, 
         _append_history_note(rec, "nuance_confirmed", by, user_ref, {"decision": nv["decision"], "candidate_sha256": candidate_sha256, "via": "nuance-select"})
         save_record(kp_dir, rec)
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "nuance": nv["decision"], "unchanged": False,
+            "redundancy_alarms": list(nv.get("redundancy_alarms") or []), "redundancy_alarm_nonblocking": True,
             "next": "制作コマンドを同じまま再実行してください(ページ生成入口でニュアンス解説が確定→反映されます)"}
 
 
