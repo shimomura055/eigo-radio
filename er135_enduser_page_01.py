@@ -1444,7 +1444,7 @@ def hook_run(dev_dir, family: str, *, run_dir, cache_dir, ja_manuscript=None, y_
     return summary
 
 
-def publish_copy(pages_dir, public_dir, *, browser_verify=True) -> dict:
+def publish_copy(pages_dir, public_dir, *, browser_verify=True, backup_root=None) -> dict:
     """Y公開手順の補助(Opus M6): `<pages_dir>/enduser/`だけを公開dirへcopy(devページ・音声は触らない)し、copy先で
     verify_consistency(+Playwright)を実行。公開dirのdev index.htmlがpages_dirのものと異なる(stale)場合は、copy前に不合格にして公開dirを一切変更しない。
     copyは一時名->renameで原子的。copy後の検査に落ちたら元のenduser/へ戻す。"""
@@ -1462,18 +1462,21 @@ def publish_copy(pages_dir, public_dir, *, browser_verify=True) -> dict:
                                 "message": "公開dirのdev index.htmlがenduser生成時のものと異なる(公開後に手編集された等)。公開dirは変更していない。"
                                            "`produce --dev-dir <公開dir>`で公開dirのdev HTMLから再生成する"}]}}
     tmp = public_dir / f".enduser.tmp.{os.getpid()}.{uuid.uuid4().hex[:8]}"
-    old = public_dir / f".enduser.old.{os.getpid()}.{uuid.uuid4().hex[:8]}"
+    # 旧enduser/の退避先は公開dir外(OPEN-606: 公開dir内に残すとverifyがENDUSER_STALE_TMPでrollbackする)
+    bk_root = Path(backup_root) if backup_root else pages_dir.parent / "enduser_publish_backup"
+    old = bk_root / (time.strftime("%Y%m%d_%H%M%S") + f"_{os.getpid()}_{uuid.uuid4().hex[:6]}") / ENDUSER_DIRNAME
     dst = public_dir / ENDUSER_DIRNAME
     swapped = False
     try:
         shutil.copytree(src, tmp)
         if dst.exists():
-            os.rename(dst, old)
+            old.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(dst), str(old))
             swapped = True
         os.rename(tmp, dst)
     except Exception as e:                                  # noqa: BLE001
         if swapped and old.exists() and not dst.exists():
-            os.rename(old, dst)
+            shutil.move(str(old), str(dst))
         raise EnduserPageStop("ENDUSER_WRITE_FAILED", f"{type(e).__name__}: {e}") from e
     finally:
         if tmp.exists():
@@ -1481,10 +1484,9 @@ def publish_copy(pages_dir, public_dir, *, browser_verify=True) -> dict:
     vc = verify_consistency(public_dir)
     if not vc["ok"] and swapped and old.exists():           # copy後の検査に落ちた: 元のenduser/へ戻す
         shutil.rmtree(dst, ignore_errors=True)
-        os.rename(old, dst)
+        shutil.move(str(old), str(dst))
         return {"ok": False, "public_dir": str(public_dir), "copied": False, "rolled_back": True, "consistency": vc}
-    if swapped:
-        shutil.rmtree(old, ignore_errors=True)
+    # 成功時も旧版は公開dir外のbackupに保持(削除しない)
     out = {"ok": vc["ok"], "public_dir": str(public_dir), "copied": True, "consistency": vc}
     if vc["ok"] and browser_verify:
         import er135_enduser_page_verify_01 as V

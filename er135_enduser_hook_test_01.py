@@ -275,6 +275,25 @@ class H5_PublishCopy(unittest.TestCase):
             self.assertEqual((pub / "enduser" / "index.html").read_text(encoding="utf-8"), "old")
             self.assertEqual([p.name for p in pub.iterdir() if p.name.startswith(".enduser.")], [])
 
+    def test_overwrite_backs_up_old_outside_public_dir(self):
+        """OPEN-606: 上書き時、旧enduser/は公開dir外へ退避。verify時点で公開dirに残骸0、成功後も残骸0。"""
+        with tempfile.TemporaryDirectory() as td:
+            pages, pub = self._mk(td)
+            (pub / "enduser").mkdir()
+            (pub / "enduser" / "index.html").write_text("old", encoding="utf-8")
+            seen = []
+            def vc(d):
+                seen.append(sorted(p.name for p in Path(d).iterdir() if p.name.startswith(".enduser.")))
+                return {"ok": True, "violations": [], "checked": {}}
+            with mock.patch.object(E, "verify_consistency", side_effect=vc):
+                r = E.publish_copy(pages, pub, browser_verify=False)
+            self.assertTrue(r["ok"])
+            self.assertEqual(seen, [[]])
+            self.assertEqual([p.name for p in pub.iterdir() if p.name.startswith(".enduser.")], [])
+            self.assertEqual((pub / "enduser" / "index.html").read_text(encoding="utf-8"), "new")
+            baks = list((Path(td) / "enduser_publish_backup").glob("*/enduser/index.html"))
+            self.assertEqual([b.read_text(encoding="utf-8") for b in baks], ["old"])
+
     def test_missing_source_stops(self):
         with tempfile.TemporaryDirectory() as td:
             pages, pub = self._mk(td)
