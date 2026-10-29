@@ -39,3 +39,8 @@
 Y run_fvr_ev_01はscratch copy-run(公開物でなくgit管理外)。
 
 判定整合: 重大NG=なし / 主因=なし / 是正対象=なし / STOP理由=[RESTART_STORM(自起動・解除済み)] / 提示=可
+
+## 追補(2026-10-29、FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01 委任_04D)
+- 不具合発見: `er121_family_y_audio_01.py`の`segment_voice_map`がlevel dir(`<run>/b1b|a2`)で呼ばれる経路(旧`:202,270,481,557,600,714`)で`voice_assignment.json`(run dir)を見つけられず既定Ledaへ落ち、承認済み「既存run記録優先」と矛盾(surname_choice run_02のb1b y_voice_2[記録Zephyr]がguardで落ちgate BLOCK)。本acceptance時のtestはrun dir直渡しのため未検出。11-8不具合。
+- 是正: `segment_voice_map`冒頭でlevel dir→run dirへ正規化(`audio:87-88`)。test追加=`er_female_voice_rank_test_01.py::test_y_level_dir_path_resolves_run_record`(10件OK)。既存er121 audio chunk/runner/std chunk test PASS(structure_match 1件はRuntimeError共通呼出の既存失敗、本件無関係・修正前から同一)。
+- PRODUCTION_WIRED維持の根拠: 修正後test+本記事run_02実走(b1b y_voice_2=Zephyr記録で再利用[wav sha不変]、a2 y_voice_2=Leda実送信、V1/V3=Puck/Schedar不変)。ACCEPTED=PRODUCTION_WIRED維持。

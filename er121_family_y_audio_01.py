@@ -84,6 +84,8 @@ def segment_voice_map(out_dir: str | None = None, level: str | None = None) -> d
     """segment->TTS Voice。out_dir(run dir)を渡すと、そのrunの voice_assignment.json の記録割当を優先(既存記事不変。FY-FZ-FEMALE-VOICE-RANK-01)。
     省略時は現行既定(新規制作の既定=新順位)。生成・guard・assemble・reconcileは必ずrun dirを渡す。"""
     nv = narrator_voice()
+    if out_dir and level and os.path.basename(os.path.normpath(out_dir)) == level:
+        out_dir = os.path.dirname(os.path.normpath(out_dir))   # level dir(<run>/b1b|a2)で呼ばれても記録は run dir の voice_assignment.json を読む(OPEN-606 level dir経路不具合の是正)
     slots = ys.resolve_voice_slots(out_dir, level)
     return {sid: ys.voice_of_segment(sid, nv, slots) for sid in ys.Y_SEGMENT_IDS}
 

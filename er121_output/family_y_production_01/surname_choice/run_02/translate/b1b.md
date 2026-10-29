@@ -2,7 +2,7 @@
 
 If your last name changed when you got married, how would you feel? Whether a husband chooses his wife’s last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings. When they care about different things, how can they choose something they can both accept? Here are the voices of three people with different situations and lives.
 
-The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.
+The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.
 I became an adopted son in my wife’s family and took their last name. I had no problem at all with changing my last name. My parents accepted it easily, even though my hometown is way out in the country. They weren’t old-fashioned about it. It was my wife’s parents who worried, asking me again and again if I was really sure. I was grateful that both sets of parents accepted my decision without taking offense. I still find it a little hard that I don’t get much time to myself while living at my wife’s parents’ home, but adjusting to the way each family does things was harder than changing my last name. Once I could accept that of course we were different, I felt much more at ease.
 
 The next speaker is a mother whose son is getting married next year. She felt sad when she heard he would take his wife’s last name.

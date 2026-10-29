@@ -56,6 +56,21 @@ class FemaleRank(unittest.TestCase):
             self.assertEqual(ya.segment_voice_map(d, "b1b")["y_voice_2"], "Zephyr")
             self.assertEqual(ya.segment_voice_map(d, "a2")["y_voice_3"], "Schedar")
 
+    def test_y_level_dir_path_resolves_run_record(self):
+        """audio moduleは level dir(<run>/b1b|a2)を渡して呼ぶ。記録(run dir)がlevel dir経由でも解決される(OPEN-606 level dir経路不具合の回帰)。"""
+        with tempfile.TemporaryDirectory() as d:
+            for lv in ("a2", "b1b"):
+                os.makedirs(os.path.join(d, lv))
+            for lv in ("a2", "b1b"):   # 記録なし新規run: 既定Leda、男性不変
+                m = ya.segment_voice_map(os.path.join(d, lv), lv)
+                self.assertEqual((m["y_voice_1"], m["y_voice_2"], m["y_voice_3"]), ("Puck", "Leda", "Schedar"))
+            _w(d, {"y_fixed_slots": dict(OLD), "y_fixed_slots_by_level": {"a2": {**OLD, "voice_2": "Leda"}, "b1b": dict(OLD)}})
+            self.assertEqual(ya.segment_voice_map(os.path.join(d, "b1b"), "b1b")["y_voice_2"], "Zephyr")
+            self.assertEqual(ya.segment_voice_map(os.path.join(d, "a2"), "a2")["y_voice_2"], "Leda")
+            self.assertEqual(ya.segment_voice_map(os.path.join(d, "b1b"), "b1b")["y_voice_1"], "Puck")
+            cached = {"segments": {"y_voice_2": {"y_tts_voice_requested": "Zephyr"}}}
+            self.assertIn("y_voice_2", ya.voice_guard_cached(cached, os.path.join(d, "b1b"), "b1b")["segments"])
+
     def test_y_invalid_record_stops_and_male_slots_ignore_record(self):
         with tempfile.TemporaryDirectory() as d:
             _w(d, {"y_fixed_slots": {"voice_1": "Puck", "voice_2": "Nope", "voice_3": "Schedar"}})

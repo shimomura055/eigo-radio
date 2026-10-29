@@ -7,16 +7,59 @@
     "text": {
       "stage": "text",
       "input_sha256": "76f455f2b857ca33c6cd4b9d3e53a7e93965a68b545e56c65b8393f4faed65f9",
-      "output_sha256": "7f5fe4c8dd6b319a9005dbb718a99444f44b923cecf43e6131501292466a4f0e",
+      "output_sha256": "215c6595525b08e2312f7ad4af5c60062cf8cb372b4ce1add3520272f256b187",
       "generated_at": "2026-10-29T02:46:47+00:00",
       "closing_source": "general_prompt_02",
       "closing_final_sha256": "7a5aa820c6eda0809cd06190f9e607bec4afc5abfb281febbbf6d002659e5c09",
-      "text_records_sha256": "9f29686c6d60760f826ff84515ac05be5c9fb5141ca7b55eac226472a0dc8d97"
+      "text_records_sha256": "9f29686c6d60760f826ff84515ac05be5c9fb5141ca7b55eac226472a0dc8d97",
+      "output_origin": "human_patched_line",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "output_sha256": {
+              "from": "7f5fe4c8dd6b319a9005dbb718a99444f44b923cecf43e6131501292466a4f0e",
+              "to": "215c6595525b08e2312f7ad4af5c60062cf8cb372b4ce1add3520272f256b187"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        }
+      ]
     },
     "translate_b1b": {
       "stage": "translate_b1b",
-      "input_sha256": "35eda28bee136cff5bb1792a53dd5cb93a0b5cf6dded8369e1a4adb8326c41d4",
-      "output_sha256": "2fc717a75ea68899754d38d4fd118d0f02577adcee7ffe98a7ead45f14af3825",
+      "input_sha256": "8b582c41ac6c12136cf48f918649c5cde9d8acaf25c893339a393f375ea8fe5e",
+      "output_sha256": "180c1d36a74918a647ec6ef2933d8e486726afe80fbe31195f175997d58e60d1",
       "generated_at": "2026-10-29T02:47:13+00:00",
       "routing_key": "FAMILY_Y_TRANSLATE_ADV",
       "requested_model": "gpt-6-luna",
@@ -26,12 +69,59 @@
       "retried": false,
       "cost_jpy": 0.2632,
       "fallback_detected": false,
-      "contract_retried": false
+      "contract_retried": false,
+      "output_origin": "human_patched_line",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "35eda28bee136cff5bb1792a53dd5cb93a0b5cf6dded8369e1a4adb8326c41d4",
+              "to": "8b582c41ac6c12136cf48f918649c5cde9d8acaf25c893339a393f375ea8fe5e"
+            },
+            "output_sha256": {
+              "from": "2fc717a75ea68899754d38d4fd118d0f02577adcee7ffe98a7ead45f14af3825",
+              "to": "180c1d36a74918a647ec6ef2933d8e486726afe80fbe31195f175997d58e60d1"
+            }
+          },
+          "api_calls": 0,
+          "note": "旧LLM response_id=resp_0fa4d50c980d6c02006ae2b39799e487d093c377fcaf3d74e6 は新出力を生成していない(V1紹介行のみ人手指示の固定文へ差替え。他の行はLLM出力のまま)"
+        }
+      ]
     },
     "translate_a2": {
       "stage": "translate_a2",
-      "input_sha256": "58fd2b754cbe0f504fe78af910a74c226bc0abc5f7670d2890c85b8b2c73cc0f",
-      "output_sha256": "73929763ae8261a72db25190a1b2ab3ab71458f2323c18e1e1daa5a228b2e5f2",
+      "input_sha256": "e1b0d4f396d341e9e3168de5a6cb4a6623ac162187fb649a10d486d7795e4315",
+      "output_sha256": "c5aa775ea3218e1d66fdf26600df29824b82a4f4bd512bedccb495fdcc600fde",
       "generated_at": "2026-10-29T02:47:37+00:00",
       "routing_key": "FAMILY_Y_TRANSLATE_STD",
       "requested_model": "gpt-6-luna",
@@ -41,71 +131,403 @@
       "retried": false,
       "cost_jpy": 0.2838,
       "fallback_detected": false,
-      "contract_retried": false
+      "contract_retried": false,
+      "output_origin": "human_patched_line",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "58fd2b754cbe0f504fe78af910a74c226bc0abc5f7670d2890c85b8b2c73cc0f",
+              "to": "e1b0d4f396d341e9e3168de5a6cb4a6623ac162187fb649a10d486d7795e4315"
+            },
+            "output_sha256": {
+              "from": "73929763ae8261a72db25190a1b2ab3ab71458f2323c18e1e1daa5a228b2e5f2",
+              "to": "c5aa775ea3218e1d66fdf26600df29824b82a4f4bd512bedccb495fdcc600fde"
+            }
+          },
+          "api_calls": 0,
+          "note": "旧LLM response_id=resp_060a7fc2943958cc006ae2b3b2021887d08c36738274ea6aeb は新出力を生成していない(V1紹介行のみ人手指示の固定文へ差替え。他の行はLLM出力のまま)"
+        }
+      ]
     },
     "support_b1b": {
       "stage": "support_b1b",
-      "input_sha256": "91ba6a1eb8b5ea139f5dd867fba791f05e6408075baa9e91e3705f4b56fdf045",
+      "input_sha256": "bd68f5726ac6998be886799daf7c35fc2b9fc5281622abeb4bb20b2b117e06ba",
       "output_sha256": "36559521a5a5768327985e061558a25a1face7f78af069d66973c860719d76a8",
       "generated_at": "2026-10-29T02:47:52+00:00",
       "routing_key": "B1_SUPPORT",
-      "requested_model": "gpt-6-luna"
+      "requested_model": "gpt-6-luna",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "91ba6a1eb8b5ea139f5dd867fba791f05e6408075baa9e91e3705f4b56fdf045",
+              "to": "bd68f5726ac6998be886799daf7c35fc2b9fc5281622abeb4bb20b2b117e06ba"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        }
+      ]
     },
     "support_a2": {
       "stage": "support_a2",
-      "input_sha256": "6bd8951bebdc02615c79f3671e44fb7e152eff3027d4d302c50d37b1b200f1ee",
+      "input_sha256": "3b125cc989f8ef9f133b84dcf57e7af000cb30d28dda377f2e0fb5a025e99d88",
       "output_sha256": "456a5430f78ef2e07a86bfc90f07b6f607297bde14026b54f85d141b4bf83eac",
       "generated_at": "2026-10-29T02:48:18+00:00",
       "routing_key": "A2_SUPPORT",
-      "requested_model": "gpt-6-luna"
+      "requested_model": "gpt-6-luna",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "6bd8951bebdc02615c79f3671e44fb7e152eff3027d4d302c50d37b1b200f1ee",
+              "to": "3b125cc989f8ef9f133b84dcf57e7af000cb30d28dda377f2e0fb5a025e99d88"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        }
+      ]
     },
     "part2_cand_b1b": {
       "stage": "part2_cand_b1b",
-      "input_sha256": "ceccb6d3e3e3f5bcc4e7e86cfbb0123fa29d44f9444bd385effc924e032e5f70",
-      "output_sha256": "5ec4eb30fb35531035dbee1cdbdd276dcfc3c560b6c8c91249a43ae70b456073",
+      "input_sha256": "50482f8636a3f2d10d670bd36de5aceaf41e141f9032521c4baee5f31647a568",
+      "output_sha256": "dece5fd8ee1566e32e5126371c4ddc25c0276f3835869468b75f76cd7b8240e3",
       "generated_at": "2026-10-29T02:49:08+00:00",
-      "label": "When a Husband Chooses His Wife’s Last Name: Their Voices"
+      "label": "When a Husband Chooses His Wife’s Last Name: Their Voices",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "ceccb6d3e3e3f5bcc4e7e86cfbb0123fa29d44f9444bd385effc924e032e5f70",
+              "to": "50482f8636a3f2d10d670bd36de5aceaf41e141f9032521c4baee5f31647a568"
+            },
+            "output_sha256": {
+              "from": "5ec4eb30fb35531035dbee1cdbdd276dcfc3c560b6c8c91249a43ae70b456073",
+              "to": "dece5fd8ee1566e32e5126371c4ddc25c0276f3835869468b75f76cd7b8240e3"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        }
+      ]
     },
     "part2_cand_a2": {
       "stage": "part2_cand_a2",
-      "input_sha256": "25851d22dd5fafc9f2d5bf95f210a16757c8d9a09bcf27ab12b0f6b6f817c413",
-      "output_sha256": "4a9724820de41858d04d1ad4bd0961b548c07f85c5a8871a9d0cdccf2ccfdb98",
+      "input_sha256": "a03d009d4568bdef7177067ec09be59478de69107345b3e39d9a91c51c66afb0",
+      "output_sha256": "371ba514a17f2645e1be30a0892cce2b5ead52f1f75938be46987fa2b2edffda",
       "generated_at": "2026-10-29T02:50:05+00:00",
-      "label": "When a Husband Chooses His Wife’s Last Name: Their Voices"
+      "label": "When a Husband Chooses His Wife’s Last Name: Their Voices",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "25851d22dd5fafc9f2d5bf95f210a16757c8d9a09bcf27ab12b0f6b6f817c413",
+              "to": "a03d009d4568bdef7177067ec09be59478de69107345b3e39d9a91c51c66afb0"
+            },
+            "output_sha256": {
+              "from": "4a9724820de41858d04d1ad4bd0961b548c07f85c5a8871a9d0cdccf2ccfdb98",
+              "to": "371ba514a17f2645e1be30a0892cce2b5ead52f1f75938be46987fa2b2edffda"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        }
+      ]
     },
     "kp_b1b": {
       "stage": "kp_b1b",
-      "input_sha256": "76c7e374ee566b839b066aa60878f5d5aa8be0e0abe2fc755bdd3feddbf2d0c3",
+      "input_sha256": "5747aec7ae5d63ee9531a4d0d45890b0bc42652acaefdfb1de12a83906de2024",
       "output_sha256": "b41a66a77c186b6b85dd06d36e5c74d4facd9e57a6299408b05dd644215320f9",
       "generated_at": "2026-10-29T06:16:44+00:00",
       "kp_review_status": "REVIEWED",
-      "kp_selection_signature": "cf1a3fb2fac64fb5194a5543df4ba3ce31d94cf2ff6d5d8434809620420e2515"
+      "kp_selection_signature": "e5879eb7d73f40a478614d677b479b9ed8a367319a0be05c9ca0306da7d40ba8",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "76c7e374ee566b839b066aa60878f5d5aa8be0e0abe2fc755bdd3feddbf2d0c3",
+              "to": "99c4e30de6ff95feee01bca34481c999e58e22bc27b83537fe5efcadb91b4f4a"
+            },
+            "kp_selection_signature": {
+              "from": "cf1a3fb2fac64fb5194a5543df4ba3ce31d94cf2ff6d5d8434809620420e2515",
+              "to": "01eeab7e8af87abd6b1264b3dc29b9fc2a90d3e32cd7dc5f89f52a9e008c830d"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        },
+        {
+          "at": "2026-10-29T09:19:40+00:00",
+          "reason": "confirmation_signature_changed",
+          "from_input_sha256": "99c4e30de6ff95feee01bca34481c999e58e22bc27b83537fe5efcadb91b4f4a",
+          "from_signature": "01eeab7e8af87abd6b1264b3dc29b9fc2a90d3e32cd7dc5f89f52a9e008c830d",
+          "to_signature": "e5879eb7d73f40a478614d677b479b9ed8a367319a0be05c9ca0306da7d40ba8",
+          "api_calls": 0,
+          "tool_context": {
+            "tool_id": "apply_user_decision_surname_choice_02",
+            "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "user_ref_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "user_spec": "§5 学習表現の変更(`taking offense` -> `take offense`。本文はoffense表記・前置詞後のため維持、見出し・説明・音声等を基本形に整合)",
+            "change": "taking offense -> take offense",
+            "candidate_id": "p_85cbe0223d",
+            "note": "ユーザー指示による確定内容の変更(署名変化+assets更新)。kp_b1b_result.json(出力)は不変のまま来歴の入力/署名だけ付替え"
+          }
+        }
+      ]
     },
     "kp_a2": {
       "stage": "kp_a2",
-      "input_sha256": "ed7bed16f09dca14e92a9278e18fb7c768704b6e274ad80f028b40eec0c71a27",
+      "input_sha256": "187817233cdfa3a68b5cc866dc67d503089fa97bcd5671acbffef3901273080a",
       "output_sha256": "7bfedb23082a51015c9ac844daf58a13551fbbcf86330f9fe75894a26156e7d0",
       "generated_at": "2026-10-29T06:17:00+00:00",
       "kp_review_status": "REVIEWED",
-      "kp_selection_signature": "2e6a475eb49440f76dc8c25aa49cf51bb4966a402e17599c4268460359aaf1ce"
+      "kp_selection_signature": "a9da4f73498cba24cc4315d841506591f5fd87eb6960b98689d388e83d76b2f4",
+      "rebinds": [
+        {
+          "at": "2026-10-29T09:17:01+00:00",
+          "tool_id": "apply_v1_intro_patch_01",
+          "reason": "v1_intro_line_user_instruction",
+          "by": "sonnet-ysc04c",
+          "user_ref": {
+            "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+            "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+          },
+          "line_old": {
+            "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+            "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_old_sha256": {
+            "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+            "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+            "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+          },
+          "line_new": {
+            "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+            "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+            "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+          },
+          "line_new_sha256": {
+            "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+            "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+            "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+          },
+          "output_origin": "human_patched_line",
+          "changes": {
+            "input_sha256": {
+              "from": "ed7bed16f09dca14e92a9278e18fb7c768704b6e274ad80f028b40eec0c71a27",
+              "to": "187817233cdfa3a68b5cc866dc67d503089fa97bcd5671acbffef3901273080a"
+            },
+            "kp_selection_signature": {
+              "from": "2e6a475eb49440f76dc8c25aa49cf51bb4966a402e17599c4268460359aaf1ce",
+              "to": "a9da4f73498cba24cc4315d841506591f5fd87eb6960b98689d388e83d76b2f4"
+            }
+          },
+          "api_calls": 0,
+          "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+        }
+      ]
     },
     "kp_expl_b1b": {
       "stage": "kp_expl_b1b",
-      "input_sha256": "22938e1e40d887c4fe45d917db94c4dbf23dff7c4299e8eb388b6d0a08b4b463",
-      "output_sha256": "9cc5d9766655cf8edb6e3ef9b4a07323ff48769ba4e05fe3d19b9b0d7fb7bf8c",
-      "generated_at": "2026-10-29T06:17:04+00:00"
+      "input_sha256": "3197e2c115f6664d19b439aff9138d55ddd9d5a851b52b62a911ce33393ec91a",
+      "output_sha256": "746ef3b22f9242e6acb254067658eb3df7ef285b8bde59250e6aa94178eba046",
+      "generated_at": "2026-10-29T09:19:43+00:00"
     },
     "kp_part1_b1b": {
       "stage": "kp_part1_b1b",
-      "input_sha256": "74307ab1088711561395c0e759cd72b1e1e9060e2d8f1d435488787d29c583b4",
-      "output_sha256": "56b4a0dc2d7a11a4458eee7ad41b4fb0358d1baef78d105fb70f115d9b635477",
-      "generated_at": "2026-10-29T06:17:13+00:00",
+      "input_sha256": "9699dbc42be862bb6928095f00b0037004675e9b7dd935392afa6d78e30a7a6d",
+      "output_sha256": "fb4b888e8dbcb0184248f5573e0b70689f6fecdf7f8d5f13126a726c2b5b2da3",
+      "generated_at": "2026-10-29T09:19:50+00:00",
       "model": "gpt-6-luna",
-      "prompt_sha256": "45056a426337d1c7643fdf183faa6a828651c969ffe4c309ff64cff4202a8487",
-      "total_cost_jpy": 0.1021,
+      "prompt_sha256": "af3adf9bafb4d776bc7f8da48d9bc9c6a62f216e9f8e1d8bacdba095d6820008",
+      "total_cost_jpy": 0.0557,
       "retried_for_parse": false,
       "response_ids": [
-        "resp_0567e5775b1542e0006ae2e4e05b3c87d0ab466ed5577b1334"
+        "resp_00c0a8a69e2315c2006ae30fafefa887d0a8d32fc255fba685"
       ]
     },
     "kp_part1_ja_b1b": {
@@ -149,27 +571,27 @@
     },
     "part2_b1b": {
       "stage": "part2_b1b",
-      "input_sha256": "50e86b0cb7a360f85e5c0d3cf6f555ac8238d4df3998cb7e720fb242fbbc7ba1",
-      "output_sha256": "d1b4013c3c2fb1bd6e058e53a4eac7dd02fc1a518538421e226247a3534d8d7c",
-      "generated_at": "2026-10-29T06:17:40+00:00",
+      "input_sha256": "11f9d0d042d8c91fc707b6a80e6b9dab35eff201e3f3375a1bc314ce4a278d20",
+      "output_sha256": "00a8f4fa4881ce060b31446c8cec2312bf78e0e818177fb89e9f5844eef66b58",
+      "generated_at": "2026-10-29T09:19:51+00:00",
       "part2_status": "SELECTED",
       "review_status": "REVIEWED",
-      "grammar_selection_signature": "d46632065bc5f47f43b75a4f7f8d47823919196be7e867177489f676d5417def"
+      "grammar_selection_signature": "c4e0c678ca590f621b76eb760aad71332b2a9f4e77ef1bcbfb233da40072429f"
     },
     "part2_a2": {
       "stage": "part2_a2",
-      "input_sha256": "1416778e178d8159d929c702e43c8c39fd4ecbe52ba10c85709f3bce0e7289e9",
-      "output_sha256": "4091b65d43183f33602173c2be5708d880cce932114155b64c449d9924d91c0a",
-      "generated_at": "2026-10-29T06:17:40+00:00",
+      "input_sha256": "b285e6fa16ec5016b8b14ee5322d11735a24aa2d8781ea43e2288edd591f7d5b",
+      "output_sha256": "b32516f175c643a0187aadf8fa2088d26940b09f02b5357ef4cf0e02d090b192",
+      "generated_at": "2026-10-29T09:17:02+00:00",
       "part2_status": "SELECTED",
       "review_status": "REVIEWED",
-      "grammar_selection_signature": "68e751230b4e3b47e3f61acfb4e90a8e31db246722ac4d5f66ccdf43eeea4fe9"
+      "grammar_selection_signature": "f85b5a58c28ee2fb5fbcef1a0b1724b85b180e16dccf63eece4be41d067a0460"
     },
     "tts_b1b": {
       "stage": "tts_b1b",
-      "input_sha256": "7ce37c4dbb83542b793708965ff09f69b0e51c68d3b7598808720383d3d5b8f1",
-      "output_sha256": "7ee4aa37c98ec13c9c3dec41e75a059daf18e4244bbb681d721896e8fe4f12d0",
-      "generated_at": "2026-10-29T06:21:20+00:00",
+      "input_sha256": "4ab7de071fcdcb1367c9a0906a0e0e251996ba66d2f3833f9aa614dae51709ec",
+      "output_sha256": "21524b1683ced361923fa70493cc53746107eca1260b0a18651154a5d8673a28",
+      "generated_at": "2026-10-29T09:35:49+00:00",
       "tts_backend": "speech_metadata_flash_lite",
       "narrator_voice": "Aoede",
       "voices": {
@@ -186,9 +608,9 @@
     },
     "tts_a2": {
       "stage": "tts_a2",
-      "input_sha256": "74483aa864ad758fa6a4a7816482df41ce1b7e495308401c261529e9faaf9ec6",
-      "output_sha256": "68a121d472334cddaecfdce546766fa5749174c842546e9eef11f6d0746d8e54",
-      "generated_at": "2026-10-29T06:24:46+00:00",
+      "input_sha256": "4e316d40c0e3cbdaa95df292b582c8b07cc8fe8680ccdbf222691f79327536b8",
+      "output_sha256": "936a072127a017955bcd4d6c21c046a22771ce70966a612db54f8a6c2fcdbb3e",
+      "generated_at": "2026-10-29T09:24:17+00:00",
       "tts_backend": "speech_metadata_flash_lite",
       "narrator_voice": "Aoede",
       "voices": {
@@ -196,7 +618,7 @@
         "y_intro_1": "Aoede",
         "y_voice_1": "Puck",
         "y_intro_2": "Aoede",
-        "y_voice_2": "Zephyr",
+        "y_voice_2": "Leda",
         "y_intro_3": "Aoede",
         "y_voice_3": "Schedar",
         "y_closing": "Aoede"
@@ -204,7 +626,295 @@
       "chunk_tts": "applied_X_method"
     }
   },
-  "regenerations": [],
+  "regenerations": [
+    {
+      "stage": "part2_b1b",
+      "replaced_at": "2026-10-29T09:17:02+00:00",
+      "old": {
+        "stage": "part2_b1b",
+        "input_sha256": "11f9d0d042d8c91fc707b6a80e6b9dab35eff201e3f3375a1bc314ce4a278d20",
+        "output_sha256": "d1b4013c3c2fb1bd6e058e53a4eac7dd02fc1a518538421e226247a3534d8d7c",
+        "generated_at": "2026-10-29T06:17:40+00:00",
+        "part2_status": "SELECTED",
+        "review_status": "REVIEWED",
+        "grammar_selection_signature": "d46632065bc5f47f43b75a4f7f8d47823919196be7e867177489f676d5417def",
+        "rebinds": [
+          {
+            "at": "2026-10-29T09:17:01+00:00",
+            "tool_id": "apply_v1_intro_patch_01",
+            "reason": "v1_intro_line_user_instruction",
+            "by": "sonnet-ysc04c",
+            "user_ref": {
+              "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+              "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+              "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+            },
+            "line_old": {
+              "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+              "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+              "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+            },
+            "line_old_sha256": {
+              "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+              "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+              "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+            },
+            "line_new": {
+              "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+              "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+              "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+            },
+            "line_new_sha256": {
+              "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+              "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+              "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+            },
+            "output_origin": "human_patched_line",
+            "changes": {
+              "input_sha256": {
+                "from": "50e86b0cb7a360f85e5c0d3cf6f555ac8238d4df3998cb7e720fb242fbbc7ba1",
+                "to": "11f9d0d042d8c91fc707b6a80e6b9dab35eff201e3f3375a1bc314ce4a278d20"
+              }
+            },
+            "api_calls": 0,
+            "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+          }
+        ]
+      }
+    },
+    {
+      "stage": "part2_a2",
+      "replaced_at": "2026-10-29T09:17:02+00:00",
+      "old": {
+        "stage": "part2_a2",
+        "input_sha256": "b285e6fa16ec5016b8b14ee5322d11735a24aa2d8781ea43e2288edd591f7d5b",
+        "output_sha256": "4091b65d43183f33602173c2be5708d880cce932114155b64c449d9924d91c0a",
+        "generated_at": "2026-10-29T06:17:40+00:00",
+        "part2_status": "SELECTED",
+        "review_status": "REVIEWED",
+        "grammar_selection_signature": "68e751230b4e3b47e3f61acfb4e90a8e31db246722ac4d5f66ccdf43eeea4fe9",
+        "rebinds": [
+          {
+            "at": "2026-10-29T09:17:01+00:00",
+            "tool_id": "apply_v1_intro_patch_01",
+            "reason": "v1_intro_line_user_instruction",
+            "by": "sonnet-ysc04c",
+            "user_ref": {
+              "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+              "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+              "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+            },
+            "line_old": {
+              "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+              "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+              "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+            },
+            "line_old_sha256": {
+              "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+              "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+              "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+            },
+            "line_new": {
+              "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+              "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+              "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+            },
+            "line_new_sha256": {
+              "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+              "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+              "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+            },
+            "output_origin": "human_patched_line",
+            "changes": {
+              "input_sha256": {
+                "from": "1416778e178d8159d929c702e43c8c39fd4ecbe52ba10c85709f3bce0e7289e9",
+                "to": "b285e6fa16ec5016b8b14ee5322d11735a24aa2d8781ea43e2288edd591f7d5b"
+              }
+            },
+            "api_calls": 0,
+            "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+          }
+        ]
+      }
+    },
+    {
+      "stage": "kp_b1b",
+      "replaced_at": "2026-10-29T09:19:40+00:00",
+      "old": {
+        "stage": "kp_b1b",
+        "input_sha256": "99c4e30de6ff95feee01bca34481c999e58e22bc27b83537fe5efcadb91b4f4a",
+        "output_sha256": "b41a66a77c186b6b85dd06d36e5c74d4facd9e57a6299408b05dd644215320f9",
+        "generated_at": "2026-10-29T06:16:44+00:00",
+        "kp_review_status": "REVIEWED",
+        "kp_selection_signature": "01eeab7e8af87abd6b1264b3dc29b9fc2a90d3e32cd7dc5f89f52a9e008c830d",
+        "rebinds": [
+          {
+            "at": "2026-10-29T09:17:01+00:00",
+            "tool_id": "apply_v1_intro_patch_01",
+            "reason": "v1_intro_line_user_instruction",
+            "by": "sonnet-ysc04c",
+            "user_ref": {
+              "path": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+              "file_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+              "section": "§2 人物紹介の一般化改善Trial(V1『父親』の誤紹介の是正。個別是正。一般化方式のProduction採用とは独立)"
+            },
+            "line_old": {
+              "ja": "最初に話すのは、婿養子として妻の姓を名乗る父親。妻の実家で、家族と暮らしている。",
+              "en_b1b": "The first speaker is a father who took his wife’s last name when he joined her family as an adopted son. He lives with his family at his wife’s parents’ home.",
+              "en_a2": "The first speaker is a father. He took his wife’s last name and joined her family as an adopted son. He lives with his family at his wife’s parents’ home.  "
+            },
+            "line_old_sha256": {
+              "ja": "3a07362deb0a9d4aca0e3777cca7c15cb61eb1dac99a530eaae0b8a2ed5522a7",
+              "en_b1b": "268e54bf51c4d29b3dae3291d7a8cde3fcb39d70f3b1f09ba6a72bb4aa9cb288",
+              "en_a2": "2dab77b2b9d65548a5337553bc62869dc40ab790755f8da51c17426972f03222"
+            },
+            "line_new": {
+              "ja": "最初に話すのは、妻の姓を名乗り、妻の実家で家族と暮らしている男性だ。",
+              "en_b1b": "The first speaker is a man who took his wife’s last name. He lives with his family at his wife’s parents’ home.",
+              "en_a2": "The first speaker is a man. He took his wife’s last name. He lives with his family at his wife’s parents’ home.  "
+            },
+            "line_new_sha256": {
+              "ja": "3360bd4c6e6fdef996eea4e57151d50945a77c835101412076d80cd462363566",
+              "en_b1b": "3a0e786226ba20ae6dbb5665ce5fde4dcd2bfe8774b034560840b0206a8c9d59",
+              "en_a2": "4c108114f8abb5d9be7ce2f90c2817ac2e6480caf8e00b009feb30dea245d2e4"
+            },
+            "output_origin": "human_patched_line",
+            "changes": {
+              "input_sha256": {
+                "from": "76c7e374ee566b839b066aa60878f5d5aa8be0e0abe2fc755bdd3feddbf2d0c3",
+                "to": "99c4e30de6ff95feee01bca34481c999e58e22bc27b83537fe5efcadb91b4f4a"
+              },
+              "kp_selection_signature": {
+                "from": "cf1a3fb2fac64fb5194a5543df4ba3ce31d94cf2ff6d5d8434809620420e2515",
+                "to": "01eeab7e8af87abd6b1264b3dc29b9fc2a90d3e32cd7dc5f89f52a9e008c830d"
+              }
+            },
+            "api_calls": 0,
+            "note": "V1紹介行のみ人手指示の固定文へ差替え(他の行は不変)。このstageのLLM出力は紹介行を含まない/または変更なし"
+          }
+        ]
+      }
+    },
+    {
+      "stage": "kp_expl_b1b",
+      "replaced_at": "2026-10-29T09:19:43+00:00",
+      "old": {
+        "stage": "kp_expl_b1b",
+        "input_sha256": "22938e1e40d887c4fe45d917db94c4dbf23dff7c4299e8eb388b6d0a08b4b463",
+        "output_sha256": "9cc5d9766655cf8edb6e3ef9b4a07323ff48769ba4e05fe3d19b9b0d7fb7bf8c",
+        "generated_at": "2026-10-29T06:17:04+00:00"
+      }
+    },
+    {
+      "stage": "kp_part1_b1b",
+      "replaced_at": "2026-10-29T09:19:50+00:00",
+      "old": {
+        "stage": "kp_part1_b1b",
+        "input_sha256": "74307ab1088711561395c0e759cd72b1e1e9060e2d8f1d435488787d29c583b4",
+        "output_sha256": "56b4a0dc2d7a11a4458eee7ad41b4fb0358d1baef78d105fb70f115d9b635477",
+        "generated_at": "2026-10-29T06:17:13+00:00",
+        "model": "gpt-6-luna",
+        "prompt_sha256": "45056a426337d1c7643fdf183faa6a828651c969ffe4c309ff64cff4202a8487",
+        "total_cost_jpy": 0.1021,
+        "retried_for_parse": false,
+        "response_ids": [
+          "resp_0567e5775b1542e0006ae2e4e05b3c87d0ab466ed5577b1334"
+        ]
+      }
+    },
+    {
+      "stage": "part2_b1b",
+      "replaced_at": "2026-10-29T09:19:51+00:00",
+      "old": {
+        "stage": "part2_b1b",
+        "input_sha256": "11f9d0d042d8c91fc707b6a80e6b9dab35eff201e3f3375a1bc314ce4a278d20",
+        "output_sha256": "b60ce480543b25cf27c87862fcfdbbe290e2aa426d3c52bcb6729189188061fe",
+        "generated_at": "2026-10-29T09:17:02+00:00",
+        "part2_status": "SELECTED",
+        "review_status": "REVIEWED",
+        "grammar_selection_signature": "c4e0c678ca590f621b76eb760aad71332b2a9f4e77ef1bcbfb233da40072429f"
+      }
+    },
+    {
+      "stage": "tts_b1b",
+      "replaced_at": "2026-10-29T09:21:10+00:00",
+      "old": {
+        "stage": "tts_b1b",
+        "input_sha256": "7ce37c4dbb83542b793708965ff09f69b0e51c68d3b7598808720383d3d5b8f1",
+        "output_sha256": "7ee4aa37c98ec13c9c3dec41e75a059daf18e4244bbb681d721896e8fe4f12d0",
+        "generated_at": "2026-10-29T06:21:20+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method",
+        "stale_marked_by": {
+          "tool_id": "apply_v1_intro_patch_01",
+          "at": "2026-10-29T09:17:01+00:00",
+          "reason": "V1紹介行差替えに伴い音声(y_intro_1)を04Cで再生成する。来歴は付替えない(M1)"
+        }
+      }
+    },
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-29T09:24:17+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "74483aa864ad758fa6a4a7816482df41ce1b7e495308401c261529e9faaf9ec6",
+        "output_sha256": "68a121d472334cddaecfdce546766fa5749174c842546e9eef11f6d0746d8e54",
+        "generated_at": "2026-10-29T06:24:46+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method",
+        "stale_marked_by": {
+          "tool_id": "apply_v1_intro_patch_01",
+          "at": "2026-10-29T09:17:01+00:00",
+          "reason": "V1紹介行差替えに伴い音声(y_intro_1)を04Cで再生成する。来歴は付替えない(M1)"
+        }
+      }
+    },
+    {
+      "stage": "tts_b1b",
+      "replaced_at": "2026-10-29T09:35:49+00:00",
+      "old": {
+        "stage": "tts_b1b",
+        "input_sha256": "4ab7de071fcdcb1367c9a0906a0e0e251996ba66d2f3833f9aa614dae51709ec",
+        "output_sha256": "35cb20dc4a2e3875fb0a68683a198901bc2dfc5cff8cbd3e3b3c42d3fd40a6c2",
+        "generated_at": "2026-10-29T09:21:10+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method"
+      }
+    }
+  ],
   "audio_text_deviations": [],
   "reference_only": {}
 }

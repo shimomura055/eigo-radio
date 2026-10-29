@@ -19,7 +19,7 @@
     {
       "candidate_id": "p_85cbe0223d",
       "selection_phrase": "taking offense",
-      "used_form": "taking offense",
+      "used_form": "take offense",
       "japanese_gloss": "気を悪くする",
       "source_sentence": "I was grateful that both sets of parents accepted my decision without taking offense",
       "source_sentence_id": "S12",
@@ -32,12 +32,12 @@
         "source_span": "taking offense",
         "source_sentence": "I was grateful that both sets of parents accepted my decision without taking offense",
         "display_phrase": "taking offense",
-        "key_phrase": "taking offense",
-        "used_form": "taking offense",
+        "key_phrase": "take offense",
+        "used_form": "take offense",
         "japanese_gloss": "気を悪くする",
         "japanese_gloss_tts": "気を悪くする",
-        "changed_from_display_phrase": false,
-        "normalization_reason": "none",
+        "changed_from_display_phrase": true,
+        "normalization_reason": "lemma_normalization",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
           "qa_no_residual_context_word": "PASS",
@@ -78,7 +78,7 @@
           "status": "GLOSS_ALREADY_CONSISTENT",
           "original_japanese_gloss": "気を悪くする",
           "current_gloss_consistent_verdict": true,
-          "reasoning": "「taking offense」は「気を悪くする」という意味で、グロスに句全体の意味が表れています。",
+          "reasoning": "「気を悪くする」は「take offense」の意味を表しており、最終的なkey phrase全体と一致しています。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -124,12 +124,33 @@
             "validator_args_sha256": "29861405e1502fe48a9b2b0efd7df2c30a762a830e589d6ca042d30798ad53d1"
           },
           "gloss": {
-            "status": "REALIGNED"
+            "status": "REALIGNED",
+            "by": "apply_user_decision_surname_choice_02"
           },
           "qa": {
-            "status": "NOT_REJUDGED",
-            "model_id": "gpt-6-luna",
-            "error": "key_mismatch_or_invalid_fields"
+            "status": "PASS",
+            "by": "apply_user_decision_surname_choice_02",
+            "model_id": "gpt-6-luna"
+          },
+          "user_instruction": {
+            "tool": "apply_user_decision_surname_choice_02",
+            "from": "taking offense",
+            "to": "take offense",
+            "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "exemption": {
+              "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+              "reasons": [
+                "key_phrase('take offense')がdisplay_phraseと一致せず、source_span('taking offense')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ],
+              "pair": [
+                "taking offense",
+                "take offense"
+              ],
+              "candidate_id": "p_85cbe0223d",
+              "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+              "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+              "user_spec": "§5 学習表現の変更(`taking offense` -> `take offense`。本文はoffense表記・前置詞後のため維持、見出し・説明・音声等を基本形に整合)"
+            }
           }
         }
       },
@@ -147,12 +168,12 @@
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "RESCUED_QA_NOT_REJUDGED",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
-      "auto_eligible": false,
+      "auto_eligible": true,
       "human_selectable": true,
       "rescue": {
         "schema": "kp_rescue_v1",
@@ -184,16 +205,66 @@
           "validator_args_sha256": "29861405e1502fe48a9b2b0efd7df2c30a762a830e589d6ca042d30798ad53d1"
         },
         "gloss": {
-          "status": "REALIGNED"
+          "status": "REALIGNED",
+          "by": "apply_user_decision_surname_choice_02"
         },
         "qa": {
-          "status": "NOT_REJUDGED",
-          "model_id": "gpt-6-luna",
-          "error": "key_mismatch_or_invalid_fields"
+          "status": "PASS",
+          "by": "apply_user_decision_surname_choice_02",
+          "model_id": "gpt-6-luna"
+        },
+        "user_instruction": {
+          "tool": "apply_user_decision_surname_choice_02",
+          "from": "taking offense",
+          "to": "take offense",
+          "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+          "exemption": {
+            "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+            "reasons": [
+              "key_phrase('take offense')がdisplay_phraseと一致せず、source_span('taking offense')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            ],
+            "pair": [
+              "taking offense",
+              "take offense"
+            ],
+            "candidate_id": "p_85cbe0223d",
+            "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+            "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+            "user_spec": "§5 学習表現の変更(`taking offense` -> `take offense`。本文はoffense表記・前置詞後のため維持、見出し・説明・音声等を基本形に整合)"
+          }
         }
       },
-      "rescue_note": "修正済み(元: taking offense / REVERT_SURFACE)",
-      "ai_rank": 1
+      "rescue_note": "修正済み(元: taking offense / REVERT_SURFACE。ユーザー指示§5で `take offense`)・QA再判定済み",
+      "ai_rank": 1,
+      "requalified": {
+        "tool": "apply_user_decision_surname_choice_02",
+        "from": "taking offense",
+        "to": "take offense",
+        "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+        "user_ref_sha256": "d61c35967dd81ae958f92c010901542d35cea8057d30af8133ab28bcc11b3876",
+        "user_spec": "§5 学習表現の変更(`taking offense` -> `take offense`。本文はoffense表記・前置詞後のため維持、見出し・説明・音声等を基本形に整合)",
+        "by": "sonnet-ysc04c",
+        "exemption": {
+          "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+          "reasons": [
+            "key_phrase('take offense')がdisplay_phraseと一致せず、source_span('taking offense')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ],
+          "pair": [
+            "taking offense",
+            "take offense"
+          ],
+          "candidate_id": "p_85cbe0223d",
+          "scope": "このtool内の閉じた定数ペア1点のみ。Production側の受理面は変更なし",
+          "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+          "user_spec": "§5 学習表現の変更(`taking offense` -> `take offense`。本文はoffense表記・前置詞後のため維持、見出し・説明・音声等を基本形に整合)"
+        },
+        "old_item_sha256": "ed9596802f9b7252a761945d6ff1c5ae869d3c47789f30daae07289788fb1ad4",
+        "old_kind": "phrase",
+        "new_kind": "phrase",
+        "old_gloss": "気を悪くする",
+        "display_phrase_kept": "taking offense",
+        "source_span_kept": "taking offense"
+      }
     },
     {
       "candidate_id": "p_6714fc2917",
@@ -1382,7 +1453,7 @@
         "usage_context_overlap": "FAIL",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "厳密には「手放す」は執着を弱めること、「hold back」は妨げることですが、本文ではどちらも息子の選択を受け入れ、親が干渉しない姿勢を表しています。"
+        "reasoning": "記事ではどちらも、親が息子の選択を受け入れ、独立を妨げないという内容に結びついています。「手放す」と「引き止めない」は別の言い方ながら、この文脈では親が息子を自分のもとに留めないという点で実質的に重なります。"
       },
       {
         "rank_a": 2,
@@ -1391,7 +1462,7 @@
         "usage_context_overlap": "FAIL",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "「息子を手放す」と「何かをあきらめる」は、本文では親が息子の独立に伴って何かを手放す・譲る感覚を表す点で実質的に重なります。句動詞の型や具体的な意味の焦点は異なります。"
+        "reasoning": "記事では「息子を手放す」と「親が何かをあきらめる」が、親が息子の独立に伴って relinquish するものという内容で結びついています。表現の構文は異なりますが、この文脈では親の手放し・断念を表す点が実質的に重なります。"
       }
     ],
     "model_id": "gpt-6-luna"
@@ -1463,8 +1534,41 @@
     "backfilled": 0,
     "unfilled_by_kind": null
   },
-  "text_sha256": "975c98267084cebd0fc701f474213639d75cd409c038c516b70fe4e353e4115b",
+  "text_sha256": "6142b462984cdeba2e9bed820e8559e8d62aadbc2afd432c522d9a070dc356ee",
   "schema": "kp_candidates_v1",
   "kind": "kp",
-  "candidates_sha256": "df69c2469a1585cb5e532a8a8a7f9a745b26be29a60e3831149514f16c99a51f"
+  "candidates_sha256": "9f241f2e23e289ca64135f1b14b647a6a198e58b72dce8d733228b3914173663",
+  "requalify_provenance": {
+    "tool": "apply_user_decision_surname_choice_02",
+    "user_ref": "docs/pm/delegation_log/2026-10-29_FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01_USER_02.md",
+    "candidate_id": "p_85cbe0223d",
+    "from": "taking offense",
+    "to": "take offense",
+    "previous_candidates_sha256": "2b1ffdb7cc2991c38d8d42dfd1e5c6cb9a91065f97b2c2685b8743069cb465db",
+    "previous_redundancy_qa": {
+      "status": "REDUNDANCY_NG",
+      "duplicate_pairs": [
+        {
+          "rank_a": 2,
+          "rank_b": 3,
+          "meaning_overlap": "FAIL",
+          "usage_context_overlap": "FAIL",
+          "grammatical_teaching_value_overlap": "PASS",
+          "conceptual_role_overlap": "FAIL",
+          "reasoning": "厳密には「手放す」は執着を弱めること、「hold back」は妨げることですが、本文ではどちらも息子の選択を受け入れ、親が干渉しない姿勢を表しています。"
+        },
+        {
+          "rank_a": 2,
+          "rank_b": 6,
+          "meaning_overlap": "FAIL",
+          "usage_context_overlap": "FAIL",
+          "grammatical_teaching_value_overlap": "PASS",
+          "conceptual_role_overlap": "FAIL",
+          "reasoning": "「息子を手放す」と「何かをあきらめる」は、本文では親が息子の独立に伴って何かを手放す・譲る感覚を表す点で実質的に重なります。句動詞の型や具体的な意味の焦点は異なります。"
+        }
+      ],
+      "model_id": "gpt-6-luna"
+    },
+    "presentable_filter_version": "presentable_v1_2026-10-29"
+  }
 }
