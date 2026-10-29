@@ -28,14 +28,21 @@
     }).join('');
   }
   function btns(p) {
-    return '<span class="btns"><button type="button" class="seek part" data-act="part" data-i="' + p.idx + '" aria-label="' + esc(p.label) + ' を再生">▶ このパート</button>' +
-           '<button type="button" class="seek" data-act="full" data-i="' + p.idx + '" aria-label="通しでここから再生">通しで ▶</button></span>';
+    return '<span class="btns"><button type="button" class="seek" data-act="full" data-i="' + p.idx + '" aria-label="ここから再生">▶ ここから再生</button></span>';
   }
   function card(title, body, opts) {
     opts = opts || {};
     return '<section class="card"' + (opts.part != null ? ' data-part="' + opts.part + '"' : '') + (opts.id ? ' id="' + opts.id + '"' : '') + '>' +
       (opts.label ? '<span class="label">' + esc(opts.label) + '</span>' : '') +
       '<div class="sectionhead"><h2>' + esc(title) + '</h2>' + (opts.btn || '') + '</div>' + body + '</section>';
+  }
+  function translation(p) { return p.translation_ja ? '<div class="jp translation" lang="ja"><span class="translation-label">日本語訳</span><p>' + esc(p.translation_ja) + '</p></div>' : ''; }
+  function wordBox(p) {
+    var ms=(p.meanings||[]).slice();
+    var kp=parts.filter(function(x){return x.kind==='kp';}).reduce(function(a,x){return a.concat(x.kp||[]);},[]);
+    kp.forEach(function(k){ if ((p.paragraphs||[]).some(function(pa){return pa.some(function(s){return (s.text||'').toLowerCase().includes(k.en.toLowerCase());});}) && !ms.some(function(m){return m.toLowerCase().startsWith(k.en.toLowerCase()+' ');})) { var it=(L.vocab||[]).find(function(v){return v.heading.toLowerCase()===k.en.toLowerCase();}); var f=it && it.fields.find(function(v){return v.label==='本文中の意味';}); ms.push(k.en+' ＝ '+(f?f.html.replace(/<[^>]*>/g,''):k.text)); }});
+    if(!ms.length)return '';
+    return '<div class="wordbox"><ul class="meanings">'+ms.map(function(m){var s=m.split(/\s*[＝=]\s*/);var term=s[0],detail=(L.vocab||[]).find(function(v){return v.heading.toLowerCase()===term.toLowerCase();});return '<li>'+esc(term)+' ＝ '+esc(s.slice(1).join('＝'))+(detail?' <a href="#vocab" aria-label="'+esc(term)+'の詳しい解説へ">詳しい解説 ↓</a>':'')+'</li>';}).join('')+'</ul></div>';
   }
   function render() {
     var by = function (k) { return parts.filter(function (p) { return p.kind === k; }); };
@@ -59,31 +66,31 @@
         return p.kp.map(function (k) {
           return '<div class="kpitem" data-part="' + p.idx + '"><div><span class="th">' + esc(hdr[0]) + '</span><b>' + esc(k.en) + '</b></div>' +
                  '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + '</div>' +
-                 '<button type="button" class="seek part" data-act="part" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の音声を再生">▶ 音声</button></div>';
+                 '<button type="button" class="seek part" data-act="part" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button></div>';
         }).join('');
       }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、下線付きで表示されます。</p>';
       out += card('Key Phrases', body, { label: 'KEY PHRASES' });
     }
     var full = parts.filter(function (p) { return p.kind === 'comment' || p.kind === 'story'; });
     if (full.length) {
-      var hasLk = full.some(function (p) { return (p.meanings && p.meanings.length) || /class="lk\d"/.test(JSON.stringify(p.paragraphs)); });
-      var b = hasLk ? '<p class="legend">本文の下線: <strong class="lk1">太字+二重下線</strong> = 重要表現 / <strong class="lk2">太字+下線</strong> = 追加の解説つき表現 / <span class="lk3">下線のみ</span> = 意味を下の一覧で確認</p>' : '';
+      var b = '';
       b += full.map(function (p) {
         if (p.kind === 'comment') {
           var ja = JA.test(p.paragraphs.map(function (x) { return x.map(function (s) { return s.text; }).join(''); }).join(''));
-          return '<div class="comment" data-part="' + p.idx + '"><div class="ch"><strong>' + esc(p.label) + '</strong>' + btns(p) + '</div>' + sentHtml(p) + '</div>';
+          return '<div class="comment" data-part="' + p.idx + '"><div class="ch"><strong>' + esc(p.label) + '</strong>' + btns(p) + '</div>' + sentHtml(p) + translation(p) + '</div>';
         }
-        var m = (p.meanings || []).length ? '<ul class="meanings">' + p.meanings.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '';
-        return '<div class="partblock" data-part="' + p.idx + '"><div class="ph"><b>' + esc(p.label) + '</b>' + btns(p) + '</div>' + sentHtml(p) + m + '</div>';
+        var m = wordBox(p);
+        return '<div class="partblock" data-part="' + p.idx + '"><div class="ph"><b>' + esc(p.label) + '</b>' + btns(p) + '</div>' + sentHtml(p) + translation(p) + m + '</div>';
       }).join('');
+      b += by('oneline').map(function(p){return '<div class="partblock oneline" data-part="'+p.idx+'"><div class="ph"><b>In One Line</b>'+btns(p)+'</div>'+sentHtml(p)+translation(p)+'</div>';}).join('');
       out += card('Full Story', b, { label: 'FULL STORY', id: 'fullstory' });
     }
-    by('oneline').forEach(function (p) { out += card('In One Line', sentHtml(p), { part: p.idx, btn: btns(p), label: 'IN ONE LINE' }); });
+    // In One Line は Full Story と同じカードに続けて表示する。
     if (L.vocab && L.vocab.length) {
       var wide = window.matchMedia('(min-width: 700px)').matches;
       out += card('Vocabulary & Expressions', L.vocab.map(function (it) {
         var mean = (it.fields.filter(function (f) { return f.label === '本文中の意味'; })[0] || {}).html || '';
-        return '<details class="vi"' + (wide ? ' open' : '') + '><summary>' + esc(it.heading) + '<span>' + mean + '</span></summary><dl>' +
+        return '<details class="vi" id="word-' + esc(it.heading.toLowerCase().replace(/[^a-z0-9]+/g,'-')) + '"' + (wide ? ' open' : '') + '><summary>' + esc(it.heading) + '<span>' + mean + '</span></summary><dl>' +
           it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></details>';
       }).join(''), { label: 'WORDS', id: 'vocab' });
     }
