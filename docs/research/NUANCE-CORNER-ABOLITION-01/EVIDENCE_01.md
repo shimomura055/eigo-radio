@@ -7,7 +7,7 @@
 - 触っていない(M2): `enduser_page_assets/rev01-e/*`、DEV `dev_enduser_page_01`、公開済みスナップショット(Y姓以外)。
 
 ## 2. test結果
-- 変更したtest 15ファイル(pytest): 554 passed / 9 failed。9件の内訳: Step B(er134撤去)後に解消=5(er119_isolation, er120 P3, er136 Dangling, er119_grammar_review static 1)、
+- 変更したtest 15ファイル(pytest): 554 passed / 9 failed。9件の内訳: Step B(er134撤去)後に解消=3(er119_isolation, er120 P3, er136 Dangling)、
   baseline(HEAD worktree)でも同一失敗=er003 ZPart1 2件・er119_grammar_review `test_public_builder_and_standard_never_call_part2`(事前から失敗)、
   単独実行で合格=er121 2件(全体実行時のみ失敗、事前失敗リスト外・原因は並行agentのgit/ファイル状態と推定、要追跡ではない)。
   `er119_output/`が未追跡で存在(2026-10-25作成、本タスク以前)→`er119_grammar_review_test_01::test_grammar_files_not_tracked_dirs`は私の変更と無関係。
