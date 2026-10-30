@@ -702,9 +702,31 @@ def _gl_score(a: str, b: str) -> float:
     return max(char, tok)
 
 
+MEANING_ONLY_EXCLUDED: dict = {}      # {level: [表示範囲外のため下線対応から除いた③の英語見出し]}(直近のbuild_glossary呼出の記録。build_infoの警告へ載せる)
+
+
+def _term_in_display_body(term: str, parts: list) -> bool:
+    """③の語句(見出し)が、表示本文(story/onelineの全文)のどこかに(語形・人称違いを吸収して)現れるか。_gl_scoreの閾値0.8を下線対応と共有する。"""
+    n = len(re.findall(r"[\w'’]+", _norm_en(term)))
+    if n == 0:
+        return True                                     # 判定不能=本文にあるものとして扱う(除外しない=fail-closed)
+    for p in parts:
+        if p.get("kind") not in ("story", "oneline"):
+            continue
+        for pa in p.get("paragraphs", []):
+            for s in pa:
+                toks = re.findall(r"[\w'’]+", _plain_html(s["html"]))
+                for w in {max(1, n - 1), n, n + 1}:
+                    for i in range(0, max(0, len(toks) - w) + 1):
+                        if toks[i:i + w] and _gl_score(" ".join(toks[i:i + w]), term) >= 0.8:
+                            return True
+    return False
+
+
 def build_glossary(lv: str, parts: list, vocab: list, level_meanings: list | None = None) -> str:
     """glossaryを各story/oneline行へ付与。戻り値='applied'|'not_applicable_no_display_spec'。
     level_meanings=行の外(level節の台本表の直後)にある③本文中の意味一覧。行内の一覧に無い下線(lk3)はこの共有poolから1回だけ対応づける。poolに未使用が残ればSTOP。"""
+    MEANING_ONLY_EXCLUDED.pop(lv, None)
     have_lk = False
     for p in parts:
         if p["kind"] in ("story", "oneline"):
@@ -784,8 +806,13 @@ def build_glossary(lv: str, parts: list, vocab: list, level_meanings: list | Non
             stop("ENDUSER_GLOSSARY_ASSERT", f"{lv} {p['label']}: 本文中の意味{len(lk3)}件のうち未使用あり")
         if ents:
             p["glossary"] = [{"en": e["en"], "ja": e["ja"], "vi": e["vi"]} for e in ents]
-    if used_pool != set(range(len(pool))):
-        stop("ENDUSER_GLOSSARY_ASSERT", f"{lv}: level一覧の本文中の意味{len(pool)}件のうち、下線に対応しない項目あり({sorted(set(range(len(pool))) - used_pool)})")
+    unmatched = set(range(len(pool))) - used_pool
+    # 表示範囲外の③(devの`HL_NOT_IN_DISPLAY_MEANING_ONLY`=訳一覧のみ・承認済み)は下線が存在しないため対応づけ不要。判定はdevと同じ基準
+    # (語句が当該levelの表示本文[story/oneline全文]のどこにも無い)で明示的に行い、該当項目だけを除く。本文に語句があるのに下線へ対応しない項目は従来どおりSTOP(fail-closed)。
+    meaning_only = sorted(j for j in unmatched if not _term_in_display_body(pool[j][0], parts))
+    if unmatched - set(meaning_only):
+        stop("ENDUSER_GLOSSARY_ASSERT", f"{lv}: level一覧の本文中の意味{len(pool)}件のうち、下線に対応しない項目あり({sorted(unmatched - set(meaning_only))})")
+    MEANING_ONLY_EXCLUDED[lv] = [pool[j][0] for j in meaning_only]
     if used_v != set(range(len(vocab))):
         stop("ENDUSER_GLOSSARY_ASSERT", f"{lv}: Vocabulary{len(vocab)}件のうち一覧に載らない項目あり({sorted(set(range(len(vocab))) - used_v)})")
     glos = [g["en"] for p in parts for g in p.get("glossary", [])]
@@ -863,7 +890,8 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
         "dev_index_sha256": meta["dev_index_sha256"], "audio_sha256": dict(sorted(audio_sha.items())),
         "assets": {}, "files": {}, "sync": sync_info, "translation_coverage": trans_cov, "glossary": gloss_info,
         "ja_manuscript": ({"name": ja["x_manuscript"]["name"], "sha256": ja["x_manuscript"]["sha256"]} if ja and ja.get("x_manuscript") else None),
-        "warnings": [f"{lv}: 低信頼度境界を持つ行 {v['low_conf_rows']}件(記録のみ)" for lv, v in sync_info.items() if v["low_conf_rows"]],
+        "warnings": [f"{lv}: 低信頼度境界を持つ行 {v['low_conf_rows']}件(記録のみ)" for lv, v in sync_info.items() if v["low_conf_rows"]]
+                    + [f"{lv}: 表示範囲外の③(訳一覧のみ・devで承認済み)は下線対応の対象外: {MEANING_ONLY_EXCLUDED[lv]}" for lv in gloss_info if MEANING_ONLY_EXCLUDED.get(lv)],
         "cost": {"api_calls": 0, "model": next(iter(sync_info.values()))["model"] if sync_info else "",
                  "asr_wall_s": round(sum(float(c.get("wall_s", 0) or 0) for c in sync_cost.values()), 1), "build_wall_s": 0.0,
                  "cached_segments": int(sum(int(c.get("cached_segments", 0) or 0) for c in sync_cost.values()))},

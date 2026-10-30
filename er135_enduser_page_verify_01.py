@@ -110,6 +110,20 @@ def _head_ok(u: str) -> int:
 # ------------------------------------------------------------
 # 検証本体
 # ------------------------------------------------------------
+
+def boundary_probe_time(b_: dict, sync: list, cap: float = 1.0, margin: float = 0.15) -> float:
+    """G検査(次パートへのハイライト移動)のサンプル時刻。次パート`b_`の最初の文のsync発話区間[start,end]の内側に置く:
+    min(境界+cap, 当該文の終端-margin)。極短パート(例: 日本語タイトル0.63秒)で境界+1.0秒が発話後・次々パートに入って誤NGになるのを避ける。
+    発話区間が短すぎてmarginを引くと境界以下になる場合は区間の中央。検査の意味(境界後にハイライトが次パートへ移る)は不変。"""
+    sids = [x["sid"] for pa in b_["paragraphs"] for x in pa]
+    rows = {r["sid"]: r for r in sync}
+    first = rows[sids[0]] if sids and sids[0] in rows else None
+    if first is None:
+        return b_["start"] + cap
+    lo, hi = max(b_["start"], first["start"]), first["end"]
+    t = min(b_["start"] + cap, hi - margin)
+    return t if t > lo else (lo + hi) / 2
+
 def run(public_dir, base_url=None, out=None, shots=None) -> int:
     from playwright.sync_api import sync_playwright
     srv = None
@@ -278,16 +292,24 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
         pairs = [(a, b) for a, b in zip(text_parts, text_parts[1:]) if a["idx"] + 1 == b["idx"]] or list(zip(text_parts, text_parts[1:]))
         if len(text_parts) >= 2:
             a_, b_ = sorted(pairs, key=lambda ab: ab[0]["dur"])[0]
+            probe_t = boundary_probe_time(b_, sync)              # 次パートの最初の文のsync発話区間の内側(極短パートでも発話後・次々パートに入らない)
             page.evaluate("(t) => { const a=document.getElementById('aud'); a.currentTime=t; a.play(); }", b_["start"] - 2.5)
+            try:
+                # seek後に再生位置が境界の手前へ戻ったことを確認してから、境界を跨ぐのを待つ(直前の項目の古い再生位置で待機条件が即成立するのを排除)
+                page.wait_for_function("(t) => window.__EUP && window.__EUP.gt <= t && !document.getElementById('aud').paused", arg=b_["start"], timeout=6000)
+                page.wait_for_function("(t) => window.__EUP && window.__EUP.gt > t && !document.getElementById('aud').paused", arg=probe_t, timeout=12000)
+            except Exception:
+                pass
+            s = A()
+            act = s["eup"]["active"]                              # 境界を跨いだ直後(発話区間内)の点灯文
             try:
                 page.wait_for_function("(t) => window.__EUP && window.__EUP.gt > t + 1.0 && !document.getElementById('aud').paused", arg=b_["start"], timeout=12000)
             except Exception:
                 pass
-            s = A()
-            rec("G", pre + "continues_across_part_boundary", (not s["paused"]) and s["eup"]["gt"] > b_["start"] + 0.9 and s["eup"]["mode"] == "full", dict(from_=a_["label"], to=b_["label"], gt=s["eup"]["gt"], boundary=b_["start"]))
-            act = s["eup"]["active"]
+            s2 = A()
+            rec("G", pre + "continues_across_part_boundary", (not s2["paused"]) and s2["eup"]["gt"] > b_["start"] + 0.9 and s2["eup"]["mode"] == "full", dict(from_=a_["label"], to=b_["label"], gt=s2["eup"]["gt"], boundary=b_["start"]))
             nxt = [x["sid"] for pa in b_["paragraphs"] for x in pa]
-            rec("G", pre + "highlight_moves_into_next_part", bool(act) and act in nxt, dict(active=act, part=b_["label"]))
+            rec("G", pre + "highlight_moves_into_next_part", bool(act) and act in nxt and s["eup"]["gt"] >= b_["start"], dict(active=act, part=b_["label"], gt=s["eup"]["gt"], probe_t=probe_t))
             btn = page.query_selector(f'[data-part="{b_["idx"]}"] .btns .seek.stop')
             btn.scroll_into_view_if_needed()
             btn.click()

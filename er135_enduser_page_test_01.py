@@ -338,9 +338,13 @@ class T4_EmphasisAndGlossary(unittest.TestCase):
         g0 = [g for L in art0["levels"].values() for p in L["parts"] for g in p.get("glossary", [])]
         g1 = [g for L in art1["levels"].values() for p in L["parts"] for g in p.get("glossary", [])]
         self.assertEqual(sorted(x["en"] for x in g0), sorted(x["en"] for x in g1))
-        # 余分な項目(下線に対応しない)をpoolに足すとSTOP(黙って捨てない)
-        extra = moved.replace(ul, ul.replace("</ul>", "<li>zzzunused ＝ 余分</li></ul>"))
+        # 本文にあるのに下線に対応しない余分な項目をpoolに足すとSTOP(黙って捨てない。EU06: 本文に無い=表示範囲外の③は除外、下のtest参照)
+        extra = moved.replace(ul, ul.replace("</ul>", "<li>wrinkles ＝ 余分</li></ul>"))
         self.assertEqual(stop_code(Built("x_moon", html=extra).data), "ENDUSER_GLOSSARY_ASSERT")
+        # 表示範囲外(本文のどこにも無い)の③は訳一覧のみ=下線対応の対象外(devの`HL_NOT_IN_DISPLAY_MEANING_ONLY`と同基準)。生成は通り、build_infoに記録する
+        outside = moved.replace(ul, ul.replace("</ul>", "<li>zzzunused ＝ 余分</li></ul>"))
+        _a, _s, bi2 = Built("x_moon", html=outside).data()
+        self.assertTrue(any("zzzunused" in w for w in bi2["warnings"]))
 
     def test_glossary_assert_violations_are_stop(self):
         # (a) 本文中の意味一覧(ul.lk-meaning)の項目が欠けた
@@ -1180,6 +1184,80 @@ class T18_IrregularVerbEmphasis(unittest.TestCase):
             self.assertEqual(self._run(js, "sink", "no such word here")["ranges"], [])
             self.assertEqual(self._run(js, "one's", "something")["ranges"], [])  # placeholderのみ=特定不可
             self.assertEqual(self._run(js, "sink", "sank and sink")["ranges"], [])  # 複数候補=非強調
+
+
+class T19_MeaningOnlyExcludedFromUnderlineMatch(unittest.TestCase):
+    """EU06(F1): 表示範囲外の③(devの`HL_NOT_IN_DISPLAY_MEANING_ONLY`=訳一覧のみ)は下線対応の必須から除く。本文にあるのに下線へ対応しない項目はSTOP(fail-closed)。"""
+
+    @staticmethod
+    def _vocab():
+        return [{"heading": "clutter", "fields": [{"label": "本文の英文", "html": "clutter is fine"}, {"label": "本文中の意味", "html": "散らかり"}]}]
+
+    @staticmethod
+    def _parts(body):
+        sent = {"sid": "s1", "html": body, "text": ""}
+        return [{"kind": "story", "label": "Part 1", "paragraphs": [[sent]], "meanings": []}]
+
+    def test_term_absent_from_body_is_excluded_not_stop(self):
+        parts = self._parts('<strong class="lk2" data-hl="p_a">clutter</strong> and a <span class="lk3" data-hl="p_b">scorecard</span> remain.')
+        pool = ["scorecard ＝ 採点表", "demand its removal ＝ それを取り除くよう要求する"]
+        self.assertEqual(E.build_glossary("adv", parts, self._vocab(), pool), "applied")
+        self.assertEqual(E.MEANING_ONLY_EXCLUDED["adv"], ["demand its removal"])
+        self.assertEqual([g["en"] for g in parts[0]["glossary"]], ["clutter", "scorecard"])        # 下線に対応する項目の一覧は不変
+
+    def test_term_present_in_body_but_not_underlined_still_stops(self):
+        parts = self._parts('<strong class="lk2" data-hl="p_a">clutter</strong> and a <span class="lk3" data-hl="p_b">scorecard</span> remain, but dismiss it first.')
+        pool = ["scorecard ＝ 採点表", "dismiss ＝ 退ける"]
+        with self.assertRaises(E.EnduserPageStop) as cm:
+            E.build_glossary("adv", parts, self._vocab(), pool)
+        self.assertEqual(cm.exception.code, "ENDUSER_GLOSSARY_ASSERT")
+
+    def test_malformed_pool_entry_still_stops(self):
+        parts = self._parts('<strong class="lk2" data-hl="p_a">clutter</strong> remains.')
+        with self.assertRaises(E.EnduserPageStop):
+            E.build_glossary("adv", parts, self._vocab(), ["no equals sign here"])
+
+
+class T20_BoundaryProbeTime(unittest.TestCase):
+    """EU06(F2/雪女): G検査(次パートへのハイライト移動)のサンプル点は次パート最初の文のsync発話区間の内側。"""
+
+    @staticmethod
+    def _b(start, sids):
+        return {"start": start, "paragraphs": [[{"sid": s} for s in sids]]}
+
+    def test_normal_part_uses_boundary_plus_one_second(self):
+        import er135_enduser_page_verify_01 as V
+        sync = [{"sid": "a1", "start": 10.0, "end": 14.0}]
+        self.assertAlmostEqual(V.boundary_probe_time(self._b(10.0, ["a1"]), sync), 11.0)
+
+    def test_very_short_part_stays_inside_speech(self):
+        import er135_enduser_page_verify_01 as V
+        # 雪女の日本語タイトル: パート1.27秒、発話0.63秒。境界+1.0秒は発話後(無点灯)・次々パートに入る
+        sync = [{"sid": "t1", "start": 20.05, "end": 20.68}, {"sid": "n1", "start": 21.3, "end": 25.0}]
+        t = V.boundary_probe_time(self._b(20.0, ["t1"]), sync)
+        self.assertTrue(20.05 < t < 20.68, t)
+        self.assertLess(t, 20.0 + 1.0)
+
+    def test_tiny_speech_uses_midpoint(self):
+        import er135_enduser_page_verify_01 as V
+        sync = [{"sid": "t1", "start": 5.0, "end": 5.1}]
+        self.assertAlmostEqual(V.boundary_probe_time(self._b(5.0, ["t1"]), sync), 5.05)
+
+    def test_missing_sync_row_falls_back_to_legacy_point(self):
+        import er135_enduser_page_verify_01 as V
+        self.assertAlmostEqual(V.boundary_probe_time(self._b(5.0, ["zz"]), []), 6.0)
+
+
+class T21_VerifierWaitsForSeekBeforeCrossing(unittest.TestCase):
+    """EU06(F2/④): seek直後に直前項目の古い再生位置(gt)で待機条件が即成立しない。
+    実証=④Adv(OPEN-612 F2)でmobileのgtがseek先(境界-2.5=79.186)そのままで『境界+1.0を超えた』と判定されていた(古いgt)。
+    本testはG検査が『gt<=境界を確認→境界超えを待つ』順になっていることをsourceで固定する(実ブラウザ再現はruntime evidence側)。"""
+
+    def test_guard_precedes_crossing_wait(self):
+        src = (ROOT / "er135_enduser_page_verify_01.py").read_text(encoding="utf-8")
+        i = src.index("window.__EUP.gt <= t && !document.getElementById('aud').paused")
+        j = src.index("window.__EUP.gt > t && !document.getElementById('aud').paused", i)
+        self.assertLess(i, j)
 
 
 if __name__ == "__main__":
