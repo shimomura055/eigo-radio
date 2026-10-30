@@ -126,6 +126,10 @@ def copy_checks(c, bid, keys, ptok, wtok, label):
     c.act(pg.locator('#fCopy'))
     pg.wait_for_timeout(1200)
     txt = c.clip()
+    if os.environ.get('SUB04_SAVE_COPY'):
+        os.makedirs(os.environ['SUB04_SAVE_COPY'], exist_ok=True)
+        with open(os.path.join(os.environ['SUB04_SAVE_COPY'], 'sub04_copy_%s_%s.txt' % (label.split()[0], c.view)), 'w', encoding='utf-8', newline='') as f:
+            f.write(txt)
     sets = re.findall(r'════ SET (\d+)/(\d+) ｜ (\S+) ════', txt)
     n = len(keys)
     check(c.tag('%s: 一括コピー=SET %d件・連番・stem一意' % (label, n)), len(sets) == n and [int(s[0]) for s in sets] == list(range(1, n + 1)) and len({s[2] for s in sets}) == n and all(int(s[1]) == n for s in sets), 'sets=%d' % len(sets))
