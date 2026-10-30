@@ -1,0 +1,279 @@
+{
+ "items": [
+  {
+   "source_span": "Sales pitch",
+   "source_sentence": "If an AI said that to you, would the guard inside your mind blow a whistle and shout, \"Sales pitch detected!",
+   "display_form": "sales pitch",
+   "gloss_ja": "営業トーク",
+   "cls": "C",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "営業の売り込みを指す定着した複合名詞",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "売り込みの話だと見抜く対象",
+   "generalization_note_ja": "sales pitchは「売り込み」の意味を作る固定の名詞句。",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "sales"
+    ],
+    [
+     2,
+     "CORE",
+     "pitch"
+    ]
+   ],
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  },
+  {
+   "source_span": "counted as having failed",
+   "source_sentence": "People who did not feel that the recommendations were biased were also counted as having failed to spot the sales pitch.",
+   "display_form": "count as",
+   "gloss_ja": "〜と見なす",
+   "cls": "C",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "count asで「〜と見なす」の意味になる",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "失敗したものとして判定する",
+   "generalization_note_ja": "count asを核にし、後続の動名詞句は除く。",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "count"
+    ],
+    [
+     2,
+     "CORE",
+     "as"
+    ],
+    [
+     3,
+     "DROP",
+     ""
+    ],
+    [
+     4,
+     "DROP",
+     ""
+    ]
+   ],
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  },
+  {
+   "source_span": "Open for business",
+   "source_sentence": "Then why not put up a sign saying “Open for business” from the start?",
+   "display_form": "open for business",
+   "gloss_ja": "営業中で",
+   "cls": "C",
+   "chunk_type": "fixed_phrase",
+   "chunk_reason_ja": "営業中・営業開始を示す定型表現",
+   "difficulty": "easy",
+   "sense_note_ja": "営業を始めている状態",
+   "generalization_note_ja": "open for business全体が定型表現。",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "open"
+    ],
+    [
+     2,
+     "CORE",
+     "for"
+    ],
+    [
+     3,
+     "CORE",
+     "business"
+    ]
+   ],
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 973,
+    "out": 2222,
+    "cost_jpy": 0.1933,
+    "sec": 25.8
+   },
+   {
+    "stage": "GEN_ALL",
+    "model_id": "gpt-6-luna",
+    "in": 3425,
+    "out": 4119,
+    "cost_jpy": 0.3843,
+    "sec": 46.4
+   },
+   {
+    "stage": "SEL",
+    "model_id": "gpt-6-luna",
+    "in": 2877,
+    "out": 1706,
+    "cost_jpy": 0.1825,
+    "sec": 18.6
+   },
+   {
+    "stage": "GATE",
+    "model_id": "gemini-3.8-flash",
+    "in": 1660,
+    "out": 304,
+    "cost_jpy": 0.3816,
+    "sec": 5.2
+   }
+  ],
+  "tag": "E3",
+  "cands": [
+   "putting the brakes on",
+   "Sales pitch",
+   "confirm a clear drop",
+   "or so it seemed",
+   "Open for business",
+   "warned in advance",
+   "recommendations were biased",
+   "counted as having failed",
+   "powerless after all",
+   "all the complications of real shopping"
+  ],
+  "cands_from_p7": [
+   "putting the brakes on",
+   "whose interests the conversation serves",
+   "Sales pitch",
+   "confirm a clear drop",
+   "rate at which",
+   "or so it seemed"
+  ],
+  "judged": [
+   {
+    "span": "putting the brakes on",
+    "display_form": "put the brake on",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "定着形はput the brakes onで、単数形は標準的でない"
+   },
+   {
+    "span": "Sales pitch",
+    "display_form": "sales pitch",
+    "cls": "C",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "reason": "営業の売り込みを指す定着した複合名詞"
+   },
+   {
+    "span": "confirm a clear drop",
+    "display_form": "confirm something",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "目的語を取る通常の動詞用法"
+   },
+   {
+    "span": "or so it seemed",
+    "display_form": "or so it seem",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "定着形はor so it seemsで、提示形は文法的に不自然"
+   },
+   {
+    "span": "Open for business",
+    "display_form": "open for business",
+    "cls": "C",
+    "difficulty": "easy",
+    "keep": true,
+    "reason": "営業中・営業開始を示す定型表現"
+   },
+   {
+    "span": "warned in advance",
+    "display_form": "warn in advance",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "warnを別の動詞に替えても自然に成り立つ"
+   },
+   {
+    "span": "recommendations were biased",
+    "display_form": "something be biased",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "be動詞と形容詞の通常の組合せ"
+   },
+   {
+    "span": "counted as having failed",
+    "display_form": "count as",
+    "cls": "C",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "reason": "count asで「〜と見なす」の意味になる"
+   },
+   {
+    "span": "powerless after all",
+    "display_form": "powerless",
+    "cls": "W",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "単語単体の候補"
+   },
+   {
+    "span": "all the complications of real shopping",
+    "display_form": "complication of",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "名詞に内容を表すof句を添えた通常の組合せ"
+   }
+  ]
+ },
+ "case": "ai_cha_b1b",
+ "arm": "E3",
+ "cost_jpy": 1.142,
+ "sec": 96.0
+}

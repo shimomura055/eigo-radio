@@ -1,0 +1,274 @@
+{
+ "items": [
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, \"But it's just right for me",
+   "display_form": "let something through",
+   "gloss_ja": "〜を通す",
+   "cls": "C",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "let throughは通過・受容を許す句動詞",
+   "difficulty": "easy",
+   "sense_note_ja": "助言を受け入れる",
+   "generalization_note_ja": "adviceはlet throughの対象として入れ替わる",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "let"
+    ],
+    [
+     2,
+     "DROP",
+     ""
+    ],
+    [
+     3,
+     "SLOT_THING",
+     ""
+    ],
+    [
+     4,
+     "CORE",
+     "through"
+    ]
+   ],
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  },
+  {
+   "source_span": "Open for business",
+   "source_sentence": "Then why not put up a sign saying “Open for business” from the start?",
+   "display_form": "open for business",
+   "gloss_ja": "営業中である",
+   "cls": "C",
+   "chunk_type": "fixed_phrase",
+   "chunk_reason_ja": "営業中・営業開始を表す定型句",
+   "difficulty": "easy",
+   "sense_note_ja": "営業を始めている状態",
+   "generalization_note_ja": "open for businessは固定表現",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "open"
+    ],
+    [
+     2,
+     "CORE",
+     "for"
+    ],
+    [
+     3,
+     "CORE",
+     "business"
+    ]
+   ],
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 983,
+    "out": 1901,
+    "cost_jpy": 0.1678,
+    "sec": 23.8
+   },
+   {
+    "stage": "GEN_ALL",
+    "model_id": "gpt-6-luna",
+    "in": 3578,
+    "out": 4108,
+    "cost_jpy": 0.3859,
+    "sec": 40.7
+   },
+   {
+    "stage": "SEL",
+    "model_id": "gpt-6-luna",
+    "in": 3015,
+    "out": 1808,
+    "cost_jpy": 0.1929,
+    "sec": 22.4
+   },
+   {
+    "stage": "GATE",
+    "model_id": "gemini-3.8-flash",
+    "in": 1585,
+    "out": 207,
+    "cost_jpy": 0.3144,
+    "sec": 3.2
+   }
+  ],
+  "tag": "E3",
+  "cands": [
+   "confirm a clear fall",
+   "results suggest",
+   "the sales pitch",
+   "favored one product",
+   "blow a whistle",
+   "let the advice through",
+   "hide its goal",
+   "sales mode",
+   "needs an instruction manual",
+   "Open for business",
+   "usual persuasion test",
+   "could not confirm",
+   "too soon to shout",
+   "sales talk"
+  ],
+  "cands_from_p7": [
+   "confirm a clear fall",
+   "results suggest",
+   "the sales pitch",
+   "favored one product",
+   "blow a whistle",
+   "let the advice through"
+  ],
+  "assemble_failed": [
+   {
+    "span": "could not confirm",
+    "err": "lemma'can'が本文の語'could'の語形違いでない"
+   }
+  ],
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "display_form": "confirm something",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "confirm＋目的語の通常の組合せ"
+   },
+   {
+    "span": "results suggest",
+    "display_form": "something suggest",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "語順が不自然で、定着した表現でもない"
+   },
+   {
+    "span": "the sales pitch",
+    "display_form": "sale pitch",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "通常はsales pitchで、この形は不自然"
+   },
+   {
+    "span": "favored one product",
+    "display_form": "favor something",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "favor＋目的語の通常の組合せ"
+   },
+   {
+    "span": "blow a whistle",
+    "display_form": "blow whistle",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "笛を吹くという字義どおりの組合せ"
+   },
+   {
+    "span": "let the advice through",
+    "display_form": "let something through",
+    "cls": "C",
+    "difficulty": "easy",
+    "keep": true,
+    "reason": "let throughは通過・受容を許す句動詞"
+   },
+   {
+    "span": "hide its goal",
+    "display_form": "hide one's something",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "hide＋目的語の通常の組合せ"
+   },
+   {
+    "span": "sales mode",
+    "display_form": "sale mode",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "通常はsales modeで、この形は不自然"
+   },
+   {
+    "span": "needs an instruction manual",
+    "display_form": "need something",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "need＋目的語の通常の組合せ"
+   },
+   {
+    "span": "Open for business",
+    "display_form": "open for business",
+    "cls": "C",
+    "difficulty": "easy",
+    "keep": true,
+    "reason": "営業中・営業開始を表す定型句"
+   },
+   {
+    "span": "usual persuasion test",
+    "display_form": "persuasion test",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "分野を説明する通常の名詞句"
+   },
+   {
+    "span": "too soon to shout",
+    "display_form": "too soon to shout",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "too＋形容詞＋to不定詞の通常の型"
+   },
+   {
+    "span": "sales talk",
+    "display_form": "sale talk",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "通常はsales talkで、この形は不自然"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "arm": "E3",
+ "cost_jpy": 1.061,
+ "sec": 90.1
+}

@@ -1,0 +1,75 @@
+## 母集団(各armが実行済みのケース)
+- D: 14ケース untidi_a2,ai_cha_b1b,jwst_m_a2,jwst_m_b1b,meta_w_b1b,untidi_b1b,ai_cha_a2,meta_w_a2,aiisland_b1b,surname_b1b,melos_a2,ignobel_a2,ignobel_b1b,tesla_b1b
+- E1L: 14ケース untidi_a2,ai_cha_b1b,jwst_m_a2,jwst_m_b1b,meta_w_b1b,untidi_b1b,ai_cha_a2,meta_w_a2,aiisland_b1b,surname_b1b,melos_a2,ignobel_a2,ignobel_b1b,tesla_b1b
+- E2: 14ケース untidi_a2,ai_cha_b1b,jwst_m_a2,jwst_m_b1b,meta_w_b1b,untidi_b1b,ai_cha_a2,meta_w_a2,aiisland_b1b,surname_b1b,melos_a2,ignobel_a2,ignobel_b1b,tesla_b1b
+- E3: 14ケース untidi_a2,ai_cha_b1b,jwst_m_a2,jwst_m_b1b,meta_w_b1b,untidi_b1b,ai_cha_a2,meta_w_a2,aiisland_b1b,surname_b1b,melos_a2,ignobel_a2,ignobel_b1b,tesla_b1b
+- E4: 14ケース untidi_a2,ai_cha_b1b,jwst_m_a2,jwst_m_b1b,meta_w_b1b,untidi_b1b,ai_cha_a2,meta_w_a2,aiisland_b1b,surname_b1b,melos_a2,ignobel_a2,ignobel_b1b,tesla_b1b
+- 全armで共通のケース: 14 (untidi_a2,ai_cha_b1b,jwst_m_a2,jwst_m_b1b,meta_w_b1b,untidi_b1b,ai_cha_a2,meta_w_a2,aiisland_b1b,surname_b1b,melos_a2,ignobel_a2,ignobel_b1b,tesla_b1b) ※率は各arm自身の母集団。厳密比較は共通ケースの表を参照
+
+## 主評価・参考指標 [各arm自身の母集団]
+| arm | 提示数(n) | 修正せず選べる | 自由な組合せ混入率 | 一般化成功率(一般化適用分) | 意味・用法正確性 | 3件以上ケース | 平均提示数 | 未判定 |
+|---|---|---|---|---|---|---|---|---|
+| D | 71 | 60/71 (85%) | 6/71 (8%) | 40/42 (95%) | 69/71 (97%) | 12/14 (86%) | 5.1 | 0 |
+| E1L | 81 | 72/81 (89%) | 2/81 (2%) | 44/48 (92%) | 78/81 (96%) | 14/14 (100%) | 5.8 | 0 |
+| E2 | 77 | 71/77 (92%) | 5/77 (6%) | 47/48 (98%) | 77/77 (100%) | 13/14 (93%) | 5.5 | 0 |
+| E3 | 77 | 71/77 (92%) | 5/77 (6%) | 48/49 (98%) | 77/77 (100%) | 13/14 (93%) | 5.5 | 0 |
+| E4 | 70 | 68/70 (97%) | 0/70 (0%) | 42/44 (95%) | 70/70 (100%) | 13/14 (93%) | 5.0 | 0 |
+
+## 主評価・参考指標 [共通ケースのみ(母集団差を除去)]
+| arm | 提示数(n) | 修正せず選べる | 自由な組合せ混入率 | 一般化成功率(一般化適用分) | 意味・用法正確性 | 3件以上ケース | 平均提示数 | 未判定 |
+|---|---|---|---|---|---|---|---|---|
+| D | 71 | 60/71 (85%) | 6/71 (8%) | 40/42 (95%) | 69/71 (97%) | 12/14 (86%) | 5.1 | 0 |
+| E1L | 81 | 72/81 (89%) | 2/81 (2%) | 44/48 (92%) | 78/81 (96%) | 14/14 (100%) | 5.8 | 0 |
+| E2 | 77 | 71/77 (92%) | 5/77 (6%) | 47/48 (98%) | 77/77 (100%) | 13/14 (93%) | 5.5 | 0 |
+| E3 | 77 | 71/77 (92%) | 5/77 (6%) | 48/49 (98%) | 77/77 (100%) | 13/14 (93%) | 5.5 | 0 |
+| E4 | 70 | 68/70 (97%) | 0/70 (0%) | 42/44 (95%) | 70/70 (100%) | 13/14 (93%) | 5.0 | 0 |
+
+## 良質候補の脱落(Dで修正せず選べた候補が残っているか)
+- E1L: 脱落 13/60 untidi_a2:get heated, jwst_m_a2:too soon to say, meta_w_b1b:content rating, untidi_b1b:apply to, untidi_b1b:speak for, untidi_b1b:in the way, untidi_b1b:on the job, ai_cha_a2:blow a whistle, meta_w_a2:step toward, meta_w_a2:content rating, aiisland_b1b:wave a flag, ignobel_a2:store something away …
+- E2: 脱落 20/60 untidi_a2:get heated, ai_cha_b1b:put the brakes on, ai_cha_b1b:or so it seems, jwst_m_a2:too soon to say, jwst_m_a2:take an unexpected turn, meta_w_b1b:content rating, untidi_b1b:speak for, untidi_b1b:in the way, untidi_b1b:on the job, ai_cha_a2:sales pitch, ai_cha_a2:blow a whistle, meta_w_a2:step toward …
+- E3: 脱落 21/60 untidi_a2:get heated, ai_cha_b1b:put the brakes on, ai_cha_b1b:or so it seems, jwst_m_a2:too soon to say, jwst_m_a2:take an unexpected turn, meta_w_b1b:content rating, untidi_b1b:speak for, untidi_b1b:in the way, untidi_b1b:on the job, ai_cha_a2:sales pitch, ai_cha_a2:blow a whistle, meta_w_a2:step toward …
+- E4: 脱落 24/60 untidi_a2:get heated, ai_cha_b1b:put the brakes on, ai_cha_b1b:or so it seems, jwst_m_a2:too soon to say, jwst_m_a2:take an unexpected turn, meta_w_b1b:on the scale of, meta_w_b1b:content rating, untidi_b1b:apply to, untidi_b1b:speak for, untidi_b1b:in the way, untidi_b1b:on the job, ai_cha_a2:sales pitch …
+
+## 難易度分布(参考。易しい表現は除外しない)
+- D: {'upper_intermediate': 67, 'advanced': 4}
+- E1L: {'upper_intermediate': 60, 'easy': 20, 'advanced': 1}
+- E2: {'upper_intermediate': 51, 'easy': 26}
+- E3: {'upper_intermediate': 51, 'easy': 26}
+- E4: {'upper_intermediate': 38, 'easy': 32}
+
+## 必須例+ユーザー指摘例(ok=達成 / absent=提示なし / ng_*=悪い状態)
+| 例 | D | E1L | E2 | E3 | E4 |
+|---|---|---|---|---|---|
+| G1 take points away from -> take something away from | absent/absent | absent/absent | ok/absent | ok/absent | ok/absent |
+| G2 make life work -> make something work | absent | ok | absent | absent | absent |
+| G3 at the time of writing -> at the time of | ok | ng_ungen | ng_ungen | ng_ungen | ng_ungen |
+| G4 narrow down the source -> narrow down | ok/ok | ok/ok | ok/ok | ok/ok | ok/ok |
+| G5 turn the usual steps around -> turn something around | ok | ok | ok | ok | ok |
+| V1 confirm a clear fall/drop(提示されない=良) | ok/ok | ok/ok | ok/ok | ok/ok | ok/ok |
+| V2 make room for(提示=良) | ok/ok | ok/ok | ok/ok | ok/ok | ok/ok |
+| V3 blow a whistle(提示=良) | ok | absent | absent | absent | absent |
+| V4 sales pitch(提示=良) | ok/absent | ok/ok | absent/ok | absent/ok | absent/ok |
+| NEW1 deep image / point-like object(提示されない=良) | ok/ng_free | ok/ok | ok/ok | ok/ok | ok/ok |
+
+## ケース別(ok/n: コード内訳)
+- untidi_a2: D 4/5 | E1L 5/7 | E2 7/7 | E3 7/7 | E4 6/7
+- ai_cha_b1b: D 2/3 | E1L 4/4 | E2 3/3 | E3 3/3 | E4 3/3
+- jwst_m_a2: D 4/5 | E1L 3/5 | E2 3/5 | E3 3/5 | E4 3/3
+- jwst_m_b1b: D 1/7 | E1L 5/7 | E2 4/6 | E3 4/6 | E4 4/4
+- meta_w_b1b: D 5/5 | E1L 4/4 | E2 5/5 | E3 5/5 | E4 4/4
+- untidi_b1b: D 7/7 | E1L 6/7 | E2 6/7 | E3 6/7 | E4 5/6
+- ai_cha_a2: D 3/3 | E1L 3/3 | E2 2/2 | E3 2/2 | E4 2/2
+- meta_w_a2: D 4/4 | E1L 4/5 | E2 4/5 | E3 4/5 | E4 4/4
+- aiisland_b1b: D 5/5 | E1L 7/7 | E2 7/7 | E3 7/7 | E4 7/7
+- surname_b1b: D 5/5 | E1L 6/7 | E2 5/5 | E3 5/5 | E4 5/5
+- melos_a2: D 5/5 | E1L 7/7 | E2 7/7 | E3 7/7 | E4 7/7
+- ignobel_a2: D 3/4 | E1L 4/4 | E2 5/5 | E3 5/5 | E4 6/6
+- ignobel_b1b: D 6/6 | E1L 7/7 | E2 7/7 | E3 7/7 | E4 7/7
+- tesla_b1b: D 6/7 | E1L 7/7 | E2 6/6 | E3 6/6 | E4 5/5
+
+## 費用(円/レベル、cache hit分は0。台帳=実費)
+- D: 平均¥0.98 / 合計¥13.67 (14ケース)
+- E1L: 平均¥1.07 / 合計¥14.96 (14ケース)
+- E2: 平均¥1.25 / 合計¥17.51 (14ケース)
+- E3: 平均¥1.33 / 合計¥18.68 (14ケース)
+- E4: 平均¥3.14 / 合計¥44.01 (14ケース)

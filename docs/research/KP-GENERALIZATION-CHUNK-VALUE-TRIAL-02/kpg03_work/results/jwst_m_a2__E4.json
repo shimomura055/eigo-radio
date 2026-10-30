@@ -1,0 +1,289 @@
+{
+ "items": [
+  {
+   "source_span": "narrow down the source",
+   "source_sentence": "The empty space had become a clue that could help narrow down the source",
+   "display_form": "narrow down",
+   "gloss_ja": "絞り込む",
+   "cls": "C",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "候補や範囲を絞る意味で定着した句動詞",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "手がかりから対象の範囲を狭める",
+   "generalization_note_ja": "narrow downを核にし、対象は可変部",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "narrow"
+    ],
+    [
+     2,
+     "CORE",
+     "down"
+    ],
+    [
+     3,
+     "DROP",
+     ""
+    ],
+    [
+     4,
+     "SLOT_THING",
+     ""
+    ]
+   ],
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  },
+  {
+   "source_span": "turned the usual steps around",
+   "source_sentence": "But this time, researchers turned the usual steps around",
+   "display_form": "turn something around",
+   "gloss_ja": "逆にする",
+   "cls": "C",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "順序や方向を逆にする意味の定着した句動詞",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "通常の手順とは逆の順序にする",
+   "generalization_note_ja": "turn aroundを核にし、対象と修飾語を除く",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "turn"
+    ],
+    [
+     2,
+     "DROP",
+     ""
+    ],
+    [
+     3,
+     "DROP",
+     ""
+    ],
+    [
+     4,
+     "SLOT_THING",
+     ""
+    ],
+    [
+     5,
+     "CORE",
+     "around"
+    ]
+   ],
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  },
+  {
+   "source_span": "show up",
+   "source_sentence": "The fact that it \"doesn't show up\" became evidence",
+   "display_form": "show up",
+   "gloss_ja": "現れる",
+   "cls": "C",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "現れる・見えるという意味が定着した句動詞",
+   "difficulty": "easy",
+   "sense_note_ja": "観測データや画像に現れる",
+   "generalization_note_ja": "show upを句動詞として核にする",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "show"
+    ],
+    [
+     2,
+     "CORE",
+     "up"
+    ]
+   ],
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "gate_cls": "C",
+    "gate_code": "OK"
+   },
+   "display_form_pre_fix": null,
+   "reverted": false,
+   "display_form_pre_revert": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 954,
+    "out": 1813,
+    "cost_jpy": 0.1603,
+    "sec": 26.1
+   },
+   {
+    "stage": "GEN_ALL",
+    "model_id": "gpt-6-luna",
+    "in": 3371,
+    "out": 3362,
+    "cost_jpy": 0.3229,
+    "sec": 29.5
+   },
+   {
+    "stage": "SEL",
+    "model_id": "gpt-6.1-sol",
+    "in": 2824,
+    "out": 584,
+    "cost_jpy": 1.8381,
+    "sec": 14.6
+   },
+   {
+    "stage": "GATE",
+    "model_id": "gemini-3.8-flash",
+    "in": 1608,
+    "out": 304,
+    "cost_jpy": 0.3754,
+    "sec": 3.7
+   }
+  ],
+  "tag": "E4",
+  "cands": [
+   "equivalent width",
+   "a lower limit",
+   "narrow down the source",
+   "turned the usual steps around",
+   "line's absence from images",
+   "show up",
+   "at a certain wavelength",
+   "no longer limited the search",
+   "deep image",
+   "took an unexpected turn"
+  ],
+  "cands_from_p7": [
+   "equivalent width",
+   "a lower limit",
+   "narrow down the source",
+   "turned the usual steps around",
+   "line's absence from images",
+   "show up"
+  ],
+  "judged": [
+   {
+    "span": "equivalent width",
+    "display_form": "equivalent width",
+    "cls": "F",
+    "difficulty": "advanced",
+    "keep": false,
+    "reason": "専門分野の量を表す名詞句で一般語の見出しではない"
+   },
+   {
+    "span": "a lower limit",
+    "display_form": "lower limit",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "upper limitにも置換できる描写的な組合せ"
+   },
+   {
+    "span": "narrow down the source",
+    "display_form": "narrow down",
+    "cls": "C",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "reason": "候補や範囲を絞る意味で定着した句動詞"
+   },
+   {
+    "span": "turned the usual steps around",
+    "display_form": "turn something around",
+    "cls": "C",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "reason": "順序や方向を逆にする意味の定着した句動詞"
+   },
+   {
+    "span": "line's absence from images",
+    "display_form": "absence from",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "不在を表す名詞に場所を示す前置詞が続くだけ"
+   },
+   {
+    "span": "show up",
+    "display_form": "show up",
+    "cls": "C",
+    "difficulty": "easy",
+    "keep": true,
+    "reason": "現れる・見えるという意味が定着した句動詞"
+   },
+   {
+    "span": "at a certain wavelength",
+    "display_form": "at something",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "値や条件を示すatの通常用法にすぎない"
+   },
+   {
+    "span": "no longer limited the search",
+    "display_form": "no longer limit something",
+    "cls": "F",
+    "difficulty": "easy",
+    "keep": false,
+    "reason": "no longerと任意の動詞句の自由な組合せ"
+   },
+   {
+    "span": "deep image",
+    "display_form": "deep image",
+    "cls": "F",
+    "difficulty": "advanced",
+    "keep": false,
+    "reason": "観測の深さを表す専門的な描写の組合せ"
+   },
+   {
+    "span": "took an unexpected turn",
+    "display_form": "take turn",
+    "cls": "F",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "reason": "提示形は冠詞が欠け、この意味では成立しない"
+   }
+  ]
+ },
+ "case": "jwst_m_a2",
+ "arm": "E4",
+ "cost_jpy": 2.697,
+ "sec": 73.9
+}

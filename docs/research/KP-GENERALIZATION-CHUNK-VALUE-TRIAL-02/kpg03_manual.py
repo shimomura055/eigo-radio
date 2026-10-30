@@ -28,3 +28,40 @@ D_OVERRIDE = {
     ("ignobel_a2", "protein crystal"): "FREE",
     ("tesla_b1b", "hurdle to clear"): "NAT",                  # 単数化で不自然・塊として弱い
 }
+
+# ---- 委任_02 P1: Sonnet実読(E1L/E2/E3 ×14ケース、2026-10-30)。記載なし=OK。
+ALL14_ = ["untidi_a2", "ai_cha_b1b", "jwst_m_a2", "jwst_m_b1b", "meta_w_b1b", "untidi_b1b", "ai_cha_a2", "meta_w_a2", "aiisland_b1b", "surname_b1b",
+          "melos_a2", "ignobel_a2", "ignobel_b1b", "tesla_b1b"]
+_E2NG = {
+    "untidi_b1b": {"hear something out": ("GEN", "人称: itは話し手(人)=hear someone out")},
+    "jwst_m_a2": {"lower limit": ("FREE", "形容詞+名詞の描写的組合せ"), "absence from": ("FREE", "名詞+前置詞の自由な組合せ")},
+    "jwst_m_b1b": {"drop something": ("FREE", "動詞+目的語の字面どおり"), "absence from": ("FREE", "名詞+前置詞の自由な組合せ")},
+    "meta_w_a2": {"storage space": ("FREE", "名詞+名詞の描写的組合せ")},
+}
+MAN["E1L"] = {
+    "untidi_a2": {"hear something out": ("GEN", "人称取違え"), "take away from": ("GEN", "take points away fromの一般化失敗(別句動詞に変質)")},
+    "untidi_b1b": {"hear something out": ("GEN", "人称取違え")},
+    "jwst_m_a2": {"take a turn": ("MEAN", "unexpectedを落とし語義変質"), "lower limit": ("FREE", "形容詞+名詞")},
+    "jwst_m_b1b": {"set a limit": ("MEAN", "lowerを落とし語義喪失"), "take a turn": ("MEAN", "unexpectedを落とし語義変質")},
+    "meta_w_a2": {"storage space": ("FREE", "名詞+名詞")},
+    "surname_b1b": {"can't help think": ("GEN", "can't help thinkingが正。語形崩れ")},
+}
+MAN["E2"] = {k: dict(v) for k, v in _E2NG.items()}
+MAN["E3"] = {k: dict(v) for k, v in _E2NG.items()}
+JUDGED |= {(a, c) for a in ("E1L", "E2", "E3") for c in ALL14_}
+
+# 委任_02: E側でlower limit/absence fromを専門的・描写的組合せとしてFREEと判定したため、Dにも同一基準を適用(基準の非対称を除去)。
+D_OVERRIDE[("jwst_m_a2", "equivalent width")] = "FREE"   # 専門分野の記述的名詞句(deep image型)
+D_OVERRIDE[("jwst_m_b1b", "equivalent width")] = "FREE"
+
+# ---- 委任_02 P2: E4(難所6ケース)/E1S(4ケース)実読
+HARD6_ = ["untidi_a2", "ai_cha_b1b", "jwst_m_a2", "jwst_m_b1b", "meta_w_b1b", "untidi_b1b"]
+MAN["E4"] = {"untidi_a2": {"hear something out": ("GEN", "人称取違え")}, "untidi_b1b": {"hear something out": ("GEN", "人称取違え")}}
+MAN["E1S"] = {"untidi_a2": {"hear something out": ("GEN", "人称取違え")},
+              "jwst_m_a2": {"take a turn": ("MEAN", "unexpectedを落とし語義変質")},
+              "jwst_m_b1b": {"set a lower limit": ("FREE", "未一般化の描写的組合せ"), "take a turn": ("MEAN", "unexpectedを落とし語義変質")}}
+JUDGED |= {("E4", c) for c in HARD6_}
+JUDGED |= {("E1S", c) for c in ("untidi_a2", "jwst_m_b1b", "ai_cha_b1b", "jwst_m_a2")}
+
+# ---- 委任_02 P3: E4 残り8ケース実読(NG0件)
+JUDGED |= {("E4", c) for c in ("ai_cha_a2", "meta_w_a2", "aiisland_b1b", "surname_b1b", "melos_a2", "ignobel_a2", "ignobel_b1b", "tesla_b1b")}
