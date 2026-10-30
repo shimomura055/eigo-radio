@@ -338,6 +338,7 @@ def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], o
             if x.get("n5") and x.get("japanese_gloss") != before_gloss.get(x["rank"]):
                 x["n5"]["person_repair"] = {"gloss_before": before_gloss.get(x["rank"]), "gloss_after": x.get("japanese_gloss"),
                                             "gloss_alignment_status": x.get("gloss_alignment_status")}
+                x["n5"]["gloss_ja"] = x.get("japanese_gloss")   # 不変条件 japanese_gloss==n5.gloss_ja の維持(旧値はperson_repair.gloss_beforeに残す)
                 n_rw += 1
         if n5_ctx is not None:
             stages[f"{stage_prefix}n5_person_repair"] = {"n5_items": len(n5_applied), "n5_gloss_rewritten": n_rw}

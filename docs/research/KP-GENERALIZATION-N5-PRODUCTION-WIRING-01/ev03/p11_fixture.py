@@ -5,7 +5,7 @@ Production code無変更・mockなし。"""
 import sys, os, json, copy, types
 ROOT = os.path.abspath(os.getcwd()); sys.path.insert(0, ROOT)
 EV = "docs/research/KP-GENERALIZATION-N5-PRODUCTION-WIRING-01/ev03"
-OUT = f"{EV}/p11"; os.makedirs(OUT, exist_ok=True)
+OUT = f"{EV}/p11_02"; os.makedirs(OUT, exist_ok=True)
 import er005_cost_logger as cl
 cl.install(f"{OUT}/cost_log.jsonl")
 import er119_kp_candidates_01 as kcand
@@ -54,5 +54,5 @@ def run(label, concrete_gloss):
     return res
 results = [run("fire", "あなたをぞっとさせ、強い恐怖を感じさせる"), run("control_no_mismatch", None)]
 b = __import__("er053_cost_aggregate_01").compute_stage_cost_breakdown_multi(f"{OUT}/cost_log.jsonl")
-json.dump({"note": "自然発生の実例ではなくfixture", "results": results, "cost_jpy": b["total_jpy"]}, open(f"{EV}/../ev03/p11_fixture_result.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+json.dump({"note": "自然発生の実例ではなくfixture", "results": results, "cost_jpy": b["total_jpy"]}, open(f"{EV}/p11_fixture_result_02.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
 print(json.dumps(results, ensure_ascii=False, indent=1, default=str)); print("cost", b["total_jpy"])

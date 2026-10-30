@@ -433,6 +433,27 @@ class TestPersonAlignmentOnN5Pair(N5Case):
         self.assertNotIn("彼", c["japanese_gloss"])
         self.assertIn("person_repair", c["item"]["n5"])
         self.assertEqual(c["item"]["n5"]["person_repair"]["gloss_before"], "彼を押し上げる")
+        self.assertEqual(c["item"]["n5"]["gloss_ja"], c["item"]["japanese_gloss"])      # 不変条件: 書換後もn5.gloss_ja==japanese_gloss
+
+    def test_n5_gloss_ja_synced_when_rewritten_and_unchanged_otherwise(self):
+        def person_fn(merged):
+            items = []
+            for it in merged["items"]:
+                it = dict(it)
+                if ga.person_reference_mismatch(it.get("key_phrase"), it.get("japanese_gloss")):
+                    it["japanese_gloss"] = "誰かを押し上げる"
+                items.append(it)
+            return {"items": items}
+        s = SmartSend(gen5=gen_tokens({"pushed prices up": ([("CORE", "push"), ("SLOT_PERSON", ""), ("CORE", "up")], "push someone up", "彼を押し上げる")}))
+        env, doc, _ = self.doc(s, person_repair_fn=person_fn)
+        c = next(c for c in doc["candidates"] if c["selection_phrase"] == "pushed prices up")
+        n5r = c["item"]["n5"]
+        self.assertEqual(n5r["gloss_ja"], "誰かを押し上げる")                                  # 書換あり: 同期
+        self.assertEqual(n5r["gloss_ja"], c["item"]["japanese_gloss"])
+        self.assertEqual(n5r["person_repair"]["gloss_before"], "彼を押し上げる")               # 旧値は監査欄に残る
+        for o in doc["candidates"]:                                                           # 書換なし: 不変(person_repair無しならgloss_ja==japanese_gloss)
+            if "person_repair" not in (o["item"].get("n5") or {}) and o["item"].get("n5"):
+                self.assertEqual(o["item"]["n5"]["gloss_ja"], o["item"]["japanese_gloss"])
 
     def test_z_person_repair_fn_used_and_rewrite_count_recorded(self):
         called = []
