@@ -22887,3 +22887,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01_USER.md`): 複数記事一括選定UI/Done/一括コピー/コメント直下配置、①ちょうど3件必須、残り全選択、Vocabulary 5表現音声化。4項目APPROVED_FOR_PRODUCTION、目標PRODUCTION_WIRED(OPEN-620)。
 - 実施(API 0、実装なし): 現行V3フォーム(form_logic.js/AIF1/er128)・Vocab5件構成(KP3+②2)・KP音声の物理形(記事segment内のen_audio区間)・Master Audio Store/KP3V再利用を調査。設計=V3拡張、AIF1を変えない連結一括形式+er128 restore_batch、②のみ新規TTS(er137)、rev01-f完了後にrev01-g。詳細=docs/research/SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01/{CURRENT_STATE_01,DESIGN_01}.md。
 - 分類: 承認済み仕様の実装計画(新仕様判断なし)。
+
+## 2026-10-30 FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_05: Style Gate BLOCK解消(comment_3再生成)・End User検証で停止
+- 実施(API 0.37円): 読み辞書登録は offline実測で無効かつ逆効果(ASR「実基」は登録後も不一致、A7除外)のため行わず。comment_3のみ再生成→標準phase PHONETIC_MATCH採用、Style Gate a2/b1b PASS。組立〜local page_verify完了。End User Playwright検証が日本語タイトル(1.27秒)の短尺境界でNG 2/182(検証harness側)、公開は未実施。
+- 分類: 承認済み仕様の範囲内の不具合是正(新仕様判断なし)。次=検証ツールの短尺パート是正(Fable判断)。累計46.08円/Cap150。
