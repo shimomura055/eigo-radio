@@ -337,3 +337,4 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 - dev試聴ページ: `er019_family_x_listening_page_01.py --slug meta_waddle_world --run-name run_fx4_01 --web user_test/family_x_meta_waddle_world_01`(check_page PASS)。Playwright(local `run07/page_verify_dev_local.json`): audio 47/47再生、console error 0、http>=400 0、`=====` 0、ニュアンス解説 0。
 - End User: origin/main最新のer135(asset rev01-f)をworktreeから`hook_run`(cache再利用、api_calls 0): consistency ok、verify 226項目 NG 0(PC+mobile模擬)。`run07/enduser_produce.log`。
 - 費用: 本委任 ¥0(raw_usage_log無変化)。案件累計≒¥452.7/Cap¥500。本日JST累計(`daily_cost.py 2026-10-29T15:00:00`)=¥346.0(集計対象: 全cost/usage log)。
+- live(公開後): dev index.html 200・mp3 47/47が200(`run07/live_mp3_status.txt`)・Playwright live 47/47再生/console error 0/http>=400 0/`=====` 0(`run07/page_verify_dev_live.json`)。End User live: `enduser/index.html` 200、`er135 verify-only --base-url`(PC+mobile模擬)226項目 NG 0(`run07/enduser_verify_live.json`)。
