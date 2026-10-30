@@ -32,6 +32,7 @@ SCHEMA_VERSION = "enduser_ja_generated_v1"
 GENERATED_FILENAME = "ja_generated.json"
 MAX_TRANSLATE_ATTEMPTS = 2   # 初回 + retry1回(上限厳守)
 MAX_VERIFY_ATTEMPTS = 2
+MAX_VERIFY_ROUNDS = 2   # 対訳照合NG段落は、指摘付きで再翻訳→再照合を1回だけ(初回+1回。上限厳守)
 COS_MIN_DEFAULT = 0.3
 
 TRANSLATE_HEAD = """あなたは英日翻訳者です。英語学習者(日本語話者)が読むページに載せるため、英語の文章を日本語に訳してください。
@@ -311,6 +312,8 @@ def structure_check(ja: str, en: str) -> None:
 # Prompt / parse
 # ------------------------------------------------------------
 RETRY_NOTE_LABEL = "# 前回の訳への指摘(同じ誤りを繰り返さない。retry時のみ付く)\n"
+RETRY_NOTE_VERIFY_HINT = ("対訳照合で不合格(指摘: {issue})。英文の語に対応する語だけで訳し、英文にない情報(材質・種類・服装・場所などの具体化)を足さない。"
+                          "英文にある情報を落とさない。")
 RETRY_NOTE_NUMBER_HINT = ("英文にない数字・数詞を訳に入れない(英文の they/them は「二人」のような人数にせず「彼ら」と訳す。"
                           "never ... again は「二度と」でなく「もう決して…ない」のように数を含まない表現にする)")
 
@@ -506,85 +509,96 @@ def translate_part(part_id: str, sentences: list, *, level: str, family: str, ca
     pending = [pi for pi in range(len(paras)) if pi not in result]
     fresh = {}   # 照合前の訳
 
-    # --- 翻訳(初回+retry1回。件数/ID不一致=pending全体、個別NG=その段落のみretry) ---
-    notes_by_sid = {}   # retry時のみ: 前回のlocal_check不合格の文 -> 指摘(同じ誤りの反復を避ける)
-    for _attempt in range(MAX_TRANSLATE_ATTEMPTS):
-        if not pending:
-            break
-        targets = [s for pi in pending for s in paras[pi]]
-        tset = {s["sid"] for s in targets}
-        context = [s for s in sents if s["sid"] not in tset]
-        calls["translate"] += 1
-        notes = {i: notes_by_sid[s["sid"]] for i, s in enumerate(targets) if s["sid"] in notes_by_sid} if _attempt else None
-        try:
-            ja_list = parse_response(llm("translate", build_translate_prompt(targets, context, notes)), targets)
-        except ModelContractError:
-            raise
-        except ValueError as e:
-            for pi in pending:
-                failures[pi] = f"parse: {e}"
-            continue
-        by_sid = {s["sid"]: j for s, j in zip(targets, ja_list)}
-        still = []
-        for pi in pending:
-            first_err = None
-            for s in paras[pi]:   # 段落内の全文を検査する(retryの指摘に不合格の文すべてを載せるため、最初の不合格で止めない)
-                try:
-                    structure_check(by_sid[s["sid"]], s["en"])
-                    check_numbers(s["en"], by_sid[s["sid"]])
-                except ValueError as e:
-                    first_err = first_err or e
-                    msg = str(e)
-                    notes_by_sid[s["sid"]] = (RETRY_NOTE_NUMBER_HINT if msg.startswith("数値不一致") else msg) + f"(前回の訳: {by_sid[s['sid']]})"
-            if first_err is None:
-                fresh[pi] = [by_sid[s["sid"]] for s in paras[pi]]
-                failures.pop(pi, None)
-            else:
-                failures[pi] = f"local_check: {first_err}"
-                still.append(pi)
-        pending = still
-
-    # --- 対訳照合(1 call/part、新規訳のみ。応答不正は1回retry→全段落fail-closed) ---
-    verify_ids = sorted(fresh)
-    if verify_ids:
-        flat = [(paras[pi][k]["en"], fresh[pi][k]) for pi in verify_ids for k in range(len(paras[pi]))]
-        verdict, verr = None, None
-        for _attempt in range(MAX_VERIFY_ATTEMPTS):
-            calls["verify"] += 1
-            try:
-                verdict = parse_verify(llm("verify", build_verify_prompt(flat)), len(flat))
+    notes_by_sid = {}   # retry時のみ: 前回のlocal_check/対訳照合不合格の文 -> 指摘(同じ誤りの反復を避ける)
+    for _vround in range(MAX_VERIFY_ROUNDS):
+        verify_retry = []
+        # --- 翻訳(初回+retry1回。件数/ID不一致=pending全体、個別NG=その段落のみretry) ---
+        for _attempt in range(MAX_TRANSLATE_ATTEMPTS if _vround == 0 else 1):
+            if not pending:
                 break
+            targets = [s for pi in pending for s in paras[pi]]
+            tset = {s["sid"] for s in targets}
+            context = [s for s in sents if s["sid"] not in tset]
+            calls["translate"] += 1
+            notes = {i: notes_by_sid[s["sid"]] for i, s in enumerate(targets) if s["sid"] in notes_by_sid} if (_attempt or _vround) else None
+            try:
+                ja_list = parse_response(llm("translate", build_translate_prompt(targets, context, notes)), targets)
             except ModelContractError:
                 raise
             except ValueError as e:
-                verr = str(e)
-        vecs = None
-        if verdict is not None and embed_fn is not None:
-            try:
-                vecs = embed_fn([x for pair in flat for x in pair])
-            except Exception as e:   # 任意補助の失敗は検証を通したことにしない(fail-closed)
-                verdict, verr = None, f"embed: {e}"
-        idx = 0
-        for pi in verify_ids:
-            bad = None
-            for k in range(len(paras[pi])):
-                idx += 1
-                if verdict is None:
-                    bad = f"verify_unavailable: {verr}"
-                    continue
-                ok, issue = verdict[idx]
-                if not ok:
-                    bad = f"verify_ng: sid={paras[pi][k]['sid']} {issue}"
-                elif vecs is not None and _cos(vecs[2 * (idx - 1)], vecs[2 * (idx - 1) + 1]) < cos_min:
-                    bad = f"embed_cos_low: sid={paras[pi][k]['sid']}"
-            if bad:
-                failures[pi] = bad
-            else:
-                result[pi] = fresh[pi]
-                doc["entries"][para_key(paras[pi])] = {   # 成功のみ保存(失敗は非キャッシュ)
-                    "part_id": part_id, "level": level, "family": family, "sids": [s["sid"] for s in paras[pi]],
-                    "ja": fresh[pi], "ja_source": JA_SOURCE, "model": MODEL,
-                    "prompt_sha256": PROMPT_TEMPLATE_SHA256, "generated_at": now}
+                for pi in pending:
+                    failures[pi] = f"parse: {e}"
+                continue
+            by_sid = {s["sid"]: j for s, j in zip(targets, ja_list)}
+            still = []
+            for pi in pending:
+                first_err = None
+                for s in paras[pi]:   # 段落内の全文を検査する(retryの指摘に不合格の文すべてを載せるため、最初の不合格で止めない)
+                    try:
+                        structure_check(by_sid[s["sid"]], s["en"])
+                        check_numbers(s["en"], by_sid[s["sid"]])
+                    except ValueError as e:
+                        first_err = first_err or e
+                        msg = str(e)
+                        notes_by_sid[s["sid"]] = (RETRY_NOTE_NUMBER_HINT if msg.startswith("数値不一致") else msg) + f"(前回の訳: {by_sid[s['sid']]})"
+                if first_err is None:
+                    fresh[pi] = [by_sid[s["sid"]] for s in paras[pi]]
+                    failures.pop(pi, None)
+                else:
+                    failures[pi] = f"local_check: {first_err}"
+                    still.append(pi)
+            pending = still
+
+        # --- 対訳照合(1 call/part、新規訳のみ。応答不正は1回retry→全段落fail-closed) ---
+        verify_ids = sorted(pi for pi in fresh if pi not in result)
+        if verify_ids:
+            flat = [(paras[pi][k]["en"], fresh[pi][k]) for pi in verify_ids for k in range(len(paras[pi]))]
+            verdict, verr = None, None
+            for _attempt in range(MAX_VERIFY_ATTEMPTS):
+                calls["verify"] += 1
+                try:
+                    verdict = parse_verify(llm("verify", build_verify_prompt(flat)), len(flat))
+                    break
+                except ModelContractError:
+                    raise
+                except ValueError as e:
+                    verr = str(e)
+            vecs = None
+            if verdict is not None and embed_fn is not None:
+                try:
+                    vecs = embed_fn([x for pair in flat for x in pair])
+                except Exception as e:   # 任意補助の失敗は検証を通したことにしない(fail-closed)
+                    verdict, verr = None, f"embed: {e}"
+            idx = 0
+            for pi in verify_ids:
+                bad = None
+                for k in range(len(paras[pi])):
+                    idx += 1
+                    if verdict is None:
+                        bad = f"verify_unavailable: {verr}"
+                        continue
+                    ok, issue = verdict[idx]
+                    if not ok:
+                        bad = bad or f"verify_ng: sid={paras[pi][k]['sid']} {issue}"
+                        notes_by_sid[paras[pi][k]["sid"]] = (RETRY_NOTE_VERIFY_HINT.format(issue=issue) + f"(前回の訳: {fresh[pi][k]})")
+                    elif vecs is not None and _cos(vecs[2 * (idx - 1)], vecs[2 * (idx - 1) + 1]) < cos_min:
+                        bad = f"embed_cos_low: sid={paras[pi][k]['sid']}"
+                if bad:
+                    failures[pi] = bad
+                    if bad.startswith("verify_ng:") and _vround + 1 < MAX_VERIFY_ROUNDS:
+                        verify_retry.append(pi)   # 不合格の指摘付きで同一段落を1回だけ再翻訳→再照合(照合基準は不変)
+                else:
+                    result[pi] = fresh[pi]
+                    doc["entries"][para_key(paras[pi])] = {   # 成功のみ保存(失敗は非キャッシュ)
+                        "part_id": part_id, "level": level, "family": family, "sids": [s["sid"] for s in paras[pi]],
+                        "ja": fresh[pi], "ja_source": JA_SOURCE, "model": MODEL,
+                        "prompt_sha256": PROMPT_TEMPLATE_SHA256, "generated_at": now}
+
+        if not verify_retry:
+            break
+        pending = sorted(verify_retry)
+        for pi in pending:
+            fresh.pop(pi, None)
 
     # --- 保存(このpartの現行段落に無い旧entryは除去=陳腐化した訳を残さない) ---
     live = {para_key(p) for p in paras}

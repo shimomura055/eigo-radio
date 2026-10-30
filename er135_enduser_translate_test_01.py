@@ -401,5 +401,59 @@ class TestCoverage(Base):
                 run(bad, FakeLLM(), self.d)
 
 
+
+
+class TestVerifyNgRetry(Base):
+    """OPEN-618 委任_04: 対訳照合NG段落は、不合格の指摘付きで1回だけ再翻訳→再照合(照合基準は不変・上限1回)。"""
+    SENTS = S("Melos was angry.", "He did not trust the king.", para=[0, 1])
+
+    def _llm(self, second_ok=True):
+        bad_ja = "彼は王を信用していませんでした(城壁にて)。"
+
+        def tr_first(ts, ja):
+            return json.dumps({"translations": [{"id": i, "ja": (bad_ja if t == "He did not trust the king." else ja[t])}
+                                                for i, t in enumerate(ts, 1)]}, ensure_ascii=False)
+
+        def ver(ps):
+            return json.dumps({"results": [{"id": i, "ok": "城壁" not in ja or not second_ok and False,
+                                            "issue": "城壁は英文にない情報"} for i, (en, ja) in enumerate(ps, 1)]}, ensure_ascii=False)
+
+        def ver_always_ng(ps):
+            return json.dumps({"results": [{"id": i, "ok": en != "He did not trust the king.", "issue": "城壁は英文にない情報"}
+                                           for i, (en, ja) in enumerate(ps, 1)]}, ensure_ascii=False)
+        return FakeLLM(translate_script=[tr_first], verify_script=[ver, None if second_ok else ver_always_ng])
+
+    def test_retry_with_note_recovers_only_ng_paragraph(self):
+        llm = self._llm()
+        r = run(self.SENTS, llm, self.d)
+        self.assertTrue(r["coverage"]["complete"])
+        self.assertEqual(r["meta"]["api_calls"], {"translate": 2, "verify": 2})
+        self.assertEqual(r["meta"]["failures"], [])
+        tp = [p for k, p in llm.prompts if k == "translate"][1]
+        self.assertEqual(_targets(tp), ["He did not trust the king."])   # NG段落だけ
+        self.assertIn(T.RETRY_NOTE_LABEL, tp)
+        self.assertIn("城壁は英文にない情報", tp)
+        self.assertIn("前回の訳", tp)
+        vp = [p for k, p in llm.prompts if k == "verify"][1]
+        self.assertEqual(len(_pairs(vp)), 1)   # 再照合もNG段落だけ
+        self.assertEqual(len(T.load_generated(self.d)["entries"]), 2)
+
+    def test_retry_still_ng_stays_fail_closed_and_bounded(self):
+        llm = self._llm(second_ok=False)
+        r = run(self.SENTS, llm, self.d)
+        self.assertIsNotNone(r["ja"]["s1"])
+        self.assertIsNone(r["ja"]["s2"])
+        self.assertEqual(r["meta"]["api_calls"], {"translate": 2, "verify": 2})   # 上限: 再翻訳1回・再照合1回
+        self.assertIn("verify_ng", r["meta"]["failures"][0]["reason"])
+        self.assertEqual(len(T.load_generated(self.d)["entries"]), 1)   # 失敗は非キャッシュ
+
+    def test_verify_unavailable_is_not_retried(self):
+        broken = lambda ps: "garbage"
+        llm = FakeLLM(verify_script=[broken, broken])
+        run(S("Melos was angry."), llm, self.d)
+        self.assertEqual(llm.n("translate"), 1)
+        self.assertEqual(llm.n("verify"), 2)
+
+
 if __name__ == "__main__":
     unittest.main()
