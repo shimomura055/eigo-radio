@@ -22916,3 +22916,5 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 是正(承認済み機構との矛盾の是正11-8、Fable判定B。仕様追加・閾値変更なし): ASR長さ上限とRepetition QA canonical照合に、委任_04でsemantic classificationへ入れたÅ<->angstrom(s)の閉じた1対応と千位区切り`N,NNN`のASR分割を揃えた(定義はer021に1箇所)。他単位への一般化なし。
 - 付随の不具合是正: KP解説textのQA NGを含むbundleを同一署名で再利用しない(再実行で再生成可能に)。語数基準・Promptは無変更。
 - 結果: ⑭ Std/Adv `full_story_part2_k3`のHR Lock解消(approve_regenerate+標準cascade 1起動、実費¥7.47)。Adv KP1解説text(19語)のNG再生成は再実行待ち。ユーザー判断なし。
+
+- 2026-10-30 FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_07: ユーザー最終承認(雪女Std/Adv完成版を正式承認、追加Trial・再生成不要)→OPEN-616 CLOSED(USER_APPROVED)・作品台帳COMPLETED・Closeout(API 0)。原文=docs/pm/delegation_log/2026-10-30_FAMILY-Z-YUKI-ONNA-PRODUCTION-01_USER_FINAL.md。分類: ユーザー指示に基づく記録更新(新規判断なし)。
