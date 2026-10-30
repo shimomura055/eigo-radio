@@ -1,0 +1,726 @@
+{
+ "route": "Z",
+ "level": "a2",
+ "method": "N5@T3-2026-10-30",
+ "models_requested": {
+  "b1": "gpt-6-luna",
+  "sel": "gpt-6-luna",
+  "gen5": "gpt-6-luna",
+  "ver5": "gemini-3.8-flash",
+  "chk5": "gpt-6.1-sol"
+ },
+ "prompt_sha16": {
+  "B1": "97dd3c281a2858f3",
+  "SEL": "c9f7e85459fbbedd",
+  "GEN5": "f284d2d87eedbe7e",
+  "VER5": "e25540ebac7b86bc",
+  "CHK5": "5e643f0fc98c8944",
+  "CHUNK_DEFS_V3+EXTRA_RULES_V3": "325cf65ef1dc84f7",
+  "GEN5_EXTRA": "a4252120a6254001",
+  "GEN2_RULES": "32f51f3552ab3497",
+  "VER5_HEAD+VER5_ADD": "1483f97b92a40be9",
+  "CHK5_RULES": "b10a6edca5ed9737",
+  "schema": {
+   "B1": "e52f403cf3b4760f",
+   "SEL": "36612de032fba6b4",
+   "GEN5": "e158613928975289",
+   "VER5": "1164d51aa0682719",
+   "CHK5": "c5a05fed55bf59ea"
+  },
+  "FLAGS_V1_HASH": "3bba7ad2cc6a"
+ },
+ "wordnet_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+ "n_candidates": 11,
+ "n_n5": 6,
+ "word_count_dist_n5": {
+  "3": 5,
+  "2": 1
+ },
+ "actual_model_ids_by_stage": {
+  "b1": [
+   "gpt-6-luna"
+  ],
+  "sel": [
+   "gpt-6-luna"
+  ],
+  "gen5": [
+   "gpt-6-luna"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "gpt-6.1-sol"
+  ]
+ },
+ "model_versions_by_stage": {
+  "b1": [
+   "None"
+  ],
+  "sel": [
+   "None"
+  ],
+  "gen5": [
+   "None"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "None"
+  ]
+ },
+ "dropped_by_stage": {
+  "n5_select": 2,
+  "canonicalization_qa": 2
+ },
+ "pool_rejected_by_stage": {
+  "n5_pool": 4
+ },
+ "pool_rejected_by_reason": {
+  "除外指定の語句(Human NG/累積除外)": 1,
+  "既存候補と同一span(重複。Trialと同じ除外)": 1,
+  "既存候補とspanが包含関係(重複)(相手=『in the country』。T": 1,
+  "既存Gate(validate): 有限助動詞を含む(既存canonicaliz": 1
+ },
+ "l1": [
+  {
+   "include_b1": true,
+   "n_p7_in": 4,
+   "n_b1_returned": 14,
+   "pool_size": 14,
+   "n_judged": 14,
+   "n_keep": 6,
+   "n_picked": 6,
+   "picked_origin": {
+    "P7": 2,
+    "B1": 4
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 4
+   }
+  },
+  {
+   "include_b1": false,
+   "n_p7_in": 1,
+   "n_b1_returned": 0,
+   "pool_size": 1,
+   "n_judged": 1,
+   "n_keep": 1,
+   "n_picked": 1,
+   "picked_origin": {
+    "P7": 1,
+    "B1": 0
+   },
+   "pool_rejected_by_reason": {}
+  }
+ ],
+ "l3_summaries": [
+  {
+   "targets": 6,
+   "kept": 6,
+   "dropped_by_stage": {},
+   "reverted": 1,
+   "check_relation": {
+    "SAME": 5,
+    "FRAME_SHIFT": 1
+   },
+   "flags": {
+    "PRONOUN_SLOT": 2,
+    "CONTENT_DROPPED": 1,
+    "FIX_REJECTED": 1,
+    "FRAME_MISMATCH": 1
+   },
+   "reconcile": {
+    "SLOT_INSERTED": 1,
+    "SAME": 4,
+    "FRAME_MISMATCH": 1
+   },
+   "form_changed_vs_span": 5,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  },
+  {
+   "targets": 1,
+   "kept": 1,
+   "dropped_by_stage": {},
+   "reverted": 0,
+   "check_relation": {
+    "SAME": 1
+   },
+   "flags": {
+    "PRONOUN_SLOT": 1
+   },
+   "reconcile": {
+    "SAME": 1
+   },
+   "form_changed_vs_span": 1,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  }
+ ],
+ "person_repair": [
+  {
+   "prefix": "initial",
+   "n5_gloss_rewritten": 0
+  },
+  {
+   "prefix": "backfill_",
+   "n5_gloss_rewritten": 0
+  }
+ ],
+ "backfill": {
+  "status": "OK",
+  "n_added": null,
+  "n_requested": null,
+  "rounds": null,
+  "triggered": true
+ },
+ "backfill_raw_keys": [
+  "enabled",
+  "triggered",
+  "status",
+  "failure",
+  "E",
+  "N",
+  "prompt_id",
+  "prompt_sha256",
+  "prompts",
+  "model_id",
+  "response_id",
+  "attempts",
+  "added",
+  "surplus",
+  "dropped_by_stage"
+ ],
+ "presentable_filter": {
+  "version": "presentable_v1_2026-10-29",
+  "checked": 13,
+  "canonicalization_qa_dropped": 2,
+  "gloss_unresolved_dropped": 0,
+  "dropped_by_code": {
+   "qa_fail": 2
+  },
+  "presentable": 11,
+  "n_candidates": 11
+ },
+ "shortfall": true,
+ "n_llm_calls": 9,
+ "n_truncation_retries": 0,
+ "cost": {
+  "by_stage_jpy": {
+   "kp": 4.767,
+   "kp_n5_b1": 0.44,
+   "kp_n5_sel": 0.592,
+   "kp_gloss_alignment": 1.642,
+   "kp_rescue_gloss_realign": 0.116,
+   "kp_rescue_qa_rejudge": 0.39,
+   "kp_n5_gen5": 0.851,
+   "kp_n5_ver5": 2.051,
+   "kp_n5_chk5": 4.254
+  },
+  "total_jpy": 15.104,
+  "by_provider_jpy": {
+   "openai": 13.052,
+   "gemini": 2.051
+  }
+ },
+ "rows": [
+  {
+   "candidate_id": "p_abd4db93f1",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "Pull up",
+   "display_phrase": "Pull up",
+   "used_form": "pull something up",
+   "key_phrase": "pull something up",
+   "japanese_gloss": "物を引き上げる、持ち上げる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "Pull up",
+    "used_form": "Pull up",
+    "japanese_gloss": "引き上げる",
+    "japanese_gloss_tts": "引き上げる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「pull up」は目的語を伴って「引き上げる」の意になる句動詞として成立し、基本形でもあるため変更しません。source_spanに目的語は含まれていないため復元しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "床板を上へ持ち上げる字義どおりの意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To lift the boards from their position.",
+     "naive_ja": "引っ張る、上へ",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_d9b2133937",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "get free of it",
+   "display_phrase": "get free of it",
+   "used_form": "get free of",
+   "key_phrase": "get free of",
+   "japanese_gloss": "何かから自由になる、逃れる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "PRONOUN_SLOT"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "get free of it",
+    "used_form": "get free of it",
+    "japanese_gloss": "それから逃れる",
+    "japanese_gloss_tts": "それから逃れる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「get free of」は「〜から逃れる」という意味を担い、補語の「it」も必要なので残します。itは規則上一般化の対象外です。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "厄介なものから逃れようとする意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To escape from something that is troubling or distressing.",
+     "naive_ja": "それから自由になる",
+     "naive_ja_conveys": "yes",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_c4ac049763",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "rushed at him",
+   "display_phrase": "rushed at him",
+   "used_form": "rush at",
+   "key_phrase": "rush at",
+   "japanese_gloss": "人に向かって勢いよく突進する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "PRONOUN_SLOT"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "rush at someone",
+    "used_form": "rush at someone",
+    "japanese_gloss": "人に向かって突進する",
+    "japanese_gloss_tts": "人に向かって突進する",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "generalize_person_dependent_reference",
+    "reasoning": "動詞を見出し形の「rush」にし、記事中の特定人物を指す目的格himをsomeoneに一般化しました。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "単に急ぐのではなく、人に向かって勢いよく進む意味です。不定の人称は「人」としています。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To charge toward a person in an aggressive or threatening way.",
+     "naive_ja": "誰かに向かって急ぐ",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_12a123e108",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "in the country",
+   "display_phrase": "in the country",
+   "used_form": "in the country",
+   "key_phrase": "in the country",
+   "japanese_gloss": "田舎に、田舎で",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "in the country",
+    "used_form": "in the country",
+    "japanese_gloss": "田舎に",
+    "japanese_gloss_tts": "田舎に",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「in the country」は「田舎で、田舎に」という自然な表現で、theもこの表現に含まれるため変更しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "国の中ではなく、都市部から離れた田舎を指しています。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Located in a rural area, away from a town or city.",
+     "naive_ja": "国の中に",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_4aef8df58b",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "went on talking",
+   "display_phrase": "went on talking",
+   "used_form": "go on talking",
+   "key_phrase": "go on talking",
+   "japanese_gloss": "〜し続ける、行為を継続する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": true,
+   "flags": [
+    "FIX_REJECTED",
+    "FRAME_MISMATCH"
+   ],
+   "check_relation": "FRAME_SHIFT",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "go on talking",
+    "used_form": "go on talking",
+    "japanese_gloss": "話し続ける",
+    "japanese_gloss_tts": "話し続ける",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "lemma_normalization",
+    "reasoning": "過去形のwentを基本形goにしました。talkingは「go on doing」の構文に必要な動名詞なのでそのまま残します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "go on は「続ける」という意味で、話す行為を続けることを表します。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [
+      {
+       "english_word": "go",
+       "japanese_span": "続ける"
+      }
+     ],
+     "machine_check_record_only": {
+      "required_words": [
+       "go"
+      ],
+      "covered": {
+       "go": "続ける"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To continue speaking.",
+     "naive_ja": "行く上で話す",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_202463513e",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "groaned",
+   "display_phrase": "groaned",
+   "used_form": "groan",
+   "key_phrase": "groan",
+   "japanese_gloss": "うめき声を上げる",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_8439fc486b",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "pulse",
+   "display_phrase": "pulse",
+   "used_form": "pulse",
+   "key_phrase": "pulse",
+   "japanese_gloss": "脈拍",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_10bb09f9bd",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "patience",
+   "display_phrase": "patience",
+   "used_form": "patience",
+   "key_phrase": "patience",
+   "japanese_gloss": "我慢強さ",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_903b7bace8",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "scraped",
+   "display_phrase": "scraped",
+   "used_form": "scrape",
+   "key_phrase": "scrape",
+   "japanese_gloss": "こすって音を立てる",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_d6ebe899c6",
+   "kind": "phrase",
+   "origin": "backfill",
+   "source_span": "raised my voice",
+   "display_phrase": "raised my voice",
+   "used_form": "raise one's voice",
+   "key_phrase": "raise one's voice",
+   "japanese_gloss": "声を大きくして話す",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "PRONOUN_SLOT"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "raise one's voice",
+    "used_form": "raise one's voice",
+    "japanese_gloss": "声を大きくする",
+    "japanese_gloss_tts": "声を大きくする",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "generalize_person_dependent_reference",
+    "reasoning": "「my」は動作主自身を指すため、慣用的な一般形「one's」に置き換え、動詞も見出し語の原形にしました。「raise one's voice」は自然で意味の核も保つ表現です。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "ここでは声の音量を上げて話すことを表しています。「声を大きくする」はその意味を自然に表し、「人の」という不定の人称も特定の人物に置き換えていません。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To speak more loudly than before.",
+     "naive_ja": "人の声を上げる",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_d0c6a1cc8d",
+   "kind": "word",
+   "origin": "backfill",
+   "source_span": "cleverness",
+   "display_phrase": "cleverness",
+   "used_form": "cleverness",
+   "key_phrase": "cleverness",
+   "japanese_gloss": "頭のよさ",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  }
+ ]
+}

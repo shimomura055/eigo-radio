@@ -1,0 +1,714 @@
+{
+ "route": "Y",
+ "level": "b1b",
+ "method": "N5@T3-2026-10-30",
+ "models_requested": {
+  "b1": "gpt-6-luna",
+  "sel": "gpt-6-luna",
+  "gen5": "gpt-6-luna",
+  "ver5": "gemini-3.8-flash",
+  "chk5": "gpt-6.1-sol"
+ },
+ "prompt_sha16": {
+  "B1": "97dd3c281a2858f3",
+  "SEL": "c9f7e85459fbbedd",
+  "GEN5": "f284d2d87eedbe7e",
+  "VER5": "e25540ebac7b86bc",
+  "CHK5": "5e643f0fc98c8944",
+  "CHUNK_DEFS_V3+EXTRA_RULES_V3": "325cf65ef1dc84f7",
+  "GEN5_EXTRA": "a4252120a6254001",
+  "GEN2_RULES": "32f51f3552ab3497",
+  "VER5_HEAD+VER5_ADD": "1483f97b92a40be9",
+  "CHK5_RULES": "b10a6edca5ed9737",
+  "schema": {
+   "B1": "e52f403cf3b4760f",
+   "SEL": "36612de032fba6b4",
+   "GEN5": "e158613928975289",
+   "VER5": "1164d51aa0682719",
+   "CHK5": "c5a05fed55bf59ea"
+  },
+  "FLAGS_V1_HASH": "3bba7ad2cc6a"
+ },
+ "wordnet_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+ "n_candidates": 11,
+ "n_n5": 6,
+ "word_count_dist_n5": {
+  "3": 3,
+  "2": 3
+ },
+ "actual_model_ids_by_stage": {
+  "b1": [
+   "gpt-6-luna"
+  ],
+  "sel": [
+   "gpt-6-luna"
+  ],
+  "gen5": [
+   "gpt-6-luna"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "gpt-6.1-sol"
+  ]
+ },
+ "model_versions_by_stage": {
+  "b1": [
+   "None"
+  ],
+  "sel": [
+   "None"
+  ],
+  "gen5": [
+   "None"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "None"
+  ]
+ },
+ "dropped_by_stage": {
+  "symbol": 1,
+  "validate": 1,
+  "canonicalization_qa": 1
+ },
+ "pool_rejected_by_stage": {
+  "n5_pool": 8
+ },
+ "pool_rejected_by_reason": {
+  "既存候補と同一span(重複。Trialと同じ除外)": 4,
+  "除外指定の語句(Human NG/累積除外)": 1,
+  "既存Gate(validate): 有限助動詞を含む(既存canonicaliz": 1,
+  "既存候補とspanが包含関係(重複)(相手=『end up』。Trial差分: ": 1,
+  "節の断片(関係詞・疑問詞始まり)は塊でない": 1
+ },
+ "l1": [
+  {
+   "include_b1": true,
+   "n_p7_in": 5,
+   "n_b1_returned": 11,
+   "pool_size": 9,
+   "n_judged": 9,
+   "n_keep": 9,
+   "n_picked": 7,
+   "picked_origin": {
+    "P7": 5,
+    "B1": 2
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 7
+   }
+  },
+  {
+   "include_b1": false,
+   "n_p7_in": 2,
+   "n_b1_returned": 0,
+   "pool_size": 1,
+   "n_judged": 1,
+   "n_keep": 1,
+   "n_picked": 1,
+   "picked_origin": {
+    "P7": 1,
+    "B1": 0
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 1
+   }
+  }
+ ],
+ "l3_summaries": [
+  {
+   "targets": 7,
+   "kept": 7,
+   "dropped_by_stage": {},
+   "reverted": 0,
+   "check_relation": {
+    "SAME": 7
+   },
+   "flags": {
+    "PERSON_OVERRIDE": 1,
+    "PRONOUN_SLOT": 1,
+    "FRAME_MISMATCH": 1,
+    "VER_FIXED_FORM": 1
+   },
+   "reconcile": {
+    "SAME": 6,
+    "FRAME_MISMATCH": 1
+   },
+   "form_changed_vs_span": 2,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  },
+  {
+   "targets": 1,
+   "kept": 1,
+   "dropped_by_stage": {},
+   "reverted": 0,
+   "check_relation": {
+    "MODIFIER_DROPPED_OK": 1
+   },
+   "flags": {
+    "CONTENT_DROPPED": 1
+   },
+   "reconcile": {
+    "SAME": 1
+   },
+   "form_changed_vs_span": 1,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  }
+ ],
+ "person_repair": [
+  {
+   "prefix": "initial",
+   "n5_gloss_rewritten": 0
+  },
+  {
+   "prefix": "backfill_",
+   "n5_gloss_rewritten": 0
+  }
+ ],
+ "backfill": {
+  "status": "OK",
+  "n_added": null,
+  "n_requested": null,
+  "rounds": null,
+  "triggered": true
+ },
+ "backfill_raw_keys": [
+  "enabled",
+  "triggered",
+  "status",
+  "failure",
+  "E",
+  "N",
+  "prompt_id",
+  "prompt_sha256",
+  "prompts",
+  "model_id",
+  "response_id",
+  "attempts",
+  "added",
+  "surplus",
+  "dropped_by_stage"
+ ],
+ "presentable_filter": {
+  "version": "presentable_v1_2026-10-29",
+  "checked": 12,
+  "canonicalization_qa_dropped": 1,
+  "gloss_unresolved_dropped": 0,
+  "dropped_by_code": {
+   "rescue_unverified": 1
+  },
+  "presentable": 11,
+  "n_candidates": 11
+ },
+ "shortfall": true,
+ "n_llm_calls": 9,
+ "n_truncation_retries": 0,
+ "cost": {
+  "by_stage_jpy": {
+   "kp": 5.106,
+   "kp_n5_b1": 0.474,
+   "kp_n5_sel": 0.734,
+   "kp_gloss_alignment": 2.095,
+   "kp_n5_gen5": 1.235,
+   "kp_n5_ver5": 2.966,
+   "kp_n5_chk5": 6.098,
+   "kp_rescue_gloss_realign": 0.053,
+   "kp_rescue_qa_rejudge": 0.135
+  },
+  "total_jpy": 18.896,
+  "by_provider_jpy": {
+   "openai": 15.929,
+   "gemini": 2.966
+  }
+ },
+ "rows": [
+  {
+   "candidate_id": "p_fab64079d6",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "can't be helped",
+   "display_phrase": "can't be helped",
+   "used_form": "can't be helped",
+   "key_phrase": "can't be helped",
+   "japanese_gloss": "どうしようもない、避けられない",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "FRAME_MISMATCH",
+    "VER_FIXED_FORM"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "can't be helped",
+    "used_form": "can't be helped",
+    "japanese_gloss": "仕方がない",
+    "japanese_gloss_tts": "仕方がない",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「仕方がない、避けられない」を表す自然な定型表現です。helpedはこの表現の受動形を構成しているため変更しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "ここでは誰かを助けられないという意味ではなく、状況を変えられず受け入れるしかないという意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "There is no practical way to prevent or change a situation.",
+     "naive_ja": "助けられない",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_58e94a0d31",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "take the trouble",
+   "display_phrase": "take the trouble",
+   "used_form": "take the trouble",
+   "key_phrase": "take the trouble",
+   "japanese_gloss": "わざわざ手間をかけて何かをする",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "take the trouble",
+    "used_form": "take the trouble",
+    "japanese_gloss": "わざわざ手間をかける",
+    "japanese_gloss_tts": "わざわざ手間をかける",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "reasoning": "「わざわざ手間をかける」という意味で単独でも自然に理解できる表現です。動詞はすでに基本形なので、補語は追加しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "「take the trouble」は、何かをするためにわざわざ手間や労力をかけることを表します。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To make a special effort or spend extra effort to do something.",
+     "naive_ja": "その面倒を取る",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_9ff01df831",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "head off",
+   "display_phrase": "head off",
+   "used_form": "head off",
+   "key_phrase": "head off",
+   "japanese_gloss": "立ち去る、出発する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "head off",
+    "used_form": "head off",
+    "japanese_gloss": "立ち去る",
+    "japanese_gloss_tts": "立ち去る",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "reasoning": "「出発する、立ち去る」を表す句動詞として自然な学習単位です。headはすでに基本形なので変更しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "ここでは「head off」は、知らせを置いたあとにその場を離れることを表す句動詞です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To leave a place and go away.",
+     "naive_ja": "頭を離れる",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_e6476df6ff",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "cover the cost",
+   "display_phrase": "cover the cost",
+   "used_form": "cover something",
+   "key_phrase": "cover something",
+   "japanese_gloss": "費用などを負担する、まかなう",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "cover the cost",
+    "used_form": "cover the cost",
+    "japanese_gloss": "費用を負担する",
+    "japanese_gloss_tts": "費用を負担する",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "reasoning": "費用を負担するという意味が明確で、the costを含めた形が自然な学習単位です。動詞はすでに基本形なので変更しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "費用を物理的に覆うのではなく、その支払いを引き受けるという意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To pay for something or bear its expense.",
+     "naive_ja": "費用を覆う",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_9bae6da75f",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "on top of",
+   "display_phrase": "on top of",
+   "used_form": "on top of",
+   "key_phrase": "on top of",
+   "japanese_gloss": "〜に加えて、さらに",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "on top of",
+    "used_form": "on top of",
+    "japanese_gloss": "～に加えて",
+    "japanese_gloss_tts": "なになにに加えて",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「～に加えて」を表すまとまりとして再利用できるため、そのまま保持します。後続語を足さなくても学習対象の前置詞表現は識別できます。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "ここでは、ある費用に別の料金が追加されることを表しています。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "In addition to another amount or thing.",
+     "naive_ja": "～の上に",
+     "naive_ja_conveys": "yes",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_8ab18c8f82",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "end up",
+   "display_phrase": "end up",
+   "used_form": "end up",
+   "key_phrase": "end up",
+   "japanese_gloss": "結局ある結果・状態になる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "end up",
+    "used_form": "end up",
+    "japanese_gloss": "結局～することになる",
+    "japanese_gloss_tts": "結局なになにすることになる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "reasoning": "結果としてある状態になる・あることをする、という句動詞の基本形として自然です。後続の動名詞などを伴う用法も含め、表示形を保ちます。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "「end up」は、最終的にある結果になったり、あることをすることになったりする意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Eventually to reach a result or find oneself doing something, often unexpectedly.",
+     "naive_ja": "上に終わる",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_076fb18840",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "beforehand",
+   "display_phrase": "beforehand",
+   "used_form": "beforehand",
+   "key_phrase": "beforehand",
+   "japanese_gloss": "あらかじめ",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_0f51a8c574",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "repeatedly",
+   "display_phrase": "repeatedly",
+   "used_form": "repeatedly",
+   "key_phrase": "repeatedly",
+   "japanese_gloss": "何度も",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_fe25452dd8",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "encourages",
+   "display_phrase": "encourages",
+   "used_form": "encourage",
+   "key_phrase": "encourage",
+   "japanese_gloss": "促す",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_23e0d93b83",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "convenient",
+   "display_phrase": "convenient",
+   "used_form": "convenient",
+   "key_phrase": "convenient",
+   "japanese_gloss": "都合がよい",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_00cceb7181",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "errand",
+   "display_phrase": "errand",
+   "used_form": "errand",
+   "key_phrase": "errand",
+   "japanese_gloss": "用足し",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  }
+ ]
+}

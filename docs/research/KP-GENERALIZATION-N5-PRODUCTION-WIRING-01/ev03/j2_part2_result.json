@@ -1,0 +1,176 @@
+{
+ "p7_input": [
+  "equivalent width",
+  "took an unexpected turn",
+  "narrow down the source",
+  "point-like object",
+  "a lower limit",
+  "at a particular wavelength",
+  "absence from the images"
+ ],
+ "b1_input": [
+  "at a particular wavelength",
+  "point-like object",
+  "took an unexpected turn",
+  "absence from the images",
+  "equivalent width",
+  "set a lower limit",
+  "narrow down the source",
+  "has yet to be spoken",
+  "analyze its light in detail",
+  "overlapped with some celestial objects",
+  "dropped the rule",
+  "too soon to announce",
+  "decide too firmly",
+  "from outside the list"
+ ],
+ "picked": [
+  [
+   "equivalent width",
+   "P7"
+  ],
+  [
+   "took an unexpected turn",
+   "P7"
+  ],
+  [
+   "narrow down the source",
+   "P7"
+  ],
+  [
+   "set a lower limit",
+   "B1"
+  ]
+ ],
+ "deferred_rejudged": [
+  {
+   "span": "set a lower limit",
+   "blocked_by": "a lower limit",
+   "keep": true
+  }
+ ],
+ "pool_rejected": [
+  {
+   "span": "at a particular wavelength",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存候補とspanが包含関係(重複)(相手=『at a particular wavelength』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"
+   ],
+   "origin": "B1",
+   "blocked_by": "at a particular wavelength"
+  },
+  {
+   "span": "point-like object",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存候補とspanが包含関係(重複)(相手=『point-like object』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"
+   ],
+   "origin": "B1",
+   "blocked_by": "point-like object"
+  },
+  {
+   "span": "took an unexpected turn",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存候補とspanが包含関係(重複)(相手=『took an unexpected turn』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"
+   ],
+   "origin": "B1",
+   "blocked_by": "took an unexpected turn"
+  },
+  {
+   "span": "absence from the images",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存候補とspanが包含関係(重複)(相手=『absence from the images』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"
+   ],
+   "origin": "B1",
+   "blocked_by": "absence from the images"
+  },
+  {
+   "span": "equivalent width",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存候補とspanが包含関係(重複)(相手=『equivalent width』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"
+   ],
+   "origin": "B1",
+   "blocked_by": "equivalent width"
+  },
+  {
+   "span": "narrow down the source",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存候補とspanが包含関係(重複)(相手=『narrow down the source』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"
+   ],
+   "origin": "B1",
+   "blocked_by": "narrow down the source"
+  },
+  {
+   "span": "has yet to be spoken",
+   "stage": "n5_pool",
+   "reasons": [
+    "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+   ],
+   "origin": "B1"
+  }
+ ],
+ "l3_kept": {
+  "equivalent width": {
+   "display_form": "equivalent width",
+   "gloss_ja": "輝線の強さを連続光に対して示す幅",
+   "check": {
+    "id": 1,
+    "context_sense_ja": "スペクトル線の強さを周囲の連続光に対する波長幅として表した量である等価幅。",
+    "example_en": "The equivalent width of the emission feature increased during the flare.",
+    "relation": "SAME",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "reason_ja": "提示形は本文と同じ専門用語で、日本語も輝線の等価幅を説明している。"
+   },
+   "reverted": null
+  },
+  "took an unexpected turn": {
+   "display_form": "take a turn",
+   "gloss_ja": "物事の展開が別の方向へ変化すること",
+   "check": {
+    "id": 2,
+    "context_sense_ja": "調査の展開が予想外の方向へ変わった。",
+    "example_en": "The negotiations took a turn when a new mediator arrived.",
+    "relation": "MODIFIER_DROPPED_OK",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "reason_ja": "unexpectedを除いているが、物事の展開が変化するという語義と構文は保たれている。日本語にも予想外という限定は含まれていない。"
+   },
+   "reverted": null
+  },
+  "narrow down the source": {
+   "display_form": "narrow something down",
+   "gloss_ja": "候補の範囲を狭めて特定に近づける",
+   "check": {
+    "id": 3,
+    "context_sense_ja": "その光の発生源として考えられる候補を絞り込み、特定に近づける。",
+    "example_en": "We narrowed the options down to two affordable apartments.",
+    "relation": "SAME",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "reason_ja": "narrow downの目的語を代名詞的なsomethingに置き換えた見出しであり、目的語を粒子downの前に置く構文も本文と同じ用法として認められる。"
+   },
+   "reverted": null
+  },
+  "set a lower limit": {
+   "display_form": "set a limit",
+   "gloss_ja": "制限や限度を設けること",
+   "check": {
+    "id": 4,
+    "context_sense_ja": "その輝線の等価幅について、少なくともこの値以上であるという下限を定める。",
+    "example_en": "The committee set a limit on annual spending.",
+    "relation": "MODIFIER_DROPPED_OK",
+    "fix_display_form": "",
+    "fix_gloss_ja": "",
+    "reason_ja": "lowerを除いて限度を設けるという一般的な見出しにしている。日本語は下限に限定しない一般的な意味なので、修飾語の除去による不整合はない。"
+   },
+   "reverted": null
+  }
+ },
+ "l3_dropped": [],
+ "cost_jpy": 2.4864
+}

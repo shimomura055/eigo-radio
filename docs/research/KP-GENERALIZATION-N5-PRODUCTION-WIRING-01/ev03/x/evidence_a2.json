@@ -1,0 +1,649 @@
+{
+ "route": "X",
+ "level": "a2",
+ "method": "N5@T3-2026-10-30",
+ "models_requested": {
+  "b1": "gpt-6-luna",
+  "sel": "gpt-6-luna",
+  "gen5": "gpt-6-luna",
+  "ver5": "gemini-3.8-flash",
+  "chk5": "gpt-6.1-sol"
+ },
+ "prompt_sha16": {
+  "B1": "97dd3c281a2858f3",
+  "SEL": "c9f7e85459fbbedd",
+  "GEN5": "f284d2d87eedbe7e",
+  "VER5": "e25540ebac7b86bc",
+  "CHK5": "5e643f0fc98c8944",
+  "CHUNK_DEFS_V3+EXTRA_RULES_V3": "325cf65ef1dc84f7",
+  "GEN5_EXTRA": "a4252120a6254001",
+  "GEN2_RULES": "32f51f3552ab3497",
+  "VER5_HEAD+VER5_ADD": "1483f97b92a40be9",
+  "CHK5_RULES": "b10a6edca5ed9737",
+  "schema": {
+   "B1": "e52f403cf3b4760f",
+   "SEL": "36612de032fba6b4",
+   "GEN5": "e158613928975289",
+   "VER5": "1164d51aa0682719",
+   "CHK5": "c5a05fed55bf59ea"
+  },
+  "FLAGS_V1_HASH": "3bba7ad2cc6a"
+ },
+ "wordnet_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+ "n_candidates": 10,
+ "n_n5": 5,
+ "word_count_dist_n5": {
+  "3": 2,
+  "4": 1,
+  "2": 2
+ },
+ "actual_model_ids_by_stage": {
+  "b1": [
+   "gpt-6-luna"
+  ],
+  "sel": [
+   "gpt-6-luna"
+  ],
+  "gen5": [
+   "gpt-6-luna"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "gpt-6.1-sol"
+  ]
+ },
+ "model_versions_by_stage": {
+  "b1": [
+   "None"
+  ],
+  "sel": [
+   "None"
+  ],
+  "gen5": [
+   "None"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "None"
+  ]
+ },
+ "dropped_by_stage": {
+  "n5_select": 3,
+  "canonicalization_qa": 2
+ },
+ "pool_rejected_by_stage": {
+  "n5_pool": 14
+ },
+ "pool_rejected_by_reason": {
+  "既存Gate(validate): 有限助動詞を含む(既存canonicaliz": 1,
+  "既存候補と同一span(重複。Trialと同じ除外)": 10,
+  "既存候補とspanが包含関係(重複)(相手=『needs another loo": 1,
+  "除外指定の語句(Human NG/累積除外)": 2
+ },
+ "l1": [
+  {
+   "include_b1": true,
+   "n_p7_in": 7,
+   "n_b1_returned": 12,
+   "pool_size": 11,
+   "n_judged": 11,
+   "n_keep": 8,
+   "n_picked": 7,
+   "picked_origin": {
+    "P7": 5,
+    "B1": 2
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 8
+   }
+  },
+  {
+   "include_b1": true,
+   "n_p7_in": 6,
+   "n_b1_returned": 12,
+   "pool_size": 12,
+   "n_judged": 12,
+   "n_keep": 7,
+   "n_picked": 7,
+   "picked_origin": {
+    "P7": 4,
+    "B1": 3
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 6
+   }
+  },
+  {
+   "include_b1": false,
+   "n_p7_in": 1,
+   "n_b1_returned": 0,
+   "pool_size": 1,
+   "n_judged": 1,
+   "n_keep": 0,
+   "n_picked": 0,
+   "picked_origin": {
+    "P7": 0,
+    "B1": 0
+   },
+   "pool_rejected_by_reason": {}
+  }
+ ],
+ "l3_summaries": [
+  {
+   "targets": 7,
+   "kept": 7,
+   "dropped_by_stage": {},
+   "reverted": 1,
+   "check_relation": {
+    "SAME": 6,
+    "NONE": 1
+   },
+   "flags": {
+    "PERSONIFIED_THING": 1,
+    "PERSON_OVERRIDE": 1,
+    "PRONOUN_SLOT": 1,
+    "FIX_REJECTED": 1,
+    "VER_FLAG": 1
+   },
+   "reconcile": {
+    "SAME": 7
+   },
+   "form_changed_vs_span": 4,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  }
+ ],
+ "person_repair": [
+  {
+   "prefix": "initial",
+   "n5_gloss_rewritten": 0
+  }
+ ],
+ "backfill": {
+  "status": "OK",
+  "n_added": null,
+  "n_requested": null,
+  "rounds": null,
+  "triggered": true
+ },
+ "backfill_raw_keys": [
+  "enabled",
+  "triggered",
+  "status",
+  "failure",
+  "E",
+  "N",
+  "prompt_id",
+  "prompt_sha256",
+  "prompts",
+  "model_id",
+  "response_id",
+  "attempts",
+  "added",
+  "surplus",
+  "dropped_by_stage"
+ ],
+ "presentable_filter": {
+  "version": "presentable_v1_2026-10-29",
+  "checked": 12,
+  "canonicalization_qa_dropped": 2,
+  "gloss_unresolved_dropped": 0,
+  "dropped_by_code": {
+   "qa_fail": 1,
+   "rescue_unverified": 2
+  },
+  "presentable": 10,
+  "n_candidates": 10
+ },
+ "shortfall": true,
+ "n_llm_calls": 8,
+ "n_truncation_retries": 0,
+ "cost": {
+  "by_stage_jpy": {
+   "scaffold": 2.388,
+   "kp_n5_b1": 0.281,
+   "kp_n5_sel": 0.654,
+   "kp_gloss_alignment": 1.064,
+   "kp_rescue_gloss_realign": 0.125,
+   "kp_rescue_qa_rejudge": 0.68,
+   "kp_n5_gen5": 0.327,
+   "kp_n5_ver5": 0.859,
+   "kp_n5_chk5": 1.56
+  },
+  "total_jpy": 7.937,
+  "by_provider_jpy": {
+   "openai": 7.078,
+   "gemini": 0.859
+  }
+ },
+ "rows": [
+  {
+   "candidate_id": "p_9252f11bef",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "hear it out",
+   "display_phrase": "hear it out",
+   "used_form": "hear someone out",
+   "key_phrase": "hear someone out",
+   "japanese_gloss": "相手の話を最後まで聞く",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "PERSONIFIED_THING",
+    "PERSON_OVERRIDE",
+    "PRONOUN_SLOT"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "hear it out",
+    "used_form": "hear it out",
+    "japanese_gloss": "言い分を最後まで聞く",
+    "japanese_gloss_tts": "言い分を最後まで聞く",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「最後まで話を聞く」という表現として自然で、itを含む形も文脈に沿った用法なのでそのまま保持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "物を人のように扱い、その言い分を聞くという比喩です。「最後まで聞く」で hear it out の意味を表しています。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Listen fully to what something has to say before deciding what to do.",
+     "naive_ja": "それを外まで聞く",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_fd3fca2cae",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "take points away from",
+   "display_phrase": "take points away from",
+   "used_form": "take points away from",
+   "key_phrase": "take points away from",
+   "japanese_gloss": "スコアカードの採点から点数を引く、減点する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": true,
+   "flags": [
+    "FIX_REJECTED",
+    "VER_FLAG"
+   ],
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 4,
+   "canon_pre": {
+    "key_phrase": "take points away from",
+    "used_form": "take points away from",
+    "japanese_gloss": "〜の評価を下げる",
+    "japanese_gloss_tts": "なになにの評価を下げる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "fromを含めることで「何かから点を奪う・評価を損なう」という関係が保たれるため、補語を伴う構文の学習単位としてそのまま残します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "点数を引くという比喩で、対象の価値やよさを低く評価することを表しています。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Reduce the credit or approval given to something.",
+     "naive_ja": "〜から点を取り去る",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_8030581553",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "in Session",
+   "display_phrase": "in Session",
+   "used_form": "in session",
+   "key_phrase": "in session",
+   "japanese_gloss": "会議や審理が正式に開かれている",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "in Session",
+    "used_form": "in Session",
+    "japanese_gloss": "開廷中",
+    "japanese_gloss_tts": "開廷中",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「開廷中である」という定型表現として成立しており、タイトル内の大文字表記も規則に従ってそのまま保ちます。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "裁判所が審理を行っている状態を表す法廷表現です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "It describes a court that is formally conducting its proceedings.",
+     "naive_ja": "セッションの中で",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_73a41b3e5b",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "relied on",
+   "display_phrase": "relied on",
+   "used_form": "rely on",
+   "key_phrase": "rely on",
+   "japanese_gloss": "頼りにする",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "rely on",
+    "used_form": "rely on",
+    "japanese_gloss": "〜を頼りにする",
+    "japanese_gloss_tts": "なになにを頼りにする",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "lemma_normalization",
+    "reasoning": "reliedを動詞の基本形relyにし、句動詞を構成するonは残します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "何かを支えや助けとして当てにする意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Depend on something as a source of help or support.",
+     "naive_ja": "〜の上に頼る",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_99f351d807",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "take up space",
+   "display_phrase": "take up space",
+   "used_form": "take up space",
+   "key_phrase": "take up space",
+   "japanese_gloss": "空間を占める",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "take up space",
+    "used_form": "take up space",
+    "japanese_gloss": "場所を取る",
+    "japanese_gloss_tts": "場所を取る",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "自然な慣用表現で、単独でも意味を理解できるため、そのまま保持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "ここでは物が実際に場所を占めるという字義どおりの意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Occupy physical room or area.",
+     "naive_ja": "空間を取る",
+     "naive_ja_conveys": "yes",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_d3f0d26b7b",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "clutter",
+   "display_phrase": "clutter",
+   "used_form": "clutter",
+   "key_phrase": "clutter",
+   "japanese_gloss": "散らかった物",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_860360acc7",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "verdict",
+   "display_phrase": "verdict",
+   "used_form": "verdict",
+   "key_phrase": "verdict",
+   "japanese_gloss": "結論",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_b5867ae5b6",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "supplement",
+   "display_phrase": "supplement",
+   "used_form": "supplement",
+   "key_phrase": "supplement",
+   "japanese_gloss": "サプリメント",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_7df726a5c2",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "defense",
+   "display_phrase": "defense",
+   "used_form": "defense",
+   "key_phrase": "defense",
+   "japanese_gloss": "弁護側",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_aa68f9a3b4",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "scorecard",
+   "display_phrase": "scorecard",
+   "used_form": "scorecard",
+   "key_phrase": "scorecard",
+   "japanese_gloss": "採点表",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  }
+ ]
+}

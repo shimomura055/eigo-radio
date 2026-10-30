@@ -925,12 +925,12 @@ def revert_to_span(c, log, why, key="reverted_to_span"):
 # ============================================================
 # 工程(Trial: M3.select/pick, kpg04.generalize5/verify5/run_check の移植)
 # ============================================================
-def select(text, cands, log, ctx):
-    """SEL(塊価値判定1 pass、luna)。判定付き候補のlist(全件)を返す。"""
+def select(text, cands, log, ctx, *, label="SEL"):
+    """SEL(塊価値判定1 pass、luna)。判定付き候補のlist(全件)を返す。label=監査用の呼出名(J2是正の再判定は"SEL_DEFERRED")。"""
     if not cands:
         return []
-    o, m = call_llm("sel", prompt_S3(text, cands, "span"), SEL3_SCHEMA, ctx, label="SEL")
-    log["stages"].append({"stage": "SEL", **_meta(m)})
+    o, m = call_llm("sel", prompt_S3(text, cands, "span"), SEL3_SCHEMA, ctx, label=label)
+    log["stages"].append({"stage": label, **_meta(m)})
     jm = {j["id"]: j for j in o["judgements"] if 1 <= j["id"] <= len(cands)}
     out = []
     for i, c in enumerate(cands, 1):
@@ -1174,10 +1174,19 @@ def run_trial_equivalent(text, base_cands, ctx, *, cap=PHRASE_PICK_CAP) -> dict:
 # ============================================================
 # L1: 候補プール(P7 ∪ B1過剰生成) -> 既存Gate -> SEL -> pick   (Opus M2/M3)
 # ============================================================
-def collect_pool(text, base, b1_cands, *, gate_fn: Optional[Callable] = None) -> tuple:
+def _fill_sentence(text, c):
+    if not c.get("sentence"):
+        for sent in text.replace("\n", " ").split(". "):
+            if span_in_text(c["span"], sent):
+                c["sentence"] = sent.strip()
+                break
+
+
+def collect_pool(text, base, b1_cands, *, gate_fn: Optional[Callable] = None, defer_out: Optional[list] = None) -> tuple:
     """Trial M3.collect の候補プール構築。base=P7候補[{span, sentence, ...}]、b1_cands=B1過剰生成[{span, sentence}]。
     gate_fn=None: Trialと完全同一(本文一致 -> span包含dedupe)。gate_fn指定(Production): B1候補は本文一致 -> **既存Gate(gate_fn)** -> span包含dedupe の順
     (Gateで落ちる候補が他の有効候補の包含dedupeを妨げないため)。gate_fn(c)->(c2|None, reasons)。最後にFRAG除外(P7候補にも適用=Trial同様)。
+    defer_out(list、Production専用。委任_03 J2是正): 包含dedupeで落とした**B1候補**を{cand, blocked_by}で追記する(呼出側がSEL後に、包含相手がkeepでなければ再判定する)。None=Trialと完全同一。
     returns (pool, rejected[{span, stage, reasons, origin}])。"""
     cands = [dict(c, sentence=c.get("sentence") or "") for c in base]
     rejected = []
@@ -1192,16 +1201,15 @@ def collect_pool(text, base, b1_cands, *, gate_fn: Optional[Callable] = None) ->
                 rejected.append({"span": c["span"], "stage": STAGE_POOL, "reasons": list(why), "origin": "B1"})
                 continue
             c = c2
-        if any(_contains(c["span"], b["span"]) for b in cands):
-            rejected.append({"span": c["span"], "stage": STAGE_POOL, "reasons": ["既存候補とspanが包含関係(重複)"], "origin": "B1"})
+        blk = next((b for b in cands if _contains(c["span"], b["span"])), None)
+        if blk is not None:
+            rejected.append({"span": c["span"], "stage": STAGE_POOL, "reasons": ["既存候補とspanが包含関係(重複)"], "origin": "B1", "blocked_by": blk["span"]})
+            if defer_out is not None and toks(c["span"]) != toks(blk["span"]):      # 同一span(表記違い含む)の重複は再判定しない(同じ候補を2回判定しない)
+                defer_out.append({"cand": c, "blocked_by": blk["span"]})
             continue
         cands.append(c)
     for c in cands:
-        if not c.get("sentence"):
-            for sent in text.replace("\n", " ").split(". "):
-                if span_in_text(c["span"], sent):
-                    c["sentence"] = sent.strip()
-                    break
+        _fill_sentence(text, c)
     kept = []
     for c in cands:
         if FRAG.search(c["span"]):
@@ -1256,9 +1264,39 @@ def pool_and_select(text: str, p7_items: list, ctx: N5Ctx, *, include_b1: bool, 
         log["stages"].append({"stage": "B1_overgen", **_meta(m)})
         b1 = [dict(span=c["span"], sentence=c.get("sentence") or "") for c in o["candidates"]]
     gate = make_b1_gate(units, screen_fn) if (units is not None) else None
-    pool, rejected = collect_pool(text, base, b1, gate_fn=gate)
+    defer = []
+    pool, rejected = collect_pool(text, base, b1, gate_fn=gate, defer_out=defer)
     pool = [c for c in pool if ft.phrase_key(c["span"]) not in seen]
     judged = select(text, pool, log, ctx)
+    # J2是正(委任_03): Trial 03のP7入力は保存済みProductionの最終候補(QA通過後)であり、QAで落ちる前のP7 sub-spanはpoolに存在しなかった。
+    # 本配線のP7候補はQA前なので、sub-span(包含相手)がSELでkeepにならない場合はB1 supersetがTrial同様にpoolに残る条件を再現する(SEL後にdedupe)。
+    # 包含相手がkeepのときは従来(Trial)どおりsuperset側を落とす。defer無しの場合は追加callなし=Trial exact。
+    deferred_rejudged = []
+    if defer:
+        keep_spans = [c["span"] for c in judged if c["keep"]]
+        second = []
+        for d in defer:
+            b = dict(d["cand"])
+            _fill_sentence(text, b)
+            if ft.phrase_key(b["span"]) in seen or FRAG.search(b["span"]):
+                continue
+            if any(_contains(b["span"], k) for k in keep_spans):
+                continue                    # 包含相手がkeep: superset側を落とす(Trial逐語の挙動)
+            if any(_contains(b["span"], o["span"]) for o in second):
+                continue                    # 再判定候補同士の包含重複(先着を残す。Trialのcollectと同じ順序規則)
+            second.append(b)
+        if second:
+            rejudged = select(text, second, log, ctx, label="SEL_DEFERRED")
+            judged = judged + rejudged
+            blk_of = {d["cand"]["span"]: d["blocked_by"] for d in defer}
+            deferred_rejudged = [{"span": c["span"], "blocked_by": blk_of.get(c["span"]), "keep": c["keep"]} for c in rejudged]
+            done = {r["span"] for r in deferred_rejudged}
+            rejected = [r for r in rejected if not (r.get("blocked_by") and r["span"] in done)]
+    for r in rejected:
+        if r.get("blocked_by") and toks(r["span"]) == toks(r["blocked_by"]):
+            r["reasons"] = ["既存候補と同一span(重複。Trialと同じ除外)"]
+        elif r.get("blocked_by"):
+            r["reasons"] = [r["reasons"][0] + f"(相手=『{r['blocked_by']}』。Trial差分: Trialのpoolは保存済みQA通過後のP7のみ。本実装は相手がSELでkeepでない場合にB1側をSEL再判定する。この件は再判定の条件に該当せずTrial同様に除外)"]
     kept = pick(judged, cap)
     kept_ids = {id(x) for x in kept}
     dropped = []
@@ -1274,7 +1312,7 @@ def pool_and_select(text: str, p7_items: list, ctx: N5Ctx, *, include_b1: bool, 
                "difficulty": c.get("difficulty"), "cls": c.get("cls"), "chunk_type": c.get("chunk_type"), "sel_reason_ja": c.get("chunk_reason_ja")}
               for c in kept]
     rec = {"method": METHOD_ID, "include_b1": include_b1, "n_p7_in": len(base), "n_b1_returned": len(b1), "pool_size": len(pool),
-           "pool_rejected": rejected, "pool_rejected_by_reason": _count_by(rejected, "stage"), "n_judged": len(judged),
+           "pool_rejected": rejected, "pool_rejected_by_reason": _count_by(rejected, "stage"), "deferred_rejudged": deferred_rejudged, "n_judged": len(judged),
            "n_keep": sum(1 for c in judged if c["keep"]), "n_picked": len(kept), "picked_origin": {"P7": sum(1 for c in kept if c["n5_origin"] != "B1"),
                                                                                                 "B1": sum(1 for c in kept if c["n5_origin"] == "B1")},
            "judged": log.get("judged"), "stages": log["stages"]}

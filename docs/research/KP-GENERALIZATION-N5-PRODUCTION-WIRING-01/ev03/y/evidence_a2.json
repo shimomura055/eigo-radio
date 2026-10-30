@@ -1,0 +1,618 @@
+{
+ "route": "Y",
+ "level": "a2",
+ "method": "N5@T3-2026-10-30",
+ "models_requested": {
+  "b1": "gpt-6-luna",
+  "sel": "gpt-6-luna",
+  "gen5": "gpt-6-luna",
+  "ver5": "gemini-3.8-flash",
+  "chk5": "gpt-6.1-sol"
+ },
+ "prompt_sha16": {
+  "B1": "97dd3c281a2858f3",
+  "SEL": "c9f7e85459fbbedd",
+  "GEN5": "f284d2d87eedbe7e",
+  "VER5": "e25540ebac7b86bc",
+  "CHK5": "5e643f0fc98c8944",
+  "CHUNK_DEFS_V3+EXTRA_RULES_V3": "325cf65ef1dc84f7",
+  "GEN5_EXTRA": "a4252120a6254001",
+  "GEN2_RULES": "32f51f3552ab3497",
+  "VER5_HEAD+VER5_ADD": "1483f97b92a40be9",
+  "CHK5_RULES": "b10a6edca5ed9737",
+  "schema": {
+   "B1": "e52f403cf3b4760f",
+   "SEL": "36612de032fba6b4",
+   "GEN5": "e158613928975289",
+   "VER5": "1164d51aa0682719",
+   "CHK5": "c5a05fed55bf59ea"
+  },
+  "FLAGS_V1_HASH": "3bba7ad2cc6a"
+ },
+ "wordnet_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+ "n_candidates": 10,
+ "n_n5": 5,
+ "word_count_dist_n5": {
+  "4": 1,
+  "3": 3,
+  "2": 1
+ },
+ "actual_model_ids_by_stage": {
+  "b1": [
+   "gpt-6-luna"
+  ],
+  "sel": [
+   "gpt-6-luna"
+  ],
+  "gen5": [
+   "gpt-6-luna"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "gpt-6.1-sol"
+  ]
+ },
+ "model_versions_by_stage": {
+  "b1": [
+   "None"
+  ],
+  "sel": [
+   "None"
+  ],
+  "gen5": [
+   "None"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "None"
+  ]
+ },
+ "dropped_by_stage": {
+  "n5_select": 3,
+  "cmu": 1
+ },
+ "pool_rejected_by_stage": {
+  "n5_pool": 8
+ },
+ "pool_rejected_by_reason": {
+  "既存Gate(CMU): CMU発音辞書に登録されていない語を含む(未登録語: ": 1,
+  "既存候補と同一span(重複。Trialと同じ除外)": 4,
+  "既存Gate(validate): 語数が1〜5語でない(実際: 6語)": 1,
+  "既存Gate(validate): 有限助動詞を含む(既存canonicaliz": 1,
+  "節の断片(関係詞・疑問詞始まり)は塊でない": 1
+ },
+ "l1": [
+  {
+   "include_b1": true,
+   "n_p7_in": 7,
+   "n_b1_returned": 12,
+   "pool_size": 11,
+   "n_judged": 11,
+   "n_keep": 5,
+   "n_picked": 5,
+   "picked_origin": {
+    "P7": 3,
+    "B1": 2
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 8
+   }
+  }
+ ],
+ "l3_summaries": [
+  {
+   "targets": 5,
+   "kept": 5,
+   "dropped_by_stage": {},
+   "reverted": 0,
+   "check_relation": {
+    "MODIFIER_DROPPED_OK": 1,
+    "SAME": 4
+   },
+   "flags": {
+    "FRAME_MISMATCH": 2,
+    "PRONOUN_SLOT": 2,
+    "VER_FIXED_FORM": 2
+   },
+   "reconcile": {
+    "FRAME_MISMATCH": 2,
+    "SAME": 3
+   },
+   "form_changed_vs_span": 2,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  }
+ ],
+ "person_repair": [
+  {
+   "prefix": "initial",
+   "n5_gloss_rewritten": 0
+  }
+ ],
+ "backfill": {
+  "status": "OK",
+  "n_added": null,
+  "n_requested": null,
+  "rounds": null,
+  "triggered": true
+ },
+ "backfill_raw_keys": [
+  "enabled",
+  "triggered",
+  "status",
+  "failure",
+  "E",
+  "N",
+  "prompt_id",
+  "prompt_sha256",
+  "prompts",
+  "model_id",
+  "response_id",
+  "attempts",
+  "added",
+  "surplus",
+  "dropped_by_stage"
+ ],
+ "presentable_filter": {
+  "version": "presentable_v1_2026-10-29",
+  "checked": 12,
+  "canonicalization_qa_dropped": 0,
+  "gloss_unresolved_dropped": 0,
+  "dropped_by_code": {},
+  "presentable": 10,
+  "n_candidates": 10
+ },
+ "shortfall": true,
+ "n_llm_calls": 5,
+ "n_truncation_retries": 0,
+ "cost": {
+  "by_stage_jpy": {
+   "kp": 5.106,
+   "kp_n5_b1": 0.474,
+   "kp_n5_sel": 0.734,
+   "kp_gloss_alignment": 2.095,
+   "kp_n5_gen5": 1.235,
+   "kp_n5_ver5": 2.966,
+   "kp_n5_chk5": 6.098,
+   "kp_rescue_gloss_realign": 0.053,
+   "kp_rescue_qa_rejudge": 0.135
+  },
+  "total_jpy": 18.896,
+  "by_provider_jpy": {
+   "openai": 15.929,
+   "gemini": 2.966
+  }
+ },
+ "rows": [
+  {
+   "candidate_id": "p_cae22ed992",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "end up getting it",
+   "display_phrase": "end up getting it",
+   "used_form": "end up getting something",
+   "key_phrase": "end up getting something",
+   "japanese_gloss": "結局何かを受け取ることになる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "FRAME_MISMATCH",
+    "PRONOUN_SLOT",
+    "VER_FIXED_FORM"
+   ],
+   "check_relation": "MODIFIER_DROPPED_OK",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 4,
+   "canon_pre": {
+    "key_phrase": "end up getting it",
+    "used_form": "end up getting it",
+    "japanese_gloss": "結局それを受け取ることになる",
+    "japanese_gloss_tts": "結局それを受け取ることになる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「end up + 動名詞」は自然な構文なのでgettingを保ちます。itは規則5の置換対象外であり、目的語を伴う表現としてそのまま残します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "“End up” shows the eventual outcome, and “get it” means receive it here. “手に入れる” can suggest acquiring rather than receiving.",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To ultimately receive something as the final outcome.",
+     "naive_ja": "結局それを手に入れることになる",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_9f42c71603",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "make an effort",
+   "display_phrase": "make an effort",
+   "used_form": "make an effort",
+   "key_phrase": "make an effort",
+   "japanese_gloss": "努力する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "make an effort",
+    "used_form": "make an effort",
+    "japanese_gloss": "努力する",
+    "japanese_gloss_tts": "努力する",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「make an effort」は冠詞を含めて自然な定型表現であり、冠詞を削ると表現の形が損なわれます。意味の核を含む最小十分な単位なので変更しません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "“Make an effort” is naturally expressed in Japanese as “努力する.”",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To try hard to do something.",
+     "naive_ja": "努力を作る",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_3305371a5c",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "hard on us",
+   "display_phrase": "hard on us",
+   "used_form": "hard on",
+   "key_phrase": "hard on",
+   "japanese_gloss": "人にとって厳しく、負担となる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "PRONOUN_SLOT"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "hard on someone",
+    "used_form": "hard on someone",
+    "japanese_gloss": "人にとって負担が大きい",
+    "japanese_gloss_tts": "人にとって負担が大きい",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "generalize_person_dependent_reference",
+    "reasoning": "usは記事中の配達員たちを指す目的格なので、一般的なsomeoneに置き換えます。「hard on someone」の意味と用法は保たれます。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "Here, “hard on someone” means burdensome, not strict or harsh toward them. “人” keeps the person indefinite.",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To cause difficulty or strain for a person.",
+     "naive_ja": "誰かに厳しい",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_fab64079d6",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "can't be helped",
+   "display_phrase": "can't be helped",
+   "used_form": "can't be helped",
+   "key_phrase": "can't be helped",
+   "japanese_gloss": "どうにもできず、仕方がない",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "FRAME_MISMATCH",
+    "VER_FIXED_FORM"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "can't be helped",
+    "used_form": "can't be helped",
+    "japanese_gloss": "仕方がない",
+    "japanese_gloss_tts": "仕方がない",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「can't be helped」は「仕方がない」という意味の自然な定型表現です。語形を変えず、この単位を維持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "“Can’t be helped” is an expression meaning that a situation cannot be changed or avoided.",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "There is nothing that can be done to change or avoid a situation.",
+     "naive_ja": "助けられることができない",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_6b419e60e0",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "again and again",
+   "display_phrase": "again and again",
+   "used_form": "again and again",
+   "key_phrase": "again and again",
+   "japanese_gloss": "何度も繰り返して",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "again and again",
+    "used_form": "again and again",
+    "japanese_gloss": "何度も繰り返し",
+    "japanese_gloss_tts": "何度も繰り返し",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「again and again」は反復を表す自然で再利用可能な表現です。文脈限定語を含まず、変更は不要です。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "The phrase conveys repetition; “何度も繰り返し” is a natural Japanese way to express it.",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Repeatedly, on many separate occasions.",
+     "naive_ja": "再び、そして再び",
+     "naive_ja_conveys": "yes",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_5ea9c348e5",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "charge",
+   "display_phrase": "charge",
+   "used_form": "charge",
+   "key_phrase": "charge",
+   "japanese_gloss": "料金を請求する",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_df78d3c5d0",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "suits",
+   "display_phrase": "suits",
+   "used_form": "suit",
+   "key_phrase": "suit",
+   "japanese_gloss": "都合がいい",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_fe25452dd8",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "encourages",
+   "display_phrase": "encourages",
+   "used_form": "encourage",
+   "key_phrase": "encourage",
+   "japanese_gloss": "促す",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_00cceb7181",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "errand",
+   "display_phrase": "errand",
+   "used_form": "errand",
+   "key_phrase": "errand",
+   "japanese_gloss": "ちょっとした用事",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_46ae5ea601",
+   "kind": "word",
+   "origin": "backfill",
+   "source_span": "simply",
+   "display_phrase": "simply",
+   "used_form": "simply",
+   "key_phrase": "simply",
+   "japanese_gloss": "簡単に",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  }
+ ]
+}

@@ -655,6 +655,124 @@ class TestPoolAndGate(unittest.TestCase):
         out = n5.pick(j, 7)
         self.assertEqual([c["span"] for c in out], ["walk someone through", "rely on"])
 
+class TestJ2ProductionL1EqualsTrialOnRecordedCases(unittest.TestCase):
+    """J2是正の等価性(API 0): Trial 03の19ケースで、Production L1(pool_and_select、再判定つき)の選定がTrialのL1(collect_pool->select->pick)と一致する。
+    再判定callが必要になるのは2ケース(ai_cha_a2 'clear fall'、moon_b1b 'heat from escaping')のみで、実APIでの再判定結果はいずれも非keep(Trialと同一選定)=`ev03/j2_part1_result.json`。"""
+    NEEDS_SECOND_SEL = {"ai_cha_a2": ["clear fall"], "moon_b1b": ["heat from escaping"]}
+
+    def _l1(self, cid):
+        case = FX["cases"][cid]
+        items = [{"display_phrase": b["span"], "source_sentence": b.get("sentence") or "", "item": {"display_phrase": b["span"]}} for b in case["base"]]
+        gate = lambda units, screen=None: (lambda c: (dict(c, n5_origin="B1", item={"display_phrase": c["span"], "reason_ja": ""}), []))
+        spans = []
+        orig = n5.select
+
+        def wrap(text, cands, log, ctx, *, label="SEL"):
+            if label == "SEL_DEFERRED":
+                spans.append([c["span"] for c in cands])
+                return []                     # 再判定なし(非keep)として扱い、再判定対象spanだけ記録する
+            return orig(text, cands, log, ctx, label=label)
+        send = ReplaySend()
+        ctx = n5.N5Ctx("A2_SUPPORT", sleep_fn=lambda s: None)
+        with mock.patch.object(n5, "_send", send), mock.patch.object(n5, "preflight", lambda: None), mock.patch.object(n5, "make_b1_gate", gate), mock.patch.object(n5, "select", wrap):
+            r = n5.pool_and_select(case["text"], items, ctx, include_b1=True, units=[])
+        # Trial L1(同じreplay応答)
+        send2 = ReplaySend()
+        ctx2 = n5.N5Ctx("A2_SUPPORT", sleep_fn=lambda s: None)
+        with mock.patch.object(n5, "_send", send2), mock.patch.object(n5, "preflight", lambda: None):
+            o, _ = n5.call_llm("b1", n5.prompt_B1(case["text"]), n5.B1_SCHEMA, ctx2, label="B1")
+            pool, _ = n5.collect_pool(case["text"], case["base"], o["candidates"])
+            kept = n5.pick(n5.select(case["text"], pool, n5.new_log("t"), ctx2), n5.PHRASE_PICK_CAP)
+        return [p["item"]["display_phrase"] for p in r["picked"]], [c["span"] for c in kept], spans
+
+    def test_all_19_cases_l1_selection_equals_trial(self):
+        second = {}
+        for cid in FX["cases"]:
+            with self.subTest(case=cid):
+                prod, trial, sp = self._l1(cid)
+                self.assertEqual(prod, trial)
+                if sp:
+                    second[cid] = sp[0]
+        self.assertEqual(second, self.NEEDS_SECOND_SEL)
+
+
+class TestJ2DeferredRejudge(unittest.TestCase):
+    """委任_03 J2是正: 包含dedupeをSEL後に回す。Trial 03のP7入力はQA通過後の最終候補で、F判定になるP7 sub-spanはpoolに無かった。
+    P7 sub-span(包含相手)がSELでkeepにならないとき、B1 supersetをSEL再判定して残す。相手がkeepなら従来(Trial逐語)どおりsupersetを落とす。"""
+    TEXT = "The telescope team will set a lower limit on the mass. They kept calm."
+
+    def _run(self, judge, b1=("set a lower limit",), p7=("a lower limit",)):
+        sel_calls = []
+
+        def fake_prompt_S3(text, cands, mode):
+            sel_calls.append([c["span"] for c in cands])
+            return "SEL::" + "|".join(c["span"] for c in cands)
+
+        def fake_call(stage, user, schema, ctx, *, label=""):
+            if stage == "b1":
+                return {"candidates": [{"span": b, "sentence": self.TEXT} for b in b1]}, {"model_id": "x"}
+            assert stage == "sel", stage
+            spans = user[len("SEL::"):].split("|")
+            return {"judgements": [dict(id=i, cls="C" if judge[sp] else "F", chunk_type="collocation" if judge[sp] else "none", reason_ja="r",
+                                        difficulty="advanced", keep=judge[sp], passive_fragment=False) for i, sp in enumerate(spans, 1)]}, {"model_id": "x"}
+        gate = lambda units, screen=None: (lambda c: (dict(c, n5_origin="B1", item={"display_phrase": c["span"], "reason_ja": ""}), []))
+        items = [{"display_phrase": x, "source_sentence": self.TEXT} for x in p7]
+        with mock.patch.object(n5, "preflight", lambda: None), mock.patch.object(n5, "prompt_S3", fake_prompt_S3),                 mock.patch.object(n5, "call_llm", fake_call), mock.patch.object(n5, "make_b1_gate", gate):
+            r = n5.pool_and_select(self.TEXT, items, n5.N5Ctx("A2_SUPPORT", sleep_fn=lambda s: None), include_b1=True, units=[])
+        return r, sel_calls
+
+    def test_sub_span_F_keeps_superset_via_second_sel(self):
+        r, calls = self._run({"a lower limit": False, "set a lower limit": True})
+        self.assertEqual(calls, [["a lower limit"], ["set a lower limit"]])       # 1回目=Trial同一pool、2回目=再判定
+        self.assertEqual([p["item"]["display_phrase"] for p in r["picked"]], ["set a lower limit"])
+        self.assertEqual(r["picked"][0]["n5_origin"], "B1")
+        self.assertEqual(r["record"]["deferred_rejudged"], [{"span": "set a lower limit", "blocked_by": "a lower limit", "keep": True}])
+        self.assertEqual([x["stage"] for x in r["record"]["stages"] if x["stage"].startswith("SEL")], ["SEL", "SEL_DEFERRED"])
+        self.assertEqual(r["record"]["pool_rejected"], [])                               # 再判定した件はn5_pool dropに数えない
+        self.assertEqual([d["phrase"] for d in r["dropped"]], ["a lower limit"])        # P7 sub-spanのSEL非keepは従来どおりn5_select
+
+    def test_sub_span_keep_drops_superset_like_trial_without_second_call(self):
+        r, calls = self._run({"a lower limit": True, "set a lower limit": True})
+        self.assertEqual(calls, [["a lower limit"]])                                    # defer対象はあるが再判定callなし=Trial exact
+        self.assertEqual([p["item"]["display_phrase"] for p in r["picked"]], ["a lower limit"])
+        rej = r["record"]["pool_rejected"]
+        self.assertEqual(len(rej), 1)
+        self.assertEqual(rej[0]["stage"], "n5_pool")
+        self.assertEqual(rej[0]["blocked_by"], "a lower limit")
+        self.assertIn("Trial差分", rej[0]["reasons"][0])                                # drop理由にTrial差分を記録
+        self.assertEqual(r["record"]["deferred_rejudged"], [])
+
+    def test_identical_span_duplicate_is_not_rejudged_and_reason_is_plain(self):
+        r, calls = self._run({"a lower limit": False}, b1=("a lower limit",), p7=("a lower limit",))
+        self.assertEqual(calls, [["a lower limit"]])                                    # 同一spanは再判定しない(同じ候補を2回判定しない)
+        self.assertEqual(r["record"]["pool_rejected"][0]["reasons"], ["既存候補と同一span(重複。Trialと同じ除外)"])
+        self.assertEqual(r["record"]["deferred_rejudged"], [])
+
+    def test_blocker_kept_by_another_candidate_stays_dropped(self):
+        # supersetが別のkeep候補とも包含関係なら再判定しない
+        r, calls = self._run({"a lower limit": False, "limit on the mass": True, "set a lower limit on the mass": True},
+                             b1=("set a lower limit on the mass",), p7=("a lower limit", "limit on the mass"))
+        self.assertEqual(len(calls), 1)
+
+    def test_no_containment_means_single_sel_call_as_trial(self):
+        r, calls = self._run({"kept calm": True}, b1=("kept calm",), p7=())
+        self.assertEqual(calls, [["kept calm"]])
+
+    def test_rejudged_superset_F_is_not_picked_and_not_counted_in_E(self):
+        r, calls = self._run({"a lower limit": False, "set a lower limit": False})
+        self.assertEqual(r["picked"], [])
+        self.assertEqual([d["phrase"] for d in r["dropped"]], ["a lower limit"])      # B1 superset(AIが選んだ候補ではない)は一覧に出さない
+
+    def test_collect_pool_without_defer_out_is_unchanged_trial_logic(self):
+        base = [{"span": "a lower limit", "sentence": "x"}]
+        b1 = [{"span": "set a lower limit", "sentence": "x"}]
+        pool, rej = n5.collect_pool(self.TEXT, base, b1)
+        self.assertEqual([c["span"] for c in pool], ["a lower limit"])
+        d = []
+        pool2, rej2 = n5.collect_pool(self.TEXT, base, b1, defer_out=d)
+        self.assertEqual([c["span"] for c in pool2], ["a lower limit"])
+        self.assertEqual([x["cand"]["span"] for x in d], ["set a lower limit"])
+
 
 if __name__ == "__main__":
     unittest.main()
