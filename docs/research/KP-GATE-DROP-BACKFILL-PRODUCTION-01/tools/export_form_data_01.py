@@ -142,6 +142,21 @@ def reason_missing_warning(doc: dict, entries: list):
             "message_ja": "正式7+5方式の候補にAI理由の欠落が" + str(len(miss)) + "件あります(欠落は正常状態ではありません。該当候補は理由欄を非表示にしています)"}
 
 
+DIFFICULTY_LEVELS = ("easy", "medium", "hard", "rare")
+DIFFICULTY_LABEL_JA = {"easy": "易", "medium": "中", "hard": "難", "rare": "激難(レア)", "unknown": "未判定"}
+
+
+def difficulty_info(c: dict) -> dict:
+    """KP-DIFFICULTY-4LEVEL-DISPLAY-01: 候補の難易度(参考情報。Gateではない)をフォームdataへ透過する。候補docに無い/不正な旧docは`unknown`(未判定)・source=not_graded
+    (fail-open: 候補は除外しない)。readable/AIF1コードには含めない(照合コード互換維持)=フォーム表示側だけが使う。"""
+    d = c.get("difficulty")
+    if isinstance(d, dict) and d.get("level") in DIFFICULTY_LEVELS:
+        return {"level": d["level"], "label_ja": DIFFICULTY_LABEL_JA[d["level"]], "reason_ja": (d.get("reason_ja") or "").strip(),
+                "source": d.get("source") or "llm"}
+    return {"level": "unknown", "label_ja": DIFFICULTY_LABEL_JA["unknown"],
+            "reason_ja": (d.get("reason_ja") if isinstance(d, dict) else "") or "", "source": "fail_open" if isinstance(d, dict) else "not_graded"}
+
+
 def entry(c: dict, source_kind: str = "PRODUCTION_FORMAL_PATH") -> dict:
     fl = c.get("flags") or {}
     rj, rsrc = reason_info(c)
@@ -154,6 +169,7 @@ def entry(c: dict, source_kind: str = "PRODUCTION_FORMAL_PATH") -> dict:
         "kind": kind_of(c), "origin": c.get("origin"), "ai_rank": c.get("ai_rank"),
         "auto_eligible": bool(c.get("auto_eligible")), "human_selectable": bool(c.get("human_selectable", True)),
         "reason_ja": rj,
+        "difficulty": difficulty_info(c),
         "flags": {k: fl[k] for k in ("qa_fail", "gloss_hr_pending", "similar_to_ng", "redundant_with", "rescued", "rescue_codes") if k in fl},
     }
     if c.get("selection_phrase") and c.get("selection_phrase") != e["term"]:
@@ -258,6 +274,8 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
         "backfill": {"enabled": bf.get("enabled"), "triggered": bf.get("triggered"), "status": bf.get("status"), "reason": bf.get("reason"),
                      "E_total": (bf.get("E") or {}).get("total"), "N_total": (bf.get("N") or {}).get("total"), "added": bf.get("added") or [],
                      "dropped_by_stage": bf.get("dropped_by_stage") or {}},
+        "difficulty_grading": {k: (doc.get("difficulty_grading") or {}).get(k) for k in ("version", "prompt_id", "prompt_sha256", "status", "model_id", "n_graded", "n_unknown")}
+        if doc.get("difficulty_grading") else None,
         "shortfall": bool(doc.get("shortfall")), "shortfall_detail": sd_out, "shortfall_note_ja": shortfall_note_ja(doc),
         "grammar": grammar or [],
         "grammar_max_select": GRAMMAR_MAX_SELECT, "grammar_present_max": GRAMMAR_PRESENT_MAX,

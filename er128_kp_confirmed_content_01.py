@@ -252,13 +252,16 @@ def _item_from_cand(c: dict, category: int, slot: str) -> dict:
     gloss = it.get("japanese_gloss")
     tts = it.get("japanese_gloss_tts")
     conv = convert_gloss_tts(gloss)
+    ref = {"ai_reason_ja": c.get("reason_ja"), "ai_rank": c.get("ai_rank")}
+    if c.get("difficulty"):    # KP-DIFFICULTY-4LEVEL-DISPLAY-01: 参考情報として保持(新fieldの条件付き追加。無い旧docはバイト同一。readable/AIF1コードには含めない)
+        ref["difficulty"] = c["difficulty"]
     return {"candidate_id": c["candidate_id"], "kind": c.get("kind") or "phrase", "category": category, "slot": slot,
             "used_form": it.get("used_form"), "display_phrase": it.get("display_phrase"), "key_phrase": it.get("key_phrase"),
             "japanese_gloss": gloss, "gloss_status": it.get("gloss_alignment_status") or (c.get("gates") or {}).get("gloss"),
             "source_sentence_id": it.get("source_sentence_id"),
             "derived": {"japanese_gloss_tts": tts if tts is not None else conv, "converter_id": converter_id(),
                         "matches_converter": (tts is None) or tts == conv},
-            "reference": {"ai_reason_ja": c.get("reason_ja"), "ai_rank": c.get("ai_rank")}}
+            "reference": ref}
 
 
 def build_items(cands: dict, kp_ids: list, vocab_ids: list) -> list:

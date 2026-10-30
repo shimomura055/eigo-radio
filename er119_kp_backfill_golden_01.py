@@ -134,8 +134,8 @@ def strip_additive(doc: dict) -> dict:
     return d
 
 
-ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail", "presentable_filter")     # presentable_filter=HR-SELECTION-FLOW(2026-10-29)追記専用telemetry
-ADDITIVE_CAND_KEYS = ("kind",)
+ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail", "presentable_filter", "difficulty_grading")     # presentable_filter=HR-SELECTION-FLOW(2026-10-29)追記専用telemetry
+ADDITIVE_CAND_KEYS = ("kind", "difficulty")      # difficulty/difficulty_grading=KP-DIFFICULTY-4LEVEL-DISPLAY-01(2026-10-30)追記専用の参考情報
 ADDITIVE_LOG_KEYS = ("backfill",)
 # 補完ON(既定)でも抽出前goldenと完全一致するscenario(E=0かつ外側retry脚の撤去に影響されないもの)
 ON_EQUAL_SCENARIOS = ("s01_default_8", "s05_shortfall_no_drop", "s08_redundancy_pair", "s11_rescue_selection_stage")     # s06/s07は仕様①(2026-10-29)で除外=E>0になったため対象外

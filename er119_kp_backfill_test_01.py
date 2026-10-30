@@ -780,6 +780,7 @@ class TestGoldenPureRefactorTBF24(unittest.TestCase):
                 def core(c):
                     c = json.loads(json.dumps(c))
                     c.pop("kind", None)
+                    c.pop("difficulty", None)      # KP-DIFFICULTY-4LEVEL-DISPLAY-01: 追記専用の参考情報
                     c["flags"].pop("redundant_with", None)
                     return c
                 self.assertEqual([core(c) for c in new["candidates"][:3]], [core(c) for c in old["candidates"][:3]])

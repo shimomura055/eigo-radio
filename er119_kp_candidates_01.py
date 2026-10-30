@@ -30,6 +30,7 @@ import er105_kp_fulltext_selector_01 as ft
 import er108_kp_cmu_lexicon_gate_01 as cmu
 import er125_kp_rescue_production_01 as er125
 import er119_kp_backfill_01 as bf
+import er119_kp_difficulty_01 as dg
 import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
 import er119_kp_p7w5_prompts_01 as p7w5
@@ -357,7 +358,7 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                         person_repair_fn: Optional[Callable] = None, select_fn: Optional[Callable] = None,
                         canon_fn: Optional[Callable] = None, redundancy_fn: Optional[Callable] = None,
                         vocab_call_fn: Optional[Callable] = None, sleep_fn: Optional[Callable] = None,
-                        phrase_call_fn: Optional[Callable] = None) -> dict:
+                        phrase_call_fn: Optional[Callable] = None, difficulty_fn: Optional[Callable] = None) -> dict:
     """returns {"ok": True, "doc": 候補doc(candidates_sha256未付与)} | {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": [...]}。
     作業はすべて <kp_dir>/kp_candidates/round_<n>/work/ 配下。<kp_dir>/keywords_canonicalized.json には触れない(M-1)。"""
     import er030_key_phrase_db_hybrid_core_01 as core
@@ -496,6 +497,12 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
         cands_final = (cands, red, dropped, v2, sel, backfill_rec)
         break
     cands, red, dropped, v2, sel, backfill_rec = cands_final
+    # KP-DIFFICULTY-4LEVEL-DISPLAY-01(APPROVED_FOR_PRODUCTION 2026-10-30): 最終候補集合へ難易度4段階を**追加fieldとして**付与する(1 generate=1 call)。
+    # Gateではない: 候補の除外・並べ替え・件数変更をしない(candidatesのid/順序/他fieldは不変)。判定失敗は`unknown`でfail-open。付与位置が最終段1か所のため
+    # 初回/外側retry/補完(backfill)/再選定roundのどの候補にも付く。routing違反・STOPは伝播(他の段と同じ)。
+    if stop_check_fn is not None:
+        stop_check_fn(f"kp_difficulty:{article_id}:round{round_no}")
+    difficulty_rec = (difficulty_fn or dg.apply_to_candidates)(cands, level, process=process)
     doc = {"level": level, "prompt_ids": {"call1": p7w5.P7_ID, "call2": p7w5.W5P_ID},
            "prompt_sha256": {"call1": p7w5.P7_SHA256, "call2": p7w5.W5P_SHA256},
            "model_requested": ft.SELECTION_MODEL_ID, "model_id": {"call1": sel.get("model_id"), "call2": v2.get("model_id")},
@@ -504,7 +511,8 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
            "rescue_provenance": er125.provenance(),      # R2: 辞書sha・lexicon_status・rescue_enabled・schema(resume時にドリフトをlogのみ)
            "backfill": backfill_rec,                     # F-2: 補完の記録(enabled/triggered/status/E[種類別]/N/added/surplus/dropped/sha/model_id)
            "presentable_filter": _presentable_telemetry(cands, dropped, log[-1] if log else {}),   # 仕様①telemetry(0件でも記録)
-           "shortfall_detail": _shortfall_detail(cands, backfill_rec)}
+           "shortfall_detail": _shortfall_detail(cands, backfill_rec),
+           "difficulty_grading": difficulty_rec}      # KP-DIFFICULTY-4LEVEL-DISPLAY-01: 難易度判定の監査record(version/prompt sha/model_id/件数/fail-open)
     with open(f"{work}/outer_retry_log.json", "w", encoding="utf-8") as f:
         json.dump({"attempts": log, "excluded_phrases": excluded}, f, ensure_ascii=False, indent=2)
     return {"ok": True, "doc": doc}

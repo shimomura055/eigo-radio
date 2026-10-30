@@ -48,3 +48,23 @@ def install() -> None:
 
 
 install()
+
+
+# KP-DIFFICULTY-4LEVEL-DISPLAY-01 (2026-10-30): 候補生成の最終段に難易度判定call(gpt-6-luna)が加わった。注入されないtestが実APIを呼ばないよう、
+# import時に難易度判定の実API生成関数を「呼ぶと失敗する」stubへ差し替える(判定失敗はfail-openでunknown=候補は無変更。API 0)。
+# 実関数のunit testは `er119_kp_difficulty_01._REAL_make_difficulty_fn`(元の関数)にfake clientを渡して行う。
+def _block_difficulty_api() -> None:
+    try:
+        import er119_kp_difficulty_01 as dg
+    except Exception:
+        return
+    if getattr(dg, "_REAL_make_difficulty_fn", None) is not None:
+        return
+    dg._REAL_make_difficulty_fn = dg.make_difficulty_fn
+
+    def _blocked(*a, **k):
+        raise RuntimeError("test環境: 難易度判定の実API呼出は遮断されています(test_state_isolation_01)")
+    dg.make_difficulty_fn = _blocked
+
+
+_block_difficulty_api()

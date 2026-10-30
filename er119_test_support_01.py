@@ -20,6 +20,7 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er011_key_phrase_set_redundancy_qa_01 as rq
 import er105_kp_fulltext_selector_01 as ft
 import er119_kp_human_review_01 as rv
+import er119_kp_difficulty_01 as dg
 import er119_kp_prompt_2v_01 as p2v
 import er119_kp_p7w5_prompts_01 as p7w5
 
@@ -94,6 +95,9 @@ class Env:
         self.messages1, self.messages2 = [], []
         self.canon_inputs = []
         self.red_inputs = []
+        self.difficulty_map = {}         # expression -> easy/medium/hard/rare(既定medium)。KP-DIFFICULTY-4LEVEL-DISPLAY-01
+        self.difficulty_fail = None      # Exceptionを入れると難易度判定callがそれを投げる(fail-openのtest)
+        self.difficulty_messages = []
         self._patches = []
 
     # ---- fakes
@@ -201,6 +205,20 @@ class Env:
             return json.dumps({"pairs": pairs}), "gpt-6-luna", "red_resp"
         return fn
 
+    def _difficulty(self, msg, **kw):
+        """難易度判定call(KP-DIFFICULTY-4LEVEL-DISPLAY-01)のmock。全項目に難易度を返す(difficulty_mapで指定。既定medium)。"""
+        assert dg.prefix_intact(msg), f"難易度判定のmockに想定外のPromptが渡された(fail-closed): {msg[:80]!r}"
+        self.difficulty_messages.append(msg)
+        rows = [json.loads(ln) for ln in msg.split(dg.LIST_DELIMITER, 1)[1].split(chr(10)) if ln.strip()]
+
+        def fn():
+            self.n["difficulty"] += 1
+            if self.difficulty_fail is not None:
+                raise self.difficulty_fail
+            out = [{"id": r["id"], "level": self.difficulty_map.get(r["expression"], "medium"), "reason_ja": "理由"} for r in rows]
+            return json.dumps({"items": out}, ensure_ascii=False), "gpt-6-luna", f"diff_resp_{self.n['difficulty']}"
+        return fn
+
     _in_final = False
 
     def __enter__(self):
@@ -214,6 +232,7 @@ class Env:
             mock.patch.object(kc, "make_canonicalization_fn", self._canon),
             mock.patch.object(ga, "make_alignment_fn", self._gloss),
             mock.patch.object(rq, "make_redundancy_qa_fn", self._red),
+            mock.patch.object(dg, "make_difficulty_fn", self._difficulty),
             mock.patch("time.sleep", lambda s: None),
             mock.patch.dict(os.environ, {"EIGO_KP_RESCUE": self.rescue_env}),
         ]
@@ -227,7 +246,7 @@ class Env:
         return False
 
     def total_llm_calls(self) -> int:
-        return sum(self.n[k] for k in ("call1", "call2", "canon", "gloss", "red"))
+        return sum(self.n[k] for k in ("call1", "call2", "canon", "gloss", "red", "difficulty"))
 
 
 class KpTestCase(unittest.TestCase):
