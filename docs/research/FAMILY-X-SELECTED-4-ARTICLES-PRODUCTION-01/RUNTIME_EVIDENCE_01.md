@@ -329,3 +329,11 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 診断wrapper(`run06/diag_produce_NOT_PUBLISHED.py`、`proper_nouns_for_run`のtitle語のみ除外、scratchの別dir出力・公開なし)で同期は通過し、次に`std In One Line: 'a lower limit'が本文の意味一覧に一意に対応しない(best=0.00)`で停止(`run06/diag_produce.log`)。Std In One Lineの③項目`a lower limit`=下限(dev ページには`a lower limit ＝ 下限`あり、本文は`set a lower limit`)を、End User adapterの意味一覧の突合が拾えない。②Adv F1(Now in Session)と同系統のadapter側欠陥の疑い。**未実証**: 原因の詳細(突合キー)は未調査(er135編集禁止のため調査止まり)。
 ## 4. 費用
 - 本委任 ¥0.16(run累計 70.39->70.55)。案件累計 ≒ ¥452.5+0.2 = **¥452.7 / Cap ¥500**(¥480未達)。本日JST累計(`daily_cost.py 2026-10-29T15:00:00`)= ¥346.0(開始時345.9)。
+
+## 委任_07(2026-10-30): ⑨ HR承認反映・Std組立・dev/End User公開
+- 開始: stop_scope_check rc=0(`run07/`、scratch json)。起動時刻=`run07/launch_times.txt`(assemble 1・End User hook 1、300秒窓<=2。`run06/launch_times.txt`の14:17以降とも窓内2本以下)。
+- HR承認(ユーザー原文=docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_02.md:3-5): 判断対象=HR pageの`full_story_part3_k2_attempt2_postslowdown.wav` sha256 529a7aa01bbb2ee4...(assert一致)。`tools/fx4g_hr_adopt_meta_part3_k2.py --apply`: 試行1原音を決定的に6%減速(21.16s->22.416s)したsha=529a7aa0...と一致(別の音を採用していない)→narration配置+`asm.record_human_approval`+review_lock `RESOLVED/HUMAN_APPROVED`+results注記(status=STOPPEDは正直な記録として維持、ASR NG履歴も保持)。記録=`a2/audit/fx4g_user_approval_record_full_story_part3_k2.json`、backup=`*.pre_fx4g_adopt_backup.json`。API 0。status手書きなし。
+- Std assemble: `er019 runner --stage assemble --level a2 --budget-jpy 10`で status=OK(BLOCKED_STD_CHUNK_SLOWDOWN_GATE解消=chunk減速証跡が記録された)。Gate・閾値無変更。
+- dev試聴ページ: `er019_family_x_listening_page_01.py --slug meta_waddle_world --run-name run_fx4_01 --web user_test/family_x_meta_waddle_world_01`(check_page PASS)。Playwright(local `run07/page_verify_dev_local.json`): audio 47/47再生、console error 0、http>=400 0、`=====` 0、ニュアンス解説 0。
+- End User: origin/main最新のer135(asset rev01-f)をworktreeから`hook_run`(cache再利用、api_calls 0): consistency ok、verify 226項目 NG 0(PC+mobile模擬)。`run07/enduser_produce.log`。
+- 費用: 本委任 ¥0(raw_usage_log無変化)。案件累計≒¥452.7/Cap¥500。本日JST累計(`daily_cost.py 2026-10-29T15:00:00`)=¥346.0(集計対象: 全cost/usage log)。

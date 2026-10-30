@@ -22918,3 +22918,5 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 結果: ⑭ Std/Adv `full_story_part2_k3`のHR Lock解消(approve_regenerate+標準cascade 1起動、実費¥7.47)。Adv KP1解説text(19語)のNG再生成は再実行待ち。ユーザー判断なし。
 
 - 2026-10-30 FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_07: ユーザー最終承認(雪女Std/Adv完成版を正式承認、追加Trial・再生成不要)→OPEN-616 CLOSED(USER_APPROVED)・作品台帳COMPLETED・Closeout(API 0)。原文=docs/pm/delegation_log/2026-10-30_FAMILY-Z-YUKI-ONNA-PRODUCTION-01_USER_FINAL.md。分類: ユーザー指示に基づく記録更新(新規判断なし)。
+
+- 2026-10-30 FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_07: ユーザーHR判断(⑨Std part3_k2の's発音を試聴確認→採用APPROVED_FOR_PRODUCTION、案件予算上限1,500円への引上げ承認[当該案件限り・流用不可])を反映し、⑨のdev試聴ページ+End Userを公開(実費¥0)。原文=docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_02.md。分類: ユーザー指示に基づく記録更新(新規判断なし)。OPEN-612。

@@ -7921,8 +7921,8 @@
       "voice": "Aoede",
       "call_count": 1,
       "retry_count": 0,
-      "sha256": "5260b8cf36c858152931816a79fc640bd9fd6c56bc5f3b913cdec12d298b4f41",
-      "duration_seconds": 19.84,
+      "sha256": "529a7aa01bbb2ee4ee9c56f435bf477056e29dee2c1ebd6c0b43a84e4241229c",
+      "duration_seconds": 22.416,
       "trim_info": {
         "raw_duration_seconds": 19.84,
         "raw_leading_silence_seconds": 0.22,
@@ -8804,7 +8804,21 @@
         "role": "FULL_STORY",
         "expected_base_sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
         "style_base_sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d"
-      }
+      },
+      "FX4G_HUMAN_APPROVAL_NOTE": "[2026-10-30T14:42:02] 個別Human Approval: ユーザー試聴・減速後attempt2を採用(原文=docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_02.md)。ASR NG記録(attempts_log等)は維持、status=STOPPEDは正直な記録として維持。TTS/ASR生成0。一般仕様ではない。",
+      "adopted_attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/attempts/full_story_part3_k2_attempt2_postslowdown.wav",
+      "adopted_audio_sha256": "529a7aa01bbb2ee4ee9c56f435bf477056e29dee2c1ebd6c0b43a84e4241229c",
+      "asr_text": "We still do not know if it will become a craze like Tamagotchi. Will it's free, so I'll try it, turn into, I want to see this pet for a little while today, too? A place to try it out and a seat kept for it every day are different. What is missing from an adult smartphone? A new resident? Or a little room in the day to care about someone.",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.937,
+        "src_duration_seconds": 21.16,
+        "dst_duration_seconds": 22.416,
+        "src_path": "er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/full_story_part3_k2_original.wav",
+        "dst_path": "er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/full_story_part3_k2.wav"
+      },
+      "original_path": "er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/full_story_part3_k2_original.wav"
     },
     "in_one_line": {
       "status": "OK",
@@ -9640,11 +9654,11 @@
     },
     "full_story_part3": {
       "segment_id": "full_story_part3",
-      "status": "CHUNKS_NOT_ALL_VALIDATED",
+      "status": "OK",
       "canonical_text": "Still, it is too soon to get excited about future predictions. At the time of writing, no one had said when it would be available in Japan or other places. TechCrunch has suggested it may be an early step toward future devices like pets. But it does not say that any specific link has been confirmed.\n\nWe still do not know if it will become a craze like Tamagotchi. Will “It’s free, so I’ll try it” turn into “I want to see this pet for a little while today, too”? A place to try it out and a seat kept for it every day are different. What is missing from an adult’s smartphone? A new resident? Or a little room in the day to care about someone?",
       "path": "er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/full_story_part3.wav",
-      "sha256": "ce3d61ce568be359a6e0996bb7d30a88d54a89945c08aabfbc40b62629940827",
-      "duration_seconds": 40.242,
+      "sha256": "a0c5683073af26f7327ffec0c61cc4c0fa72fd37e262f094f30db2026c41c32f",
+      "duration_seconds": 42.8182,
       "chunk_tts": {
         "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
         "family": "X",
@@ -9661,20 +9675,17 @@
           "paragraph"
         ],
         "extra_pause_seconds": 0.2,
-        "raw_parent_sha256": "ce3d61ce568be359a6e0996bb7d30a88d54a89945c08aabfbc40b62629940827",
-        "raw_parent_samples": 965809,
+        "raw_parent_sha256": "a0c5683073af26f7327ffec0c61cc4c0fa72fd37e262f094f30db2026c41c32f",
+        "raw_parent_samples": 1027637,
         "chunk_gate_statuses": {
           "full_story_part3_k1": "VALIDATED",
-          "full_story_part3_k2": "STOPPED"
+          "full_story_part3_k2": "HUMAN_APPROVED"
         },
-        "human_approved_chunks": [],
+        "human_approved_chunks": [
+          "full_story_part3_k2"
+        ],
         "deviation_chunks": [],
-        "not_validated_detail": {
-          "gate_status": "STOPPED",
-          "chunk_raw_statuses": [
-            "STOPPED"
-          ]
-        },
+        "not_validated_detail": null,
         "paragraph_info_lost": null
       },
       "voice": "Aoede",
@@ -9686,12 +9697,10 @@
       },
       "asr_verified": false,
       "clip_kind": "narrator",
-      "slowdown_applied": false,
+      "slowdown_applied": true,
       "slowdown_basis": "all_chunks_slowdown_applied(parent wav = post-slowdown chunk wavs + 0.2s silence)",
       "std_slowdown_composition": "per_chunk_slowdown_then_pad_0.2s",
-      "std_chunk_slowdown_violations": [
-        "full_story_part3_k2"
-      ]
+      "std_chunk_slowdown_violations": []
     }
   },
   "key_phrases": {
