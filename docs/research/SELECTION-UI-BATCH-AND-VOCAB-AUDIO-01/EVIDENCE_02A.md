@@ -32,3 +32,6 @@ DESIGN_01の記述との差(02B実装と整合させるため): (a) 「一括ヘ
 - m8変化: 旧「自由コメント」のみのstateを一括出力すると`【追加指示(全体)】`ラベル付きになりAIF1のm8(コメントsha8)が従来と異なる(設計(e)で承認済みの既知事項)。単体コピーは従来形式を維持(フレーズ/単語コメントが空なら自由コメントそのまま)。
 - Chromium/Windowsはクリップボード経由でLF→CRLF化する(テストで吸収。er128はCRLFを吸収する)。
 - 本番`articles.json`に`batch`が無いため、公開URLは現状従来表示(fail-closed)。Fableが`export_form_data_01.py --set-batch`(02B)で対象バッチを書出すと一括画面が有効化。
+
+## 公開確認(push後、2026-10-30)
+`https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/index.html` HTTP 200、公開form_logic.jsに一括ロジック反映、本番articles.jsonに`batch`無し=従来表示(fail-closed)をPlaywrightで確認(`sub02a_verify_result_live.json`、`sub02a_shots/live_pc.png`)。一括画面の公開側実表示はbatchキー書出し後(Fable)。
