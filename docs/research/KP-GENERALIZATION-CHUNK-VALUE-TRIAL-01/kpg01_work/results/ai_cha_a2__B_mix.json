@@ -1,0 +1,224 @@
+{
+ "items": [
+  {
+   "source_span": "blow a whistle",
+   "source_sentence": "If an AI said that to you, would a guard in your mind blow a whistle?",
+   "display_form": "blow a whistle",
+   "gloss_ja": "警告の笛を鳴らす",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "本文では笛を吹くことが、心の中で警告を発することを表す。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "心の中で警戒を促す比喩。内部告発ではない",
+   "generalization_note_ja": "笛を吹く動作全体を比喩の核として保持",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, “But it’s just right for me…”",
+   "display_form": "let something through",
+   "gloss_ja": "〜を通す、受け入れる",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "let＋目的語＋throughで、通過を許すという動詞の型になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "助言を心の中で拒まず受け入れる",
+   "generalization_note_ja": "letとthroughを核とし、間の目的語を置換",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "sales talk",
+   "source_sentence": "A salesperson can wear a name tag, but that does not mean the sales talk stops.",
+   "display_form": "sales talk",
+   "gloss_ja": "売り込みの話",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "商品購入を促すための売り込みの話を指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "購入を促すための説得的な話",
+   "generalization_note_ja": "定着した複合名詞全体を保持",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_extract",
+    "model_id": "gpt-6-luna",
+    "in": 983,
+    "out": 1884,
+    "cost_jpy": 0.1664,
+    "sec": 14.3
+   },
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6.1-sol",
+    "in": 2148,
+    "out": 776,
+    "cost_jpy": 1.929,
+    "sec": 17.8
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6.1-sol",
+    "in": 1798,
+    "out": 275,
+    "cost_jpy": 1.0154,
+    "sec": 5.2
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1179,
+    "out": 783,
+    "cost_jpy": 0.6113,
+    "sec": 7.4
+   }
+  ],
+  "tag": "B_mix",
+  "dropped_not_in_text": [],
+  "extracted": [
+   "blow a whistle",
+   "let the advice through",
+   "try to persuade",
+   "advice desk",
+   "hide its goal",
+   "sales mode",
+   "needs an instruction manual",
+   "missed the sales pitch",
+   "Open for business",
+   "usual persuasion test",
+   "confirm a clear fall",
+   "sales talk"
+  ],
+  "judged": [
+   {
+    "span": "blow a whistle",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "本文では笛を吹くことが、心の中で警告を発することを表す。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "let＋目的語＋throughで、通過を許すという動詞の型になる。"
+   },
+   {
+    "span": "try to persuade",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "try toと動詞を組み合わせた通常の不定詞構文。"
+   },
+   {
+    "span": "advice desk",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "助言や相談を受け付ける窓口を指す名詞句。"
+   },
+   {
+    "span": "hide its goal",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "目標を隠すという意味の通常の動詞と目的語の組合せ。"
+   },
+   {
+    "span": "sales mode",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "販売活動をする状態という意味を文脈に合わせて組み立てている。"
+   },
+   {
+    "span": "needs an instruction manual",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "説明が必要という創作的な比喩で、全体は定着した表現ではない。"
+   },
+   {
+    "span": "missed the sales pitch",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "sales pitchは定着語だが、missedを含む全体は自由な組合せ。"
+   },
+   {
+    "span": "Open for business",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "店などが営業中であることを示す定型的な掲示表現。"
+   },
+   {
+    "span": "usual persuasion test",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "通常の説得実験を指す、文脈依存の修飾語と名詞の組合せ。"
+   },
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "明確な減少を確認するという通常の動詞と目的語の組合せ。"
+   },
+   {
+    "span": "sales talk",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "商品購入を促すための売り込みの話を指す定着した名詞句。"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "B_mix",
+ "cost_jpy": 3.722,
+ "sec": 44.7
+}

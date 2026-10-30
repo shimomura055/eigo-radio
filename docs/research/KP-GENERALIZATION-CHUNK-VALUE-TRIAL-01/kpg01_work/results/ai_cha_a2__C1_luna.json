@@ -1,0 +1,117 @@
+{
+ "items": [
+  {
+   "source_span": "the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+   "display_form": "sales pitch",
+   "gloss_ja": "販売目的の説得文句",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "販売目的の説得文句を指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "商品を買わせるための説得",
+   "generalization_note_ja": "sales pitchを固定複合名詞として残し、冠詞を省く",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6-luna",
+    "in": 1772,
+    "out": 964,
+    "cost_jpy": 0.1055,
+    "sec": 7.8
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6-luna",
+    "in": 1475,
+    "out": 245,
+    "cost_jpy": 0.0432,
+    "sec": 2.9
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 960,
+    "out": 287,
+    "cost_jpy": 0.2874,
+    "sec": 3.3
+   }
+  ],
+  "tag": "C1_luna",
+  "extracted": [
+   "confirm a clear fall",
+   "results suggest",
+   "the sales pitch",
+   "favored one product",
+   "blow a whistle",
+   "let the advice through"
+  ],
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の語の組合せで、意味も語から推測できる。"
+   },
+   {
+    "span": "results suggest",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "一般的な主語と動詞の組合せで、特有のまとまりではない。"
+   },
+   {
+    "span": "the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "販売目的の説得文句を指す定着した名詞句。"
+   },
+   {
+    "span": "favored one product",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "動詞と目的語の通常の組合せで、意味は明白。"
+   },
+   {
+    "span": "blow a whistle",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "本文では警告の比喩だが、定着表現ではなく意味も推測できる。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "let ... throughで、何かを通過させる意味になる。"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "C1_luna",
+ "cost_jpy": 0.436,
+ "sec": 14.0
+}

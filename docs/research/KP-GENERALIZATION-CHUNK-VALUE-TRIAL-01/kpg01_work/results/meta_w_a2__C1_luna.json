@@ -1,0 +1,130 @@
+{
+ "items": [
+  {
+   "source_span": "At the time of writing",
+   "source_sentence": "At the time of writing, no one had said when it would be available in Japan or other places",
+   "display_form": "at the time of writing",
+   "gloss_ja": "執筆時点で",
+   "chunk_type": "fixed_phrase",
+   "chunk_reason_ja": "執筆時点を示す定型の時間表現。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "記事を書いている時点を示す",
+   "generalization_note_ja": "時間表現全体を固定句として保持",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "make room for",
+   "source_sentence": "It may matter more if they want to make room for one during the gaps in a busy day",
+   "display_form": "make room for something",
+   "gloss_ja": "〜のために余地［場所］を作る",
+   "chunk_type": "collocation",
+   "chunk_reason_ja": "時間や空間の余地を作る意味で定着した組合せ。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "忙しい日々に時間を割く余地を作る",
+   "generalization_note_ja": "make room forを核とし、対象をsomethingに置換",
+   "verify": {
+    "id": 2,
+    "verdict": "FIX",
+    "meaning_preserved": true,
+    "gloss_consistent": false,
+    "natural_headword": true,
+    "issue": "日本語訳が「時間を割く」と文脈に寄りすぎているため、物理的・時間的・抽象的な両面で汎用的に使える表現に調整するのが適切です。",
+    "fix_display_form": "make room for something",
+    "fix_gloss_ja": "〜のために余地［場所］を作る"
+   },
+   "display_form_pre_fix": "make room for something"
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6-luna",
+    "in": 1698,
+    "out": 832,
+    "cost_jpy": 0.0937,
+    "sec": 7.5
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6-luna",
+    "in": 1511,
+    "out": 462,
+    "cost_jpy": 0.0611,
+    "sec": 4.4
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1005,
+    "out": 1368,
+    "cost_jpy": 0.9414,
+    "sec": 12.7
+   }
+  ],
+  "tag": "C1_luna",
+  "extracted": [
+   "At the time of writing",
+   "make room for",
+   "side by side",
+   "early step toward",
+   "gaps in a busy day"
+  ],
+  "judged": [
+   {
+    "span": "At the time of writing",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "執筆時点を示す定型の時間表現。"
+   },
+   {
+    "span": "make room for",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "時間や空間の余地を作る意味で定着した組合せ。"
+   },
+   {
+    "span": "side by side",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "並べて比較する状態を表す定型表現。"
+   },
+   {
+    "span": "early step toward",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の語を通常の文法で組み合わせた表現。"
+   },
+   {
+    "span": "gaps in a busy day",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "各語の意味から全体を理解できる名詞句。"
+   }
+  ]
+ },
+ "case": "meta_w_a2",
+ "method": "C1_luna",
+ "cost_jpy": 1.096,
+ "sec": 24.6
+}

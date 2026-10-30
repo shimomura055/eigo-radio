@@ -1,0 +1,287 @@
+{
+ "items": [
+  {
+   "source_span": "the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+   "display_form": "sales pitch",
+   "gloss_ja": "販売を促す説得的な話",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "販売目的の説得的な売り込みを指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "販売目的の売り込み",
+   "generalization_note_ja": "sales pitchは定着した複合名詞で、salesを替えると別の表現になる",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null,
+   "tokens": [
+    [
+     1,
+     "DROP",
+     ""
+    ],
+    [
+     2,
+     "CORE",
+     "sales"
+    ],
+    [
+     3,
+     "CORE",
+     "pitch"
+    ]
+   ]
+  },
+  {
+   "source_span": "blow a whistle",
+   "source_sentence": "If an AI said that to you, would a guard in your mind blow a whistle",
+   "display_form": "blow a whistle",
+   "gloss_ja": "危険を知らせる合図を出す",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "本文では笛を吹くことが、危険を知らせる比喩になっている。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "危険を知らせる警告の合図を出す",
+   "generalization_note_ja": "whistleが警告の比喩を作り、別の名詞ではこの表現の意味が保てない",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null,
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "blow"
+    ],
+    [
+     2,
+     "CORE",
+     "a"
+    ],
+    [
+     3,
+     "CORE",
+     "whistle"
+    ]
+   ]
+  },
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, \"But it's just right for me",
+   "display_form": "let something through",
+   "gloss_ja": "妨げずに通す・受け入れる",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "let ... throughで、助言を妨げず受け入れる意味になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "助言を妨げずに受け入れる",
+   "generalization_note_ja": "adviceは入れ替え可能な対象で、let throughの間に入る",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null,
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "let"
+    ],
+    [
+     2,
+     "DROP",
+     ""
+    ],
+    [
+     3,
+     "SLOT_THING",
+     ""
+    ],
+    [
+     4,
+     "CORE",
+     "through"
+    ]
+   ]
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 983,
+    "out": 1282,
+    "cost_jpy": 0.1183,
+    "sec": 12.8
+   },
+   {
+    "stage": "SEL",
+    "model_id": "gpt-6-luna",
+    "in": 2133,
+    "out": 1766,
+    "cost_jpy": 0.1754,
+    "sec": 17.1
+   },
+   {
+    "stage": "GEN",
+    "model_id": "gpt-6-luna",
+    "in": 2630,
+    "out": 1539,
+    "cost_jpy": 0.1652,
+    "sec": 23.8
+   },
+   {
+    "stage": "VERIFY",
+    "model_id": "gemini-3.8-flash",
+    "in": 1483,
+    "out": 186,
+    "cost_jpy": 0.2896,
+    "sec": 3.4
+   }
+  ],
+  "tag": "D_luna",
+  "cands": [
+   "confirm a clear fall",
+   "results suggest",
+   "the sales pitch",
+   "favored one product",
+   "blow a whistle",
+   "let the advice through",
+   "hide its goal",
+   "sales mode",
+   "needs an instruction manual",
+   "Open for business",
+   "usual persuasion test",
+   "sales talk"
+  ],
+  "cands_from_p7": [
+   "confirm a clear fall",
+   "results suggest",
+   "the sales pitch",
+   "favored one product",
+   "blow a whistle",
+   "let the advice through"
+  ],
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "results suggest",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "販売目的の説得的な売り込みを指す定着した名詞句。"
+   },
+   {
+    "span": "favored one product",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "blow a whistle",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "本文では笛を吹くことが、危険を知らせる比喩になっている。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "let ... throughで、助言を妨げず受け入れる意味になる。"
+   },
+   {
+    "span": "hide its goal",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "sales mode",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "needs an instruction manual",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "Open for business",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "営業開始・営業中を知らせる定型的な掲示表現。"
+   },
+   {
+    "span": "usual persuasion test",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "sales talk",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "販売目的の説得的な話を指す定着した名詞句。"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "D_luna",
+ "cost_jpy": 0.749,
+ "sec": 57.1
+}

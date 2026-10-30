@@ -1,0 +1,107 @@
+{
+ "items": [
+  {
+   "source_span": "hear it out",
+   "source_sentence": "Before you bring out the storage box, hear it out",
+   "display_form": "hear someone out",
+   "gloss_ja": "人の言い分を最後まで聞く",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "相手の説明を最後まで聞く意味の慣用表現。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "本文では物に弁明の機会を与えるように擬人化している。",
+   "generalization_note_ja": "目的語は自由に入れ替わるためsomeoneにする。",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "take points away from",
+   "source_sentence": "But that could take points away from the ways each home has found to make life work",
+   "display_form": "take points away from",
+   "gloss_ja": "〜の評価［得点］を下げる",
+   "chunk_type": "collocation",
+   "chunk_reason_ja": "得点を差し引く表現を比喩的に評価へ用いている。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "本文では各家庭の工夫を低く評価する、という比喩。",
+   "generalization_note_ja": "pointsを含む表現の核を保ち、自由な目的語は付けない。",
+   "verify": {
+    "id": 2,
+    "verdict": "FIX",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": false,
+    "issue": "辞書見出し・学習用の形として目的語（something/someone）を明示するのが自然です。",
+    "fix_display_form": "take points away from something",
+    "fix_gloss_ja": "〜の評価［得点］を下げる"
+   },
+   "display_form_pre_fix": "take points away from"
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "RG",
+    "model_id": "gpt-6-luna",
+    "in": 2572,
+    "out": 2699,
+    "cost_jpy": 0.2571,
+    "sec": 26.3
+   },
+   {
+    "stage": "verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1095,
+    "out": 206,
+    "cost_jpy": 0.255,
+    "sec": 3.2
+   }
+  ],
+  "tag": "C2_luna",
+  "judged": [
+   {
+    "span": "hear it out",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "相手の説明を最後まで聞く意味の慣用表現。"
+   },
+   {
+    "span": "take points away from",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "得点を差し引く表現を比喩的に評価へ用いている。"
+   },
+   {
+    "span": "make life work",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "make＋目的語＋workの通常の組合せで意味が推測できる。"
+   },
+   {
+    "span": "needs another look",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "再検討が必要だと示す自然な連語。"
+   }
+  ]
+ },
+ "case": "untidi_a2",
+ "method": "C2_luna",
+ "cost_jpy": 0.512,
+ "sec": 29.5
+}

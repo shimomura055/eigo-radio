@@ -1,0 +1,232 @@
+{
+ "items": [
+  {
+   "source_span": "the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+   "display_form": "sales pitch",
+   "gloss_ja": "売り込みの説得文句",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "売り込みの説得文句を指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "相手に商品を買わせようとする働きかけ。",
+   "generalization_note_ja": "商品を売り込む説得文句を表す名詞句。",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "blow a whistle",
+   "source_sentence": "If an AI said that to you, would a guard in your mind blow a whistle",
+   "display_form": "blow a whistle",
+   "gloss_ja": "警戒の合図を出す",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "警戒の合図を出す比喩として使われている。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "心の中で危険や不自然さに気づくこと。",
+   "generalization_note_ja": "心の中で警戒の合図を出す比喩表現。",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, \"But it's just right for me",
+   "display_form": "let something through",
+   "gloss_ja": "何かを受け入れる",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "let throughで、通す・受け入れる意味になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "助言を拒まず、自分の中に通す意味。",
+   "generalization_note_ja": "目的語をsomethingに置き換えて使う。",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "needs an instruction manual",
+   "source_sentence": "But wait. This number needs an instruction manual.",
+   "display_form": "need an instruction manual",
+   "gloss_ja": "理解するための説明が要る",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "説明書が必要という比喩で、解釈の難しさを表す。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "数字だけでは意味を理解しにくいこと。",
+   "generalization_note_ja": "何かに説明や解釈の手引きが必要という比喩。",
+   "verify": {
+    "id": 4,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 983,
+    "out": 1282,
+    "cost_jpy": 0.1183,
+    "sec": 12.8
+   },
+   {
+    "stage": "RG",
+    "model_id": "gpt-6-luna",
+    "in": 2764,
+    "out": 2725,
+    "cost_jpy": 0.2622,
+    "sec": 22.0
+   },
+   {
+    "stage": "verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1243,
+    "out": 321,
+    "cost_jpy": 0.3418,
+    "sec": 3.5
+   }
+  ],
+  "tag": "C3_luna",
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "results suggest",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "売り込みの説得文句を指す定着した名詞句。"
+   },
+   {
+    "span": "favored one product",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "blow a whistle",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "警戒の合図を出す比喩として使われている。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "let throughで、通す・受け入れる意味になる。"
+   },
+   {
+    "span": "hide its goal",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "sales mode",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "needs an instruction manual",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "説明書が必要という比喩で、解釈の難しさを表す。"
+   },
+   {
+    "span": "Open for business",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "営業開始・営業中を示す定型的な看板表現。"
+   },
+   {
+    "span": "usual persuasion test",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "sales talk",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "販売を促す話し方を指す定着した名詞句。"
+   }
+  ],
+  "cands_total": 12,
+  "cands_added_by_overgen": [
+   "hide its goal",
+   "sales mode",
+   "needs an instruction manual",
+   "Open for business",
+   "usual persuasion test",
+   "sales talk"
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "C3_luna",
+ "cost_jpy": 0.722,
+ "sec": 38.3
+}

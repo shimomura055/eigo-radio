@@ -1,0 +1,343 @@
+[
+ {
+  "case": "untidi_a2",
+  "items": [
+   {
+    "source_span": "take points away from",
+    "source_sentence": "But that could take points away from the ways each home has found to make life work",
+    "display_form": "take points away from",
+    "gloss_ja": "〜の価値・評価を損なう",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "評価点を差し引くように、価値を低く見せる",
+    "generalization_note_ja": "pointsは評価を表す比喩として固定し、句動詞の核も残した",
+    "verify": {
+     "id": 1,
+     "verdict": "FIX",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": false,
+     "issue": "take point away from は不自然で、得点・評価を減点するという意味では points と複数形にするのが自然。",
+     "fix_display_form": "take points away from",
+     "fix_gloss_ja": "〜の価値・評価を損なう"
+    },
+    "display_form_pre_fix": "take point away from",
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "take"
+     ],
+     [
+      2,
+      "CORE",
+      "point"
+     ],
+     [
+      3,
+      "CORE",
+      "away"
+     ],
+     [
+      4,
+      "CORE",
+      "from"
+     ]
+    ]
+   },
+   {
+    "source_span": "make life work",
+    "source_sentence": "But that could take points away from the ways each home has found to make life work",
+    "display_form": "make life work",
+    "gloss_ja": "生活を成り立たせる",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "日々の暮らしをうまく機能させる",
+    "generalization_note_ja": "lifeはこの語義に必要な語として核に含めた",
+    "verify": {
+     "id": 2,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "make"
+     ],
+     [
+      2,
+      "CORE",
+      "life"
+     ],
+     [
+      3,
+      "CORE",
+      "work"
+     ]
+    ]
+   }
+  ],
+  "log": {
+   "stages": [
+    {
+     "stage": "GEN",
+     "model_id": "gpt-6-luna",
+     "in": 2355,
+     "out": 1017,
+     "cost_jpy": 0.119,
+     "sec": 13.4
+    },
+    {
+     "stage": "VERIFY",
+     "model_id": "gemini-3.8-flash",
+     "in": 1330,
+     "out": 209,
+     "cost_jpy": 0.285,
+     "sec": 5.0
+    }
+   ],
+   "tag": "gtest3_g3b",
+   "cands": [
+    "take points away from",
+    "make life work"
+   ],
+   "cands_from_p7": [
+    "hear it out",
+    "take points away from",
+    "make life work",
+    "needs another look"
+   ],
+   "judged": []
+  },
+  "cost": 0.4
+ },
+ {
+  "case": "meta_w_a2",
+  "items": [
+   {
+    "source_span": "At the time of writing",
+    "source_sentence": "At the time of writing, no one had said when it would be available in Japan or other places",
+    "display_form": "at the time of",
+    "gloss_ja": "〜の時点で",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "執筆時点での状況を示す",
+    "generalization_note_ja": "at the time ofを核とし、writingは文脈語として除外",
+    "verify": {
+     "id": 1,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "at"
+     ],
+     [
+      2,
+      "CORE",
+      "the"
+     ],
+     [
+      3,
+      "CORE",
+      "time"
+     ],
+     [
+      4,
+      "CORE",
+      "of"
+     ],
+     [
+      5,
+      "DROP",
+      ""
+     ]
+    ]
+   }
+  ],
+  "log": {
+   "stages": [
+    {
+     "stage": "GEN",
+     "model_id": "gpt-6-luna",
+     "in": 2244,
+     "out": 461,
+     "cost_jpy": 0.0728,
+     "sec": 4.7
+    },
+    {
+     "stage": "VERIFY",
+     "model_id": "gemini-3.8-flash",
+     "in": 1219,
+     "out": 90,
+     "cost_jpy": 0.2003,
+     "sec": 2.3
+    }
+   ],
+   "tag": "gtest3_g3b",
+   "cands": [
+    "At the time of writing"
+   ],
+   "cands_from_p7": [
+    "At the time of writing",
+    "make room for",
+    "side by side",
+    "early step toward",
+    "gaps in a busy day"
+   ],
+   "judged": []
+  },
+  "cost": 0.27
+ },
+ {
+  "case": "jwst_m_a2",
+  "items": [
+   {
+    "source_span": "narrow down the source",
+    "source_sentence": "The empty space had become a clue that could help narrow down the source",
+    "display_form": "narrow down",
+    "gloss_ja": "対象を絞り込む",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "対象を特定できるよう候補を絞る",
+    "generalization_note_ja": "narrow downを核とし、絞り込む対象は可変部",
+    "verify": {
+     "id": 1,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "narrow"
+     ],
+     [
+      2,
+      "CORE",
+      "down"
+     ],
+     [
+      3,
+      "DROP",
+      ""
+     ],
+     [
+      4,
+      "SLOT_THING",
+      ""
+     ]
+    ]
+   },
+   {
+    "source_span": "turned the usual steps around",
+    "source_sentence": "But this time, researchers turned the usual steps around",
+    "display_form": "turn something around",
+    "gloss_ja": "物事の順序を逆にする",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "通常の手順を逆にして行う",
+    "generalization_note_ja": "turn aroundを核とし、逆にする対象は可変部",
+    "verify": {
+     "id": 2,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "turn"
+     ],
+     [
+      2,
+      "DROP",
+      ""
+     ],
+     [
+      3,
+      "DROP",
+      ""
+     ],
+     [
+      4,
+      "SLOT_THING",
+      ""
+     ],
+     [
+      5,
+      "CORE",
+      "around"
+     ]
+    ]
+   }
+  ],
+  "log": {
+   "stages": [
+    {
+     "stage": "GEN",
+     "model_id": "gpt-6-luna",
+     "in": 2311,
+     "out": 769,
+     "cost_jpy": 0.0985,
+     "sec": 6.8
+    },
+    {
+     "stage": "VERIFY",
+     "model_id": "gemini-3.8-flash",
+     "in": 1278,
+     "out": 167,
+     "cost_jpy": 0.2536,
+     "sec": 3.4
+    }
+   ],
+   "tag": "gtest3_g3b",
+   "cands": [
+    "narrow down the source",
+    "turned the usual steps around"
+   ],
+   "cands_from_p7": [
+    "equivalent width",
+    "a lower limit",
+    "narrow down the source",
+    "turned the usual steps around",
+    "line's absence from images",
+    "show up"
+   ],
+   "judged": []
+  },
+  "cost": 0.35
+ }
+]

@@ -1,0 +1,232 @@
+{
+ "items": [
+  {
+   "source_span": "equivalent width",
+   "source_sentence": "The authors used the line's absence from images to estimate its \"equivalent width,\" a measure of the line's features",
+   "display_form": "equivalent width",
+   "gloss_ja": "線の強さを表す等価幅",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "天文学で特定の線の強さを表す定着した専門用語。",
+   "difficulty": "advanced",
+   "sense_note_ja": "天文学で、線の特徴を示す量。",
+   "generalization_note_ja": "専門用語としてこの形で覚える。",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "narrow down the source",
+   "source_sentence": "The empty space had become a clue that could help narrow down the source",
+   "display_form": "narrow something down",
+   "gloss_ja": "対象を絞り込む",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "可能性や候補を絞り込む句動詞。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "候補や可能性の範囲を狭める意味。",
+   "generalization_note_ja": "目的語をsomethingに置き換え、動詞を原形にする。",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "turned the usual steps around",
+   "source_sentence": "But this time, researchers turned the usual steps around",
+   "display_form": "turn something around",
+   "gloss_ja": "物事の順序を逆にする",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "手順などを逆の順序にする句動詞。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "ここでは通常の手順を逆にする意味。",
+   "generalization_note_ja": "目的語をsomethingに置き換え、動詞を原形にする。",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "limited the search to",
+   "source_sentence": "But in this area, they no longer limited the search to objects seen in images.",
+   "display_form": "limit something to",
+   "gloss_ja": "対象をある範囲に限定する",
+   "chunk_type": "collocation",
+   "chunk_reason_ja": "limitは対象の範囲を示すtoと結びつく。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "検索対象を画像に映る物に限定する意味。",
+   "generalization_note_ja": "目的語はsomethingで示し、後続の対象は省く。",
+   "verify": {
+    "id": 4,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 954,
+    "out": 1808,
+    "cost_jpy": 0.1599,
+    "sec": 15.0
+   },
+   {
+    "stage": "RG",
+    "model_id": "gpt-6-luna",
+    "in": 2728,
+    "out": 2493,
+    "cost_jpy": 0.2431,
+    "sec": 20.9
+   },
+   {
+    "stage": "verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1266,
+    "out": 398,
+    "cost_jpy": 0.3907,
+    "sec": 3.6
+   }
+  ],
+  "tag": "C3_luna",
+  "judged": [
+   {
+    "span": "equivalent width",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "advanced",
+    "keep": true,
+    "chunk_reason_ja": "天文学で特定の線の強さを表す定着した専門用語。"
+   },
+   {
+    "span": "a lower limit",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "下限を表す定着した名詞句。"
+   },
+   {
+    "span": "narrow down the source",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "可能性や候補を絞り込む句動詞。"
+   },
+   {
+    "span": "turned the usual steps around",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "手順などを逆の順序にする句動詞。"
+   },
+   {
+    "span": "line's absence from images",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の名詞と前置詞句の組合せ。"
+   },
+   {
+    "span": "show up",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "現れる、見えるという意味の一般的な句動詞。"
+   },
+   {
+    "span": "at a certain wavelength",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の前置詞と名詞句の組合せ。"
+   },
+   {
+    "span": "limited the search to",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "limitは対象の範囲を示すtoと結びつく。"
+   },
+   {
+    "span": "too soon to say",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "断定を控える際によく使う定型表現。"
+   },
+   {
+    "span": "no visible form",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "各語の意味から分かる通常の名詞句。"
+   },
+   {
+    "span": "took an unexpected turn",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "展開や状況の変化をturnで表す連語。"
+   }
+  ],
+  "validator_dropped": [
+   {
+    "span": "took an unexpected turn",
+    "display_form": "take a turn",
+    "why": [
+     "核語'a'がsource_span由来でない/順序違い"
+    ]
+   }
+  ],
+  "cands_total": 11,
+  "cands_added_by_overgen": [
+   "at a certain wavelength",
+   "limited the search to",
+   "too soon to say",
+   "no visible form",
+   "took an unexpected turn"
+  ]
+ },
+ "case": "jwst_m_a2",
+ "method": "C3_luna",
+ "cost_jpy": 0.794,
+ "sec": 39.5
+}

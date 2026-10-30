@@ -1,0 +1,161 @@
+{
+ "items": [
+  {
+   "source_span": "the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+   "display_form": "sales pitch",
+   "gloss_ja": "売り込みの口上",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "商品を売り込むための口上を指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "商品を買うよう説得するための話",
+   "generalization_note_ja": "複合名詞を核とし、本文の定冠詞を除く",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "blow a whistle",
+   "source_sentence": "If an AI said that to you, would a guard in your mind blow a whistle",
+   "display_form": "blow a whistle",
+   "gloss_ja": "笛を吹く",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "本文では心の警戒が働くことを笛で比喩的に表す。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "不正の告発ではなく、心の警戒の比喩",
+   "generalization_note_ja": "笛を吹く形を保持し、警戒する比喩として扱う",
+   "verify": {
+    "id": 2,
+    "verdict": "FIX",
+    "meaning_preserved": true,
+    "gloss_consistent": false,
+    "natural_headword": true,
+    "issue": "「blow a whistle」自体の一般的な意味は「笛を吹く」であり、「警戒の」は文脈（guard in your mind）に依存した補足です。",
+    "fix_display_form": "blow a whistle",
+    "fix_gloss_ja": "笛を吹く"
+   },
+   "display_form_pre_fix": "blow a whistle"
+  },
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, \"But it's just right for me",
+   "display_form": "let something through",
+   "gloss_ja": "通過を許す",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "let ～ throughで通過を許す意味になり、本文では比喩。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "疑わしいものを心の中で受け入れる比喩",
+   "generalization_note_ja": "letとthroughを核とし、間の目的語を置換",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6.1-sol",
+    "in": 1836,
+    "out": 464,
+    "cost_jpy": 1.3299,
+    "sec": 12.4
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6.1-sol",
+    "in": 1795,
+    "out": 281,
+    "cost_jpy": 1.024,
+    "sec": 4.5
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1175,
+    "out": 1202,
+    "cost_jpy": 0.8622,
+    "sec": 12.6
+   }
+  ],
+  "tag": "C1_mix",
+  "extracted": [
+   "confirm a clear fall",
+   "results suggest",
+   "the sales pitch",
+   "favored one product",
+   "blow a whistle",
+   "let the advice through"
+  ],
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "動詞と目的語の通常の組合せで、固定性がない。"
+   },
+   {
+    "span": "results suggest",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "結果が何かを示唆するという通常の主述関係。"
+   },
+   {
+    "span": "the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "商品を売り込むための口上を指す定着した名詞句。"
+   },
+   {
+    "span": "favored one product",
+    "cls": "W",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "学習点はfavorの「優遇する」という単語義。"
+   },
+   {
+    "span": "blow a whistle",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "本文では心の警戒が働くことを笛で比喩的に表す。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "let ～ throughで通過を許す意味になり、本文では比喩。"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "C1_mix",
+ "cost_jpy": 3.216,
+ "sec": 29.5
+}

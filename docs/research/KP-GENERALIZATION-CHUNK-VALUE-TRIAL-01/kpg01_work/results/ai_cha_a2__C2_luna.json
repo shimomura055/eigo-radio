@@ -1,0 +1,123 @@
+{
+ "items": [
+  {
+   "source_span": "the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+   "display_form": "sales pitch",
+   "gloss_ja": "売り込みの説得的な話",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "「売り込みの説得」を表す定着した複合名詞。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "商品を選ばせるための売り込みの話を指す。",
+   "generalization_note_ja": "特定の商品に限らない複合名詞として覚える。",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, \"But it's just right for me",
+   "display_form": "let something through",
+   "gloss_ja": "何かを通す、通過させる",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "throughを伴い、何かを通過させる意味になる句動詞。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "ここでは助言を心の警戒を越えて受け入れること。",
+   "generalization_note_ja": "目的語をsomethingに置き換え、句動詞の核を示す。",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "RG",
+    "model_id": "gpt-6-luna",
+    "in": 2623,
+    "out": 1885,
+    "cost_jpy": 0.1928,
+    "sec": 18.5
+   },
+   {
+    "stage": "verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1099,
+    "out": 167,
+    "cost_jpy": 0.2321,
+    "sec": 10.3
+   }
+  ],
+  "tag": "C2_luna",
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の動詞と目的語の組合せで、意味も各語から分かる。"
+   },
+   {
+    "span": "results suggest",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "一般的な主語と動詞の組合せで、特有のまとまりではない。"
+   },
+   {
+    "span": "the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "「売り込みの説得」を表す定着した複合名詞。"
+   },
+   {
+    "span": "favored one product",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "動詞favorと目的語の通常の組合せで、意味も導ける。"
+   },
+   {
+    "span": "blow a whistle",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "この文では警笛を鳴らす情景を比喩的に描いており、定着表現ではない。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "throughを伴い、何かを通過させる意味になる句動詞。"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "C2_luna",
+ "cost_jpy": 0.425,
+ "sec": 28.8
+}

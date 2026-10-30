@@ -1,0 +1,343 @@
+[
+ {
+  "case": "untidi_a2",
+  "items": [
+   {
+    "source_span": "take points away from",
+    "source_sentence": "But that could take points away from the ways each home has found to make life work",
+    "display_form": "take points away from",
+    "gloss_ja": "〜の評価を下げる",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "得点を差し引いて評価を下げる",
+    "generalization_note_ja": "得点を差し引く比喩なのでpointは固定",
+    "verify": {
+     "id": 1,
+     "verdict": "FIX",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": false,
+     "issue": "「take points away from」という表現において、pointsは通常複数形（またはtake points off）で用いられ、単数形の「take point away from」は見出し語として不自然です。",
+     "fix_display_form": "take points away from",
+     "fix_gloss_ja": "〜の評価を下げる"
+    },
+    "display_form_pre_fix": "take point away from",
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "take"
+     ],
+     [
+      2,
+      "CORE",
+      "point"
+     ],
+     [
+      3,
+      "CORE",
+      "away"
+     ],
+     [
+      4,
+      "CORE",
+      "from"
+     ]
+    ]
+   },
+   {
+    "source_span": "make life work",
+    "source_sentence": "But that could take points away from the ways each home has found to make life work",
+    "display_form": "make something work",
+    "gloss_ja": "〜をうまく機能させる",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "日々の暮らしをうまく成り立たせる",
+    "generalization_note_ja": "目的語は別の物事に替えられる可変部",
+    "verify": {
+     "id": 2,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "make"
+     ],
+     [
+      2,
+      "SLOT_THING",
+      ""
+     ],
+     [
+      3,
+      "CORE",
+      "work"
+     ]
+    ]
+   }
+  ],
+  "log": {
+   "stages": [
+    {
+     "stage": "GEN",
+     "model_id": "gpt-6-luna",
+     "in": 2535,
+     "out": 922,
+     "cost_jpy": 0.1143,
+     "sec": 11.7
+    },
+    {
+     "stage": "VERIFY",
+     "model_id": "gemini-3.8-flash",
+     "in": 1328,
+     "out": 220,
+     "cost_jpy": 0.2914,
+     "sec": 4.1
+    }
+   ],
+   "tag": "gtest3_g3c",
+   "cands": [
+    "take points away from",
+    "make life work"
+   ],
+   "cands_from_p7": [
+    "hear it out",
+    "take points away from",
+    "make life work",
+    "needs another look"
+   ],
+   "judged": []
+  },
+  "cost": 0.41
+ },
+ {
+  "case": "meta_w_a2",
+  "items": [
+   {
+    "source_span": "At the time of writing",
+    "source_sentence": "At the time of writing, no one had said when it would be available in Japan or other places",
+    "display_form": "at the time of",
+    "gloss_ja": "〜の時点で",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "執筆時点では",
+    "generalization_note_ja": "at the time ofを核とし、後続のwritingは文脈を示すためDROP",
+    "verify": {
+     "id": 1,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "at"
+     ],
+     [
+      2,
+      "CORE",
+      "the"
+     ],
+     [
+      3,
+      "CORE",
+      "time"
+     ],
+     [
+      4,
+      "CORE",
+      "of"
+     ],
+     [
+      5,
+      "DROP",
+      ""
+     ]
+    ]
+   }
+  ],
+  "log": {
+   "stages": [
+    {
+     "stage": "GEN",
+     "model_id": "gpt-6-luna",
+     "in": 2424,
+     "out": 762,
+     "cost_jpy": 0.0997,
+     "sec": 8.0
+    },
+    {
+     "stage": "VERIFY",
+     "model_id": "gemini-3.8-flash",
+     "in": 1219,
+     "out": 90,
+     "cost_jpy": 0.2003,
+     "sec": 2.3
+    }
+   ],
+   "tag": "gtest3_g3c",
+   "cands": [
+    "At the time of writing"
+   ],
+   "cands_from_p7": [
+    "At the time of writing",
+    "make room for",
+    "side by side",
+    "early step toward",
+    "gaps in a busy day"
+   ],
+   "judged": []
+  },
+  "cost": 0.3
+ },
+ {
+  "case": "jwst_m_a2",
+  "items": [
+   {
+    "source_span": "narrow down the source",
+    "source_sentence": "The empty space had become a clue that could help narrow down the source",
+    "display_form": "narrow down",
+    "gloss_ja": "候補を絞り込む",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "手がかりから対象を絞る",
+    "generalization_note_ja": "narrow downを核とし、絞り込む対象は可変部",
+    "verify": {
+     "id": 1,
+     "verdict": "OK",
+     "meaning_preserved": true,
+     "gloss_consistent": true,
+     "natural_headword": true,
+     "issue": "",
+     "fix_display_form": "",
+     "fix_gloss_ja": ""
+    },
+    "display_form_pre_fix": null,
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "narrow"
+     ],
+     [
+      2,
+      "CORE",
+      "down"
+     ],
+     [
+      3,
+      "DROP",
+      ""
+     ],
+     [
+      4,
+      "SLOT_THING",
+      ""
+     ]
+    ]
+   },
+   {
+    "source_span": "turned the usual steps around",
+    "source_sentence": "But this time, researchers turned the usual steps around",
+    "display_form": "turn something around",
+    "gloss_ja": "〜の向きを変える、好転させる",
+    "chunk_type": "n/a",
+    "chunk_reason_ja": "(一般化段の単体評価。選定なし)",
+    "difficulty": "upper_intermediate",
+    "sense_note_ja": "通常の手順を逆にする",
+    "generalization_note_ja": "turn aroundを核とし、逆にする対象は可変部",
+    "verify": {
+     "id": 2,
+     "verdict": "FIX",
+     "meaning_preserved": true,
+     "gloss_consistent": false,
+     "natural_headword": true,
+     "issue": "「turn something around」は「好転させる」「向きを変える」などの一般的な意味を持ちますが、日本語訳が本文固有の文脈（順序を逆にする）に引っ張られすぎています。辞書的な一般形に合わせた日本語訳に修正するか、あるいは「〜の向きを変える、好転させる」等に調整すると自然です。",
+     "fix_display_form": "turn something around",
+     "fix_gloss_ja": "〜の向きを変える、好転させる"
+    },
+    "display_form_pre_fix": "turn something around",
+    "tokens": [
+     [
+      1,
+      "CORE",
+      "turn"
+     ],
+     [
+      2,
+      "DROP",
+      ""
+     ],
+     [
+      3,
+      "DROP",
+      ""
+     ],
+     [
+      4,
+      "SLOT_THING",
+      ""
+     ],
+     [
+      5,
+      "CORE",
+      "around"
+     ]
+    ]
+   }
+  ],
+  "log": {
+   "stages": [
+    {
+     "stage": "GEN",
+     "model_id": "gpt-6-luna",
+     "in": 2491,
+     "out": 762,
+     "cost_jpy": 0.1008,
+     "sec": 7.3
+    },
+    {
+     "stage": "VERIFY",
+     "model_id": "gemini-3.8-flash",
+     "in": 1277,
+     "out": 256,
+     "cost_jpy": 0.3068,
+     "sec": 3.8
+    }
+   ],
+   "tag": "gtest3_g3c",
+   "cands": [
+    "narrow down the source",
+    "turned the usual steps around"
+   ],
+   "cands_from_p7": [
+    "equivalent width",
+    "a lower limit",
+    "narrow down the source",
+    "turned the usual steps around",
+    "line's absence from images",
+    "show up"
+   ],
+   "judged": []
+  },
+  "cost": 0.41
+ }
+]

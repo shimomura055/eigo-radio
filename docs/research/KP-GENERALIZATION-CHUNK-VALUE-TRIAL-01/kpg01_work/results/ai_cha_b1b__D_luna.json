@@ -1,0 +1,321 @@
+{
+ "items": [
+  {
+   "source_span": "putting the brakes on",
+   "source_sentence": "Spotting an ad and putting the brakes on wanting something seem to be two separate things",
+   "display_form": "put the brakes on",
+   "gloss_ja": "歯止めをかける",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "欲求を抑えるという比喩的な意味で使う表現。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "欲求を抑える",
+   "generalization_note_ja": "put the brakes onが慣用句で、brakesを他の名詞に替えると意味が変わる",
+   "verify": {
+    "id": 1,
+    "verdict": "FIX",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": false,
+    "issue": "「歯止めをかける」という成句としては、通常複数形の brakes を用いて put the brakes on または put the brakes on something とする。",
+    "fix_display_form": "put the brakes on",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": "put the brake on",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "put"
+    ],
+    [
+     2,
+     "CORE",
+     "the"
+    ],
+    [
+     3,
+     "CORE",
+     "brake"
+    ],
+    [
+     4,
+     "CORE",
+     "on"
+    ]
+   ]
+  },
+  {
+   "source_span": "or so it seemed",
+   "source_sentence": "It sat at the advice desk as a helpful guide—or so it seemed",
+   "display_form": "or so it seems",
+   "gloss_ja": "そう思われたが",
+   "chunk_type": "fixed_phrase",
+   "chunk_reason_ja": "見かけとは違ったという含みを添える定型句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "実際とは異なる可能性を含め、そう見えた",
+   "generalization_note_ja": "it seemedを含む定型句全体を核として保持",
+   "verify": {
+    "id": 2,
+    "verdict": "FIX",
+    "meaning_preserved": false,
+    "gloss_consistent": true,
+    "natural_headword": false,
+    "issue": "主語 it に合わせて seem を原形にしてしまっているが、文法的に不自然 (it seems または it seemed が定型句)。辞書の見出し・定型表現としては or so it seems または本文通りの or so it seemed が自然。",
+    "fix_display_form": "or so it seems",
+    "fix_gloss_ja": "そう思われたが"
+   },
+   "display_form_pre_fix": "or so it seem",
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "or"
+    ],
+    [
+     2,
+     "CORE",
+     "so"
+    ],
+    [
+     3,
+     "CORE",
+     "it"
+    ],
+    [
+     4,
+     "CORE",
+     "seem"
+    ]
+   ]
+  },
+  {
+   "source_span": "needs an instruction manual",
+   "source_sentence": "This number needs an instruction manual.",
+   "display_form": "need an instruction manual",
+   "gloss_ja": "説明・解釈が必要である",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "数値の解釈には説明が必要だという比喩表現。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "数値の意味を理解するために説明が必要",
+   "generalization_note_ja": "instruction manualは比喩表現の一部で、他の名詞に替えると意味が変わる",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null,
+   "tokens": [
+    [
+     1,
+     "CORE",
+     "need"
+    ],
+    [
+     2,
+     "CORE",
+     "an"
+    ],
+    [
+     3,
+     "CORE",
+     "instruction"
+    ],
+    [
+     4,
+     "CORE",
+     "manual"
+    ]
+   ]
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 973,
+    "out": 2622,
+    "cost_jpy": 0.2253,
+    "sec": 20.1
+   },
+   {
+    "stage": "SEL",
+    "model_id": "gpt-6-luna",
+    "in": 2244,
+    "out": 1508,
+    "cost_jpy": 0.1565,
+    "sec": 13.2
+   },
+   {
+    "stage": "GEN",
+    "model_id": "gpt-6-luna",
+    "in": 2688,
+    "out": 1482,
+    "cost_jpy": 0.1616,
+    "sec": 13.0
+   },
+   {
+    "stage": "VERIFY",
+    "model_id": "gemini-3.8-flash",
+    "in": 1449,
+    "out": 343,
+    "cost_jpy": 0.3797,
+    "sec": 3.9
+   }
+  ],
+  "tag": "D_luna",
+  "cands": [
+   "putting the brakes on",
+   "whose interests the conversation serves",
+   "Sales pitch",
+   "confirm a clear drop",
+   "rate at which",
+   "or so it seemed",
+   "sales mode",
+   "recommendations were biased",
+   "the share of those answers",
+   "needs an instruction manual",
+   "Open for business",
+   "warned in advance",
+   "too soon to shout",
+   "powerless after all"
+  ],
+  "cands_from_p7": [
+   "putting the brakes on",
+   "whose interests the conversation serves",
+   "Sales pitch",
+   "confirm a clear drop",
+   "rate at which",
+   "or so it seemed"
+  ],
+  "judged": [
+   {
+    "span": "putting the brakes on",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "欲求を抑えるという比喩的な意味で使う表現。"
+   },
+   {
+    "span": "whose interests the conversation serves",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "Sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "営業目的の説得的な売り込みを指す定着した名詞句。"
+   },
+   {
+    "span": "confirm a clear drop",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "rate at which",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "or so it seemed",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "見かけとは違ったという含みを添える定型句。"
+   },
+   {
+    "span": "sales mode",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "recommendations were biased",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "the share of those answers",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "needs an instruction manual",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "数値の解釈には説明が必要だという比喩表現。"
+   },
+   {
+    "span": "Open for business",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "営業・営業開始中であることを示す定型句。"
+   },
+   {
+    "span": "warned in advance",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "too soon to shout",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "powerless after all",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   }
+  ],
+  "assemble_failed": [
+   {
+    "span": "Sales pitch",
+    "err": "lemma'sale'が本文の語'Sales'の語形違いでない"
+   }
+  ]
+ },
+ "case": "ai_cha_b1b",
+ "method": "D_luna",
+ "cost_jpy": 0.923,
+ "sec": 50.2
+}

@@ -1,0 +1,105 @@
+{
+ "items": [
+  {
+   "source_span": "hear it out",
+   "source_sentence": "Before you bring out the storage box, hear it out",
+   "display_form": "hear someone out",
+   "gloss_ja": "相手の言い分を最後まで聞く",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "相手の言い分を最後まで聞く意味の句動詞。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "相手の主張を遮らず最後まで聞く",
+   "generalization_note_ja": "hear outを核にし、聞く相手をsomeoneにした",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6-luna",
+    "in": 1669,
+    "out": 836,
+    "cost_jpy": 0.0936,
+    "sec": 9.5
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6-luna",
+    "in": 1549,
+    "out": 1196,
+    "cost_jpy": 0.1205,
+    "sec": 10.5
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1041,
+    "out": 1545,
+    "cost_jpy": 1.0519,
+    "sec": 15.0
+   }
+  ],
+  "tag": "C1_luna",
+  "extracted": [
+   "hear it out",
+   "take points away from",
+   "make life work",
+   "needs another look"
+  ],
+  "judged": [
+   {
+    "span": "hear it out",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "相手の言い分を最後まで聞く意味の句動詞。"
+   },
+   {
+    "span": "take points away from",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "価値や効果を損なう意味で使う句動詞。"
+   },
+   {
+    "span": "make life work",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "needs another look",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "再検討が必要だと示す定型的な言い方。"
+   }
+  ],
+  "verify_dropped": [
+   {
+    "span": "take points away from",
+    "issue": "直前のscorecard（採点表）を受けた文脈的な比喩表現（〜から減点する）であり、独立した句動詞・イディオムではありません。辞書の見出し語として不自然であり、日本語訳も文脈の意訳になっています。"
+   }
+  ]
+ },
+ "case": "untidi_a2",
+ "method": "C1_luna",
+ "cost_jpy": 1.266,
+ "sec": 35.0
+}

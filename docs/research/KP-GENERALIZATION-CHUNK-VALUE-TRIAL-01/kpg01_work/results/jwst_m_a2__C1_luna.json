@@ -1,0 +1,183 @@
+{
+ "items": [
+  {
+   "source_span": "equivalent width",
+   "source_sentence": "The authors used the line's absence from images to estimate its \"equivalent width,\" a measure of the line's features",
+   "display_form": "equivalent width",
+   "gloss_ja": "スペクトル線の等価幅",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "天文学で線の特徴を示す定着した専門用語。",
+   "difficulty": "advanced",
+   "sense_note_ja": "スペクトル線の特徴を示す天文学の量",
+   "generalization_note_ja": "専門用語の複合名詞をそのまま保持",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "a lower limit",
+   "source_sentence": "That absence helped set a lower limit for its equivalent width, but more observations are needed to find its source",
+   "display_form": "lower limit",
+   "gloss_ja": "下限",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "上限と対になる、下側の限界を示す定着語。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "値が少なくとも達する下側の限界",
+   "generalization_note_ja": "固定された複合名詞を保持し、不定冠詞は除去",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "narrow down the source",
+   "source_sentence": "The empty space had become a clue that could help narrow down the source",
+   "display_form": "narrow something down",
+   "gloss_ja": "候補を絞り込む",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "narrow downで候補を絞り込む意味になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "可能性の範囲を狭めて特定に近づける",
+   "generalization_note_ja": "narrow downを核にし、対象をsomethingに置換",
+   "verify": {
+    "id": 3,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "turned the usual steps around",
+   "source_sentence": "But this time, researchers turned the usual steps around",
+   "display_form": "turn something around",
+   "gloss_ja": "何かの順序を逆にする",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "turn aroundが手順の順序を逆にする意味になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "通常の手順を逆順にする",
+   "generalization_note_ja": "turn aroundを核にし、入れ替わる対象をsomethingに置換",
+   "verify": {
+    "id": 4,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6-luna",
+    "in": 1750,
+    "out": 1084,
+    "cost_jpy": 0.1147,
+    "sec": 9.0
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6-luna",
+    "in": 1629,
+    "out": 794,
+    "cost_jpy": 0.0896,
+    "sec": 6.7
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1136,
+    "out": 931,
+    "cost_jpy": 0.6949,
+    "sec": 6.9
+   }
+  ],
+  "tag": "C1_luna",
+  "extracted": [
+   "equivalent width",
+   "a lower limit",
+   "narrow down the source",
+   "turned the usual steps around",
+   "line's absence from images",
+   "show up"
+  ],
+  "judged": [
+   {
+    "span": "equivalent width",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "advanced",
+    "keep": true,
+    "chunk_reason_ja": "天文学で線の特徴を示す定着した専門用語。"
+   },
+   {
+    "span": "a lower limit",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "上限と対になる、下側の限界を示す定着語。"
+   },
+   {
+    "span": "narrow down the source",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "narrow downで候補を絞り込む意味になる。"
+   },
+   {
+    "span": "turned the usual steps around",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "turn aroundが手順の順序を逆にする意味になる。"
+   },
+   {
+    "span": "line's absence from images",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "各語の意味をそのまま組み合わせた説明的な名詞句。"
+   },
+   {
+    "span": "show up",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "show upは現れる、または見えるという意味の句動詞。"
+   }
+  ]
+ },
+ "case": "jwst_m_a2",
+ "method": "C1_luna",
+ "cost_jpy": 0.899,
+ "sec": 22.6
+}

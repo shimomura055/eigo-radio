@@ -1,0 +1,133 @@
+{
+ "items": [
+  {
+   "source_span": "the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch",
+   "display_form": "sales pitch",
+   "gloss_ja": "売り込みの口上",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "商品を売り込むための話を指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "販売を促すための勧誘や説明を指す。本文では助言に含まれる売り込みのこと。",
+   "generalization_note_ja": "本文の定冠詞を外し、単数の名詞見出し形にした。salesは複合名詞の固定要素として保持。",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "blow a whistle",
+   "source_sentence": "If an AI said that to you, would a guard in your mind blow a whistle",
+   "display_form": "blow a whistle",
+   "gloss_ja": "警告の笛を鳴らす",
+   "chunk_type": "idiom",
+   "chunk_reason_ja": "本文では笛を吹く動作で心の警報を比喩的に表す。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "本文では心の中の番人が危険を知らせる比喩。不正を内部告発するという意味ではない。",
+   "generalization_note_ja": "本文の形を保持。blow the whistleという別の慣用表現に変えず、警告の比喩に限定して覚える。",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "RG",
+    "model_id": "gpt-6.1-sol",
+    "in": 2487,
+    "out": 987,
+    "cost_jpy": 2.375,
+    "sec": 19.0
+   },
+   {
+    "stage": "verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1173,
+    "out": 298,
+    "cost_jpy": 0.3196,
+    "sec": 3.3
+   }
+  ],
+  "tag": "C2_sol",
+  "judged": [
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "確認する対象に減少を置いた自由な組合せ。"
+   },
+   {
+    "span": "results suggest",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "結果を主語にして示唆を述べる通常の文。"
+   },
+   {
+    "span": "the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "商品を売り込むための話を指す定着した名詞句。"
+   },
+   {
+    "span": "favored one product",
+    "cls": "W",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "学習の中心はfavorの「優遇する」という単語語義。"
+   },
+   {
+    "span": "blow a whistle",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "本文では笛を吹く動作で心の警報を比喩的に表す。"
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "letとthroughで通過を許す意味を作る句動詞。"
+   }
+  ],
+  "validator_dropped": [
+   {
+    "span": "let the advice through",
+    "display_form": "let someone / something through",
+    "why": [
+     "核語'/'がsource_span由来でない/順序違い",
+     "プレースホルダ2個が本文の置換語1個を超える"
+    ]
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "C2_sol",
+ "cost_jpy": 2.695,
+ "sec": 22.3
+}

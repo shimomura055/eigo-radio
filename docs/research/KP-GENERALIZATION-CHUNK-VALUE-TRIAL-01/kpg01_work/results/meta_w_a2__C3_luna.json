@@ -1,0 +1,229 @@
+{
+ "items": [
+  {
+   "source_span": "At the time of writing",
+   "source_sentence": "At the time of writing, no one had said when it would be available in Japan or other places",
+   "display_form": "at the time of writing",
+   "gloss_ja": "執筆時点では",
+   "chunk_type": "fixed_phrase",
+   "chunk_reason_ja": "時点を示す定型的な前置詞句として使われる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "文章を書いている時点で、という意味。",
+   "generalization_note_ja": "時点を示す定型句として全体を保つ。",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "content rating",
+   "source_sentence": "A content rating and the age needed to use an app are different things.",
+   "display_form": "content rating",
+   "gloss_ja": "コンテンツの年齢区分",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "アプリ等の内容に基づく年齢区分を表す定着した用語。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "アプリの利用資格年齢ではなく、内容に基づく区分。",
+   "generalization_note_ja": "アプリなどの内容を評価する用語として単数形で示す。",
+   "verify": {
+    "id": 4,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "storage space",
+   "source_sentence": "If it costs nothing, you might next check how much storage space your phone has.",
+   "display_form": "storage space",
+   "gloss_ja": "端末の記憶容量",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "端末で利用できる記憶容量を表す定着した用語。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "スマートフォン内でデータ保存に使える容量。",
+   "generalization_note_ja": "端末の保存容量を指す複合名詞として示す。",
+   "verify": {
+    "id": 5,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_overgen",
+    "model_id": "gpt-6-luna",
+    "in": 956,
+    "out": 1369,
+    "cost_jpy": 0.1248,
+    "sec": 11.1
+   },
+   {
+    "stage": "RG",
+    "model_id": "gpt-6-luna",
+    "in": 2750,
+    "out": 3461,
+    "cost_jpy": 0.3209,
+    "sec": 29.0
+   },
+   {
+    "stage": "verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1285,
+    "out": 458,
+    "cost_jpy": 0.429,
+    "sec": 4.5
+   }
+  ],
+  "tag": "C3_luna",
+  "judged": [
+   {
+    "span": "At the time of writing",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "時点を示す定型的な前置詞句として使われる。"
+   },
+   {
+    "span": "make room for",
+    "cls": "C",
+    "chunk_type": "idiom",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "roomを時間や余地の比喩として使い、機会を割く意味になる。"
+   },
+   {
+    "span": "side by side",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "並べて比較する様子を表す定着した表現。"
+   },
+   {
+    "span": "early step toward",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "step towardは進展を表す比喩的な連語。"
+   },
+   {
+    "span": "gaps in a busy day",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の名詞と修飾語の組み合わせで意味が分かる。"
+   },
+   {
+    "span": "without thinking",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "withoutとthinkingの意味を通常どおり組み合わせた表現。"
+   },
+   {
+    "span": "packed train at rush hour",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "通常の形容詞と名詞の組み合わせで意味が取れる。"
+   },
+   {
+    "span": "content rating",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "アプリ等の内容に基づく年齢区分を表す定着した用語。"
+   },
+   {
+    "span": "storage space",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "端末で利用できる記憶容量を表す定着した用語。"
+   },
+   {
+    "span": "put in a chart",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "put、in、chartの意味を通常どおり組み合わせた表現。"
+   },
+   {
+    "span": "become a craze",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "becomeとcrazeの意味から全体の意味が分かる。"
+   },
+   {
+    "span": "make time for it",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "「時間を作る」を表す連語だが、候補2と用法が重なる。"
+   }
+  ],
+  "validator_dropped": [
+   {
+    "span": "make room for",
+    "display_form": "make room for someone / something",
+    "why": [
+     "display語数6",
+     "核語'/'がsource_span由来でない/順序違い",
+     "プレースホルダ2個が本文の置換語0個を超える"
+    ]
+   },
+   {
+    "span": "early step toward",
+    "display_form": "a step toward something",
+    "why": [
+     "核語'a'がsource_span由来でない/順序違い"
+    ]
+   }
+  ],
+  "cands_total": 12,
+  "cands_added_by_overgen": [
+   "without thinking",
+   "packed train at rush hour",
+   "content rating",
+   "storage space",
+   "put in a chart",
+   "become a craze",
+   "make time for it"
+  ]
+ },
+ "case": "meta_w_a2",
+ "method": "C3_luna",
+ "cost_jpy": 0.875,
+ "sec": 44.6
+}

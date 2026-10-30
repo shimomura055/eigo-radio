@@ -1,0 +1,202 @@
+{
+ "items": [
+  {
+   "source_span": "let the advice through",
+   "source_sentence": "Or would you let the advice through, thinking, “But it’s just right for me…”",
+   "display_form": "let something through",
+   "gloss_ja": "何かを受け入れる",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "let throughは「通過・受容を許す」という句動詞。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "助言を心の中に受け入れる",
+   "generalization_note_ja": "let throughを核にし、通す対象をsomethingに置換",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "missed the sales pitch",
+   "source_sentence": "People who did not think the advice favored one product were also counted as people who missed the sales pitch.",
+   "display_form": "sales pitch",
+   "gloss_ja": "販売勧誘",
+   "chunk_type": "compound_noun",
+   "chunk_reason_ja": "sales pitchは販売勧誘を指す定着した名詞句。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "商品を買わせるための売り込み",
+   "generalization_note_ja": "定着した複合名詞sales pitchを固定して保持",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_extract",
+    "model_id": "gpt-6-luna",
+    "in": 983,
+    "out": 1884,
+    "cost_jpy": 0.1664,
+    "sec": 14.3
+   },
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6-luna",
+    "in": 2084,
+    "out": 3215,
+    "cost_jpy": 0.2905,
+    "sec": 23.6
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6-luna",
+    "in": 1541,
+    "out": 309,
+    "cost_jpy": 0.0494,
+    "sec": 3.7
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1037,
+    "out": 674,
+    "cost_jpy": 0.5288,
+    "sec": 6.8
+   }
+  ],
+  "tag": "B_luna",
+  "dropped_not_in_text": [],
+  "extracted": [
+   "blow a whistle",
+   "let the advice through",
+   "try to persuade",
+   "advice desk",
+   "hide its goal",
+   "sales mode",
+   "needs an instruction manual",
+   "missed the sales pitch",
+   "Open for business",
+   "usual persuasion test",
+   "confirm a clear fall",
+   "sales talk"
+  ],
+  "judged": [
+   {
+    "span": "blow a whistle",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "let the advice through",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "let throughは「通過・受容を許す」という句動詞。"
+   },
+   {
+    "span": "try to persuade",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "advice desk",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "hide its goal",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "sales mode",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "needs an instruction manual",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "missed the sales pitch",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "sales pitchは販売勧誘を指す定着した名詞句。"
+   },
+   {
+    "span": "Open for business",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "営業中を示す看板の定型表現。"
+   },
+   {
+    "span": "usual persuasion test",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "confirm a clear fall",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": ""
+   },
+   {
+    "span": "sales talk",
+    "cls": "C",
+    "chunk_type": "compound_noun",
+    "difficulty": "upper_intermediate",
+    "keep": false,
+    "chunk_reason_ja": "sales talkは販売目的の話法を指す定着語。"
+   }
+  ]
+ },
+ "case": "ai_cha_a2",
+ "method": "B_luna",
+ "cost_jpy": 1.035,
+ "sec": 48.4
+}

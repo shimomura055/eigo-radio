@@ -1,0 +1,277 @@
+{
+ "items": [
+  {
+   "source_span": "take up space",
+   "source_sentence": "So it does more than take up space.",
+   "display_form": "take up space",
+   "gloss_ja": "場所を占める",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "take up が「場所を占める」という意味になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "物が場所を取る",
+   "generalization_note_ja": "take up と固定語 space を保持",
+   "verify": {
+    "id": 1,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "gets heated",
+   "source_sentence": "No wonder the kitchen meeting gets heated.",
+   "display_form": "get heated",
+   "gloss_ja": "感情的に激しくなる",
+   "chunk_type": "collocation",
+   "chunk_reason_ja": "heated が会話や会議の緊迫・感情的な状態を表す。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "会話や会議が緊迫する",
+   "generalization_note_ja": "get heated の状態表現を保持",
+   "verify": {
+    "id": 2,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "take points away from",
+   "source_sentence": "But that could take points away from the ways each home has found to make life work.",
+   "display_form": "take something away from something",
+   "gloss_ja": "〜から…を取り去る、差し引く",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "take away from が価値や評価を損なう意味になる。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "評価点を差し引いて価値を損なう",
+   "generalization_note_ja": "take away from を核に、対象と差し引くものを可変化",
+   "verify": {
+    "id": 3,
+    "verdict": "FIX",
+    "meaning_preserved": false,
+    "gloss_consistent": false,
+    "natural_headword": true,
+    "issue": "提示された学習用の形「take something away from something」に対して、日本語の意味「何かの価値や評価を損なう」は別の句動詞「take away from something (〜を損なう)」の語釈になっており、形と意味が一致していません。本文も直前のscorecardを受けて「〜から点数を差し引く」という文脈です。",
+    "fix_display_form": "take something away from something",
+    "fix_gloss_ja": "〜から…を取り去る、差し引く"
+   },
+   "display_form_pre_fix": "take something away from something"
+  },
+  {
+   "source_span": "turn the talk into",
+   "source_sentence": "That can turn the talk into a planning meeting about how to make daily life work.",
+   "display_form": "turn something into something",
+   "gloss_ja": "何かを別のものに変える",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "turn X into Y が「XをYに変える」を表す。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "話し合いを別の形式に変える",
+   "generalization_note_ja": "turn X into Y の両方の内容を可変化",
+   "verify": {
+    "id": 4,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  },
+  {
+   "source_span": "hear it out",
+   "source_sentence": "Before you bring out the storage box, hear it out.",
+   "display_form": "hear someone out",
+   "gloss_ja": "相手の話を最後まで聞く",
+   "chunk_type": "phrasal_verb",
+   "chunk_reason_ja": "hear someone out は最後まで話を聞く意味。",
+   "difficulty": "upper_intermediate",
+   "sense_note_ja": "相手の言い分を最後まで聞く",
+   "generalization_note_ja": "hear out を核に、聞く相手を可変化",
+   "verify": {
+    "id": 5,
+    "verdict": "OK",
+    "meaning_preserved": true,
+    "gloss_consistent": true,
+    "natural_headword": true,
+    "issue": "",
+    "fix_display_form": "",
+    "fix_gloss_ja": ""
+   },
+   "display_form_pre_fix": null
+  }
+ ],
+ "log": {
+  "stages": [
+   {
+    "stage": "B1_extract",
+    "model_id": "gpt-6-luna",
+    "in": 999,
+    "out": 2325,
+    "cost_jpy": 0.202,
+    "sec": 21.2
+   },
+   {
+    "stage": "B2_rank",
+    "model_id": "gpt-6-luna",
+    "in": 2117,
+    "out": 2063,
+    "cost_jpy": 0.1989,
+    "sec": 14.7
+   },
+   {
+    "stage": "B3_generalize",
+    "model_id": "gpt-6-luna",
+    "in": 1709,
+    "out": 1451,
+    "cost_jpy": 0.1434,
+    "sec": 12.6
+   },
+   {
+    "stage": "B4_verify",
+    "model_id": "gemini-3.8-flash",
+    "in": 1241,
+    "out": 2127,
+    "cost_jpy": 1.4251,
+    "sec": 19.1
+   }
+  ],
+  "tag": "B_luna",
+  "dropped_not_in_text": [],
+  "extracted": [
+   "Not so fast",
+   "take up space",
+   "gets heated",
+   "take points away from",
+   "make life work",
+   "turn the talk into",
+   "rush to say",
+   "a high level of education",
+   "fit every home",
+   "hear it out",
+   "taking its job quite seriously",
+   "keeping it in sight",
+   "questioning someone in court"
+  ],
+  "judged": [
+   {
+    "span": "Not so fast",
+    "cls": "C",
+    "chunk_type": "fixed_phrase",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "急いで判断・行動しないよう促す定型表現。"
+   },
+   {
+    "span": "take up space",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "take up が「場所を占める」という意味になる。"
+   },
+   {
+    "span": "gets heated",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "heated が会話や会議の緊迫・感情的な状態を表す。"
+   },
+   {
+    "span": "take points away from",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "take away from が価値や評価を損なう意味になる。"
+   },
+   {
+    "span": "make life work",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "make＋目的語＋workの通常の構文で意味が推測できる。"
+   },
+   {
+    "span": "turn the talk into",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "turn X into Y が「XをYに変える」を表す。"
+   },
+   {
+    "span": "rush to say",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "rushと不定詞を通常の文法で組み合わせている。"
+   },
+   {
+    "span": "a high level of education",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "high level of は一般的な程度表現で意味が明白。"
+   },
+   {
+    "span": "fit every home",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "fitとevery homeの通常の組み合わせ。"
+   },
+   {
+    "span": "hear it out",
+    "cls": "C",
+    "chunk_type": "phrasal_verb",
+    "difficulty": "upper_intermediate",
+    "keep": true,
+    "chunk_reason_ja": "hear someone out は最後まで話を聞く意味。"
+   },
+   {
+    "span": "taking its job quite seriously",
+    "cls": "C",
+    "chunk_type": "collocation",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "take a job seriously は「仕事を真剣に受け止める」の連語。"
+   },
+   {
+    "span": "keeping it in sight",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "視界に入る状態を保つという意味が語から推測できる。"
+   },
+   {
+    "span": "questioning someone in court",
+    "cls": "F",
+    "chunk_type": "none",
+    "difficulty": "easy",
+    "keep": false,
+    "chunk_reason_ja": "question someone と in court の通常の組み合わせ。"
+   }
+  ]
+ },
+ "case": "untidi_a2",
+ "method": "B_luna",
+ "cost_jpy": 1.969,
+ "sec": 67.6
+}
