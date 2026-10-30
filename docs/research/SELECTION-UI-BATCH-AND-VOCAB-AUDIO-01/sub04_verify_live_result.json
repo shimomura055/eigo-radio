@@ -1,0 +1,529 @@
+{
+ "checks": [
+  {
+   "name": "pc: A: 18セット(9記事x2)のみ表示",
+   "ok": true,
+   "obs": "chips=18 art=9"
+  },
+  {
+   "name": "pc: A: 過去記事(猿の手/ダミー/slot等)が混ざらない",
+   "ok": true,
+   "obs": "['1. 月は少しずつ縮んでいる？', '2. 「出しっぱなし」裁判、開廷します', '3. 「広告です」と名乗るAI。それでも欲しくなる？']"
+  },
+  {
+   "name": "pc: A: 画面に報告idと対象数を表示",
+   "ok": true,
+   "obs": "対象記事 9件\nセット 18\nDone 0 / 18\n報告: sub04-a-18sets-test｜2026-10-30｜SELECTION-UI-BATCH-AND-VOCAB"
+  },
+  {
+   "name": "pc: A: 初期Done 0/18・固定フッタ可視",
+   "ok": true,
+   "obs": "Done 0/18"
+  },
+  {
+   "name": "pc: A: 配置順 フレーズ欄→フレーズコメント→単語欄→単語コメント→全体コメント→Done",
+   "ok": true,
+   "obs": "[['candPhrase', 1185], ['boxPhrase', 1608], ['candWord', 1709], ['boxWord', 2167], ['comment', 3460], ['doneBox', 3575]]"
+  },
+  {
+   "name": "pc: A: セット切替で入力保持(フレーズ/単語/全体コメント・Done)",
+   "ok": true,
+   "obs": "P-moon_shrinking__a2"
+  },
+  {
+   "name": "pc: A: 17/18時点の一括コピーは拒否され、未完了1件を列挙",
+   "ok": true,
+   "obs": "(17, 18) 閉じる\n未完了のセットが1件あるため、コピーしていません。\n雪女(Yuki-Onna)｜Advanced\n① Key P"
+  },
+  {
+   "name": "pc: A: 全18セットDone(進捗 18/18)",
+   "ok": true,
+   "obs": "Done 18/18"
+  },
+  {
+   "name": "pc: A: 一括コピー=SET 18件・連番・stem一意",
+   "ok": true,
+   "obs": "sets=18"
+  },
+  {
+   "name": "pc: A: ヘッダ バッチ=sub04-a-18sets-test と END 合計18件",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "pc: A: フレーズ/単語コメントが各セット1回ずつ(欠落0・重複0)",
+   "ok": true,
+   "obs": "p=[1, 1, 1] w=[1, 1, 1]"
+  },
+  {
+   "name": "pc: A: コピー成功の表示(フッタ直上)",
+   "ok": true,
+   "obs": "閉じる\n18件（全SET＋コメント）をコピーしました。Claudeへそのまま貼り付けてください。"
+  },
+  {
+   "name": "pc: A: er128 confirm-batch --dry-run で受入(全18件)",
+   "ok": true,
+   "obs": "rc=0 n=18 batch=sub04-a-18sets-test "
+  },
+  {
+   "name": "pc: A: 全体コメントも該当セットのみに入る(G-…が5件・各1回)",
+   "ok": true,
+   "obs": "4"
+  },
+  {
+   "name": "pc: A: pageerror 0",
+   "ok": true,
+   "obs": "[]"
+  },
+  {
+   "name": "pc: B: 5セット(3記事・計5レベル)のみ表示・集計",
+   "ok": true,
+   "obs": "chips=5 art=3 Done 0/5"
+  },
+  {
+   "name": "pc: B: 5/5 Done",
+   "ok": true,
+   "obs": "Done 5/5"
+  },
+  {
+   "name": "pc: B: 一括コピー=SET 5件・連番・stem一意",
+   "ok": true,
+   "obs": "sets=5"
+  },
+  {
+   "name": "pc: B: ヘッダ バッチ=sub04-b-5sets-test と END 合計5件",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "pc: B: フレーズ/単語コメントが各セット1回ずつ(欠落0・重複0)",
+   "ok": true,
+   "obs": "p=[1, 1, 1] w=[1, 1, 1]"
+  },
+  {
+   "name": "pc: B: コピー成功の表示(フッタ直上)",
+   "ok": true,
+   "obs": "閉じる\n5件（全SET＋コメント）をコピーしました。Claudeへそのまま貼り付けてください。"
+  },
+  {
+   "name": "pc: B: er128 confirm-batch --dry-run で受入(全5件)",
+   "ok": true,
+   "obs": "rc=0 n=5 batch=sub04-b-5sets-test "
+  },
+  {
+   "name": "pc: B: pageerror 0",
+   "ok": true,
+   "obs": "[]"
+  },
+  {
+   "name": "pc: C: 3セット表示・別batch(A)の入力状態と混ざらない(同stemが未完了)",
+   "ok": true,
+   "obs": "Done 0/3"
+  },
+  {
+   "name": "pc: C: 未完了コピー拒否: 未完了3件が一覧され、フッタ直上で画面内に見える(M12)",
+   "ok": true,
+   "obs": "{'pt': 547, 'pb': 832, 'ft': 838, 'vh': 900}"
+  },
+  {
+   "name": "pc: C: 未完了一覧のボタンで該当セットへ移動",
+   "ok": true,
+   "obs": "redelivery_fee_prod__a2"
+  },
+  {
+   "name": "pc: C: 2/3時点: 拒否・残り1件のみ列挙",
+   "ok": true,
+   "obs": "閉じる\n未完了のセットが1件あるため、コピーしていません。\n雪女(Yuki-Onna)｜Advanced\n① Key Phraseはちょうど3件必要です(現在0"
+  },
+  {
+   "name": "pc: C: 「次の未完了へ」で未完了セットへ",
+   "ok": true,
+   "obs": "yuki_onna__b1b"
+  },
+  {
+   "name": "pc: C: 3/3 Done",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "pc: C: Done後の選定変更で自動解除(要再確認)・進捗2/3",
+   "ok": true,
+   "obs": "chip st-stale cur Done 2/3"
+  },
+  {
+   "name": "pc: C: 解除後の一括コピーは拒否(再コピー拒否)",
+   "ok": true,
+   "obs": "閉じる\n未完了のセットが1件あるため、コピーしていません。\n月は少しずつ縮んでいる？｜Standard\n① Key Ph"
+  },
+  {
+   "name": "pc: C: 再選定→再Doneで3/3へ復帰",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "pc: C: Done後のコメント編集で要再確認(2/3)",
+   "ok": true,
+   "obs": "Done 2/3"
+  },
+  {
+   "name": "pc: C: 再Doneで3/3",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "pc: C: リロードで状態保持(Done 3/3・編集後コメント)",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "pc: C: リロード後もコメント保持",
+   "ok": true,
+   "obs": "CW-EDITED-moon_shrinking__a2"
+  },
+  {
+   "name": "pc: C: コピーに編集後コメントのみ(旧コメント0・新1)・全セット1回",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "pc: C: er128 confirm-batch --dry-run 受入(3件)",
+   "ok": true,
+   "obs": "rc=0 "
+  },
+  {
+   "name": "pc: C: 別batch(A)を開いても、同じセット(moon_shrinking__a2)はCで入力した状態を持たない",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "pc: C: localStorageキーが報告単位(eigo-kp-form-v3:b:<id>)",
+   "ok": true,
+   "obs": "['eigo-kp-form-v3:b:sub04-c-overlap-test']"
+  },
+  {
+   "name": "pc: C/M1: member1件が未解決→記事を出さずエラー画面(部分表示禁止)",
+   "ok": true,
+   "obs": "この報告を表示できません\nこの報告の対象セットのうち、候補データを特定できないものがあります（部分表示はしません）: moon_shrinking__zz__prod\n管理側へ「報告ID sub04-"
+  },
+  {
+   "name": "pc: C/M2: パラメータ無し→latestに解決しURLを ?batch=<id> に固定",
+   "ok": true,
+   "obs": "3/index.html?batch=sub04-c-overlap-test&a=moon_shrinking__a2"
+  },
+  {
+   "name": "pc: C/M2: リロードしても同じ報告",
+   "ok": true,
+   "obs": "3/index.html?batch=sub04-c-overlap-test&a=moon_shrinking__a2"
+  },
+  {
+   "name": "pc: C/M2: latestと異なる報告を開くと「最新の報告ではありません」帯",
+   "ok": true,
+   "obs": "最新の報告ではありません（いまの最新: sub04-c-overlap-test を開く）。この報告の入力内容はそのまま保持されています。"
+  },
+  {
+   "name": "pc: C/M5: 旧形式 ?a= のみ→記事を出さず「旧形式のリンク」表示",
+   "ok": true,
+   "obs": "旧形式のリンクです\n「?a=」だけのリンクは、どの報告の選定か特定できないため記事を表示しません。報告ごとの新しいリンク"
+  },
+  {
+   "name": "pc: C/M5: ?batch+?a でaが対象外→明示表示",
+   "ok": true,
+   "obs": "指定されたセット（melos__b1b）はこの報告の対象外です。この報告の未完了セットを表示します。"
+  },
+  {
+   "name": "pc: C/M6: 不正batch id(../)は拒否",
+   "ok": true,
+   "obs": "報告IDの形式が正しくありません\n報告IDは英小文字・数字・_・- のみ（3〜64文字）です。\n現在開ける報告はありませ"
+  },
+  {
+   "name": "pc: C: 存在しないbatch→「見つかりません」",
+   "ok": true,
+   "obs": "指定された報告が見つかりません\n報告ID「nosuch-batch-zz」のデータを読み込めませんでした（HTTP 40"
+  },
+  {
+   "name": "pc: C/dev: ?dev=all は赤帯表示・コメント欄/Done/フッタが同じ描画経路で出る",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "pc: C/M12: 本文末尾がフッタに隠れない(余白)",
+   "ok": true,
+   "obs": "{'ft': 838, 'ab': 775.203125, 'fb': 900, 'vh': 900}"
+  },
+  {
+   "name": "pc: C: pageerror 0",
+   "ok": true,
+   "obs": "[]"
+  },
+  {
+   "name": "mobile: A: 18セット(9記事x2)のみ表示",
+   "ok": true,
+   "obs": "chips=18 art=9"
+  },
+  {
+   "name": "mobile: A: 過去記事(猿の手/ダミー/slot等)が混ざらない",
+   "ok": true,
+   "obs": "['1. 月は少しずつ縮んでいる？', '2. 「出しっぱなし」裁判、開廷します', '3. 「広告です」と名乗るAI。それでも欲しくなる？']"
+  },
+  {
+   "name": "mobile: A: 画面に報告idと対象数を表示",
+   "ok": true,
+   "obs": "対象記事 9件\nセット 18\nDone 0 / 18\n報告: sub04-a-18sets-test｜2026-10-30｜SELECTION-UI-BATCH-AND-VOCAB"
+  },
+  {
+   "name": "mobile: A: 初期Done 0/18・固定フッタ可視",
+   "ok": true,
+   "obs": "Done 0/18"
+  },
+  {
+   "name": "mobile: A: 配置順 フレーズ欄→フレーズコメント→単語欄→単語コメント→全体コメント→Done",
+   "ok": true,
+   "obs": "[['candPhrase', 1618], ['boxPhrase', 2041], ['candWord', 2142], ['boxWord', 2600], ['comment', 4401], ['doneBox', 4516]]"
+  },
+  {
+   "name": "mobile: A: セット切替で入力保持(フレーズ/単語/全体コメント・Done)",
+   "ok": true,
+   "obs": "P-moon_shrinking__a2"
+  },
+  {
+   "name": "mobile: A: 17/18時点の一括コピーは拒否され、未完了1件を列挙",
+   "ok": true,
+   "obs": "(17, 18) 閉じる\n未完了のセットが1件あるため、コピーしていません。\n雪女(Yuki-Onna)｜Advanced\n① Key P"
+  },
+  {
+   "name": "mobile: A: 全18セットDone(進捗 18/18)",
+   "ok": true,
+   "obs": "Done 18/18"
+  },
+  {
+   "name": "mobile: A: 一括コピー=SET 18件・連番・stem一意",
+   "ok": true,
+   "obs": "sets=18"
+  },
+  {
+   "name": "mobile: A: ヘッダ バッチ=sub04-a-18sets-test と END 合計18件",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: A: フレーズ/単語コメントが各セット1回ずつ(欠落0・重複0)",
+   "ok": true,
+   "obs": "p=[1, 1, 1] w=[1, 1, 1]"
+  },
+  {
+   "name": "mobile: A: コピー成功の表示(フッタ直上)",
+   "ok": true,
+   "obs": "閉じる\n18件（全SET＋コメント）をコピーしました。Claudeへそのまま貼り付けてください。"
+  },
+  {
+   "name": "mobile: A: er128 confirm-batch --dry-run で受入(全18件)",
+   "ok": true,
+   "obs": "rc=0 n=18 batch=sub04-a-18sets-test "
+  },
+  {
+   "name": "mobile: A: 全体コメントも該当セットのみに入る(G-…が5件・各1回)",
+   "ok": true,
+   "obs": "4"
+  },
+  {
+   "name": "mobile: A: pageerror 0",
+   "ok": true,
+   "obs": "[]"
+  },
+  {
+   "name": "mobile: B: 5セット(3記事・計5レベル)のみ表示・集計",
+   "ok": true,
+   "obs": "chips=5 art=3 Done 0/5"
+  },
+  {
+   "name": "mobile: B: 5/5 Done",
+   "ok": true,
+   "obs": "Done 5/5"
+  },
+  {
+   "name": "mobile: B: 一括コピー=SET 5件・連番・stem一意",
+   "ok": true,
+   "obs": "sets=5"
+  },
+  {
+   "name": "mobile: B: ヘッダ バッチ=sub04-b-5sets-test と END 合計5件",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: B: フレーズ/単語コメントが各セット1回ずつ(欠落0・重複0)",
+   "ok": true,
+   "obs": "p=[1, 1, 1] w=[1, 1, 1]"
+  },
+  {
+   "name": "mobile: B: コピー成功の表示(フッタ直上)",
+   "ok": true,
+   "obs": "閉じる\n5件（全SET＋コメント）をコピーしました。Claudeへそのまま貼り付けてください。"
+  },
+  {
+   "name": "mobile: B: er128 confirm-batch --dry-run で受入(全5件)",
+   "ok": true,
+   "obs": "rc=0 n=5 batch=sub04-b-5sets-test "
+  },
+  {
+   "name": "mobile: B: pageerror 0",
+   "ok": true,
+   "obs": "[]"
+  },
+  {
+   "name": "mobile: C: 3セット表示・別batch(A)の入力状態と混ざらない(同stemが未完了)",
+   "ok": true,
+   "obs": "Done 0/3"
+  },
+  {
+   "name": "mobile: C: 未完了コピー拒否: 未完了3件が一覧され、フッタ直上で画面内に見える(M12)",
+   "ok": true,
+   "obs": "{'pt': 471, 'pb': 776, 'ft': 782, 'vh': 844}"
+  },
+  {
+   "name": "mobile: C: 未完了一覧のボタンで該当セットへ移動",
+   "ok": true,
+   "obs": "redelivery_fee_prod__a2"
+  },
+  {
+   "name": "mobile: C: 2/3時点: 拒否・残り1件のみ列挙",
+   "ok": true,
+   "obs": "閉じる\n未完了のセットが1件あるため、コピーしていません。\n雪女(Yuki-Onna)｜Advanced\n① Key Phraseはちょうど3件必要です(現在0"
+  },
+  {
+   "name": "mobile: C: 「次の未完了へ」で未完了セットへ",
+   "ok": true,
+   "obs": "yuki_onna__b1b"
+  },
+  {
+   "name": "mobile: C: 3/3 Done",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "mobile: C: Done後の選定変更で自動解除(要再確認)・進捗2/3",
+   "ok": true,
+   "obs": "chip st-stale cur Done 2/3"
+  },
+  {
+   "name": "mobile: C: 解除後の一括コピーは拒否(再コピー拒否)",
+   "ok": true,
+   "obs": "閉じる\n未完了のセットが1件あるため、コピーしていません。\n月は少しずつ縮んでいる？｜Standard\n① Key Ph"
+  },
+  {
+   "name": "mobile: C: 再選定→再Doneで3/3へ復帰",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "mobile: C: Done後のコメント編集で要再確認(2/3)",
+   "ok": true,
+   "obs": "Done 2/3"
+  },
+  {
+   "name": "mobile: C: 再Doneで3/3",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "mobile: C: リロードで状態保持(Done 3/3・編集後コメント)",
+   "ok": true,
+   "obs": "Done 3/3"
+  },
+  {
+   "name": "mobile: C: リロード後もコメント保持",
+   "ok": true,
+   "obs": "CW-EDITED-moon_shrinking__a2"
+  },
+  {
+   "name": "mobile: C: コピーに編集後コメントのみ(旧コメント0・新1)・全セット1回",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: C: er128 confirm-batch --dry-run 受入(3件)",
+   "ok": true,
+   "obs": "rc=0 "
+  },
+  {
+   "name": "mobile: C: 別batch(A)を開いても、同じセット(moon_shrinking__a2)はCで入力した状態を持たない",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: C: localStorageキーが報告単位(eigo-kp-form-v3:b:<id>)",
+   "ok": true,
+   "obs": "['eigo-kp-form-v3:b:sub04-c-overlap-test']"
+  },
+  {
+   "name": "mobile: C/M1: member1件が未解決→記事を出さずエラー画面(部分表示禁止)",
+   "ok": true,
+   "obs": "この報告を表示できません\nこの報告の対象セットのうち、候補データを特定できないものがあります（部分表示はしません）: moon_shrinking__zz__prod\n管理側へ「報告ID sub04-"
+  },
+  {
+   "name": "mobile: C/M2: パラメータ無し→latestに解決しURLを ?batch=<id> に固定",
+   "ok": true,
+   "obs": "3/index.html?batch=sub04-c-overlap-test&a=moon_shrinking__a2"
+  },
+  {
+   "name": "mobile: C/M2: リロードしても同じ報告",
+   "ok": true,
+   "obs": "3/index.html?batch=sub04-c-overlap-test&a=moon_shrinking__a2"
+  },
+  {
+   "name": "mobile: C/M2: latestと異なる報告を開くと「最新の報告ではありません」帯",
+   "ok": true,
+   "obs": "最新の報告ではありません（いまの最新: sub04-c-overlap-test を開く）。この報告の入力内容はそのまま保持されています。"
+  },
+  {
+   "name": "mobile: C/M5: 旧形式 ?a= のみ→記事を出さず「旧形式のリンク」表示",
+   "ok": true,
+   "obs": "旧形式のリンクです\n「?a=」だけのリンクは、どの報告の選定か特定できないため記事を表示しません。報告ごとの新しいリンク"
+  },
+  {
+   "name": "mobile: C/M5: ?batch+?a でaが対象外→明示表示",
+   "ok": true,
+   "obs": "指定されたセット（melos__b1b）はこの報告の対象外です。この報告の未完了セットを表示します。"
+  },
+  {
+   "name": "mobile: C/M6: 不正batch id(../)は拒否",
+   "ok": true,
+   "obs": "報告IDの形式が正しくありません\n報告IDは英小文字・数字・_・- のみ（3〜64文字）です。\n現在開ける報告はありませ"
+  },
+  {
+   "name": "mobile: C: 存在しないbatch→「見つかりません」",
+   "ok": true,
+   "obs": "指定された報告が見つかりません\n報告ID「nosuch-batch-zz」のデータを読み込めませんでした（HTTP 40"
+  },
+  {
+   "name": "mobile: C/dev: ?dev=all は赤帯表示・コメント欄/Done/フッタが同じ描画経路で出る",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: C/M12: 本文末尾がフッタに隠れない(余白)",
+   "ok": true,
+   "obs": "{'ft': 782, 'ab': 726.546875, 'fb': 844, 'vh': 844}"
+  },
+  {
+   "name": "mobile: C/M12: 入力欄フォーカス中はフッタを隠し(キーボード重なり回避)、blurで戻る",
+   "ok": true,
+   "obs": "True"
+  },
+  {
+   "name": "mobile: C: pageerror 0",
+   "ok": true,
+   "obs": "[]"
+  }
+ ],
+ "meta": {
+  "base": "https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/",
+  "views": "pc,mobile",
+  "scen": "A,B,C"
+ },
+ "summary": {
+  "total": 103,
+  "pass": 103,
+  "fail": 0
+ }
+}
