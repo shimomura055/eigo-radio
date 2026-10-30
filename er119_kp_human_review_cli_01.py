@@ -153,6 +153,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--data-dir", default=None)
     p.add_argument("--legacy-form-data", default=None, help="撤去前に発行した旧AIF2フォームのdata file(git履歴から取得)。旧AIF2回答の移行受理(ニュアンス節は読み捨て)専用。照合不成立は拒否")
+    p = sub.add_parser("confirm-batch", help="一括コピー(複数セット)を全件照合してから各セットを確定(SELECTION-UI-BATCH 委任_02B。実体はer128_form_readable_restore_01)")
+    p.add_argument("--from-readable-batch", required=True, help="一括コピーの貼付テキストfile。全件PASSまで何も書かない。--dry-runで照合のみ")
+    p.add_argument("--articles-json", default=None, help="batch(id/members)を含むarticles.json(既定=公開フォームのdata/articles.json。batch未指定はfail-closed)")
+    p.add_argument("--run-map", default=None, help="確定時必須: {\"<slug__lvl>\": \"<run dir>\"} のjson")
+    p.add_argument("--by", default=None)
+    p.add_argument("--user-ref", default="")
+    p.add_argument("--grammar-pending", action="store_true")
+    p.add_argument("--actor", default="user", choices=("user", "evidence"))
+    p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--data-dir", default=None)
+    p.add_argument("--legacy-form-data", default=None)
     p = sub.add_parser("declare-absent")
     p.add_argument("--runs", required=True, help="カンマ区切りのrun dir(個別run宣言。範囲・期限付きの宣言は受け付けない)")
     p.add_argument("--rounds", default="1", help="宣言が効く候補round(既定=1。再選定後のroundは別途明示宣言)")
@@ -210,6 +221,13 @@ def run(argv=None) -> int:
             if a.data_dir is None:
                 a.data_dir = fr.DEFAULT_DATA_DIR
             return fr.run_confirm(a)
+        if a.cmd == "confirm-batch":   # 薄い委譲(検証はer128_form_readable_restore_01.restore_batch)
+            import er128_form_readable_restore_01 as fr
+            if a.data_dir is None:
+                a.data_dir = fr.DEFAULT_DATA_DIR
+            if a.articles_json is None:
+                a.articles_json = os.path.join(fr.DEFAULT_DATA_DIR, "articles.json")
+            return fr.run_confirm_batch(a)
         if a.cmd.startswith("grammar-"):
             gd = _grammar_dir(a.run, a.level)
             if a.cmd == "grammar-show":

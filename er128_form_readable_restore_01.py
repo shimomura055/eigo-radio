@@ -591,6 +591,8 @@ def load_restore(text_path: str, data_dir: str = DEFAULT_DATA_DIR, legacy_form_d
         with open(legacy_form_data_path, "rb") as f:
             legacy_bytes = f.read()
     payload, notes = restore(text, data_dir, lambda stem, d6: git_history_lookup(stem, d6, data_dir), legacy_form_data=legacy_bytes)
+    if len(payload["selection"]["key_phrase"]) != BATCH_KP_EXACT and not payload.get("kp_confirmed"):   # 単体(旧)受入は拒否しない。警告ノートのみ
+        notes = list(notes) + [f"警告: ①Key Phraseが{len(payload['selection']['key_phrase'])}件です(新仕様はちょうど{BATCH_KP_EXACT}件。単体受入は互換のため拒否しません)"]
     return raw, payload, notes
 
 
@@ -626,6 +628,249 @@ def cmd_from_readable(text_path: str, run: str, level: str, by: str, user_ref: s
     out["confirmed"] = res
     out["readable_saved"] = rpath
     return out
+
+
+# ---------------------------------------------------------------- 一括受入(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02B。既存restore/cmd_from_readableは無変更。新関数の追加のみ)
+BATCH_HEADER_RE = re.compile(r"^[ \t]*件数=(\d+)[ \t]*/[ \t]*生成=(\S+)[ \t]*/[ \t]*バッチ=(\S+?)[ \t]*$", re.M)
+BATCH_SEP_RE = re.compile(r"^[ \t]*════ SET (\d+)/(\d+) ｜ ([A-Za-z0-9_]+) ════[ \t]*$", re.M)
+BATCH_END_RE = re.compile(r"^[ \t]*════ END 合計(\d+)件 / BATCH1-(\d+)-([0-9a-f]{10}) ════[ \t]*$", re.M)
+BATCH_KP_EXACT = 3   # 区分①(Key Phrase)はちょうど3件(2026-10-30ユーザー指示)。kp_confirmed(ユーザー確定済み)はフォームDone条件と同じく免除
+
+
+def batch_code(codes: list) -> str:
+    """一括コード本体 BATCH1-<N>-<sha10>: 各セットの照合コード(AIF1/AIF2全文)を並び順にそのまま連結したもののsha256先頭10桁。"""
+    return f"BATCH1-{len(codes)}-" + sha("".join(codes))[:10]
+
+
+def _batch_codes_in(block: str) -> list:
+    """ブロック内の照合コードを全て返す(ちょうど1個を要求するのは呼出側)。AIF\\d+-の出現は全て有効な全文コードでなければならない(壊れた/未対応版コードを黙って無視しない)。"""
+    full = [m.group(0) for m in CODE_RE.finditer(block)] + [m.group(0) for m in CODE2_FULL_RE.finditer(block)]
+    n_prefix = len(re.findall(r"AIF\d+-", block))
+    if n_prefix != len(full):
+        raise RestoreError("照合コードが壊れているか未対応の形式バージョンです(AIF1以外・書式不正)。" + RECHECK_HINT)
+    return full
+
+
+def _batch_split(t: str):
+    """正規化済みテキスト -> (head, seps, blocks, end)。区切り/ENDの構造検査は呼出側。"""
+    seps = list(BATCH_SEP_RE.finditer(t))
+    ends = list(BATCH_END_RE.finditer(t))
+    return seps, ends
+
+
+def restore_batch(text: str, *, articles_json: str, legacy_form_data=None, data_dir: str = DEFAULT_DATA_DIR, git_lookup="default"):
+    """一括コピー(フォームの『まとめてコピー』)の貼付全文 -> payload v2のlist(SET順)。1件でも失敗なら RestoreError(何も返さず、全エラーを列挙)。
+    検査: ヘッダ(件数/生成/バッチ)・SET区切り連番・END・BATCH1コード・各ブロックにAIF照合コードがちょうど1個・stem一致・重複セットなし・
+    articles.json の batch(未指定=fail-closed)の id と members の完全一致(欠落/余剰セット検出)・各ブロックを既存restore()で照合・区分①ちょうど3件(kp_confirmedは免除)。
+    legacy_form_data: bytes(単一)またはdict(stem->bytes)。旧AIF2回答の移行受理は既存restore()と同じ条件。git_lookup: 'default'=git履歴参照 / None=参照なし / callable。"""
+    errs = []
+    t = text.replace("\r\n", "\n").replace("\r", "\n")
+    with open(articles_json, "rb") as f:
+        art = json.loads(f.read().decode("utf-8-sig"))
+    batch = art.get("batch")
+    if not isinstance(batch, dict) or not batch.get("id") or not isinstance(batch.get("members"), list) or not batch["members"]:
+        raise RestoreError("articles.json に batch(id/members)が指定されていません。一括受入は対象バッチが指定されている場合のみ行います(fail-closed)")
+    members = list(batch["members"])
+    if len(set(members)) != len(members):
+        raise RestoreError(f"articles.json batch.members に重複があります: {members!r}")
+    seps, ends = _batch_split(t)
+    if not seps:
+        raise RestoreError("一括コピーの『════ SET i/N ｜ …』区切りが見つかりません。" + RECHECK_HINT)
+    if len(ends) != 1:
+        raise RestoreError(f"一括コピーの末尾『════ END 合計N件 / BATCH1-…』が{len(ends)}個あります(ちょうど1個が必要。末尾が切れていないか確認してください)")
+    end = ends[0]
+    if end.start() < seps[-1].end():
+        raise RestoreError("END行がSET区切りより前にあります(並びが不正)")
+    head = t[:seps[0].start()]
+    hs = list(BATCH_HEADER_RE.finditer(head))
+    if len(hs) != 1:
+        raise RestoreError(f"一括ヘッダ『件数=N / 生成=… / バッチ=…』が{len(hs)}個あります(ちょうど1個が必要)")
+    h_n, h_gen, h_id = int(hs[0].group(1)), hs[0].group(2), hs[0].group(3)
+    try:
+        import datetime as _dt
+        _dt.datetime.fromisoformat(h_gen.replace("Z", "+00:00"))
+    except ValueError:
+        errs.append(f"一括ヘッダの生成日時がISO形式ではありません: {h_gen!r}")
+    n = len(seps)
+    if h_n != n:
+        errs.append(f"ヘッダ件数={h_n} とSET区切りの数={n} が一致しません(欠落/重複の疑い)")
+    if int(end.group(1)) != n:
+        errs.append(f"END合計={end.group(1)}件 とSET区切りの数={n} が一致しません")
+    if h_id != batch["id"]:
+        errs.append(f"ヘッダのバッチ={h_id!r} が articles.json の batch.id={batch['id']!r} と異なります(別バッチ/古いフォーム)")
+    blocks, stems, codes = [], [], []
+    for i, m in enumerate(seps):
+        stop = seps[i + 1].start() if i + 1 < len(seps) else end.start()
+        blocks.append(t[m.end():stop])
+        if int(m.group(1)) != i + 1 or int(m.group(2)) != n:
+            errs.append(f"SET区切りの連番が不正です(位置{i + 1}: 『SET {m.group(1)}/{m.group(2)}』、期待 {i + 1}/{n})")
+    for i, (m, blk) in enumerate(zip(seps, blocks), 1):
+        stems.append(m.group(3))
+        try:
+            cs = _batch_codes_in(blk)
+        except RestoreError as e:
+            errs.append(f"SET {i}({m.group(3)}): {e}")
+            codes.append(None)
+            continue
+        if len(cs) != 1:
+            errs.append(f"SET {i}({m.group(3)}): 照合コードが{len(cs)}個あります(ちょうど1個が必要。ブロックの混入/欠落の疑い)")
+            codes.append(None)
+            continue
+        cm_ = CODE_RE.fullmatch(cs[0]) or CODE2_FULL_RE.fullmatch(cs[0])
+        if cm_.group(1) != m.group(3):
+            errs.append(f"SET {i}: 区切りのセット名 {m.group(3)!r} と照合コードのセット名 {cm_.group(1)!r} が一致しません")
+        codes.append(cs[0])
+    dups = sorted({s for s in stems if stems.count(s) > 1})
+    if dups:
+        errs.append(f"同じセットが複数含まれています: {dups!r}")
+    if set(stems) != set(members):
+        errs.append(f"受領したセットがバッチ対象と一致しません(欠落={sorted(set(members) - set(stems))!r} / 対象外={sorted(set(stems) - set(members))!r})")
+    got_code = f"BATCH1-{end.group(2)}-{end.group(3)}"
+    if all(c is not None for c in codes):
+        want = batch_code(codes)
+        if want != got_code:
+            errs.append(f"一括コードが一致しません(貼付={got_code} / 計算={want})。セットの欠落・順序入替え・内容変更の疑い")
+    if git_lookup == "default":
+        git_lookup_ = lambda stem, d6: git_history_lookup(stem, d6, data_dir)   # noqa: E731
+    else:
+        git_lookup_ = git_lookup
+    payloads = []
+    for i, (blk, code) in enumerate(zip(blocks, codes), 1):
+        if code is None:
+            continue
+        legacy = legacy_form_data.get(stems[i - 1]) if isinstance(legacy_form_data, dict) else legacy_form_data
+        try:
+            payload, notes = restore(blk, data_dir, git_lookup_, legacy_form_data=legacy)   # 既存restore()をそのまま使用(ブロック1個=コード1個なので最後採用の曖昧さなし)
+        except RestoreError as e:
+            errs.append(f"SET {i}({stems[i - 1]}): {e}")
+            continue
+        n_kp = len(payload["selection"]["key_phrase"])
+        if n_kp != BATCH_KP_EXACT and not payload.get("kp_confirmed"):
+            errs.append(f"SET {i}({stems[i - 1]}): ①Key Phraseが{n_kp}件です(ちょうど{BATCH_KP_EXACT}件が必要。一括受入では拒否します)")
+            continue
+        payload["restore_meta"]["batch"] = {"id": h_id, "index": i, "n": n, "stem": stems[i - 1], "batch_code": got_code, "generated": h_gen,
+                                           "block_sha256": hashlib.sha256(blk.encode("utf-8")).hexdigest()}
+        if notes:
+            payload["restore_meta"]["notes"] = list(notes)
+        payloads.append(payload)
+    if errs:
+        raise RestoreError("一括受入を拒否しました(何も確定していません)。エラー" + str(len(errs)) + "件:\n- " + "\n- ".join(errs))
+    return payloads
+
+
+def cmd_from_readable_batch(text_path: str, *, articles_json: str, run_map: dict = None, by: str = None, user_ref: str = "", actor: str = "user",
+                            grammar_pending: bool = False, dry_run: bool = False, data_dir: str = DEFAULT_DATA_DIR, legacy_form_data_path: str = None) -> dict:
+    """一括コピーを復元し(全件検証が通るまで何も書かない)、dry_runでなければ各セットを既存cmd_from_formへ委譲して確定する。
+    run_map: {stem: run_dir}(確定時必須。全セット分が揃っていなければ何も確定せず拒否)。確定前に全セットで候補sha・既確定guardを事前検査し、
+    全payloadをtempへ書き切ってから確定ループに入る。cmd_from_form自体はセット単位の確定(複数記事を跨ぐ単一トランザクションは作れない)ため、
+    事前検査後に想定外の失敗が起きた場合は確定済みセットを例外のbatch_partialへ添えて停止する(隠さない)。"""
+    with open(text_path, "rb") as f:
+        raw = f.read()
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError as e:
+        raise RestoreError(f"貼付テキストがUTF-8として読めません: {e}") from e
+    legacy_bytes = None
+    if legacy_form_data_path:
+        with open(legacy_form_data_path, "rb") as f:
+            legacy_bytes = f.read()
+    payloads = restore_batch(text, articles_json=articles_json, legacy_form_data=legacy_bytes, data_dir=data_dir)
+    out = {"batch_id": payloads[0]["restore_meta"]["batch"]["id"], "n": len(payloads), "readable_sha256": hashlib.sha256(raw).hexdigest(), "dry_run": dry_run,
+           "restored": [summarize(p, (p["restore_meta"].get("notes") or [])) for p in payloads]}
+    if dry_run:
+        out["next"] = "dry-runのため確定していません。--dry-run を外し --run-map(stem->run dir のjson)を付けて同じコマンドを実行すると各セットをcmd_from_formで確定します"
+        return out
+    rm = run_map or {}
+    stems = [p["restore_meta"]["batch"]["stem"] for p in payloads]
+    missing = sorted(set(stems) - set(rm))
+    if missing:
+        raise RestoreError(f"--run-map に次のセットのrunがありません: {missing!r}(何も確定していません)")
+    blocks = []
+    t = text.replace("\r\n", "\n").replace("\r", "\n")
+    sp = list(BATCH_SEP_RE.finditer(t))
+    en = BATCH_END_RE.search(t)
+    blocks = [t[m.end():(sp[i + 1].start() if i + 1 < len(sp) else en.start())] for i, m in enumerate(sp)]
+    import er128_kp_confirmed_content_01 as c   # 遅延import(復元だけの利用では不要)
+    for stem, p in zip(stems, payloads):   # 事前検査(何も書かない): 候補sha・既確定guard
+        kp_dir = c._kp_dir_for(rm[stem], p["article"]["level"])
+        cands = c.rv.load_candidates(kp_dir)
+        if p["article"].get("candidates_sha256") != cands["candidates_sha256"]:
+            raise RestoreError(f"{stem}: フォームの候補集合sha256が現在の候補docと一致しません。何も確定していません")
+        c.guard(kp_dir, "confirm --from-readable-batch(既にユーザー確定済み)")
+    tmps = []
+    try:
+        for p in payloads:   # 全payloadを先にtempへ書き切る(書込失敗なら確定前に中止)
+            fd, tmp = tempfile.mkstemp(suffix=".json", prefix="readable_batch_restore_")
+            tmps.append(tmp)
+            with os.fdopen(fd, "wb") as f:
+                f.write(payload_bytes(p))
+        confirmed = []
+        for stem, p, tmp, blk in zip(stems, payloads, tmps, blocks):
+            lv = p["article"]["level"]
+            legacy = (p.get("restore_meta") or {}).get("legacy")
+            extra = {"origin_extra": dict(legacy)} if legacy else {}
+            try:
+                res = c.cmd_from_form(rm[stem], lv, tmp, by, user_ref, actor=actor, grammar_pending=grammar_pending, **extra)
+            except Exception as e:
+                e.batch_partial = {"confirmed_before_failure": confirmed, "failed_set": stem}
+                raise
+            sdir = c.paths_of(c._kp_dir_for(rm[stem], lv))["source_dir"]
+            os.makedirs(sdir, exist_ok=True)
+            rpath = os.path.join(sdir, f"rev{res['revision']}_readable.txt")
+            with open(rpath, "wb") as f:
+                f.write(blk.encode("utf-8"))
+            confirmed.append({"stem": stem, "confirmed": res, "readable_saved": rpath})
+        out["confirmed"] = confirmed
+    finally:
+        for tmp in tmps:
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+    return out
+
+
+def run_confirm_batch(a) -> int:
+    """CLI(--from-readable-batch)。終了コードはrun_confirmと同じ規約: 4=ISSUE/2=拒否。"""
+    try:
+        rm = None
+        if getattr(a, "run_map", None):
+            with open(a.run_map, "rb") as f:
+                rm = json.loads(f.read().decode("utf-8-sig"))
+        if not a.dry_run and not rm:
+            raise RestoreError("確定には --run-map(stem->run dirのjson)が必要です(まず --dry-run で照合を確認してください)")
+        out = cmd_from_readable_batch(a.from_readable_batch, articles_json=a.articles_json, run_map=rm, by=a.by, user_ref=a.user_ref, actor=a.actor,
+                                      grammar_pending=a.grammar_pending, dry_run=a.dry_run, data_dir=a.data_dir, legacy_form_data_path=getattr(a, "legacy_form_data", None))
+        print(json.dumps(out, ensure_ascii=False, indent=2))
+        return 0
+    except RestoreError as e:
+        print(f"[READABLE_RESTORE][REFUSED] {e}", file=sys.stderr)
+        return 2
+    except Exception as e:
+        import er128_kp_confirmed_content_01 as c
+        part = getattr(e, "batch_partial", None)
+        if part:
+            print("[READABLE_RESTORE][BATCH_PARTIAL] " + json.dumps(part, ensure_ascii=False), file=sys.stderr)
+        if isinstance(e, c.rv.ConfirmedContentIssue):
+            print(f"[CONFIRMED_CONTENT][ISSUE] {e}", file=sys.stderr)
+            return c.rv.EXIT_CODE_PENDING
+        if isinstance(e, (c.CliError, c.rv.KpReviewError, ValueError)):
+            print(f"[CONFIRMED_CONTENT][REFUSED] {type(e).__name__}: {e}", file=sys.stderr)
+            return 2
+        raise
+
+
+def add_batch_args(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--from-readable-batch", required=True, help="一括コピーの貼付テキストfile。全件照合PASSまで何も書かない。--dry-runで照合のみ")
+    p.add_argument("--articles-json", default=os.path.join(DEFAULT_DATA_DIR, "articles.json"), help="batch(id/members)を含むarticles.json(未指定batchはfail-closed)")
+    p.add_argument("--run-map", default=None, help="確定時必須: {\"<slug__lvl>\": \"<run dir>\"} のjson")
+    p.add_argument("--by", default=None)
+    p.add_argument("--user-ref", default="")
+    p.add_argument("--grammar-pending", action="store_true")
+    p.add_argument("--actor", default="user", choices=("user", "evidence"))
+    p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--data-dir", default=DEFAULT_DATA_DIR)
+    p.add_argument("--legacy-form-data", default=None)
 
 
 # ---------------------------------------------------------------- CLI
@@ -672,6 +917,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out", default=None)
     p.add_argument("--legacy-form-data", default=None, help="旧AIF2回答の移行受理用(confirmと同じ)")
     add_confirm_args(sub.add_parser("confirm", help="復元して cmd_from_form へ委譲(確定)"))
+    add_batch_args(sub.add_parser("confirm-batch", help="一括コピーを全件照合してから各セットを確定(--from-readable-batch。委任_02B)"))
     return ap
 
 
@@ -688,6 +934,8 @@ def run(argv=None) -> int:
                 f.write(payload_bytes(payload))
         print(json.dumps({"restored": summarize(payload, notes), "out": a.out}, ensure_ascii=False, indent=2))
         return 0
+    if a.cmd == "confirm-batch":
+        return run_confirm_batch(a)
     return run_confirm(a)
 
 

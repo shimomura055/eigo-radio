@@ -288,7 +288,56 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
     return out
 
 
+def write_batch_key(articles_json: str, members: list, batch_id: str = None, generated: str = None) -> dict:
+    """articles.json に任意キー `batch`={id, generated, members:[slug__lvl...]} を出力する(SELECTION-UI-BATCH 委任_02B)。
+    既存の `articles[]` ほか他キーは一切変更しない(読み込み->batchのみ差替え->temp+renameで原子的に書戻し)。API 0。
+    members: 当日の一括選定対象 stem(slug__level)。重複/空/対応dataなしは拒否(何も書かない)。batch_idの既定=日付+members shaの先頭8桁。"""
+    import datetime
+    import tempfile
+    mem = [m.strip() for m in members if m and m.strip()]
+    if not mem or len(set(mem)) != len(mem):
+        raise ValueError(f"batch.members が空または重複しています: {members!r}")
+    base = os.path.dirname(os.path.abspath(articles_json))
+    for m in mem:
+        if not os.path.exists(os.path.join(base, m + ".json")):
+            raise ValueError(f"batch.members の {m!r} に対応するデータ {m}.json が {base} にありません")
+    with open(articles_json, "rb") as f:
+        raw = f.read()
+    doc = json.loads(raw.decode("utf-8-sig"))
+    gen = generated or datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).isoformat(timespec="seconds")
+    bid = batch_id or (gen[:10] + "-" + hashlib.sha256("\n".join(mem).encode("utf-8")).hexdigest()[:8])
+    doc["batch"] = {"id": bid, "generated": gen, "members": mem}
+    fd, tmp = tempfile.mkstemp(dir=base, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            txt = json.dumps(doc, ensure_ascii=False, indent=1) + "\n"
+            if b"\r\n" in raw:   # 既存の改行コード(CRLF)を保つ(無関係な全行diffを出さない)
+                txt = txt.replace("\n", "\r\n")
+            f.write(txt.encode("utf-8"))
+        os.replace(tmp, articles_json)
+    finally:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+    return doc["batch"]
+
+
 def main(argv=None) -> int:
+    _av = sys.argv[1:] if argv is None else list(argv)
+    if "--set-batch" in _av:   # 既存呼出(--set-batchなし)は完全に従来どおり。articles.jsonのbatchキーだけを更新する別モード
+        bp = argparse.ArgumentParser()
+        bp.add_argument("--set-batch", action="store_true")
+        bp.add_argument("--articles-json", required=True)
+        bp.add_argument("--members", required=True, help="カンマ区切りの slug__level")
+        bp.add_argument("--batch-id", default=None)
+        bp.add_argument("--generated", default=None)
+        ba = bp.parse_args(_av)
+        try:
+            res = write_batch_key(ba.articles_json, ba.members.split(","), ba.batch_id, ba.generated)
+        except ValueError as e:
+            print(f"[BATCH_KEY][REFUSED] {e}", file=sys.stderr)
+            return 2
+        print(json.dumps({"articles_json": ba.articles_json, "batch": res}, ensure_ascii=False))
+        return 0
     ap = argparse.ArgumentParser()
     ap.add_argument("--cand", required=True)
     ap.add_argument("--slug", required=True)

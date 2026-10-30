@@ -894,6 +894,255 @@ class TestEndToEndRealConfirm(FormHelpers):
             self.assertIsNone(_cc.load_record(self.kp_dir))
 
 
+# ---------------------------------------------------------------- 一括受入 restore_batch(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02B。API 0)
+BATCH_STEMS = ["ai_chat_sponsored_persuasion__a2__prod", "jwst_mystery_emission_line__a2__prod", "melos__a2__prod"]
+
+
+def _batch_state(d, n_kp=3, comment=""):
+    terms = [it["term"] for it in R.items_of(d)]
+    ch = {t: 1 for t in terms[:n_kp]}
+    ch.update({t: 2 for t in terms[n_kp:n_kp + 2]})
+    ch.update({t: 3 for t in terms[n_kp + 2:n_kp + 5]})
+    pres = R.grammar_presented(d)
+    return {"choices": ch, "grammar": {}, "grammar_zero": bool(pres), "comment": comment}
+
+
+def make_batch_text(stems, data_dir=LIVE_DATA, batch_id="B-TEST", gen="2026-10-30T09:00:00+09:00", n_kps=None, comments=None):
+    """02A(フォームJS)が出す形式の一括コピーをDESIGN_01 §2の定義どおりに組み立てる(受入test用の自前fixture)。"""
+    blocks, codes = [], []
+    for s in stems:
+        dp = os.path.join(data_dir, s + ".json")
+        d = jload(dp)
+        blk = R.build_readable(s, d, _batch_state(d, (n_kps or {}).get(s, 3), (comments or {}).get(s, "")), d6_of_file(dp))
+        codes.append(R.CODE_RE.search(blk).group(0))
+        blocks.append(blk)
+    n = len(stems)
+    out = [f"件数={n} / 生成={gen} / バッチ={batch_id}", ""]
+    for i, (s, b) in enumerate(zip(stems, blocks), 1):
+        out += [f"════ SET {i}/{n} ｜ {s} ════", b, ""]
+    out.append(f"════ END 合計{n}件 / {R.batch_code(codes)} ════")
+    return "\n".join(out) + "\n", codes
+
+
+class TestRestoreBatch(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.mkdtemp(prefix="sub02b_")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def aj(self, members=None, batch_id="B-TEST", no_batch=False):
+        p = os.path.join(self.tmp, "articles_%d.json" % random.randrange(10 ** 9))
+        doc = {"schema": "eigo_radio_selection_index_v1", "articles": []}
+        if not no_batch:
+            doc["batch"] = {"id": batch_id, "generated": "2026-10-30T09:00:00+09:00", "members": list(members if members is not None else BATCH_STEMS)}
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump(doc, f, ensure_ascii=False)
+        return p
+
+    def refused(self, text, frag, aj=None):
+        with self.assertRaises(R.RestoreError) as e:
+            R.restore_batch(text, articles_json=aj or self.aj(), git_lookup=None)
+        self.assertIn(frag, str(e.exception))
+        return str(e.exception)
+
+    def test_normal_three_sets(self):
+        text, _ = make_batch_text(BATCH_STEMS)
+        ps = R.restore_batch(text, articles_json=self.aj(), git_lookup=None)
+        self.assertEqual([p["restore_meta"]["batch"]["stem"] for p in ps], BATCH_STEMS)
+        for p, s in zip(ps, BATCH_STEMS):
+            dp = os.path.join(LIVE_DATA, s + ".json")
+            d = jload(dp)
+            self.assertEqual(len(p["selection"]["key_phrase"]), 3)
+            self.assertEqual(p["restore_meta"]["batch"]["id"], "B-TEST")
+            q, _ = R.restore(R.build_readable(s, d, _batch_state(d), d6_of_file(dp)), LIVE_DATA)   # 既存単体restore()と同一payload(batchメタ以外)
+            for k in COMPARE_KEYS:
+                self.assertEqual(p.get(k), q.get(k), k)
+
+    def test_missing_set_detected_by_members(self):
+        text, _ = make_batch_text(BATCH_STEMS[:2])
+        self.assertIn(BATCH_STEMS[2], self.refused(text, "欠落"))
+
+    def test_extra_set_not_in_members(self):
+        text, _ = make_batch_text(BATCH_STEMS)
+        self.refused(text, "対象外", aj=self.aj(members=BATCH_STEMS[:2]))
+
+    def test_unspecified_batch_fails_closed(self):
+        text, _ = make_batch_text(BATCH_STEMS)
+        self.refused(text, "batch", aj=self.aj(no_batch=True))
+
+    def test_batch_id_mismatch(self):
+        text, _ = make_batch_text(BATCH_STEMS, batch_id="OTHER")
+        self.refused(text, "バッチ")
+
+    def test_injected_second_code_in_block_refused(self):
+        text, codes = make_batch_text(BATCH_STEMS)
+        self.refused(text.replace(codes[0], codes[0] + "\n照合コード：" + codes[1], 1), "ちょうど1個")
+
+    def test_block_without_code_refused(self):
+        text, codes = make_batch_text(BATCH_STEMS)
+        self.refused(text.replace(codes[1], "(削除)"), "0個")
+
+    def test_corrupt_code_prefix_refused(self):
+        text, codes = make_batch_text(BATCH_STEMS)
+        self.refused(text.replace(codes[1], codes[1].replace("AIF1-", "AIF9-")), "壊れて")
+
+    def test_kp_not_exactly_three_refused(self):
+        for n in (2, 4, 0):
+            text, _ = make_batch_text(BATCH_STEMS, n_kps={BATCH_STEMS[1]: n})
+            self.assertIn(BATCH_STEMS[1], self.refused(text, "ちょうど3件"))
+
+    def test_partial_failure_enumerates_all_errors_and_returns_nothing(self):
+        text, _ = make_batch_text(BATCH_STEMS, n_kps={BATCH_STEMS[0]: 2}, comments={BATCH_STEMS[2]: "ok"})
+        text = text.replace("自由コメント：ok", "自由コメント：改ざん")
+        m = self.refused(text, "何も確定していません")
+        self.assertIn("SET 1", m)
+        self.assertIn("SET 3", m)
+
+    def test_header_count_end_truncation_and_duplicates(self):
+        text, _ = make_batch_text(BATCH_STEMS)
+        self.refused(text.replace("件数=3", "件数=2"), "件数")
+        self.refused(text.replace("合計3件", "合計2件"), "END合計")
+        self.refused(text.split("════ END")[0], "END")
+        t2, _ = make_batch_text([BATCH_STEMS[0], BATCH_STEMS[0], BATCH_STEMS[1]])
+        self.refused(t2, "複数")
+
+    def test_batch_code_detects_reorder(self):
+        text, codes = make_batch_text(BATCH_STEMS)
+        t2, _ = make_batch_text([BATCH_STEMS[1], BATCH_STEMS[0], BATCH_STEMS[2]])
+        t2 = t2.replace(R.batch_code([codes[1], codes[0], codes[2]]), R.batch_code(codes))
+        self.refused(t2, "一括コード")
+
+    def test_code_fence_tolerated(self):
+        text, _ = make_batch_text(BATCH_STEMS)
+        self.assertEqual(len(R.restore_batch("```\n" + text + "```\n", articles_json=self.aj(), git_lookup=None)), 3)
+
+    def test_old_single_restore_below_three_is_warning_only(self):
+        s = BATCH_STEMS[1]
+        dp = os.path.join(LIVE_DATA, s + ".json")
+        d = jload(dp)
+        blk = R.build_readable(s, d, _batch_state(d, 2), d6_of_file(dp))
+        payload, _ = R.restore(blk, LIVE_DATA)   # 拒否されない
+        self.assertEqual(len(payload["selection"]["key_phrase"]), 2)
+        p = os.path.join(self.tmp, "single2.txt")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(blk)
+        _, _, notes2 = R.load_restore(p, LIVE_DATA)
+        self.assertTrue(any("警告" in n and "3件" in n for n in notes2))
+
+    def test_existing_restore_and_cmd_from_readable_bodies_unchanged_vs_head(self):
+        import inspect
+        try:
+            old = subprocess.run(["git", "show", "HEAD:er128_form_readable_restore_01.py"], cwd=ROOT, capture_output=True, check=True).stdout.decode("utf-8").replace("\r\n", "\n")
+        except Exception:
+            self.skipTest("git HEAD参照不可")
+        cur = inspect.getsource(R).replace("\r\n", "\n")
+        for fn in ("def restore(", "def cmd_from_readable("):
+            i, j = old.index(fn), cur.index(fn)
+            self.assertEqual(old[i:old.index("\n\n\n", i)], cur[j:cur.index("\n\n\n", j)], fn)
+
+    def test_cli_dry_run_ok_refusal_rc2_and_writes_nothing(self):
+        text, _ = make_batch_text(BATCH_STEMS)
+        good, bad = os.path.join(self.tmp, "good.txt"), os.path.join(self.tmp, "bad.txt")
+        with open(good, "w", encoding="utf-8") as f:
+            f.write(text)
+        with open(bad, "w", encoding="utf-8") as f:
+            f.write(text.replace("件数=3", "件数=9"))
+        aj = self.aj()
+        before = sorted(os.listdir(self.tmp))
+        rc = (R.run(["confirm-batch", "--from-readable-batch", good, "--articles-json", aj, "--dry-run"]),
+              R.run(["confirm-batch", "--from-readable-batch", bad, "--articles-json", aj, "--dry-run"]),
+              R.run(["confirm-batch", "--from-readable-batch", good, "--articles-json", aj, "--by", "t"]))   # 確定にはrun-map必須
+        self.assertEqual(rc, (0, 2, 2))
+        self.assertEqual(sorted(os.listdir(self.tmp)), before)
+
+
+class TestRestoreBatchLegacyAif2Coexistence(unittest.TestCase):
+    """旧AIF2回答の移行受理(雪女Std)は、一括内ブロックでも既存restore()と同じ条件で共存する(AIF2コードもブロックに1個)。"""
+    STEM = "yuki_onna__a2__prod"
+    D6 = "651042"
+    HR = os.path.join(ROOT, "docs", "pm", "delegation_log", "2026-10-30_FAMILY-Z-YUKI-ONNA-PRODUCTION-01_USER_HR_01.md")
+
+    def test_legacy_block_in_batch(self):
+        old = R.git_history_lookup(self.STEM, self.D6)
+        if old is None or not os.path.exists(self.HR):
+            self.skipTest("旧フォームdata/回答原文が取得できない環境")
+        t = open(self.HR, encoding="utf-8").read().split("\n")
+        i = next(k for k, ln in enumerate(t) if ln.startswith("記事：雪女(Yuki-Onna)｜Standard"))
+        j = next(k for k in range(i, len(t)) if t[k].startswith("照合コード") and "AIF2-" in t[k])
+        legacy_blk = "\n".join(t[i:j + 1])
+        legacy_code = R.CODE2_FULL_RE.search(legacy_blk).group(0)
+        tmp = tempfile.mkdtemp(prefix="sub02b_leg_")
+        try:
+            other = BATCH_STEMS[2]
+            od = jload(os.path.join(LIVE_DATA, other + ".json"))
+            ob = R.build_readable(other, od, _batch_state(od), d6_of_file(os.path.join(LIVE_DATA, other + ".json")))
+            codes = [legacy_code, R.CODE_RE.search(ob).group(0)]
+            text = "\n".join(["件数=2 / 生成=2026-10-30T09:00:00+09:00 / バッチ=B-LEG", "", f"════ SET 1/2 ｜ {self.STEM} ════", legacy_blk, "",
+                              f"════ SET 2/2 ｜ {other} ════", ob, "", f"════ END 合計2件 / {R.batch_code(codes)} ════", ""])
+            aj = os.path.join(tmp, "articles.json")
+            with open(aj, "w", encoding="utf-8") as f:
+                json.dump({"batch": {"id": "B-LEG", "members": [self.STEM, other]}}, f)
+            with self.assertRaises(R.RestoreError) as e:   # 旧data無し=AIF2は明示拒否のまま
+                R.restore_batch(text, articles_json=aj, git_lookup=None)
+            self.assertIn("NUANCE_CORNER_ABOLISHED", str(e.exception))
+            p_single, _ = R.restore(legacy_blk + "\n", LIVE_DATA, None, legacy_form_data=old)   # 旧dataあり=移行受理
+            if len(p_single["selection"]["key_phrase"]) == 3:
+                ps = R.restore_batch(text, articles_json=aj, git_lookup=None, legacy_form_data={self.STEM: old})
+                self.assertEqual(len(ps), 2)
+                self.assertTrue(ps[0]["restore_meta"]["legacy"]["legacy_aif2_accepted"])
+            else:   # ①が3件でない旧回答は新仕様の一括では拒否(移行受理自体は成立しており、拒否理由は①のみ)
+                with self.assertRaises(R.RestoreError) as e2:
+                    R.restore_batch(text, articles_json=aj, git_lookup=None, legacy_form_data={self.STEM: old})
+                self.assertIn("ちょうど3件", str(e2.exception))
+                self.assertNotIn("NUANCE_CORNER_ABOLISHED", str(e2.exception))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+class TestExportBatchKey(unittest.TestCase):
+    """export_form_data_01.write_batch_key: articles[]は不変・batchキーのみ追加・改行コード保持・不正は無書込。"""
+    TOOL = os.path.join(ROOT, "docs", "research", "KP-GATE-DROP-BACKFILL-PRODUCTION-01", "tools")
+
+    def setUp(self):
+        sys.path.insert(0, self.TOOL)
+        import export_form_data_01 as E
+        self.E = E
+        self.tmp = tempfile.mkdtemp(prefix="sub02b_exp_")
+        shutil.copy(os.path.join(LIVE_DATA, "articles.json"), self.tmp)
+        shutil.copy(os.path.join(LIVE_DATA, BATCH_STEMS[0] + ".json"), self.tmp)
+        self.aj = os.path.join(self.tmp, "articles.json")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_adds_batch_only_and_keeps_articles_and_crlf(self):
+        before, raw0 = jload(self.aj), load(self.aj)
+        res = self.E.write_batch_key(self.aj, [BATCH_STEMS[0]], batch_id="X1", generated="2026-10-30T00:00:00+09:00")
+        after = jload(self.aj)
+        self.assertEqual(after["articles"], before["articles"])
+        self.assertEqual({k: v for k, v in after.items() if k != "batch"}, {k: v for k, v in before.items() if k != "batch"})
+        self.assertEqual(after["batch"], {"id": "X1", "generated": "2026-10-30T00:00:00+09:00", "members": [BATCH_STEMS[0]]})
+        self.assertEqual(res, after["batch"])
+        self.assertEqual(b"\r\n" in raw0, b"\r\n" in load(self.aj))
+        text, _ = make_batch_text([BATCH_STEMS[0]], batch_id="X1")   # export出力をrestore_batchが読める(キー形の契約)
+        self.assertEqual(len(R.restore_batch(text, articles_json=self.aj, git_lookup=None)), 1)
+
+    def test_invalid_members_write_nothing(self):
+        raw0 = load(self.aj)
+        for mem in ([], ["nonexistent__a2"], [BATCH_STEMS[0], BATCH_STEMS[0]]):
+            with self.assertRaises(ValueError):
+                self.E.write_batch_key(self.aj, mem)
+        self.assertEqual(load(self.aj), raw0)
+
+    def test_cli_set_batch_flag_only_mode(self):
+        self.assertEqual(self.E.main(["--set-batch", "--articles-json", self.aj, "--members", BATCH_STEMS[0], "--batch-id", "C1"]), 0)
+        self.assertEqual(jload(self.aj)["batch"]["id"], "C1")
+        self.assertEqual(self.E.main(["--set-batch", "--articles-json", self.aj, "--members", "zzz"]), 2)
+
+
 if __name__ == "__main__":
     if "--add-fixtures-08" in sys.argv:
         add_fixtures_08()
