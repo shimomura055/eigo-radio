@@ -51,3 +51,18 @@ Production未変更・読取専用。Flap層ON/OFF=保存転写をTrial prototyp
 ## 6. 判断
 - **D1(Phase 2 probe)**: 実施済み(承認範囲内。約¥29.64/Cap ¥30)。
 - **D2(Production採用)**: ユーザー判断(提示のみ、自動格上げしない)。論点=①採用するか(効果は小さいが構造的な穴) ②許可リストを(Voice,path)単位の実証ベースで運用してよいか ③AY/AW等の非救済維持 ④試聴ページの結果。推奨=『採用する場合は形態B・既定OFF・上記配線で、試聴ページ(18本)で誤救済が無いことを確認後に判断』。
+
+## 7. Opusレビュー注記(任意Opus独立レビュー、2026-10-30。結論=採用判断に進めてよい。Closeout=VALIDATED(判定規則として)・注記付き)
+Fable判定: Status=**VALIDATED(判定規則として。注記付き)**。Production採用(D2)は引き続きユーザー判断。
+- **注1(条件6)**: Zephyr|pro・Schedar|proの許可はBertie保存記録(Z本番の保存転写)に依拠しており、独立probeは未了。削減効果約¥21の根拠と同一事象のため循環している。
+- **注2(条件7)**: 削減額(約¥21)は上限値で、上記と同じ循環を含む。
+- **注3(条件4)**: voice/pathの受け渡し経路は未設計。`er109_xz_scope_01.decision()`:149にvoice引数なし、呼出元5箇所(er006:1136/1208・er104:258/288・er078:440)にvoiceなし、`_evaluate_cached`:124のcache keyにvoice非含有。よって「新規call siteなし」は不成立(新規call siteまたは引数追加が必要)。
+
+## 8. Production採用時の実装前修正(Opus M1〜M6。採用された場合のみ。今回は実装しない)
+- **M1 tokenizer**: `er109_asr_orthographic_equivalence_01.py:274-281`の`_TOKEN_RE`同等(数字・記号もtoken)にし、判定を「flap対置換後の全token完全一致」とする。KP票経路(値ガード解除済み er078:605-611, er104:266)で「latter 13 / ladder 30」のような数値付き文が救済されない回帰testを置く。
+- **M2 voice/path受け渡し**: contextvarで受け渡し、新規call siteを明示、cache外で判定(cache keyにvoice/pathを含めない代わりに判定をcache外)、音声メタデータにvoice/pathを記録(TTS文脈外の再判定での反転防止)。
+- **M3 label/version**: `ORTHO_LABEL`流用+flap専用eq version(explain_protectedは常にFalse=値差・否定差を解除しない構造保証)、`FLAP_T_EQUIVALENT`を`ORTHO_WARNING_LABELS`(:33)へ追加(Store再利用ガード・ortho_contributed自動適用)。test3点。
+- **M4(任意)**: 静的Voice設定表の整合testとrun開始検査で代替(実装量削減)。
+- **M5(約¥20)**: Zephyr|pro・Schedar|proの独立probe+Z実使用の未probe組合せ(Algieba/Charon/Puck/Fenrir/Aoede|pro、Kore|fl)のprobe。
+- **M6**: auditにCMU辞書sha/versionを記録、Whisper票への適用を明記、親flag(er109 is_active_for_run)∧子flagの二重条件。
+- **品質定義の明文化**: 「語彙としての意図は検証しない。米音として許容できる実現形かを見る(米音では/d/も[ɾ]化し区別不能)」。
