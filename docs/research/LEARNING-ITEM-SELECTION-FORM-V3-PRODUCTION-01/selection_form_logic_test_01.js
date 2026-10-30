@@ -615,4 +615,34 @@ t('D legacy: single buildReadable/ChatGPT url paths are byte-identical to before
   assert.ok(FL.buildReadable(dYuki, st, o).includes('自由コメント：X\n')); assert.strictEqual(typeof FL.buildChatGptUrl, 'function');
 });
 
+// ---- KP-DIFFICULTY-4LEVEL-DISPLAY-01 委任_02: 難易度は表示専用(署名・照合コード・選択・LIMITSに不干渉) ----
+t('KPD difficultyOf: 4 levels + unknown + legacy(no field / not_graded) display rules', () => {
+  const mk = (level, source) => ({ term: 'x', difficulty: { level, label_ja: 'ignored-by-ui', reason_ja: '', source } });
+  assert.deepStrictEqual(['easy', 'medium', 'hard', 'rare'].map(l => FL.difficultyOf(mk(l, 'llm')).label), ['易', '中', '難', '激難(レア)']);
+  assert.deepStrictEqual(FL.difficultyOf(mk('unknown', 'fail_open')), { has: true, level: 'unknown', label: '未判定' });
+  assert.strictEqual(FL.difficultyOf(mk('bogus', 'llm')).label, '未判定');   // 定義外=未判定(欠落を隠さない)
+  assert.strictEqual(FL.difficultyOf({ term: 'x' }).has, false);            // 旧data=表示なし
+  assert.strictEqual(FL.difficultyOf(mk('unknown', 'not_graded')).has, false);   // 旧docの再export=表示なし
+  [null, undefined, { term: 'x', difficulty: 'hard' }, { term: 'x', difficulty: [] }].forEach(v => assert.strictEqual(FL.difficultyOf(v).has, false));
+  assert.deepStrictEqual(FL.DIFF_LABEL, { easy: '易', medium: '中', hard: '難', rare: '激難(レア)', unknown: '未判定' });
+});
+t('KPD invariance: adding difficulty to data does not change validate / terms / doneSig / AIF1 readable code / counts / allowed', () => {
+  const base = JSON.parse(JSON.stringify(dYuki)); const withD = JSON.parse(JSON.stringify(dYuki));
+  const lv = ['easy', 'medium', 'hard', 'rare', 'unknown'];
+  FL.terms(withD); (withD.phrases || []).concat(withD.words || []).forEach((it, i) => { it.difficulty = { level: lv[i % 5], label_ja: 'x', reason_ja: 'r', source: lv[i % 5] === 'unknown' ? 'fail_open' : 'llm' }; });
+  assert.deepStrictEqual(FL.validateArticle(withD), []); assert.deepStrictEqual(FL.terms(withD), FL.terms(base));
+  const stA = decide(base, mkSt(base, { 0: 1, 1: 1, 2: 1 })); const stB = decide(withD, mkSt(withD, { 0: 1, 1: 1, 2: 1 }));
+  assert.strictEqual(FL.doneSig(withD, stB), FL.doneSig(base, stA), 'Done署名不変');
+  const o = { stem: dYuki.__stem, file_sha256: dYuki.__file_sha256 };
+  assert.strictEqual(FL.buildReadable(withD, stB, o), FL.buildReadable(base, stA, o), '照合コード/コピー本文不変');
+  assert.ok(!/易|激難|未判定|difficulty/.test(FL.buildReadable(withD, stB, o)), '難易度はコピー本文に出ない');
+  assert.deepStrictEqual(FL.counts(FL.choicesOf(withD, stB), FL.terms(withD)), FL.counts(FL.choicesOf(base, stA), FL.terms(base)));
+  const tl = FL.terms(withD); [0, 1, 2, 3, 4].forEach(i => [1, 2, 3].forEach(c => assert.strictEqual(FL.allowed(stB.choices, tl, tl[i], c), FL.allowed(stA.choices, tl, tl[i], c))));
+  assert.deepStrictEqual(FL.LIMITS, [3, 5, 12]);
+});
+t('KPD: rare/hard candidates remain selectable (no gate)', () => {
+  const d = JSON.parse(JSON.stringify(dYuki)); d.phrases.forEach(it => { it.difficulty = { level: 'rare', label_ja: '激難(レア)', reason_ja: '', source: 'llm' }; });
+  const tl = FL.terms(d), st = FL.newState(); assert.ok(FL.setChoice(st, tl, tl[0], 1, true)); assert.ok(FL.setChoice(st, tl, tl[1], 1, true)); assert.ok(FL.setChoice(st, tl, tl[2], 1, true));
+});
+
 console.log('ALL PASS', n);

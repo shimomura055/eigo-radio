@@ -2046,7 +2046,7 @@ champion_trial_results.json`を参照。 |
 - 撤去: `BACKFILL_MAX_CALL_ITEMS`、単一cap room計算、外側retry独立tuple、`KP_CANDIDATE_MAX=8`。HR依頼書・フォームexportは`[:7]/[:5]`(12件)対応。フォーム`cap`表示既定8→12はOPEN-545 委任_04で是正中。
 - **フォーム連携(PM-SSOT-SYNC-21、FORM委任_04/_05)**: 選定フォームv3のKP/KW候補は7+5合計**cap 12**、各候補のAI選定理由欄はユーザー向け画面では非表示(`reason_ja`は内部保持)。文法枠は上記文法選定節(Top1/Top2・1件選択)に従う(旧『独立枠・最大2件』は置換)。
 - 未観測: フレーズ補完のreal発火(OPEN-549で追跡)。evidence=`docs/research/KP-PHRASE7-WORD5-PRODUCTION-01/{EVIDENCE_01,COST_01,IMPLEMENTATION_01,REMOVAL_RESULT_01,DESIGN_02,OPUS_REVIEW_01}.md`、実費¥15.84、量産単価+約¥0.5/記事セット。
-- **難易度4段階表示(KP-DIFFICULTY-4LEVEL-DISPLAY-01、ユーザー正式採用2026-10-30、APPROVED_FOR_PRODUCTION、OPEN-622)**: 最終候補集合に独立1 call(gpt-6-luna)で易/中/難/激難(レア)を付与(`er119_kp_difficulty_01`、Gateではない・候補削減ゼロ・失敗はunknownでfail-open)。**生成側・データ透過までPRODUCTION配線済み(委任_01)、フォーム表示・精度検証・正式runtime evidenceは委任_02の配線中=PRODUCTION_WIREDではない**。
+- **難易度4段階表示(KP-DIFFICULTY-4LEVEL-DISPLAY-01、ユーザー正式採用2026-10-30、APPROVED_FOR_PRODUCTION、OPEN-622)**: 最終候補集合に独立1 call(gpt-6-luna)で易/中/難/激難(レア)を付与(`er119_kp_difficulty_01`、Gateではない・候補削減ゼロ・失敗はunknownでfail-open)。**生成側・データ透過(委任_01)に加え、フォームバッジ表示(単体・一括、`form_logic.js difficultyOf`/`index.html`、表示専用で署名・照合コード・選択に不干渉)・精度検証・配線証跡を委任_02で完了(EVIDENCE_02.md)。PRODUCTION_WIRED判定はFable受入待ち(Family別実記事の本番runとその公開フォーム表示は新規記事時。既公開dataは旧docのためバッジなし)**。
 
 **【2026-10-27準備中(PM-SSOT-SYNC-19、OPEN-556)】KP確定内容保護(KP-CONFIRMED-CONTENT-PROTECTION-01)** — 第1段IMPLEMENTED(委任_02A、246093175: `er128_kp_confirmed_content_01.py`、確定レコード`confirmed_selection.json`正本、G0/G1、AI操作ガード、flag `EIGO_KP_CONFIRMED_PROTECTION`既定ON)。第2段+Family別evidence(委任_02B)進行中。正式な仕様節は02B完了後のSSOT同期(SYNC-20)で新設する。
 

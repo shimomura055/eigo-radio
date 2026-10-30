@@ -96,6 +96,15 @@
     if (r) return { text: r, source: it.reason_source || 'ai_unknown', has: true };
     return { text: '', source: '', has: false };
   }
+  // KP-DIFFICULTY-4LEVEL-DISPLAY-01: 難易度は表示専用の参考情報(Gateではない)。選択/LIMITS/Done署名/照合コード(AIF1/BATCH1)には一切含めない。
+  // difficulty無し(旧data)・source=not_graded(旧docの再export)は表示なし(has=false)。判定不能(unknown等)は「未判定」。
+  var DIFF_LABEL = { easy: '易', medium: '中', hard: '難', rare: '激難(レア)', unknown: '未判定' };
+  function difficultyOf(it) {
+    var d = it && it.difficulty;
+    if (!d || typeof d !== 'object' || Array.isArray(d) || d.source === 'not_graded') return { has: false, level: '', label: '' };
+    var lv = Object.prototype.hasOwnProperty.call(DIFF_LABEL, d.level) ? d.level : 'unknown';
+    return { has: true, level: lv, label: DIFF_LABEL[lv] };
+  }
   function allItems(d) { return (d.phrases || []).concat(d.words || []); }
   function findItem(d, term) { return allItems(d).filter(function (x) { return x.term === term; })[0] || { term: term }; }
   // 候補の識別(委任_03): candidate_id=候補docの逐語(termは同一表示が複数候補にあり得るため対応付けの正にしない)。旧データはidを流用、無ければnull(捏造しない)
@@ -481,7 +490,7 @@
   return {
     LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
-    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
+    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, difficultyOf: difficultyOf, DIFF_LABEL: DIFF_LABEL, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex,
     KP_EXACT: KP_EXACT, SIG_VER: SIG_VER, normalizeState: normalizeState, doneSig: doneSig, doneStatus: doneStatus, doneErrors: doneErrors, selectRemaining: selectRemaining,
     sanitizeComment: sanitizeComment, composeComment: composeComment, singleComment: singleComment, batchSets: batchSets, batchCopyErrors: batchCopyErrors, buildBatchReadable: buildBatchReadable, batchCode: batchCode, extractCode: extractCode, BATCH_PREFACE: BATCH_PREFACE };
