@@ -28,3 +28,11 @@
 ## 費用
 - 本委任(起動1+2): 約21.18円(cost_log.jsonlからer009単価で再計算。起動1の累計=16.48円[runner出力spent_jpy]、起動2追加=約4.70円)。TTSは未実行。
 - 案件累計(ZY01 API 0円+本委任): 約21.2円 / Cap150円。本日(JST)の他案件費用は本Workerから把握できず「未確認」(本案件分のみ21.2円)。見込み(≈20〜30円)内。
+
+## 委任_03(2026-10-30 09:12-09:58): HR回答確定 = Adv確定済み / Std拒否(NUANCE_CORNER_ABOLISHED)で停止。API 0・TTS 0・費用増0
+- 回答原文保存: `docs/pm/delegation_log/2026-10-30_FAMILY-Z-YUKI-ONNA-PRODUCTION-01_USER_HR_01.md`(逐語、2件)。
+- NCA競合待機: `git status --porcelain -- er128* er119* er120* er135* er026_family_z_* er062* export_form_data_01.py` が20件dirty(最終編集08:30)→09:12から5分間隔で監視、09:56に空(NCA委任_02 Step A commit a39acf3bf 09:56:01)。待機約44分(上限90分内)。
+- 起動(runner)は本セッションで0回(run_launch_log変化なし)。stop_scope_check未実施(有料runなし)。
+- Adv(b1b): `er119_kp_human_review_cli_01.py confirm --from-readable ... --level b1b --dry-run` → 照合コードAIF1検証OK → 09:57 本確定(rev1、KP3[slip away/widowed/bar]+追加解説2[take shelter/go no farther]+本文意味表示4、文法0、grammar_status=confirmed)。
+- Std(a2): 回答はAIF2(旧ニュアンス欄つきフォーム)。a39acf3bf以降 `er128_form_readable_restore_01.py:295` が `NUANCE_CORNER_ABOLISHED` で明示拒否(dry-run)。指示どおり「ニュアンス解説：不採用〜【ニュアンスここまで】」節を除去した版(内容無変更、AIF2コードは原文のまま)でも再試行 → 同じ理由で拒否(コード接頭辞AIF2を検出するため)。Std dataは再出力済み(nuance欄なし)でd6も旧コードと不一致のため、旧コードの復元は不可能。確定せず停止。KP review status: pending=[a2]。
+- 選定内容自体(Std): KP=talk someone into staying/slip away/light-skinned、追加解説=get what you deserve/mist、本文意味表示=riverside/complain、文法なし、コメントなし(ニュアンスは不採用)。
