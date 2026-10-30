@@ -11,6 +11,7 @@
   var sync = [], syncKind = 'none', sentEls = {}, activeSid = null;
   var raf = 0, lastUserScroll = 0;
   var LEVEL_NAME = { std: 'Standard', adv: 'Advanced' };
+  var selectedSid = null, selTime = 0;   // rev01-h: 英文クリックの選択(停止中・一時停止中のみ保持。再生が始まる/位置操作[seek・±10秒等]で解除)
   var jgEls = {}, sidToG = {}, activeG = null, jaHold = null;   // rev01-f: 英語文と日本語訳の連動(ja_align)
   var JA = /[ぁ-んァ-ヶ一-龠]/;
 
@@ -128,7 +129,7 @@
     emphasize();
     sentEls = {};
     Array.prototype.forEach.call(document.querySelectorAll('[data-sid]'), function (e) { sentEls[e.dataset.sid] = e; });
-    jgEls = {}; sidToG = {}; activeG = null; jaHold = null;
+    jgEls = {}; sidToG = {}; activeG = null; jaHold = null; selectedSid = null;
     Array.prototype.forEach.call(document.querySelectorAll('.jhl'), function (e) { (jgEls[e.dataset.jg] = jgEls[e.dataset.jg] || []).push(e); });
     parts.forEach(function (p) { (p.ja_align || []).forEach(function (g) { if (g.ja && jgEls[p.idx + ':' + g.g]) g.sids.forEach(function (s) { sidToG[s] = p.idx + ':' + g.g; }); }); });
   }
@@ -214,17 +215,17 @@
   function ensureSrc(url) { if (A.src !== url) { A.src = url; A.load(); } }
   function withMeta(fn) { if (A.readyState >= 1) fn(); else A.addEventListener('loadedmetadata', function h() { A.removeEventListener('loadedmetadata', h); fn(); }); }
   function playNow() { var pr = A.play(); if (pr && pr.catch) pr.catch(function (e) { if (e.name !== 'AbortError') console.warn('play()', e.name); }); }
-  function playFull(at) { mode = 'full'; curIdx = null; kpEnd = null; ensureSrc(audioUrl(L.main)); withMeta(function () { if (at != null) A.currentTime = at; playNow(); }); labels(); }
+  function playFull(at) { selectedSid = null; mode = 'full'; curIdx = null; kpEnd = null; ensureSrc(audioUrl(L.main)); withMeta(function () { if (at != null) A.currentTime = at; playNow(); }); labels(); }
   /* Key Phrase の発音: 既存KP区間mp3(番号→英語→日本語の意味(Advは英語解説)→英語再掲)のうち、最初の英語発話の区間だけを再生し、終端で停止(音声ファイルは不変) */
   function playKp(i, k) {
     var kk = parts[i].kp[k || 0], ea = kk && kk.en_audio; if (!ea) return;
-    mode = 'kp'; curIdx = i; kpEnd = ea.end; ensureSrc(audioUrl(parts[i].seg));
+    selectedSid = null; mode = 'kp'; curIdx = i; kpEnd = ea.end; ensureSrc(audioUrl(parts[i].seg));
     withMeta(function () { A.currentTime = ea.start; playNow(); }); labels();
   }
   function playVocab(vi) {   // rev01-g: Vocabulary項目の英語音声(KPと同じ契約の単体mp3。区間指定なし)
     var it = L.vocab && L.vocab[vi], au = it && it.audio; if (!au) return;
     if (mode !== 'vocab') resumeAt = mode === 'full' ? (A.currentTime || 0) : (mode === 'kp' && curIdx != null ? parts[curIdx].start : null);
-    mode = 'vocab'; vocabI = vi; curIdx = null; kpEnd = null;
+    selectedSid = null; mode = 'vocab'; vocabI = vi; curIdx = null; kpEnd = null;
     ensureSrc(new URL(au.file, location.href).href);
     withMeta(function () { A.currentTime = 0; playNow(); }); labels();
   }
@@ -295,12 +296,15 @@
     var pi = currentPartIdx();
     Array.prototype.forEach.call(document.querySelectorAll('[data-part].now'), function (e) { if (Number(e.dataset.part) !== pi || (A.paused && A.currentTime === 0)) e.classList.remove('now'); });
     if (pi != null && !(A.paused && A.currentTime === 0)) Array.prototype.forEach.call(document.querySelectorAll('[data-part="' + pi + '"]'), function (e) { e.classList.add('now'); });
-    if (sync.length) { var ga = mode === 'vocab' ? null : findActive(gt()); jaHold = (ga || mode === 'vocab') ? null : gapGroup(gt()); highlight(ga); }
-    window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src, jg: activeG, vi: vocabI };
+    if (!A.paused || (selectedSid && Math.abs((A.currentTime || 0) - selTime) > 0.3)) selectedSid = null;   // rev01-h: 再生中は自動ハイライト優先(クリック選択は次のtickで自動ハイライトへ戻る)。選択後に再生位置が動いた場合(シーク等)も解除
+    if (selectedSid) { jaHold = null; highlight(selectedSid); }   // rev01-h: 停止中・一時停止中は選択を維持(日本語はsidToGのみ=未確定は点灯しない)
+    else if (sync.length) { var ga = mode === 'vocab' ? null : findActive(gt()); jaHold = (ga || mode === 'vocab') ? null : gapGroup(gt()); highlight(ga); }
+    window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src, jg: activeG, vi: vocabI, sel: selectedSid };
   }
-  function seekSentence(sid) {   // 文クリック: その文の先頭から全体音声を再生
-    var r = sync.filter(function (x) { return x.sid === sid; })[0]; if (!r) return;
-    playFull(r.start);
+  function selectSentence(sid) {   // rev01-h: 文クリック=その文と対応する日本語を点灯するのみ。再生開始・シーク・一時停止は一切しない
+    if (!sid || !sentEls[sid]) return;
+    if (A.paused) { selectedSid = sid; selTime = A.currentTime || 0; tick(); return; }   // 停止中・一時停止中=選択を維持 / 再生中=一瞬描くだけで次のtickが自動ハイライトへ戻す(保存しない)
+    highlight(sid);
   }
   function loop() { tick(); raf = A.paused ? 0 : requestAnimationFrame(loop); }
   function kick() { if (!raf) raf = requestAnimationFrame(loop); }
@@ -320,7 +324,7 @@
   /* ---------- レベル切替・初期化 ---------- */
   function setLevel(next) {
     lv = next; L = art.levels[lv]; parts = L.parts;
-    A.pause(); mode = 'full'; curIdx = null; kpEnd = null; activeSid = null;
+    A.pause(); selectedSid = null; mode = 'full'; curIdx = null; kpEnd = null; activeSid = null;
     ensureSrc(audioUrl(L.main));
     $('eyebrow').textContent = 'English Your Way · ' + LEVEL_NAME[lv];
     $('playAll').textContent = '▶ 全体を再生(' + fmt(L.total_sec) + ')';
@@ -342,7 +346,7 @@
   /* ---------- イベント ---------- */
   $('content').addEventListener('click', function (e) {
     var se = e.target.closest('.sent');
-    if (se && !e.target.closest('button') && syncKind !== 'none') { seekSentence(se.dataset.sid); return; }
+    if (se && !e.target.closest('button')) { selectSentence(se.dataset.sid); return; }
     var gl = e.target.closest('a.glink');
     if (gl) {   // 意味一覧の「解説」: 該当表現の解説(Vocabulary項目)へ直接移動し、開く
       e.preventDefault();
@@ -359,9 +363,9 @@
   $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-lv]'); if (b && b.dataset.lv !== lv) setLevel(b.dataset.lv); });
   $('playAll').addEventListener('click', function () { playFull(0); window.scrollTo({ top: 0, behavior: 'smooth' }); });
   $('pp').addEventListener('click', function () { if (A.paused) { if (!A.src) playFull(0); else playNow(); } else A.pause(); });
-  $('back10').addEventListener('click', function () { A.currentTime = Math.max(0, A.currentTime - 10); tick(); });
-  $('fwd10').addEventListener('click', function () { A.currentTime = Math.min(dur() - 0.05, A.currentTime + 10); tick(); });
-  $('seek').addEventListener('input', function () { A.currentTime = Math.min(dur() - 0.05, this.value / 1000 * dur()); tick(); });
+  $('back10').addEventListener('click', function () { selectedSid = null; A.currentTime = Math.max(0, A.currentTime - 10); tick(); });
+  $('fwd10').addEventListener('click', function () { selectedSid = null; A.currentTime = Math.min(dur() - 0.05, A.currentTime + 10); tick(); });
+  $('seek').addEventListener('input', function () { selectedSid = null; A.currentTime = Math.min(dur() - 0.05, this.value / 1000 * dur()); tick(); });
   ['play', 'playing'].forEach(function (ev) { A.addEventListener(ev, kick); });
   ['pause', 'seeked', 'timeupdate', 'loadedmetadata', 'durationchange'].forEach(function (ev) { A.addEventListener(ev, tick); });
   A.addEventListener('ended', function () { if (mode === 'vocab') endVocab(); else tick(); });

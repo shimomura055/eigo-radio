@@ -2,7 +2,7 @@
  "schema": "enduser_build_info_v1",
  "id": "family_z_yuki_onna_01",
  "family": "Z",
- "asset_build": "rev01-g",
+ "asset_build": "rev01-h",
  "dev_index_sha256": "21c4532972f3b629f4430185f1a7ef6bee7e7e7392eaeb403ff0a6f6182d123a",
  "audio_sha256": {
   "audio_advanced/YukiOnna_b1b_full.mp3": "ee4290da804d13697111033452a994d6d8d275e1d1a04f84508e18f80ebbf4e0",
@@ -40,16 +40,16 @@
   "audio_standard/a2_p3.mp3": "45a25a4c3b51469fc6a66262761b7e7f2d05a6148638f1aebeec9c14eb26e769"
  },
  "assets": {
-  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
-  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "index.html": "bc1e5e4e5f99a96e6053fc5f6a94403eeb90adf61a3ce2914907857d4e3b6df9",
+  "app.js": "abeea5e28123b5fa51db80e23354a467f4fcb37f40b1dde3e2d2ac323a40e259",
   "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "files": {
-  "data/article.json": "142c8c9d5077322159b9ecdbbed73507e470148810f38f74e4e562c4ee7252e3",
+  "data/article.json": "28b515c764bac0e03fae1c982a5c9eb64386727338ab016ecb34423e60ba2a52",
   "data/sync_std.json": "153bc24de5f4ad2efcccae6b49acd4f93804db450c05802820f92d21ea7323ed",
   "data/sync_adv.json": "06a1a816c73c8766b27ef85ca6a06ce42fe7b563a34ea116ae3a17e5662b58dc",
-  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
-  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "index.html": "bc1e5e4e5f99a96e6053fc5f6a94403eeb90adf61a3ce2914907857d4e3b6df9",
+  "app.js": "abeea5e28123b5fa51db80e23354a467f4fcb37f40b1dde3e2d2ac323a40e259",
   "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "sync": {
@@ -71,7 +71,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "e59f7344055022988148254e20c853e51394ff36a648c25d1c642bf0ec02c290",
+   "source_sha256": "092e2bc6c00086dade1b039a7edc4c24d72aa170f13efcda7f44bf762afc16b4",
    "rows": 9,
    "sentences": 57,
    "min_row_ratio": 0.92,
@@ -95,7 +95,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "ca01580344954c68bb810a079d0cec765168980938917c628e865d5fa8e82af1",
+   "source_sha256": "1dcafb8aa4ff3aee5478b8eda06cc65eb5f0f0b75d50a6e02ccc1beeb061d95f",
    "rows": 8,
    "sentences": 57,
    "min_row_ratio": 0.6,
@@ -111,7 +111,7 @@
    },
    "story": {
     "blocks": 3,
-    "translated": 2,
+    "translated": 3,
     "source": "generated"
    }
   },
@@ -145,17 +145,16 @@
  "ja_manuscript": null,
  "warnings": [
   "std: 低信頼度境界を持つ行 3件(記録のみ)",
-  "adv: 低信頼度境界を持つ行 2件(記録のみ)",
-  "日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): std std_11"
+  "adv: 低信頼度境界を持つ行 2件(記録のみ)"
  ],
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 1.4,
-  "build_wall_s": 68.36,
+  "asr_wall_s": 1.7,
+  "build_wall_s": 16.34,
   "cached_segments": 23,
-  "translate_api_calls": 12,
-  "translate_cost_jpy": 2.6874,
+  "translate_api_calls": 2,
+  "translate_cost_jpy": 0.948,
   "embedding_api_calls": 0,
   "embedding_tokens": 0,
   "embedding_cost_jpy": 0.0
@@ -182,10 +181,12 @@
     {
      "key": "std_11",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 18,
-     "linked": 0,
-     "how": []
+     "linked": 18,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "std_12",
@@ -318,10 +319,9 @@
     "story": {
      "parts": 3,
      "sentences": 47,
-     "linked": 29,
+     "linked": 47,
      "status": {
-      "missing": 1,
-      "generated": 2
+      "generated": 3
      }
     }
    },
@@ -358,6 +358,11 @@
   "prompt_sha256": "2da82c8704e82e22f418d819d5f5062643c349f09cc4f60899506d85ecc49227",
   "parts": {
    "std": {
+    "std_11": {
+     "en_sha256": "c1e3f79c97cddcbe68b651e96d212ee24eef97fadb557e2be1d8d88004bb2942",
+     "ja_sha256": "10117b82d77727afe6e0753d82c8cecf1aa720bfc402832db722522e4f107281",
+     "sentences": 18
+    },
     "std_13": {
      "en_sha256": "6d1efbfeb005077bea6f0b7f3449aab51d9eed0a0fb4d34742a0b70a9c808613",
      "ja_sha256": "df46d27c746216261d847815f575599e25d8a9e8584f062bb19e09b7c91afed9",
@@ -407,21 +412,13 @@
     }
    }
   },
-  "failures": [
-   {
-    "level": "std",
-    "key": "std_11",
-    "reasons": [
-     "verify_ng: sid=std_11-s013 英文にない「着物」を追加している"
-    ]
-   }
-  ],
+  "failures": [],
   "api_calls": {
-   "translate": 8,
-   "verify": 4
+   "translate": 1,
+   "verify": 1
   },
-  "cost_jpy": 2.6874,
-  "cache_hits": 26
+  "cost_jpy": 0.948,
+  "cache_hits": 29
  },
  "judge": {
   "model": "gpt-6-luna",
@@ -463,14 +460,14 @@
   "applicable": true,
   "coverage": {
    "std": {
-    "story_parts": 2,
-    "sentences_total": 29,
-    "sentences_linked": 29,
-    "groups_total": 29,
+    "story_parts": 3,
+    "sentences_total": 47,
+    "sentences_linked": 47,
+    "groups_total": 47,
     "groups_null": 0,
     "reasons": {},
     "linked_by_how": {
-     "gen": 29
+     "gen": 47
     },
     "coverage": 1.0
    },
@@ -489,6 +486,7 @@
   },
   "input_sha256": {
    "std": {
+    "std_11": "afe55215681fb7062bb70582c95ff6196ec72e0c62ade4ae5cabf949afce2876",
     "std_13": "173e52cf8e01ac20788c1fded26f642e3ae8b12bf6973239886ebc8f6e595e61",
     "std_15": "4ad280d3a22e3e532ab823b28ae55ae1b500d19ae3d5c04937bd0d757a45e142"
    },

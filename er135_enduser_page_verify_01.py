@@ -270,11 +270,17 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
             sids = [s["sid"] for pa in stories[0]["paragraphs"] for s in pa]
             sid = sids[min(2, len(sids) - 1)]
             page.evaluate("document.getElementById('aud').pause()")
-            page.click(f'[data-sid="{sid}"]')
+            exp = [x for x in sync if x["sid"] == sid][0]
+            page.evaluate("(t) => { document.getElementById('aud').currentTime = t; }", max(0.0, exp["start"] - 8.0) if exp["start"] > 9.0 else exp["end"] + 6.0)
+            page.wait_for_timeout(500)
+            t0 = A()["t"]
+            _click_sent(page, view, sid)
             page.wait_for_timeout(1500)
             s = A()
-            exp = [x for x in sync if x["sid"] == sid][0]
-            rec("F", pre + "sentence_click_plays_from_sentence", (not s["paused"]) and exp["start"] - 0.6 <= s["eup"]["gt"] <= exp["end"] + 2.0, dict(sid=sid, gt=s["eup"]["gt"], exp=[exp["start"], exp["end"]], act=s["eup"]["active"]))
+            st = page.evaluate(_STATE_JS)
+            # ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01(2026-10-30承認): 文クリックは選択ハイライトのみ。再生開始・シークをしない
+            rec("F", pre + "sentence_click_does_not_play_or_seek", s["paused"] and abs(s["t"] - t0) <= 0.05 and st["onSent"] == [sid] and (s["eup"] or {}).get("sel") == sid,
+                dict(sid=sid, t0=t0, t=s["t"], paused=s["paused"], onSent=st["onSent"], sel=(s["eup"] or {}).get("sel")))
             page.evaluate("document.getElementById('aud').pause()")
         page.evaluate("() => { const s=document.getElementById('seek'); s.value=500; s.dispatchEvent(new Event('input',{bubbles:true})); }")
         page.wait_for_timeout(500)
@@ -491,6 +497,115 @@ def _consistent(st: dict, sid2key: dict, gap_ok: set | None = None) -> bool:
     return st["onSent"] == [act] and ((st["onJhl"] == []) if want is None else (set(st["onJhl"]) == {want} and len(st["onJhl"]) == len(set(st["onJhl"])) and st["eup"].get("jg") == want))
 
 
+def _click_sent(page, view, sid):
+    """英文のクリック(PC)/タップ(mobile=has_touch)。同じ.sent要素へ。"""
+    sel = f'[data-sid="{sid}"]'
+    if view == "mobile":
+        page.tap(sel)
+    else:
+        page.click(sel)
+
+
+_NOSEEK_PROBE_JS = """() => { const a=document.getElementById('aud'); window.__ev={seeking:0,pause:0,play:0};
+  a.addEventListener('seeking',()=>window.__ev.seeking++); a.addEventListener('pause',()=>window.__ev.pause++); a.addEventListener('play',()=>window.__ev.play++); return true; }"""
+
+
+def click_no_seek_checks(page, view, lv, L, sync, rec, sid2key, null_sids):
+    """ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01 原文§3 項目1,2,3,6,7(+位置操作での解除/同一文再クリック)。クリックでseek/play/pauseが起きないことを実イベントで検査する。"""
+    pre = lv + "_K_"
+    A = lambda: page.evaluate("() => { const a=document.getElementById('aud'); return {t:a.currentTime, paused:a.paused, eup:window.__EUP}; }")
+    startof = {r["sid"]: r for r in sync}
+    sids_all = [r["sid"] for r in sync]
+    mapped = [s for s in sids_all if s in sid2key]
+    unmapped = [s for s in sids_all if s not in sid2key]
+    by_grp = {}
+    for s in mapped:
+        by_grp.setdefault(sid2key[s], []).append(s)
+    multi = next((v for v in by_grp.values() if len(v) >= 2), None)
+
+    def far(cur, cands):
+        return next((s for s in cands if abs(startof[s]["start"] - cur) > 6.0), cands[0] if cands else None)
+    # 項目1 停止中クリック
+    page.evaluate("document.getElementById('aud').pause()")
+    page.evaluate("(t) => { document.getElementById('aud').currentTime = t; }", 0.0)
+    page.wait_for_timeout(400)
+    page.evaluate(_NOSEEK_PROBE_JS)
+    t0 = A()["t"]
+    target = far(t0, mapped)
+    if target:
+        _click_sent(page, view, target)
+        page.wait_for_timeout(1500)
+        s = A(); st = page.evaluate(_STATE_JS); ev = page.evaluate("() => window.__ev")
+        rec("K", pre + "item1_click_while_stopped_lights_en_ja_no_play", s["paused"] and abs(s["t"] - t0) <= 0.05 and ev["play"] == 0 and ev["seeking"] == 0 and st["onSent"] == [target] and st["onJhl"] == [sid2key[target]],
+            dict(sid=target, t0=t0, t=s["t"], paused=s["paused"], events=ev, onSent=st["onSent"], onJhl=st["onJhl"]))
+        # 同一文の再クリック=選択維持(トグルしない)
+        _click_sent(page, view, target)
+        page.wait_for_timeout(300)
+        st = page.evaluate(_STATE_JS)
+        rec("K", pre + "reclick_same_sentence_keeps_selection", st["onSent"] == [target] and st["onJhl"] == [sid2key[target]], dict(onSent=st["onSent"], onJhl=st["onJhl"]))
+        # 位置操作(+10秒)で選択解除
+        page.click("#fwd10")
+        page.wait_for_timeout(500)
+        s = A()
+        rec("K", pre + "position_op_clears_selection", (s["eup"] or {}).get("sel") is None, (s["eup"] or {}).get("sel"))
+    # 項目2 一時停止中クリック
+    page.evaluate("(t) => { document.getElementById('aud').currentTime = t; }", 0.0)
+    page.click("#pp")
+    page.wait_for_timeout(900)
+    page.click("#pp")
+    page.wait_for_timeout(400)
+    page.evaluate(_NOSEEK_PROBE_JS)
+    s0 = A()
+    target2 = far(s0["t"], mapped)
+    if target2 and s0["paused"]:
+        _click_sent(page, view, target2)
+        page.wait_for_timeout(1200)
+        s = A(); st = page.evaluate(_STATE_JS); ev = page.evaluate("() => window.__ev")
+        rec("K", pre + "item2_click_while_paused_keeps_position_lights_en_ja", s["paused"] and abs(s["t"] - s0["t"]) <= 0.05 and ev["play"] == 0 and ev["seeking"] == 0 and st["onSent"] == [target2] and st["onJhl"] == [sid2key[target2]],
+            dict(sid=target2, t0=s0["t"], t=s["t"], events=ev, onSent=st["onSent"], onJhl=st["onJhl"]))
+    # 項目3 再生中クリック
+    page.evaluate("(t) => { document.getElementById('aud').currentTime = t; }", 0.0)
+    page.click("#pp")
+    page.wait_for_timeout(1200)
+    page.evaluate(_NOSEEK_PROBE_JS)
+    cur = A()["t"]
+    target3 = far(cur, sids_all)
+    if target3:
+        samples = []
+        _click_sent(page, view, target3)
+        for _ in range(6):
+            samples.append(A())
+            page.wait_for_timeout(250)
+        ev = page.evaluate("() => window.__ev")
+        st = page.evaluate(_STATE_JS)
+        mono = all(b["t"] >= a["t"] - 0.01 for a, b in zip(samples, samples[1:])) and samples[-1]["t"] > cur
+        no_pause = all(not x["paused"] for x in samples)
+        # 次の再生位置更新で自動ハイライトへ戻る=点灯中の文はクリックした文ではなく再生位置の文(クリック文の区間に再生位置が入った場合を除く)
+        r3 = startof[target3]
+        back = st["eup"].get("active") != target3 or (r3["start"] - 0.5 <= samples[-1]["t"] <= r3["end"] + 0.5)
+        rec("K", pre + "item3_click_while_playing_no_seek_no_interrupt", mono and no_pause and ev["seeking"] == 0 and ev["pause"] == 0 and st["eup"].get("sel") is None and back and _consistent(st, sid2key, set(sid2key.values())),
+            dict(sid=target3, cur=cur, t_end=samples[-1]["t"], mono=mono, no_pause=no_pause, events=ev, sel=st["eup"].get("sel"), active=st["eup"].get("active")))
+    page.evaluate("document.getElementById('aud').pause()")
+    page.wait_for_timeout(300)
+    # 項目6 1対多(複数文1群)・対応未確定(null群)
+    bad6 = []
+    if multi:
+        for sd in multi[:2]:
+            _click_sent(page, view, sd)
+            page.wait_for_timeout(300)
+            st = page.evaluate(_STATE_JS)
+            if not (st["onSent"] == [sd] and st["onJhl"] == [sid2key[sd]]):
+                bad6.append(("multi", sd, st["onSent"], st["onJhl"]))
+    for sd in (unmapped[:2] if unmapped else []):
+        _click_sent(page, view, sd)
+        page.wait_for_timeout(300)
+        st = page.evaluate(_STATE_JS)
+        if not (st["onSent"] == [sd] and st["onJhl"] == []):
+            bad6.append(("null", sd, st["onSent"], st["onJhl"]))
+    rec("K", pre + "item6_multi_sentence_group_and_null_group_no_false_light", not bad6, dict(multi=bool(multi), null_clicked=len(unmapped[:2]), bad=bad6[:3]))
+    page.evaluate("document.getElementById('aud').pause()")
+
+
 def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, lvs=None, art=None):
     groups, sid2key, null_sids = expect_maps(L)
     pre = lv + "_"
@@ -523,7 +638,7 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
     bad3 = []
     for sid in pick:
         page.evaluate("document.getElementById('aud').pause()")
-        page.click(f'[data-sid="{sid}"]')
+        _click_sent(page, view, sid)
         page.wait_for_timeout(450)
         st = page.evaluate(_STATE_JS)
         if not _consistent(st, sid2key):
@@ -539,7 +654,7 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
             continue
         picked_b += 1
         page.evaluate("document.getElementById('aud').pause()")
-        page.click(f'[data-sid="{mapped[0]}"]')
+        _click_sent(page, view, mapped[0])
         page.wait_for_timeout(450)
         st = page.evaluate(_STATE_JS)
         if not _consistent(st, sid2key):
@@ -589,8 +704,9 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
     rec("J", pre + "J5_seek_and_skip_buttons_sync", not bad5, bad5)
     # ---- 一時停止・再開の状態一致 ----
     first_sid = next((s for s in sids_all if s in sid2key), sids_all[0])   # 連動対象の群が無いlevel(訳の生成が全段落不成立等)でも一時停止/再開の整合を検査する
-    page.click(f'[data-sid="{first_sid}"]')
-    page.wait_for_timeout(500)
+    page.evaluate("(t) => { document.getElementById('aud').currentTime = t; }", [x for x in sync if x["sid"] == first_sid][0]["start"])
+    page.click("#pp")                                  # 再生(2026-10-30: 文クリックでは再生が始まらないため#ppで再生してから一時停止/再開を検査する)
+    page.wait_for_timeout(700)
     page.click("#pp")                                  # 一時停止
     page.wait_for_timeout(300)
     s1 = page.evaluate(_STATE_JS)
@@ -640,6 +756,8 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
             n_vis["en_and_ja_both_visible"] += 1 if (v[0] and v[1]) else 0
     page.evaluate("document.getElementById('aud').pause()")
     rec("J", pre + "info_visibility_during_playback", True, n_vis)
+    # ---- K 英文クリック=選択のみ(ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01。原文§3 項目1,2,3,6,7) ----
+    click_no_seek_checks(page, view, lv, L, sync, rec, sid2key, null_sids)
     # ---- J6 レベル切替で全消灯 + 切替直後のクリック ----
     other = [k for k in (lvs or []) if k != lv]
     if other:
@@ -651,7 +769,7 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
         g2, s2k, _ = expect_maps(art["levels"][o])
         sid2 = next((s["sid"] for pt in art["levels"][o]["parts"] if pt["kind"] == "story" for pa in pt.get("paragraphs", []) for s in pa if s["sid"] in s2k), None)
         if sid2:
-            page.click(f'[data-sid="{sid2}"]')
+            _click_sent(page, view, sid2)
             page.wait_for_timeout(450)
             st = page.evaluate(_STATE_JS)
             page.evaluate("document.getElementById('aud').pause()")

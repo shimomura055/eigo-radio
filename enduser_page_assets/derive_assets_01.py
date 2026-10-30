@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(現行rev01-g。rev01-f・旧rev01-eは残置[rev01-e=藪の中のみ凍結])をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
+"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(現行rev01-h。rev01-g・rev01-f・旧rev01-eは残置[rev01-e=藪の中のみ凍結])をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
 
  - 入力 : DEV rev01-e(`user_test/dev_enduser_page_01/{index.html,app.js,style.css}`。**読み取りのみ・DEVは不変**)
  - 出力 : `enduser_page_assets/rev01-e/{index.html,app.js,style.css,ASSET_SHA256.json}` と `ASSET_DIFF_01.md`(許可リスト=EDITSの一覧)
@@ -18,7 +18,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 DEV_DIR = ROOT / "user_test" / "dev_enduser_page_01"
-OUT_DIR = HERE / "rev01-g"
+OUT_DIR = HERE / "rev01-h"
 FILES = ("index.html", "app.js", "style.css")
 
 
@@ -170,14 +170,14 @@ EDITS = [
          old=".kpitem .th2{margin-top:6px}\n",
          new=".kpitem .th2{margin-top:6px}\n.jhl{border-radius:4px;transition:background .12s}\n.jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\n"),
     # ---------------- rev01-g(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03B) ----------------
-    dict(id="H4a", file="index.html", kind="ADD", why="rev01-g: キャッシュ更新用のbuild-id(rev01-e -> rev01-g。assetの更新が古いJSキャッシュで隠れない)",
-         old='<meta name="build-id" content="rev01-e">', new='<meta name="build-id" content="rev01-g">'),
+    dict(id="H4a", file="index.html", kind="ADD", why="rev01-g/h: キャッシュ更新用のbuild-id(rev01-e -> rev01-h。assetの更新が古いJSキャッシュで隠れない)",
+         old='<meta name="build-id" content="rev01-e">', new='<meta name="build-id" content="rev01-h">'),
     dict(id="H4b", file="index.html", kind="ADD", why="rev01-g: style.cssのcache-bust",
-         old='href="style.css?v=rev01-e"', new='href="style.css?v=rev01-g"'),
+         old='href="style.css?v=rev01-e"', new='href="style.css?v=rev01-h"'),
     dict(id="H4c", file="index.html", kind="ADD", why="rev01-g: body data-build",
-         old='<body data-build="rev01-e">', new='<body data-build="rev01-g">'),
+         old='<body data-build="rev01-e">', new='<body data-build="rev01-h">'),
     dict(id="H4d", file="index.html", kind="ADD", why="rev01-g: app.jsのcache-bust",
-         old='src="app.js?v=rev01-e"', new='src="app.js?v=rev01-g"'),
+         old='src="app.js?v=rev01-e"', new='src="app.js?v=rev01-h"'),
     dict(id="J26", file="app.js", kind="ADD", why="rev01-g: Previewカードにも日本語訳(trHtml)を出す(訳が無いPreviewは空文字=表示不変)。Adv Previewの生成訳の表示場所",
          old="      out += card('Preview', ja ? '<div class=\"jp\">' + sentHtml(p) + '</div>' : sentHtml(p), { part: p.idx, btn: btns(p) });",
          new="      out += card('Preview', (ja ? '<div class=\"jp\">' + sentHtml(p) + '</div>' : sentHtml(p)) + trHtml(p), { part: p.idx, btn: btns(p) });"),
@@ -224,6 +224,47 @@ EDITS = [
     dict(id="C6", file="style.css", kind="ADD", why="rev01-g: Vocabulary再生ボタンのレイアウト(PC=右横、mobile=意味の下)",
          old=".jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\n",
          new=".jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\ndetails.vi summary .vplay{margin-left:12px;vertical-align:middle;font-size:13px}\n@media(max-width:640px){details.vi summary .vplay{display:block;margin:6px 0 4px 0}}\n"),
+    # ---------------- rev01-h(ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01 委任_02): 英文クリック=その文と対応する日本語を選択ハイライトするのみ(seek/再生/一時停止なし) ----------------
+    dict(id="J37", file="app.js", kind="ADD", why="rev01-h: クリック選択の状態変数selectedSid(null|sid。停止中・一時停止中だけ保持)",
+         old="  var jgEls = {}, sidToG = {}, activeG = null, jaHold = null;",
+         new="  var selectedSid = null, selTime = 0;   // rev01-h: 英文クリックの選択(停止中・一時停止中のみ保持。再生が始まる/位置操作[seek・±10秒等]で解除)\n  var jgEls = {}, sidToG = {}, activeG = null, jaHold = null;"),
+    dict(id="J38", file="app.js", kind="ADD", why="rev01-h: render()の再構築で選択も初期化",
+         old="    jgEls = {}; sidToG = {}; activeG = null; jaHold = null;",
+         new="    jgEls = {}; sidToG = {}; activeG = null; jaHold = null; selectedSid = null;"),
+    dict(id="J39", file="app.js", kind="ADD", why="rev01-h: tick()=再生中は選択を解除して自動ハイライト優先。停止中・一時停止中で選択があれば位置由来の上書きをせず選択(英日)を維持",
+         old="    if (sync.length) { var ga = mode === 'vocab' ? null : findActive(gt()); jaHold = (ga || mode === 'vocab') ? null : gapGroup(gt()); highlight(ga); }\n",
+         new=("    if (!A.paused || (selectedSid && Math.abs((A.currentTime || 0) - selTime) > 0.3)) selectedSid = null;   // rev01-h: 再生中は自動ハイライト優先(クリック選択は次のtickで自動ハイライトへ戻る)。選択後に再生位置が動いた場合(シーク等)も解除\n"
+              "    if (selectedSid) { jaHold = null; highlight(selectedSid); }   // rev01-h: 停止中・一時停止中は選択を維持(日本語はsidToGのみ=未確定は点灯しない)\n"
+              "    else if (sync.length) { var ga = mode === 'vocab' ? null : findActive(gt()); jaHold = (ga || mode === 'vocab') ? null : gapGroup(gt()); highlight(ga); }\n")),
+    dict(id="J40", file="app.js", kind="ADD", why="rev01-h: 検証用の状態__EUPに選択sid(sel)を追加(読取専用)",
+         old="src: A.src, jg: activeG, vi: vocabI };", new="src: A.src, jg: activeG, vi: vocabI, sel: selectedSid };"),
+    dict(id="J41", file="app.js", kind="ADD", why="rev01-h: seekSentence(その文から再生)を廃止し、selectSentence(選択ハイライトのみ。audio.play/pause/currentTimeを呼ばない)へ置換",
+         old=("  function seekSentence(sid) {   // 文クリック: その文の先頭から全体音声を再生\n"
+              "    var r = sync.filter(function (x) { return x.sid === sid; })[0]; if (!r) return;\n"
+              "    playFull(r.start);\n"
+              "  }\n"),
+         new=("  function selectSentence(sid) {   // rev01-h: 文クリック=その文と対応する日本語を点灯するのみ。再生開始・シーク・一時停止は一切しない\n"
+              "    if (!sid || !sentEls[sid]) return;\n"
+              "    if (A.paused) { selectedSid = sid; selTime = A.currentTime || 0; tick(); return; }   // 停止中・一時停止中=選択を維持 / 再生中=一瞬描くだけで次のtickが自動ハイライトへ戻す(保存しない)\n"
+              "    highlight(sid);\n"
+              "  }\n")),
+    dict(id="J42", file="app.js", kind="ADD", why="rev01-h: 文クリックのhandler=selectSentence(同期データ未取得でも選択はできる。日本語は点灯しない安全側)",
+         old="    if (se && !e.target.closest('button') && syncKind !== 'none') { seekSentence(se.dataset.sid); return; }",
+         new="    if (se && !e.target.closest('button')) { selectSentence(se.dataset.sid); return; }"),
+    dict(id="J43", file="app.js", kind="ADD", why="rev01-h: 位置操作(ここから再生/全体再生)で選択を解除",
+         old="  function playFull(at) { mode = 'full';", new="  function playFull(at) { selectedSid = null; mode = 'full';"),
+    dict(id="J44", file="app.js", kind="ADD", why="rev01-h: KP音声再生で選択を解除",
+         old="    mode = 'kp'; curIdx = i; kpEnd = ea.end;", new="    selectedSid = null; mode = 'kp'; curIdx = i; kpEnd = ea.end;"),
+    dict(id="J45", file="app.js", kind="ADD", why="rev01-h: Vocabulary音声再生で選択を解除",
+         old="    mode = 'vocab'; vocabI = vi; curIdx = null;", new="    selectedSid = null; mode = 'vocab'; vocabI = vi; curIdx = null;"),
+    dict(id="J46", file="app.js", kind="ADD", why="rev01-h: レベル切替で選択を解除",
+         old="    A.pause(); mode = 'full'; curIdx = null; kpEnd = null; activeSid = null;", new="    A.pause(); selectedSid = null; mode = 'full'; curIdx = null; kpEnd = null; activeSid = null;"),
+    dict(id="J47", file="app.js", kind="ADD", why="rev01-h: -10秒で選択を解除(位置操作)",
+         old="A.currentTime = Math.max(0, A.currentTime - 10); tick();", new="selectedSid = null; A.currentTime = Math.max(0, A.currentTime - 10); tick();"),
+    dict(id="J48", file="app.js", kind="ADD", why="rev01-h: +10秒で選択を解除(位置操作)",
+         old="A.currentTime = Math.min(dur() - 0.05, A.currentTime + 10); tick();", new="selectedSid = null; A.currentTime = Math.min(dur() - 0.05, A.currentTime + 10); tick();"),
+    dict(id="J49", file="app.js", kind="ADD", why="rev01-h: シークバー操作で選択を解除(位置操作)",
+         old="A.currentTime = Math.min(dur() - 0.05, this.value / 1000 * dur()); tick();", new="selectedSid = null; A.currentTime = Math.min(dur() - 0.05, this.value / 1000 * dur()); tick();"),
 ]
 
 
@@ -259,10 +300,10 @@ def main():
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         for n, t in res.items():
             (OUT_DIR / n).write_bytes(t.encode("utf-8"))
-        man = {"asset_build": "rev01-g", "derived_from": "DEV rev01-e + EDITS(機械的派生。許可リスト=derive_assets_01.py EDITS。rev01-fは連動ハイライトJ19-J25/C5、rev01-gはPreview訳J26・Vocabulary音声J27-J36/C6・build-id H4を追加)", "files": shas,
+        man = {"asset_build": "rev01-h", "derived_from": "DEV rev01-e + EDITS(機械的派生。許可リスト=derive_assets_01.py EDITS。rev01-fは連動ハイライトJ19-J25/C5、rev01-gはPreview訳J26・Vocabulary音声J27-J36/C6・build-id H4を追加、rev01-hは英文クリック=選択のみ[seek/再生なし]J37-J49)", "files": shas,
                "edits": [{"id": e["id"], "file": e["file"], "kind": e["kind"], "why": e["why"]} for e in EDITS]}
         (OUT_DIR / "ASSET_SHA256.json").write_text(json.dumps(man, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-        lines = ["# production asset 差分一覧(DEV rev01-e -> production rev01-g)", "", "許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。", "",
+        lines = ["# production asset 差分一覧(DEV rev01-e -> production rev01-h)", "", "許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。", "",
                  "| id | file | 種別 | 内容 |", "|---|---|---|---|"]
         lines += [f"| {e['id']} | {e['file']} | {e['kind']} | {e['why']} |" for e in EDITS]
         lines += ["", "sha256:", ""] + [f"- {n}: `{s}`" for n, s in shas.items()]

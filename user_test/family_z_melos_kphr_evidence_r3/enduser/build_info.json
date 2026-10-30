@@ -2,7 +2,7 @@
  "schema": "enduser_build_info_v1",
  "id": "family_z_melos_kphr_evidence_r3",
  "family": "Z",
- "asset_build": "rev01-g",
+ "asset_build": "rev01-h",
  "dev_index_sha256": "739a92ec85ec08702baba45a4419dbbc494936307d121df4fccef839cf182e4d",
  "audio_sha256": {
   "audio_advanced/Melos_b1b_full.mp3": "31369036a0d73335f16fe3343748d707bc217218b6faa838c44af0b3cf285d0d",
@@ -42,16 +42,16 @@
   "audio_standard/a2_p3.mp3": "69d385bc875884f42d28bdd3d78fcde01eb05320f1e2f773571134ad880ebc65"
  },
  "assets": {
-  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
-  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "index.html": "bc1e5e4e5f99a96e6053fc5f6a94403eeb90adf61a3ce2914907857d4e3b6df9",
+  "app.js": "abeea5e28123b5fa51db80e23354a467f4fcb37f40b1dde3e2d2ac323a40e259",
   "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "files": {
-  "data/article.json": "cbb48f719b8a83cb1c569692f62717fed7f137702730cf26ec049a70bd5e69aa",
+  "data/article.json": "2d5cb15e8c67c3031122d599bec23d1b64ca016185eb9fd1c8c1ff2df89dbed9",
   "data/sync_std.json": "76dd86a5f02b446956bbb000456f355fa3f1efc9ddd2222552b0d8e7339521f4",
   "data/sync_adv.json": "ee26243795bd28070f31354f3985070285048b9e47798d30bcd367bc7164616e",
-  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
-  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "index.html": "bc1e5e4e5f99a96e6053fc5f6a94403eeb90adf61a3ce2914907857d4e3b6df9",
+  "app.js": "abeea5e28123b5fa51db80e23354a467f4fcb37f40b1dde3e2d2ac323a40e259",
   "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "sync": {
@@ -135,7 +135,7 @@
    },
    "story": {
     "blocks": 3,
-    "translated": 2,
+    "translated": 3,
     "source": "generated"
    }
   }
@@ -147,17 +147,16 @@
  "ja_manuscript": null,
  "warnings": [
   "std: 低信頼度境界を持つ行 3件(記録のみ)",
-  "adv: 低信頼度境界を持つ行 6件(記録のみ)",
-  "日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): adv adv_14"
+  "adv: 低信頼度境界を持つ行 6件(記録のみ)"
  ],
  "cost": {
   "api_calls": 0,
   "model": "medium",
   "asr_wall_s": 1.6,
-  "build_wall_s": 16.33,
+  "build_wall_s": 13.03,
   "cached_segments": 25,
   "translate_api_calls": 2,
-  "translate_cost_jpy": 0.074,
+  "translate_cost_jpy": 0.0389,
   "embedding_api_calls": 0,
   "embedding_tokens": 0,
   "embedding_cost_jpy": 0.0
@@ -292,10 +291,12 @@
     {
      "key": "adv_14",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 25,
-     "linked": 0,
-     "how": []
+     "linked": 25,
+     "how": [
+      "gen"
+     ]
     }
    ]
   },
@@ -346,10 +347,9 @@
     "story": {
      "parts": 3,
      "sentences": 62,
-     "linked": 37,
+     "linked": 62,
      "status": {
-      "generated": 2,
-      "missing": 1
+      "generated": 3
      }
     }
    }
@@ -406,24 +406,21 @@
      "en_sha256": "953532577dbe74cf9fe8ab204b0bf9b0f9fd062fc502d6181c5096eb8cf31a3f",
      "ja_sha256": "cee62a36490d2eb13c6551e4901df883783f1b45cb327391d57757cca3787b18",
      "sentences": 2
+    },
+    "adv_14": {
+     "en_sha256": "c5b51370ddb7a26b58e5f55bf44c15c53deba21c44a9ffb779a3f787b1cd2a11",
+     "ja_sha256": "0e32fbedb2a37257846909f6122aa648f5a83b6f1f5137695d1693179e3448ac",
+     "sentences": 25
     }
    }
   },
-  "failures": [
-   {
-    "level": "adv",
-    "key": "adv_14",
-    "reasons": [
-     "verify_ng: sid=adv_14-s062 walls は「壁」であり、「城壁」は英文にない情報を加えている"
-    ]
-   }
-  ],
+  "failures": [],
   "api_calls": {
    "translate": 1,
    "verify": 1
   },
-  "cost_jpy": 0.074,
-  "cache_hits": 50
+  "cost_jpy": 0.0389,
+  "cache_hits": 51
  },
  "judge": {
   "model": "gpt-6-luna",
@@ -477,14 +474,14 @@
     "coverage": 1.0
    },
    "adv": {
-    "story_parts": 6,
-    "sentences_total": 44,
-    "sentences_linked": 44,
-    "groups_total": 44,
+    "story_parts": 7,
+    "sentences_total": 69,
+    "sentences_linked": 69,
+    "groups_total": 69,
     "groups_null": 0,
     "reasons": {},
     "linked_by_how": {
-     "gen": 44
+     "gen": 69
     },
     "coverage": 1.0
    }
@@ -501,7 +498,8 @@
     "adv_10": "5da99b739171072e2406a0d9fba7fa3792b2aa0b050a7dacdcc5696835b3108d",
     "adv_11": "0d0317688f3e0c60091116867ad9e5e7fa5cbbe367a70e731d9fe3dbe5a717c5",
     "adv_12": "7f89cbbd7d20e5cf670033184278c1ff4e542b16798f1c5dce9f49d79419c2b2",
-    "adv_13": "b6ec3fd8d1098aa992a5e7c43d24779c62d3df17206604f688325207b12869c6"
+    "adv_13": "b6ec3fd8d1098aa992a5e7c43d24779c62d3df17206604f688325207b12869c6",
+    "adv_14": "accc7c6af908f8c6a3fb16dec1fd09171fa3064f1e752aa39d141aa44b153a43"
    }
   },
   "degraded": [],

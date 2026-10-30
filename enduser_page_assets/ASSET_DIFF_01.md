@@ -1,4 +1,4 @@
-# production asset 差分一覧(DEV rev01-e -> production rev01-g)
+# production asset 差分一覧(DEV rev01-e -> production rev01-h)
 
 許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。
 
@@ -37,7 +37,7 @@
 | J24 | app.js | ADD | rev01-f: tick()で文と文の間の保持群(jaHold)を更新してからhighlight()を呼ぶ(再生・シーク・クリック・レベル切替は従来どおりtick/highlightに集約) |
 | J25 | app.js | ADD | rev01-f: 検証用の状態__EUPに点灯中のJA群(jg)を追加 |
 | C5 | style.css | ADD | rev01-f: 日本語訳の対応群の点灯(.sent.onと同じ変数・同じ見た目) |
-| H4a | index.html | ADD | rev01-g: キャッシュ更新用のbuild-id(rev01-e -> rev01-g。assetの更新が古いJSキャッシュで隠れない) |
+| H4a | index.html | ADD | rev01-g/h: キャッシュ更新用のbuild-id(rev01-e -> rev01-h。assetの更新が古いJSキャッシュで隠れない) |
 | H4b | index.html | ADD | rev01-g: style.cssのcache-bust |
 | H4c | index.html | ADD | rev01-g: body data-build |
 | H4d | index.html | ADD | rev01-g: app.jsのcache-bust |
@@ -53,9 +53,22 @@
 | J35 | app.js | ADD | rev01-g: 単体音声の終端でendVocab() |
 | J36 | app.js | ADD | rev01-g: 検証用の状態__EUPにvocab項目(vi)を追加 |
 | C6 | style.css | ADD | rev01-g: Vocabulary再生ボタンのレイアウト(PC=右横、mobile=意味の下) |
+| J37 | app.js | ADD | rev01-h: クリック選択の状態変数selectedSid(null|sid。停止中・一時停止中だけ保持) |
+| J38 | app.js | ADD | rev01-h: render()の再構築で選択も初期化 |
+| J39 | app.js | ADD | rev01-h: tick()=再生中は選択を解除して自動ハイライト優先。停止中・一時停止中で選択があれば位置由来の上書きをせず選択(英日)を維持 |
+| J40 | app.js | ADD | rev01-h: 検証用の状態__EUPに選択sid(sel)を追加(読取専用) |
+| J41 | app.js | ADD | rev01-h: seekSentence(その文から再生)を廃止し、selectSentence(選択ハイライトのみ。audio.play/pause/currentTimeを呼ばない)へ置換 |
+| J42 | app.js | ADD | rev01-h: 文クリックのhandler=selectSentence(同期データ未取得でも選択はできる。日本語は点灯しない安全側) |
+| J43 | app.js | ADD | rev01-h: 位置操作(ここから再生/全体再生)で選択を解除 |
+| J44 | app.js | ADD | rev01-h: KP音声再生で選択を解除 |
+| J45 | app.js | ADD | rev01-h: Vocabulary音声再生で選択を解除 |
+| J46 | app.js | ADD | rev01-h: レベル切替で選択を解除 |
+| J47 | app.js | ADD | rev01-h: -10秒で選択を解除(位置操作) |
+| J48 | app.js | ADD | rev01-h: +10秒で選択を解除(位置操作) |
+| J49 | app.js | ADD | rev01-h: シークバー操作で選択を解除(位置操作) |
 
 sha256:
 
-- index.html: `d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a`
-- app.js: `f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091`
+- index.html: `bc1e5e4e5f99a96e6053fc5f6a94403eeb90adf61a3ce2914907857d4e3b6df9`
+- app.js: `abeea5e28123b5fa51db80e23354a467f4fcb37f40b1dde3e2d2ac323a40e259`
 - style.css: `0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4`

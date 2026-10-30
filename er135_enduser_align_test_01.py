@@ -420,7 +420,7 @@ class A4_PageIntegration(unittest.TestCase):
             self.assertTrue(any(v["code"] == "ENDUSER_JA_ALIGN" and "陳腐化" in v["message"] for v in r3["violations"]), r3["violations"])
 
     def test_old_asset_build_is_stale_except_frozen_allowlist(self):
-        self.assertEqual(R.ASSET_BUILD_ID, "rev01-g")
+        self.assertEqual(R.ASSET_BUILD_ID, "rev01-h")
         self.assertTrue((ROOT / "enduser_page_assets" / "rev01-e" / "app.js").is_file())          # 旧assetは凍結・残置
         self.assertEqual(E.FROZEN_ASSET_DIRS, {"family_z_in_a_grove_01": "rev01-e"})
         E.check_assets(ROOT / "enduser_page_assets" / "rev01-e")                                  # 凍結assetは自身のmanifestと一致
@@ -538,6 +538,47 @@ class A6_GoldRegression(unittest.TestCase):
         self.assertEqual(r["synthetic_accepted"], 0)
         self.assertGreaterEqual(r["coverage"], 0.88)                     # 委任_03A後91.9%(委任_02時点85.2%)
         self.assertEqual(r["equal_mode_wrong_pairs_accepted"], 0)
+
+
+class A9_ClickSelectOnly(unittest.TestCase):
+    """ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01(2026-10-30ユーザー承認): 英文クリック=選択ハイライトのみ(asset rev01-hの静的検査。実動作はPlaywright=er135_enduser_page_verify_01.py K/F)。"""
+
+    def setUp(self):
+        self.js = (ROOT / "enduser_page_assets" / R.ASSET_BUILD_ID / "app.js").read_text(encoding="utf-8")
+
+    def _fn(self, name):
+        a = self.js.index("  function " + name + "(")
+        b = self.js.index(chr(10) + "  }" + chr(10), a)
+        return self.js[a:b]
+
+    def test_click_handler_has_no_playback_calls(self):
+        self.assertNotIn("seekSentence", self.js)
+        body = self._fn("selectSentence")
+        for ng in (".play(", ".pause(", "currentTime =", "playFull", "playNow", "playKp", "playVocab"):
+            self.assertNotIn(ng, body)
+        h = self.js[self.js.index("$('content').addEventListener('click'"):]
+        h = h[:h.index("var gl = e.target.closest('a.glink')")]
+        self.assertIn("selectSentence(se.dataset.sid)", h)
+        self.assertNotIn("syncKind", h)                                  # 同期データ未取得でも選択はできる(日本語は点灯しない安全側)
+
+    def test_tick_keeps_selection_when_paused_and_drops_when_playing(self):
+        tk = self._fn("tick")
+        self.assertIn("if (!A.paused || (selectedSid &&", tk)               # 再生中は解除(自動ハイライト優先)・位置が動いたら解除
+        self.assertIn("if (selectedSid) { jaHold = null; highlight(selectedSid); }", tk)
+        self.assertIn("sel: selectedSid", tk)
+        self.assertIn("if (A.paused) { selectedSid = sid;", self._fn("selectSentence"))   # 再生中のクリックは保存しない
+
+    def test_position_ops_clear_selection(self):
+        for needle in ("function playFull(at) { selectedSid = null;", "selectedSid = null; A.currentTime = Math.max(0, A.currentTime - 10)",
+                       "selectedSid = null; A.currentTime = Math.min(dur() - 0.05, A.currentTime + 10)", "selectedSid = null; A.currentTime = Math.min(dur() - 0.05, this.value / 1000 * dur())"):
+            self.assertIn(needle, self.js)
+
+    def test_old_assets_unchanged_and_frozen_dir_stays(self):
+        for old in ("rev01-e", "rev01-f", "rev01-g"):
+            self.assertTrue((ROOT / "enduser_page_assets" / old / "app.js").is_file())
+        self.assertIn("seekSentence", (ROOT / "enduser_page_assets" / "rev01-g" / "app.js").read_text(encoding="utf-8"))   # 旧版は残置(凍結dir rev01-eの再現性)
+        self.assertEqual(E.FROZEN_ASSET_DIRS, {"family_z_in_a_grove_01": "rev01-e"})
+
 
 
 if __name__ == "__main__":
