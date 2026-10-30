@@ -1,4 +1,4 @@
-# RESULT_PACKET_KPG01(KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01 委任_01、2026-10-30)
+# RESULT_PACKET_KPG01(KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01 委任_01、2026-10-30、OPEN-619 / UDR #227登録・未提示)
 
 - 結論: Closeout案=USER_DECISION_REQUIRED(Status上限VALIDATED手前、Fable最終)。工程分離方式Dで『修正せず選べる候補』 現行26/66(39%)→A統合56/70(80%)→D 61/71(86%)(Std 27%→88%)。3件以上選べるケース 4/12→12/14。目的は概ね達成、完全ではない(D残NG10/71)。
 - 比較ページ: https://shimomura055.github.io/eigo-radio/user_test/kp_generalization_trial_01/ (必須9例表・記事別Before/After・可否理由・内部評価は折畳)
