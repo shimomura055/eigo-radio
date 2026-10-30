@@ -47,6 +47,7 @@
 <!-- Z雪女: story coverage {'std': (None, {}), 'adv': (None, {})} / embedding api_calls=0 tokens=0 cost_jpy=0.0 degraded=[] asset=rev01-f -->
 
 Playwright(local、PC+mobile): X月 222 / X② 226 / X④ 224 / Y再配達 218 / Y姓 226 / Zメロス 174 / Z雪女 182 = 全件NG 0(`evidence_03a/repro/*_result_browser.json`)。注: X月は並行実行(2 Playwright+pytest同時)の初回に`adv_M7_kp_mode_no_ja_lit`が1件タイミング不一致(クリック後のmode遷移待ち、`x_moon_FIRST_RUN_flake_...json`)。単独再実行で222/0。
+live(GitHub Pages、commit 72e4152f7反映後、`verify-only --base-url`): 7dir全件NG 0(222/226/224/218/226/174/182。`evidence_03a/live/`)。Z雪女の初回liveはmobile `adv_kp2_plays_english_window_only`(KP2の英語窓0.9秒、live通信でfirst_t未取得)の1件が一過性NG、再実行で182/0(`yuki_live_FIRST_run_kp2_flake.json`)。
 diff Gate(`tools/ejh02_diff_gate_01.py`、git HEAD比): 7dirともja_align・build_info(cost/files/ja_align/link_targets)以外の差分0。`evidence_03a/diff_gate.jsonl`。
 
 ## 4. Family x level x part 対象表(訳の有無・点灯率・方式)
