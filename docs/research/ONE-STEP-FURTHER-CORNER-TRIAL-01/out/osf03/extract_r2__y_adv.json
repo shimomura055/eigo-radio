@@ -1,0 +1,70 @@
+{
+ "model": "gpt-6-luna",
+ "cost_jpy": 0.0,
+ "elapsed_sec": 0.0,
+ "kept": [
+  {
+   "sentence_id": 17,
+   "quote": "When I heard that my son, who is getting married next year, would take his wife’s last name, I didn’t like it.",
+   "target_span": "I didn’t like it",
+   "prototype": "I didn’t like something",
+   "meaning_ja": "それを好ましく思わなかった",
+   "must_preserve": [
+    "主語I",
+    "過去",
+    "否定"
+   ],
+   "replace_value_ja": "不賛成や違和感を表す言い方に広げられる",
+   "mech": []
+  }
+ ],
+ "dropped": [
+  {
+   "sentence_id": 7,
+   "quote": "I had no problem at all with changing my last name.",
+   "target_span": "no problem at all with",
+   "prototype": "someone has no problem at all with something/doing something",
+   "meaning_ja": "姓を変えることにまったく抵抗がなかった",
+   "must_preserve": [
+    "否定の意味",
+    "強調（まったく）"
+   ],
+   "replace_value_ja": "反対や抵抗の表し方を広げられる",
+   "mech": [
+    "prototype_len_10",
+    "prototype_has_words_not_in_span:has"
+   ]
+  },
+  {
+   "sentence_id": 12,
+   "quote": "I still find it a little hard that I don’t get much time to myself while living at my wife’s parents’ home, but adjusting to the way each family does things was harder than changing my last name.",
+   "target_span": "find it a little hard",
+   "prototype": "someone finds it a little hard that something",
+   "meaning_ja": "自分の時間があまり取れないことを少し難しく感じる",
+   "must_preserve": [
+    "程度が「少し」であること"
+   ],
+   "replace_value_ja": "困難さを表す自然な型に発展できる",
+   "mech": [
+    "prototype_has_words_not_in_span:that"
+   ]
+  },
+  {
+   "sentence_id": 35,
+   "quote": "If he talked to me before deciding on a last name, I could share how I feel, too.",
+   "target_span": "talked to me before deciding",
+   "prototype": "if someone talked to me before deciding on something",
+   "meaning_ja": "何かを決める前に私に相談する",
+   "must_preserve": [
+    "仮定法過去の条件節",
+    "話し相手がmeであること"
+   ],
+   "replace_value_ja": "決定前の相談を表す実用表現に発展できる",
+   "mech": [
+    "prototype_len_9",
+    "prototype_has_words_not_in_span:if,on"
+   ]
+  }
+ ],
+ "n_sentences": 42
+}

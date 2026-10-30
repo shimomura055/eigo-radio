@@ -1,0 +1,63 @@
+{
+ "model": "gpt-6-luna",
+ "cost_jpy": 0.0,
+ "elapsed_sec": 0.0,
+ "kept": [
+  {
+   "sentence_id": 5,
+   "quote": "An AI experiment on an island inside a computer showed how much these “strategy notes” can matter.",
+   "target_span": "can matter",
+   "prototype": "can matter",
+   "meaning_ja": "重要な意味を持つことがある",
+   "must_preserve": [
+    "法助動詞can"
+   ],
+   "replace_value_ja": "重要性を自然な影響表現に広げやすい",
+   "mech": []
+  },
+  {
+   "sentence_id": 12,
+   "quote": "It was keeping pretty busy, even though nobody had asked it to.",
+   "target_span": "nobody had asked it to",
+   "prototype": "nobody had asked someone to do something",
+   "meaning_ja": "誰からも頼まれていなかった",
+   "must_preserve": [
+    "否定",
+    "過去完了"
+   ],
+   "replace_value_ja": "頼まれずに行動したことを表せる",
+   "mech": []
+  },
+  {
+   "sentence_id": 29,
+   "quote": "These results alone do not show that play itself had an effect.",
+   "target_span": "results alone do not show that",
+   "prototype": "something alone does not show that",
+   "meaning_ja": "結果だけでは〜を示していない",
+   "must_preserve": [
+    "否定",
+    "aloneによる限定"
+   ],
+   "replace_value_ja": "証拠から結論を急がない表現にできる",
+   "mech": []
+  }
+ ],
+ "dropped": [
+  {
+   "sentence_id": 28,
+   "quote": "The fact that the experienced group did better and the fact that removing a particular memory lowered its score need to be looked at separately.",
+   "target_span": "need to be looked at separately",
+   "prototype": "something needs to be looked at separately",
+   "meaning_ja": "別々に検討する必要がある",
+   "must_preserve": [
+    "必要性"
+   ],
+   "replace_value_ja": "検討の必要性と個別性をまとめて表せる",
+   "mech": [
+    "prototype_has_words_not_in_span:needs",
+    "modal_lost"
+   ]
+  }
+ ],
+ "n_sentences": 34
+}
