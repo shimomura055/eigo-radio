@@ -36,3 +36,15 @@
 - Adv(b1b): `er119_kp_human_review_cli_01.py confirm --from-readable ... --level b1b --dry-run` → 照合コードAIF1検証OK → 09:57 本確定(rev1、KP3[slip away/widowed/bar]+追加解説2[take shelter/go no farther]+本文意味表示4、文法0、grammar_status=confirmed)。
 - Std(a2): 回答はAIF2(旧ニュアンス欄つきフォーム)。a39acf3bf以降 `er128_form_readable_restore_01.py:295` が `NUANCE_CORNER_ABOLISHED` で明示拒否(dry-run)。指示どおり「ニュアンス解説：不採用〜【ニュアンスここまで】」節を除去した版(内容無変更、AIF2コードは原文のまま)でも再試行 → 同じ理由で拒否(コード接頭辞AIF2を検出するため)。Std dataは再出力済み(nuance欄なし)でd6も旧コードと不一致のため、旧コードの復元は不可能。確定せず停止。KP review status: pending=[a2]。
 - 選定内容自体(Std): KP=talk someone into staying/slip away/light-skinned、追加解説=get what you deserve/mist、本文意味表示=riverside/complain、文法なし、コメントなし(ニュアンスは不採用)。
+
+## 委任_04(2026-10-30 10:49-11:05): support,kp再開→tts_b1b→tts_a2→組立段でStyle実測照合Gate BLOCK(a2 comment_3)で停止
+| # | 起動時刻 | --stages | 結果 |
+|---|---|---|---|
+| 3 | 10:49:0x | support,kp | rc=0(spent 22.05。KP確定済み、ニュアンス撤去後コードで動作=Z新記事フルrunの撤去runtime証拠) |
+| 4 | 10:52:22 | tts_b1b | rc=0(256秒、spent 32.73、JA ASR PASS_W新方式0・HR Lock0・Human Review残0) |
+| 5 | 10:56:54 | tts_a2 | rc=0(spent 45.71、HR Lock0・HR queue0) |
+| 6 | 11:04:42 | provision_shell,gate,assemble,pages,page_verify | rc=2 `FamilyZStyleActualGateStop`(11秒、API 0) |
+- 各起動前 stop_scope_check rc=0。間隔は全て150秒超、300秒窓内2起動以下。再起動なし(rc=2は1回のみ、停止して報告)。
+- BLOCK内容: a2 `comment_3`(STD_JA_COMMENT、日本語コメント「…ミノキチが、今、妻に…」)。標準phase attempt1/2=TRUE_CONTENT_MISMATCH(ASRが固有名「ミノキチ」を実基/実之と表記)→fallback(style無し)attempt1=READING_RESOLVED_MATCH(実之吉)で採用 → Style実測照合Gateが `Z_STYLE_ACTUAL_UNMEASURED,Z_STYLE_FALLBACK_ADOPTED,FALLBACK_NOT_ALLOWED_FOR_POLICY` でBLOCK(`a2/audit/style_actual_vs_approved.json`、human_approved_count=0)。b1b=Gate PASS。他のa2 26 clip=全一致。
+- 30節7項目: 対象=雪女a2 comment_3(日本語コメント、地の文でなく解説) / 経路=Z Production(TTS→ASR→style gate) / ASR: 標準2回NG→fallback1回で内容一致 / HR Lock=0・LR/ctx fallback未発動 / 直接原因=ASRの固有名表記ゆれ(katakana→kanji)による標準phase不一致→style無しfallback採用 / 残る自動救済=なし(Gate設計上、fallback採用は人間承認[human_approved_segments.json]が必要) / 判断依頼=comment_3を聴いて承認するか(承認記録 or 当該clipのみ再生成)。迂回せず停止。
+- 費用: 本委任 約24.5円(spent 21.22→45.71)。案件累計 約45.7円/Cap150。本日(JST)全体 daily_cost.py=約969.7円(他Worker分含む。1,000円/日に接近)。
