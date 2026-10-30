@@ -360,7 +360,7 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
             rec("V", pre + "vocab_audio_refs_200_or_206", len(codes) == len(vocab) and not badv, dict(n=len(codes), bad=dict(list(badv.items())[:3])))
             # 通し再生の途中(20秒付近)で各項目を押す: その項目の単体mp3が最後まで再生され、文ハイライトは出ず、終端で通し再生の状態(位置・停止)へ戻る
             bad_play = []
-            for i, v in enumerate(vocab):
+            for i, v in enumerate(vocab if len(vbtns) == len(vocab) else []):   # 再生ボタンが無い/不足の旧asset(rev01-f以前)はIndexErrorにせず上のrecでNG表示
                 try:   # 直前の項目の終端で通し音声のsrcが戻る途中(metadata未取得)にseekしない(取得前のcurrentTime代入は0へ戻る=検査側の競合)
                     page.wait_for_function("() => document.getElementById('aud').readyState >= 1", timeout=5000)
                 except Exception:
@@ -389,20 +389,21 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
                         and before_open == after_open and (e_["eup"] or {}).get("mode") == "full" and e_["paused"] and abs(e_["t"] - 20.0) < 2.5 and e_["err"] is None):
                     bad_play.append(dict(i=i, heading=v["heading"], during=during, open=[before_open, after_open], end=dict(mode=(e_["eup"] or {}).get("mode"), paused=e_["paused"], t=e_["t"])))
             rec("V", pre + "vocab_each_item_plays_own_audio_and_returns", not bad_play, bad_play[:2])
-            # 再生中の一時停止ボタン(共有プレーヤ)で止まり、その後の通し再生が壊れていない
-            vbtns[0].scroll_into_view_if_needed()
-            vbtns[0].click()
-            page.wait_for_timeout(200)
-            page.click("#pp")
-            page.wait_for_timeout(300)
-            p1 = A()
-            page.evaluate("window.scrollTo(0, 0)")
-            page.click("#playAll")                      # 一時停止後に『全体を再生』で通し再生へ戻れる(共有プレーヤの状態が壊れていない)
-            page.wait_for_timeout(1500)
-            p2 = A()
-            rec("V", pre + "vocab_pause_then_full_playback_still_works", p1["paused"] and (not p2["paused"]) and (p2["eup"] or {}).get("mode") == "full" and (p2["eup"] or {}).get("gt", 0) > 0.5
-                and "/enduser/audio/vocab_" not in p2["src"], dict(paused_in_vocab=p1["paused"], mode=(p2["eup"] or {}).get("mode"), gt=(p2["eup"] or {}).get("gt"), src=p2["src"][-40:]))
-            page.evaluate("document.getElementById('aud').pause()")
+            if vbtns:
+                # 再生中の一時停止ボタン(共有プレーヤ)で止まり、その後の通し再生が壊れていない
+                vbtns[0].scroll_into_view_if_needed()
+                vbtns[0].click()
+                page.wait_for_timeout(200)
+                page.click("#pp")
+                page.wait_for_timeout(300)
+                p1 = A()
+                page.evaluate("window.scrollTo(0, 0)")
+                page.click("#playAll")                      # 一時停止後に『全体を再生』で通し再生へ戻れる(共有プレーヤの状態が壊れていない)
+                page.wait_for_timeout(1500)
+                p2 = A()
+                rec("V", pre + "vocab_pause_then_full_playback_still_works", p1["paused"] and (not p2["paused"]) and (p2["eup"] or {}).get("mode") == "full" and (p2["eup"] or {}).get("gt", 0) > 0.5
+                    and "/enduser/audio/vocab_" not in p2["src"], dict(paused_in_vocab=p1["paused"], mode=(p2["eup"] or {}).get("mode"), gt=(p2["eup"] or {}).get("gt"), src=p2["src"][-40:]))
+                page.evaluate("document.getElementById('aud').pause()")
         # ---- I 意味一覧(覚えておきたい表現) ----
         has_gl = any(pt.get("glossary") for pt in parts)
         if has_gl:

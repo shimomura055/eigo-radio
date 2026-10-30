@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03B: 既公開dirの再produce前後の差分Gate(API 0)。基準=git HEAD。
+"""【廃止(ECH03, 2026-10-30): 新規の再produce差分検査は `tools/ech02_diff_gate_01.py` を使う。本Gateは rev01-g 時点の履歴再現用に残置。
+本Gateは「訳のあるpartに生成訳が付いた」を一律NGとするが、承認済み仕様(OPEN-618)内で既存retryにより生成訳が成立したpart(例: Zメロスadv_14・雪女std_11)を誤NGにする。ech02版は『生成訳の新規付与・変化』を報告のみとし、既存jaの変化・英文・音声・dev本文の変化だけをNGにする。]
+ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03B: 既公開dirの再produce前後の差分Gate(API 0)。基準=git HEAD。
 
 許可する差分 = (a) ja_align (b) 訳が無かったpartに付いた生成訳(ja/ja_source=generated/ja_align) (c) vocab[].audio と enduser/audio/*.mp3 (d) asset(app.js・style.css・index.htmlのbuild-id)
  (e) 同期の再測定による開始/終了秒の微小な差(sid集合は同一・|差|<=0.25s。E1のASR prompt是正の副作用) (f) build_infoの許可key。
@@ -122,6 +124,7 @@ def gate(pub: str) -> dict:
 
 
 if __name__ == "__main__":
+    print("DEPRECATED: tools/ech02_diff_gate_01.py を使用してください(本Gateは生成訳の付与を誤NGとする)", file=sys.stderr)
     allok = True
     for pub in sys.argv[1:]:
         r = gate(pub)

@@ -617,7 +617,7 @@ def load_x_manuscript(path) -> dict | None:
         return None
     txt = Path(path).read_text(encoding="utf-8").strip()
     paras = [x.strip() for x in re.split(r"\n\s*\n", txt) if x.strip()]
-    return {"paragraphs": paras[1:], "title": paras[0] if paras else "", "sha256": sha256_file(path), "name": Path(path).name}
+    return {"paragraphs": paras[1:], "title": paras[0] if paras else "", "sha256": sha256_text_file(path), "name": Path(path).name}   # LF正規化(CRLF checkoutでshaがぶれない)
 
 
 def _y_segment_id(label: str):

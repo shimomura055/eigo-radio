@@ -1303,5 +1303,34 @@ class T21_VerifierWaitsForSeekBeforeCrossing(unittest.TestCase):
         self.assertLess(i, j)
 
 
+class T22_ManuscriptShaIsLineEndingIndependent(unittest.TestCase):
+    """ECH03: CRLF checkout(autocrlf)でも build_info.ja_manuscript.sha256 がぶれない(LF正規化して計算)。"""
+
+    def test_crlf_and_lf_copies_have_same_sha(self):
+        body = "題名\n\n第一段落。\n\n第二段落。\n"
+        with tempfile.TemporaryDirectory() as d:
+            lf, crlf = Path(d) / "lf.md", Path(d) / "crlf.md"
+            lf.write_bytes(body.encode("utf-8"))
+            crlf.write_bytes(body.replace("\n", "\r\n").encode("utf-8"))
+            a, c = E.load_x_manuscript(lf), E.load_x_manuscript(crlf)
+        self.assertEqual(a["sha256"], c["sha256"])
+        self.assertEqual(a["sha256"], hashlib.sha256(body.encode("utf-8")).hexdigest())
+        self.assertEqual(a["paragraphs"], c["paragraphs"])
+
+
+class T23_OldAssetVocabButtonGuard(unittest.TestCase):
+    """ECH03: Vocabulary再生ボタンの無い旧asset(rev01-f以前)のpageをrev01-g以降用verifyへ渡してもIndexErrorにならず、
+    ボタン数不一致はV検査のNG記録(vocab_play_button_for_every_item)になる。guardが入っていることをsourceで固定する(実ブラウザ再現はruntime evidence側)。"""
+
+    def test_guard_present_and_ng_rec_precedes_loop(self):
+        src = (ROOT / "er135_enduser_page_verify_01.py").read_text(encoding="utf-8")
+        i = src.index("vocab_play_button_for_every_item")
+        j = src.index("enumerate(vocab if len(vbtns) == len(vocab) else [])", i)
+        k = src.index("            if vbtns:\n", j)
+        self.assertLess(i, j)
+        self.assertLess(j, k)
+        self.assertNotIn("for i, v in enumerate(vocab):\n                try:   # 直前", src)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
