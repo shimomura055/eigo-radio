@@ -4244,5 +4244,425 @@
         "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/untidiness_family_resource__run_fx4_01/a2/narration/attempts/meaning_3_attempt1_customa6dd8324.wav"
       }
     ]
+  },
+  "vocab_extra_3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "11e221bd1b7fc99544f3f765b0c39dd2786e636c3422d6bec026d1ed03884cac",
+    "language": "en",
+    "theme_id": "untidiness_family_resource__run_fx4_01",
+    "level": "a2",
+    "segment_id": "vocab_extra_3_en",
+    "updated_at": "2026-10-30T16:50:39",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/untidiness_family_resource__run_fx4_01/a2/narration/vocab_extra_3_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.0,
+        "asr_text": "Verdict.",
+        "asr_text_length": 8,
+        "max_len": 17,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "Verdict",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Verdict.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Verdict.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "b0bbf6a1f98d4eccb9628b1d108f29be9d85d2a4dc860a86e42ba78515fcf378",
+          "primary": {
+            "text": "Verdict.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Verdict.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.0,
+            "est_jpy": 0.0444,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 755,
+            "secondary_ms": 753
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 8,
+            "secondary_len": 8,
+            "max_len": 17,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 7,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Verdict.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Verdict.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/untidiness_family_resource__run_fx4_01/a2/narration/attempts/vocab_extra_3_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "vocab_extra_4_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "2fc0b292041ee3d8e639d5bd4e829d1ef4522237609e9ca850fcbccca9bf765f",
+    "language": "en",
+    "theme_id": "untidiness_family_resource__run_fx4_01",
+    "level": "a2",
+    "segment_id": "vocab_extra_4_en",
+    "updated_at": "2026-10-30T16:52:47",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/untidiness_family_resource__run_fx4_01/a2/narration/vocab_extra_4_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 0.98,
+        "asr_text": "Clutter",
+        "asr_text_length": 7,
+        "max_len": 17,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "Clutter.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Clutter",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Clutter.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "0a5dbb097e4f67fd09265edaedc9ceec4dd00abf9d559f2e6b0e861aa45a89c4",
+          "primary": {
+            "text": "Clutter",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Clutter.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 0.98,
+            "est_jpy": 0.0444,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 540,
+            "secondary_ms": 539
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 7,
+            "secondary_len": 8,
+            "max_len": 17,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 7,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Clutter",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Clutter.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/untidiness_family_resource__run_fx4_01/a2/narration/attempts/vocab_extra_4_en_attempt1_custom60ebc452.wav"
+      }
+    ]
   }
 }

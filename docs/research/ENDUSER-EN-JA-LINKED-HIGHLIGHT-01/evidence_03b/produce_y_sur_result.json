@@ -1,0 +1,173 @@
+{
+ "ok": true,
+ "family": "Y",
+ "enduser_dir": "C:\\Users\\tensh\\AppData\\Local\\Temp\\claude\\C--Users-tensh-eigo-radio\\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\\scratchpad\\ejh03b\\user_test\\family_y_production_surname_choice_01\\enduser",
+ "files": [
+  "app.js",
+  "build_info.json",
+  "data/article.json",
+  "data/sync_adv.json",
+  "data/sync_std.json",
+  "index.html",
+  "style.css"
+ ],
+ "consistency": "ok",
+ "sync": {
+  "std": {
+   "gate": "PASS",
+   "min_row_ratio": 0.9286,
+   "cost": {
+    "api_calls": 0,
+    "wall_s": 1.3,
+    "asr_transcribed": 0,
+    "cached_segments": 17,
+    "model": "medium"
+   },
+   "wall_s": 1.3
+  },
+  "adv": {
+   "gate": "PASS",
+   "min_row_ratio": 0.9718,
+   "cost": {
+    "api_calls": 0,
+    "wall_s": 1.1,
+    "asr_transcribed": 0,
+    "cached_segments": 15,
+    "model": "medium"
+   },
+   "wall_s": 1.1
+  }
+ },
+ "episode_check": {
+  "std": {
+   "rows_checked": 26,
+   "rows_skipped_silent": 0,
+   "max_abs_lag_s": 0.0,
+   "min_corr": 0.98884,
+   "episode_dur_s": 338.11,
+   "timeline_total_s": 338.072,
+   "length_diff_s": 0.038,
+   "length_basis": "run_timeline"
+  },
+  "adv": {
+   "rows_checked": 24,
+   "rows_skipped_silent": 0,
+   "max_abs_lag_s": 0.0,
+   "min_corr": 0.9883,
+   "episode_dur_s": 314.52,
+   "timeline_total_s": 314.49,
+   "length_diff_s": 0.03,
+   "length_basis": "run_timeline"
+  }
+ },
+ "translation_coverage": {
+  "std": {
+   "topic": {
+    "blocks": 1,
+    "translated": 0,
+    "source": "none_approved_translation_hidden"
+   },
+   "story": {
+    "blocks": 8,
+    "translated": 8,
+    "source": "approved_ja_original_in_dev_page"
+   }
+  },
+  "adv": {
+   "topic": {
+    "blocks": 1,
+    "translated": 0,
+    "source": "none_approved_translation_hidden"
+   },
+   "preview": {
+    "blocks": 1,
+    "translated": 1,
+    "source": "generated"
+   },
+   "comment": {
+    "blocks": 2,
+    "translated": 2,
+    "source": "generated"
+   },
+   "story": {
+    "blocks": 8,
+    "translated": 8,
+    "source": "approved_ja_original_in_dev_page"
+   }
+  }
+ },
+ "dev_index_sha256": "a64eefad73fb15adb5bedcfbdd5c7a147a891e5943019ec478cec350fc745a46",
+ "enduser_index_sha256": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
+ "total_wall_s": 42.1,
+ "api_calls": 0,
+ "browser_verify": {
+  "rc": 3,
+  "result": "C:\\Users\\tensh\\AppData\\Local\\Temp\\claude\\C--Users-tensh-eigo-radio\\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\\scratchpad\\ejh_out\\produce_y_sur_result_browser.json"
+ },
+ "generated_translation": {
+  "enabled": true,
+  "parts": 3,
+  "failures": [],
+  "api_calls": {
+   "translate": 3,
+   "verify": 3
+  },
+  "cost_jpy": 0.2172,
+  "cache_hits": 0
+ },
+ "judge": {
+  "model": "gpt-6-luna",
+  "prompt_sha256": "75dd28ec852a8951aedd28118f796c4005908ab8be835455b7f417c0ffab3f77",
+  "calls": 6,
+  "pairs": 10,
+  "ok": 8,
+  "cache_hits": 0,
+  "failures": []
+ },
+ "ja_align": {
+  "coverage": {
+   "std": {
+    "story_parts": 8,
+    "sentences_total": 54,
+    "sentences_linked": 51,
+    "groups_total": 40,
+    "groups_null": 2,
+    "reasons": {
+     "group_shift_margin": 1,
+     "sent_shift_margin": 1
+    },
+    "linked_by_how": {
+     "dp": 30,
+     "judge": 13,
+     "det": 3,
+     "order": 5
+    },
+    "coverage": 0.9444
+   },
+   "adv": {
+    "story_parts": 11,
+    "sentences_total": 48,
+    "sentences_linked": 48,
+    "groups_total": 46,
+    "groups_null": 0,
+    "reasons": {},
+    "linked_by_how": {
+     "gen": 6,
+     "order": 32,
+     "det": 2,
+     "dp": 6,
+     "judge": 2
+    },
+    "coverage": 1.0
+   }
+  },
+  "degraded": [],
+  "embedding": {
+   "api_calls": 0,
+   "tokens": 0,
+   "cached_hits": 295,
+   "cost_jpy": 0.0
+  },
+  "recompute": "done"
+ }
+}

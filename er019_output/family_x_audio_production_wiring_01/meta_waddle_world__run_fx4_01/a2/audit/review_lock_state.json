@@ -4527,5 +4527,425 @@
         "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/attempts/meaning_3_attempt1_customa6dd8324.wav"
       }
     ]
+  },
+  "vocab_extra_3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "4262aca3226aaf10295374aa4a4fe70d3bbf351ec4346614388162c6276c6db9",
+    "language": "en",
+    "theme_id": "meta_waddle_world__run_fx4_01",
+    "level": "a2",
+    "segment_id": "vocab_extra_3_en",
+    "updated_at": "2026-10-30T17:03:41",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/vocab_extra_3_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.82,
+        "asr_text": "Early Step Toward",
+        "asr_text_length": 17,
+        "max_len": 27,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 3,
+          "transcript": "Early  Step  Toward",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Early Step Toward",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Early step toward.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "df8fd3d79e0ca440c900be300d22277ef056754452e5f2c027f62d729c1959d7",
+          "primary": {
+            "text": "Early Step Toward",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Early step toward.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.82,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1633,
+            "secondary_ms": 1632
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 17,
+            "secondary_len": 18,
+            "max_len": 27,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 15,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Early Step Toward",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Early step toward.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/attempts/vocab_extra_3_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "vocab_extra_4_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "a8fa7fd60893411a49907b5545ccf9c47ed8073cc38e2ac3b79c4f6156cd7755",
+    "language": "en",
+    "theme_id": "meta_waddle_world__run_fx4_01",
+    "level": "a2",
+    "segment_id": "vocab_extra_4_en",
+    "updated_at": "2026-10-30T17:05:47",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/vocab_extra_4_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.24,
+        "asr_text": "Subscription.",
+        "asr_text_length": 13,
+        "max_len": 22,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "Subscription.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Subscription.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Subscription.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "3d8e20426d3ed805565d764f7a1f279cc74f2476b9c2dc81f0228b02a1fb0205",
+          "primary": {
+            "text": "Subscription.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Subscription.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.24,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 543,
+            "secondary_ms": 542
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 13,
+            "secondary_len": 13,
+            "max_len": 22,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 12,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Subscription.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Subscription.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "C:/Users/tensh/eigo-radio/er019_output/family_x_audio_production_wiring_01/meta_waddle_world__run_fx4_01/a2/narration/attempts/vocab_extra_4_en_attempt1_custom60ebc452.wav"
+      }
+    ]
   }
 }

@@ -7,7 +7,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var A = $('aud'), Q = new URLSearchParams(location.search);
   var art = null, lv = null, L = null, parts = [];
-  var mode = 'full', curIdx = null, kpEnd = null;   // 'full'(全体音声) / 'kp'(Key Phrase英語区間のみ)
+  var mode = 'full', curIdx = null, kpEnd = null, vocabI = null, resumeAt = null;   // 'full'(全体音声) / 'kp'(Key Phrase英語区間のみ) / 'vocab'(Vocabulary項目の単体音声)
   var sync = [], syncKind = 'none', sentEls = {}, activeSid = null;
   var raf = 0, lastUserScroll = 0;
   var LEVEL_NAME = { std: 'Standard', adv: 'Advanced' };
@@ -78,7 +78,7 @@
     }
     by('preview').forEach(function (p) {
       var ja = JA.test(p.paragraphs.map(function (x) { return x.map(function (s) { return s.text; }).join(''); }).join(''));
-      out += card('Preview', ja ? '<div class="jp">' + sentHtml(p) + '</div>' : sentHtml(p), { part: p.idx, btn: btns(p) });
+      out += card('Preview', (ja ? '<div class="jp">' + sentHtml(p) + '</div>' : sentHtml(p)) + trHtml(p), { part: p.idx, btn: btns(p) });
     });
     var kps = by('kp');
     if (kps.length) {
@@ -110,7 +110,7 @@
       var wide = window.matchMedia('(min-width: 700px)').matches;
       out += card('Vocabulary & Expressions', L.vocab.map(function (it, vi) {
         var mean = (it.fields.filter(function (f) { return f.label === '本文中の意味'; })[0] || {}).html || '';
-        return '<details class="vi" id="vi-' + lv + '-' + vi + '"' + (wide ? ' open' : '') + '><summary><b class="vh">' + esc(it.heading) + '</b><span class="vm">' + mean + '</span></summary><dl>' +
+        return '<details class="vi" id="vi-' + lv + '-' + vi + '"' + (wide ? ' open' : '') + '><summary><b class="vh">' + esc(it.heading) + '</b><span class="vm">' + mean + '</span>' + (it.audio ? '<button type="button" class="seek part vplay" data-act="vocab" data-i="' + vi + '" aria-label="' + esc(it.heading) + ' の英語音声を再生">▶ 英語音声</button>' : '') + '</summary><dl>' +
           it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></details>';
       }).join(''), { label: 'WORDS', id: 'vocab', cls: 'blk-vocab' });
     }
@@ -221,20 +221,32 @@
     mode = 'kp'; curIdx = i; kpEnd = ea.end; ensureSrc(audioUrl(parts[i].seg));
     withMeta(function () { A.currentTime = ea.start; playNow(); }); labels();
   }
+  function playVocab(vi) {   // rev01-g: Vocabulary項目の英語音声(KPと同じ契約の単体mp3。区間指定なし)
+    var it = L.vocab && L.vocab[vi], au = it && it.audio; if (!au) return;
+    if (mode !== 'vocab') resumeAt = mode === 'full' ? (A.currentTime || 0) : (mode === 'kp' && curIdx != null ? parts[curIdx].start : null);
+    mode = 'vocab'; vocabI = vi; curIdx = null; kpEnd = null;
+    ensureSrc(new URL(au.file, location.href).href);
+    withMeta(function () { A.currentTime = 0; playNow(); }); labels();
+  }
+  function endVocab() {   // 単体音声の終端: 停止して通し再生の状態へ戻す(自動再生しない)
+    var at = resumeAt; A.pause(); mode = 'full'; vocabI = null; resumeAt = null;
+    ensureSrc(audioUrl(L.main)); withMeta(function () { A.currentTime = at || 0; tick(); });
+  }
   function endKp() {   // 英語区間の終端: 停止して通し再生の状態へ戻す(意味・再掲は再生されない)
     var i = curIdx; A.pause(); mode = 'full'; kpEnd = null; curIdx = null;
     ensureSrc(audioUrl(L.main)); withMeta(function () { A.currentTime = parts[i].start; tick(); });
   }
   function dur() {
-    var d = mode === 'kp' && curIdx != null ? parts[curIdx].dur : L.total_sec;
+    var d = mode === 'vocab' && vocabI != null ? L.vocab[vocabI].audio.dur : (mode === 'kp' && curIdx != null ? parts[curIdx].dur : L.total_sec);
     return (isFinite(A.duration) && A.duration > 0 && A.readyState >= 1) ? A.duration : d;
   }
   function gt() { return (mode === 'kp' && curIdx != null ? parts[curIdx].start : 0) + (A.currentTime || 0); }
   function labels() {
     var pi = currentPartIdx();
-    $('nowLabel').textContent = (mode === 'kp' && curIdx != null) ? ('英語音声: ' + parts[curIdx].label) : ('全体' + (pi != null && A.currentTime > 0 && parts[pi].kind !== 'sfx' && parts[pi].kind !== 'fixed' ? ' · ' + parts[pi].label : ''));
+    $('nowLabel').textContent = (mode === 'vocab' && vocabI != null) ? ('英語音声: ' + L.vocab[vocabI].heading) : (mode === 'kp' && curIdx != null) ? ('英語音声: ' + parts[curIdx].label) : ('全体' + (pi != null && A.currentTime > 0 && parts[pi].kind !== 'sfx' && parts[pi].kind !== 'fixed' ? ' · ' + parts[pi].label : ''));
   }
   function currentPartIdx() {
+    if (mode === 'vocab') return null;
     if (mode === 'kp') return curIdx;
     var g = gt(), r = null;
     for (var i = 0; i < parts.length; i++) { if (g >= parts[i].start - 0.001) r = i; else break; }
@@ -283,8 +295,8 @@
     var pi = currentPartIdx();
     Array.prototype.forEach.call(document.querySelectorAll('[data-part].now'), function (e) { if (Number(e.dataset.part) !== pi || (A.paused && A.currentTime === 0)) e.classList.remove('now'); });
     if (pi != null && !(A.paused && A.currentTime === 0)) Array.prototype.forEach.call(document.querySelectorAll('[data-part="' + pi + '"]'), function (e) { e.classList.add('now'); });
-    if (sync.length) { var ga = findActive(gt()); jaHold = ga ? null : gapGroup(gt()); highlight(ga); }
-    window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src, jg: activeG };
+    if (sync.length) { var ga = mode === 'vocab' ? null : findActive(gt()); jaHold = (ga || mode === 'vocab') ? null : gapGroup(gt()); highlight(ga); }
+    window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src, jg: activeG, vi: vocabI };
   }
   function seekSentence(sid) {   // 文クリック: その文の先頭から全体音声を再生
     var r = sync.filter(function (x) { return x.sid === sid; })[0]; if (!r) return;
@@ -339,6 +351,7 @@
       return;
     }
     var b = e.target.closest('button[data-act]'); if (!b) return;
+    if (b.dataset.act === 'vocab') { e.preventDefault(); playVocab(Number(b.dataset.i)); return; }
     if (b.dataset.act === 'stop') { A.pause(); tick(); return; }   // rev01-c: 停止(連続再生中も)。位置は保持し、固定バー/ここから再生で再開
     var i = Number(b.dataset.i);
     if (b.dataset.act === 'kp') playKp(i, 0); else playFull(parts[i].start);
@@ -351,7 +364,7 @@
   $('seek').addEventListener('input', function () { A.currentTime = Math.min(dur() - 0.05, this.value / 1000 * dur()); tick(); });
   ['play', 'playing'].forEach(function (ev) { A.addEventListener(ev, kick); });
   ['pause', 'seeked', 'timeupdate', 'loadedmetadata', 'durationchange'].forEach(function (ev) { A.addEventListener(ev, tick); });
-  A.addEventListener('ended', function () { tick(); });
+  A.addEventListener('ended', function () { if (mode === 'vocab') endVocab(); else tick(); });
   A.addEventListener('error', function () { console.warn('audio error', A.error && A.error.code, A.src); });
   ['wheel', 'touchmove'].forEach(function (ev) { window.addEventListener(ev, function () { lastUserScroll = Date.now(); }, { passive: true }); });
 

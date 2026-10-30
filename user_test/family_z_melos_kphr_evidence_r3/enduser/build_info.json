@@ -2,7 +2,7 @@
  "schema": "enduser_build_info_v1",
  "id": "family_z_melos_kphr_evidence_r3",
  "family": "Z",
- "asset_build": "rev01-f",
+ "asset_build": "rev01-g",
  "dev_index_sha256": "739a92ec85ec08702baba45a4419dbbc494936307d121df4fccef839cf182e4d",
  "audio_sha256": {
   "audio_advanced/Melos_b1b_full.mp3": "31369036a0d73335f16fe3343748d707bc217218b6faa838c44af0b3cf285d0d",
@@ -42,17 +42,17 @@
   "audio_standard/a2_p3.mp3": "69d385bc875884f42d28bdd3d78fcde01eb05320f1e2f773571134ad880ebc65"
  },
  "assets": {
-  "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
-  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
+  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
+  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "files": {
-  "data/article.json": "885d47bb99384b94727a5060bbcb14cc57e9ebe00f3dba8bae35d30f6e82f91a",
+  "data/article.json": "cbb48f719b8a83cb1c569692f62717fed7f137702730cf26ec049a70bd5e69aa",
   "data/sync_std.json": "76dd86a5f02b446956bbb000456f355fa3f1efc9ddd2222552b0d8e7339521f4",
   "data/sync_adv.json": "ee26243795bd28070f31354f3985070285048b9e47798d30bcd367bc7164616e",
-  "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
-  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
+  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
+  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "sync": {
   "std": {
@@ -73,7 +73,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "384dc1673d4b0a8930cb95a263f88dc92d313c1f5ebcc67faa7e93eb1678df17",
+   "source_sha256": "95591126d7afae774ed8d5ff6e802ec2bc816e2feb3c6b482c3cc4959411c73b",
    "rows": 9,
    "sentences": 62,
    "min_row_ratio": 0.9394,
@@ -97,7 +97,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "c3c9b9f0c8368de986ccfa18388f88d2dd5590e5f18f293b33c0e0bb76e6a205",
+   "source_sha256": "b3c8cd62eaab9c0f6f69d5b63ef324faa47ee76550ac8b49893b870072c066dd",
    "rows": 8,
    "sentences": 70,
    "min_row_ratio": 1.0,
@@ -113,8 +113,8 @@
    },
    "story": {
     "blocks": 3,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 3,
+    "source": "generated"
    }
   },
   "adv": {
@@ -125,18 +125,18 @@
    },
    "preview": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    },
    "comment": {
     "blocks": 3,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 3,
+    "source": "generated"
    },
    "story": {
     "blocks": 3,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 2,
+    "source": "generated"
    }
   }
  },
@@ -147,14 +147,17 @@
  "ja_manuscript": null,
  "warnings": [
   "std: 低信頼度境界を持つ行 3件(記録のみ)",
-  "adv: 低信頼度境界を持つ行 6件(記録のみ)"
+  "adv: 低信頼度境界を持つ行 6件(記録のみ)",
+  "日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): adv adv_14"
  ],
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 1.3,
-  "build_wall_s": 1.03,
+  "asr_wall_s": 1.6,
+  "build_wall_s": 16.33,
   "cached_segments": 25,
+  "translate_api_calls": 2,
+  "translate_cost_jpy": 0.074,
   "embedding_api_calls": 0,
   "embedding_tokens": 0,
   "embedding_cost_jpy": 0.0
@@ -181,10 +184,12 @@
     {
      "key": "std_13",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 17,
-     "linked": 0,
-     "how": []
+     "linked": 17,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "std_14",
@@ -197,10 +202,12 @@
     {
      "key": "std_15",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 15,
-     "linked": 0,
-     "how": []
+     "linked": 15,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "std_16",
@@ -213,60 +220,74 @@
     {
      "key": "std_17",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 21,
-     "linked": 0,
-     "how": []
+     "linked": 21,
+     "how": [
+      "gen"
+     ]
     }
    ],
    "adv": [
     {
      "key": "adv_03",
      "kind": "preview",
-     "status": "missing",
+     "status": "generated",
      "sentences": 2,
-     "linked": 0,
-     "how": []
+     "linked": 2,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_09",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 1,
-     "linked": 0,
-     "how": []
+     "linked": 1,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_10",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 20,
-     "linked": 0,
-     "how": []
+     "linked": 20,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_11",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 2,
-     "linked": 0,
-     "how": []
+     "linked": 2,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_12",
      "kind": "story",
-     "status": "missing",
+     "status": "generated",
      "sentences": 17,
-     "linked": 0,
-     "how": []
+     "linked": 17,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_13",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 2,
-     "linked": 0,
-     "how": []
+     "linked": 2,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_14",
@@ -299,9 +320,9 @@
     "story": {
      "parts": 3,
      "sentences": 53,
-     "linked": 0,
+     "linked": 53,
      "status": {
-      "missing": 3
+      "generated": 3
      }
     }
    },
@@ -309,29 +330,109 @@
     "preview": {
      "parts": 1,
      "sentences": 2,
-     "linked": 0,
+     "linked": 2,
      "status": {
-      "missing": 1
+      "generated": 1
      }
     },
     "comment": {
      "parts": 3,
      "sentences": 5,
-     "linked": 0,
+     "linked": 5,
      "status": {
-      "missing": 3
+      "generated": 3
      }
     },
     "story": {
      "parts": 3,
      "sentences": 62,
-     "linked": 0,
+     "linked": 37,
      "status": {
-      "missing": 3
+      "generated": 2,
+      "missing": 1
      }
     }
    }
   }
+ },
+ "generated_translation": {
+  "model": "gpt-6-luna",
+  "prompt_sha256": "2da82c8704e82e22f418d819d5f5062643c349f09cc4f60899506d85ecc49227",
+  "parts": {
+   "std": {
+    "std_13": {
+     "en_sha256": "7de1ca22d61e3e14963fab9d1f97ac22b7cc0e86a0d3ed84aae67d815b1f38de",
+     "ja_sha256": "478ed3faf017a3d82f388cdf3112289433af0ba093988095b2aeae0e48639f67",
+     "sentences": 17
+    },
+    "std_15": {
+     "en_sha256": "dd6caf4555ff75038ab3f35190564cc33662cacc2421db3286c9a647e9074dc9",
+     "ja_sha256": "394bbf18663f8746584b22a9f7e5877cdfb36e966d39daa0342bdfb2b440fbb2",
+     "sentences": 15
+    },
+    "std_17": {
+     "en_sha256": "44840f28999fcfeeb6a9a30d71b5f091ebac7cb5a96896c345147aba91d995ae",
+     "ja_sha256": "ecfac1b8ac06bd4d20a5266808acc1f563be7b53ba8b26230f4dac71ee3bcb29",
+     "sentences": 21
+    }
+   },
+   "adv": {
+    "adv_03": {
+     "en_sha256": "4365561037d7a612bf43c75776dbd399ed2045dd0949043a309ba7d257ca5e8a",
+     "ja_sha256": "2af95a47a7c034ba9b6a7c3104297a87c86b4628ef2bfa230c1628714182fd75",
+     "sentences": 2
+    },
+    "adv_09": {
+     "en_sha256": "2400358eba7732bf3325f292ac743d3c63faea62d75cb8b267637036ab90d319",
+     "ja_sha256": "d9c1362cf10044635a1ea12106e9095a26a60db20be9b86fa307bf023c222c9e",
+     "sentences": 1
+    },
+    "adv_10": {
+     "en_sha256": "c1496c30f00cabc2c1baa98d948e898dd80d458d9a488a9a9331cecbba7ee003",
+     "ja_sha256": "dc18772f24e092edbaf48b100f0e2d22af806debd5b30ee2b427c2b500cb9f6d",
+     "sentences": 20
+    },
+    "adv_11": {
+     "en_sha256": "ea715453b775f5fd05664c8469ae4e10f1ac57cb2c0e4f47697a085c26abd315",
+     "ja_sha256": "a3559114a4f2e55530c22e91aaaf531ef45309879236127df455615569320c8a",
+     "sentences": 2
+    },
+    "adv_12": {
+     "en_sha256": "d662d10541f977d174d1778a44671a7c114a487dab6deb752564b4e7fd7fa49d",
+     "ja_sha256": "f8be117c2a4b06ed84446f224f4126624a54cd6a93b1ec4006629264473b0867",
+     "sentences": 17
+    },
+    "adv_13": {
+     "en_sha256": "953532577dbe74cf9fe8ab204b0bf9b0f9fd062fc502d6181c5096eb8cf31a3f",
+     "ja_sha256": "cee62a36490d2eb13c6551e4901df883783f1b45cb327391d57757cca3787b18",
+     "sentences": 2
+    }
+   }
+  },
+  "failures": [
+   {
+    "level": "adv",
+    "key": "adv_14",
+    "reasons": [
+     "verify_ng: sid=adv_14-s062 walls は「壁」であり、「城壁」は英文にない情報を加えている"
+    ]
+   }
+  ],
+  "api_calls": {
+   "translate": 1,
+   "verify": 1
+  },
+  "cost_jpy": 0.074,
+  "cache_hits": 50
+ },
+ "judge": {
+  "model": "gpt-6-luna",
+  "prompt_sha256": "75dd28ec852a8951aedd28118f796c4005908ab8be835455b7f417c0ffab3f77",
+  "calls": 0,
+  "pairs": 0,
+  "ok": 0,
+  "cache_hits": 0,
+  "failures": []
  },
  "ja_align": {
   "method": "tiered_dp_embed_v2",
@@ -361,32 +462,47 @@
    "soft_p": 0.95,
    "judge_tau": 0.3
   },
-  "applicable": false,
+  "applicable": true,
   "coverage": {
    "std": {
-    "story_parts": 0,
-    "sentences_total": 0,
-    "sentences_linked": 0,
-    "groups_total": 0,
+    "story_parts": 3,
+    "sentences_total": 53,
+    "sentences_linked": 53,
+    "groups_total": 53,
     "groups_null": 0,
     "reasons": {},
-    "linked_by_how": {},
-    "coverage": null
+    "linked_by_how": {
+     "gen": 53
+    },
+    "coverage": 1.0
    },
    "adv": {
-    "story_parts": 0,
-    "sentences_total": 0,
-    "sentences_linked": 0,
-    "groups_total": 0,
+    "story_parts": 6,
+    "sentences_total": 44,
+    "sentences_linked": 44,
+    "groups_total": 44,
     "groups_null": 0,
     "reasons": {},
-    "linked_by_how": {},
-    "coverage": null
+    "linked_by_how": {
+     "gen": 44
+    },
+    "coverage": 1.0
    }
   },
   "input_sha256": {
-   "std": {},
-   "adv": {}
+   "std": {
+    "std_13": "f0abc2291d5069bbb50b2ece5470973ddf5b5b8e205e3a81294e379bc78691f1",
+    "std_15": "056cca954041f301811fc874653478117ec5c34290f115c3d5d97fb199a2d5ce",
+    "std_17": "9fff21bf39d85dbe8acc0de5dbe48f02f6eaa667eea14ab2531bcbf685470396"
+   },
+   "adv": {
+    "adv_03": "822ee4ed7ee4198c7c12242c16f93a5886e00f16419dbaf49e363d76728cc7c4",
+    "adv_09": "3946c99e9313e03b9d73735ffd003844cae82ddbdef12cf5cd4c3522ea2e7112",
+    "adv_10": "5da99b739171072e2406a0d9fba7fa3792b2aa0b050a7dacdcc5696835b3108d",
+    "adv_11": "0d0317688f3e0c60091116867ad9e5e7fa5cbbe367a70e731d9fe3dbe5a717c5",
+    "adv_12": "7f89cbbd7d20e5cf670033184278c1ff4e542b16798f1c5dce9f49d79419c2b2",
+    "adv_13": "b6ec3fd8d1098aa992a5e7c43d24779c62d3df17206604f688325207b12869c6"
+   }
   },
   "degraded": [],
   "embedding": {
@@ -429,5 +545,14 @@
    "rows": 15,
    "timeline_entries": 42
   }
+ },
+ "vocab_audio": {
+  "required": true,
+  "files": {
+   "audio/vocab_b1b_1.mp3": "d6fd798dc265577d84f37fe8105cf377bcf20c93ac5bff581349d3b60e2ded63",
+   "audio/vocab_b1b_2.mp3": "44ad21fe088b2f3df7d87bcab5bd3318026a76b0a6d4f4468eaa5a7330a75e5d",
+   "audio/vocab_b1b_3.mp3": "ed718325645c9403d586c28577e1a8d8959d2faed354777e33d15c0a0b8c2c49"
+  },
+  "items": 3
  }
 }

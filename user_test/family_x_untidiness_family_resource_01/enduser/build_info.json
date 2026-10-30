@@ -2,7 +2,7 @@
  "schema": "enduser_build_info_v1",
  "id": "family_x_untidiness_family_resource_01",
  "family": "X",
- "asset_build": "rev01-f",
+ "asset_build": "rev01-g",
  "dev_index_sha256": "76baeb130a5504cf7602228569426aa5bbbec411ab7601cea95fd9f5bbbe695d",
  "audio_sha256": {
   "audio/adv_00.mp3": "3398595f3477f57a937133e5a571cb05e194b017a34e29cd1c1835a0cd83f03f",
@@ -54,17 +54,17 @@
   "audio/untidiness_family_resource_standard.mp3": "bdd218c559b57720ea18f24843b0b6b480a3a05f767b1954ae2c6df7e04267e0"
  },
  "assets": {
-  "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
-  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
+  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
+  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "files": {
-  "data/article.json": "4352da241aee96ac0e9e49473ef5a54acd02330928ef3972832fd803b4bafa66",
+  "data/article.json": "80501ec88b2914d82dd7aee1c46487022b75b1812bbb2869488681cef1b8666d",
   "data/sync_std.json": "ae5d581ad429dfe71ba80a3e0d11bb63246647b5538bc69d221427bb0f088aaf",
   "data/sync_adv.json": "35dbf129587862d0dddbaae037a16c9f8ce675736b29d3deab26a06e59da6f0c",
-  "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
-  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
+  "index.html": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
+  "app.js": "f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091",
+  "style.css": "0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4"
  },
  "sync": {
   "std": {
@@ -85,7 +85,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "5e3f0675202f6a76d2f2daa529e85c1987705d6aaeb07922a9bb63b0eaeb5200",
+   "source_sha256": "7550572da3a7c58d7b38904fe2eab65b19a46bedbed5c0f9ebdbeb1d7c8926af",
    "rows": 11,
    "sentences": 62,
    "min_row_ratio": 0.7692,
@@ -109,7 +109,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "ab2dd92ebae8c36a3b07c0e2e4d257ed152796801e8caf6a499218c264f23c50",
+   "source_sha256": "139e5fcb0335c4cafb681c7b9dcc4b991b27176bb88897f295879bd313bd791c",
    "rows": 10,
    "sentences": 50,
    "min_row_ratio": 0.9574,
@@ -130,8 +130,8 @@
    },
    "oneline": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    }
   },
   "adv": {
@@ -142,13 +142,13 @@
    },
    "preview": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    },
    "comment": {
     "blocks": 4,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 4,
+    "source": "generated"
    },
    "story": {
     "blocks": 3,
@@ -157,8 +157,8 @@
    },
    "oneline": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    }
   }
  },
@@ -178,9 +178,11 @@
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 2.0,
-  "build_wall_s": 1.47,
+  "asr_wall_s": 1.6,
+  "build_wall_s": 45.23,
   "cached_segments": 27,
+  "translate_api_calls": 14,
+  "translate_cost_jpy": 0.9626,
   "embedding_api_calls": 0,
   "embedding_tokens": 0,
   "embedding_cost_jpy": 0.0
@@ -209,9 +211,10 @@
      "kind": "story",
      "status": "approved_ja_manuscript",
      "sentences": 17,
-     "linked": 11,
+     "linked": 12,
      "how": [
-      "dp"
+      "dp",
+      "judge"
      ]
     },
     {
@@ -263,47 +266,56 @@
     {
      "key": "std_21",
      "kind": "oneline",
-     "status": "missing",
+     "status": "generated",
      "sentences": 3,
-     "linked": 0,
-     "how": []
+     "linked": 3,
+     "how": [
+      "gen"
+     ]
     }
    ],
    "adv": [
     {
      "key": "adv_05",
      "kind": "preview",
-     "status": "missing",
+     "status": "generated",
      "sentences": 2,
-     "linked": 0,
-     "how": []
+     "linked": 2,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_13",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 1,
-     "linked": 0,
-     "how": []
+     "linked": 1,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_14",
      "kind": "story",
      "status": "approved_ja_manuscript",
      "sentences": 14,
-     "linked": 13,
+     "linked": 14,
      "how": [
       "dp",
+      "judge",
       "order"
      ]
     },
     {
      "key": "adv_15",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 2,
-     "linked": 0,
-     "how": []
+     "linked": 2,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_16",
@@ -318,10 +330,12 @@
     {
      "key": "adv_17",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 2,
-     "linked": 0,
-     "how": []
+     "linked": 2,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_18",
@@ -336,18 +350,22 @@
     {
      "key": "adv_19",
      "kind": "comment",
-     "status": "missing",
+     "status": "generated",
      "sentences": 3,
-     "linked": 0,
-     "how": []
+     "linked": 3,
+     "how": [
+      "gen"
+     ]
     },
     {
      "key": "adv_20",
      "kind": "oneline",
-     "status": "missing",
+     "status": "generated",
      "sentences": 3,
-     "linked": 0,
-     "how": []
+     "linked": 3,
+     "how": [
+      "gen"
+     ]
     }
    ]
   },
@@ -372,7 +390,7 @@
     "story": {
      "parts": 3,
      "sentences": 47,
-     "linked": 32,
+     "linked": 33,
      "status": {
       "approved_ja_manuscript": 3
      }
@@ -380,9 +398,9 @@
     "oneline": {
      "parts": 1,
      "sentences": 3,
-     "linked": 0,
+     "linked": 3,
      "status": {
-      "missing": 1
+      "generated": 1
      }
     }
    },
@@ -390,23 +408,23 @@
     "preview": {
      "parts": 1,
      "sentences": 2,
-     "linked": 0,
+     "linked": 2,
      "status": {
-      "missing": 1
+      "generated": 1
      }
     },
     "comment": {
      "parts": 4,
      "sentences": 8,
-     "linked": 0,
+     "linked": 8,
      "status": {
-      "missing": 4
+      "generated": 4
      }
     },
     "story": {
      "parts": 3,
      "sentences": 36,
-     "linked": 35,
+     "linked": 36,
      "status": {
       "approved_ja_manuscript": 3
      }
@@ -414,13 +432,74 @@
     "oneline": {
      "parts": 1,
      "sentences": 3,
-     "linked": 0,
+     "linked": 3,
      "status": {
-      "missing": 1
+      "generated": 1
      }
     }
    }
   }
+ },
+ "generated_translation": {
+  "model": "gpt-6-luna",
+  "prompt_sha256": "2da82c8704e82e22f418d819d5f5062643c349f09cc4f60899506d85ecc49227",
+  "parts": {
+   "std": {
+    "std_21": {
+     "en_sha256": "1ee83b2adab74c30e62eaa0e21caae4f5699e38fab323d2982a719cb28033c56",
+     "ja_sha256": "1504b39ba4949cb603f91175c27bf79b18d52bd95fbf23be835adf1ac1b22a88",
+     "sentences": 3
+    }
+   },
+   "adv": {
+    "adv_05": {
+     "en_sha256": "92639c2d9830235cd204f880cc1b1daeb8d762aaccea18017c2d2302a380afd4",
+     "ja_sha256": "ee49f936f9ba12d4156bb1df1f47ac52677afb97864ce0a55770830dfd57f6d5",
+     "sentences": 2
+    },
+    "adv_13": {
+     "en_sha256": "b67712e109bd462441d196cb207056d5997c19201bb2ab7a4b80eae1cc988db4",
+     "ja_sha256": "8f99febd3507e274a00f46d6dd54f5d0c57a107adc0efc2946512f668436d1cd",
+     "sentences": 1
+    },
+    "adv_15": {
+     "en_sha256": "62ef6349f26b3a326191c688cac0cbcfd9d09021e6f883d8e30fe44f892eb35a",
+     "ja_sha256": "286c353668036aa2bfc9c3b6e74103591ab976d32ca0f2724ae8cbc80e2928ca",
+     "sentences": 2
+    },
+    "adv_17": {
+     "en_sha256": "51e4ce41a5c1214e20d487149a49714de0ff885d27b9932f5a054cece9c1a9f0",
+     "ja_sha256": "17fbcbd6efe4b5e81441fd31c9dda5e3e1b5671b535d1fa5de6bdbff8ab52afc",
+     "sentences": 2
+    },
+    "adv_19": {
+     "en_sha256": "17eef6c4ece00ada6c72a86ecb372b1ec9dae926837d9d26f45fb90663821b9f",
+     "ja_sha256": "5d407419bab5473689cabd380b3a3669223673d83a46e6802597157deead024b",
+     "sentences": 3
+    },
+    "adv_20": {
+     "en_sha256": "e14e290ad683f284411bb44ff68a5ff6d3721b59fca7b0b26105193687894848",
+     "ja_sha256": "b20d691919c6201b4ddd5a9f0bd5174cd3c1a7a08c10cc69af5c779f54dfc0e8",
+     "sentences": 3
+    }
+   }
+  },
+  "failures": [],
+  "api_calls": {
+   "translate": 7,
+   "verify": 7
+  },
+  "cost_jpy": 0.9626,
+  "cache_hits": 0
+ },
+ "judge": {
+  "model": "gpt-6-luna",
+  "prompt_sha256": "75dd28ec852a8951aedd28118f796c4005908ab8be835455b7f417c0ffab3f77",
+  "calls": 2,
+  "pairs": 2,
+  "ok": 2,
+  "cache_hits": 0,
+  "failures": []
  },
  "ja_align": {
   "method": "tiered_dp_embed_v2",
@@ -453,50 +532,59 @@
   "applicable": true,
   "coverage": {
    "std": {
-    "story_parts": 3,
-    "sentences_total": 47,
-    "sentences_linked": 32,
-    "groups_total": 36,
-    "groups_null": 11,
+    "story_parts": 4,
+    "sentences_total": 50,
+    "sentences_linked": 36,
+    "groups_total": 39,
+    "groups_null": 10,
     "reasons": {
-     "cos_low": 3,
      "paragraph_floor_cos": 3,
+     "cos_low": 2,
      "paragraph_mean_cos": 3,
      "sent_shift_margin": 2
     },
     "linked_by_how": {
+     "judge": 1,
      "dp": 14,
      "soft": 8,
-     "order": 10
+     "order": 10,
+     "gen": 3
     },
-    "coverage": 0.6809
+    "coverage": 0.72
    },
    "adv": {
-    "story_parts": 3,
-    "sentences_total": 36,
-    "sentences_linked": 35,
-    "groups_total": 36,
-    "groups_null": 1,
-    "reasons": {
-     "cos_low": 1
-    },
+    "story_parts": 9,
+    "sentences_total": 49,
+    "sentences_linked": 49,
+    "groups_total": 49,
+    "groups_null": 0,
+    "reasons": {},
     "linked_by_how": {
+     "gen": 13,
      "order": 32,
-     "dp": 3
+     "dp": 3,
+     "judge": 1
     },
-    "coverage": 0.9722
+    "coverage": 1.0
    }
   },
   "input_sha256": {
    "std": {
     "std_15": "c8d709006436e94f872148b89cb4ba3d374d3ae2e9dd61e28aebbdb0c93d9792",
     "std_17": "748215d5140f4ef54f75f5611b6bb7010e55703d4a168f42633b97a9195b7e91",
-    "std_19": "1d055e8bbb88650fbea410364af3e997a9f5f7a3ae10c07d55b2ee389e06692d"
+    "std_19": "1d055e8bbb88650fbea410364af3e997a9f5f7a3ae10c07d55b2ee389e06692d",
+    "std_21": "44f5b2d087612c11f212aaa54cd1f0148a34e18805e9c7309eb7f7448b1afdb2"
    },
    "adv": {
+    "adv_05": "d7cbdb9c2ff06cca21625d3a9d2f6f2ea5a1e4999991e139584b75460eb592a9",
+    "adv_13": "83ad2802b15491f7e59af83a554316e53f07165792599e33abdd578718e5da5d",
     "adv_14": "f9800538e19856a69bb93432a3f4410005fc28f946b5b36fed5b755301be8394",
+    "adv_15": "3a2fef09cd5504246b5265b840d23ccc1ffa31a090bae55b47129cd2728710f4",
     "adv_16": "40c1cb594fa73830ee0f05f4388eddb798389660606316bb507d3e24f210ecb8",
-    "adv_18": "7fa7b879224b55603a54cf054de92e93136beb2072069bd6051e8e457a2f100a"
+    "adv_17": "72b32576d1ab1d4161d01f8a065d18f73c88ff4f632693dc0979b93dd34c6993",
+    "adv_18": "7fa7b879224b55603a54cf054de92e93136beb2072069bd6051e8e457a2f100a",
+    "adv_19": "c976c8665c171b2683f8f6f22a19db1d8c5d44a1348bf29afb2a35705022b442",
+    "adv_20": "25f6363924b49dada018192c1385b9526687d71e48545d788f6b0f28f940671f"
    }
   },
   "degraded": [],
@@ -540,5 +628,21 @@
    "rows": 22,
    "timeline_entries": 22
   }
+ },
+ "vocab_audio": {
+  "required": true,
+  "files": {
+   "audio/vocab_a2_1.mp3": "4592224f5f32b30e5e0eecd4ebb80b6297e8af393cb52356da2c8e73e433f181",
+   "audio/vocab_a2_2.mp3": "a895739beb3065ba0964dc001b23ca28b07330a0a384d23dfce8d4f3ebb83d5c",
+   "audio/vocab_a2_3.mp3": "25ec20f2e7dfe04b4f4d7028b998f7add5cf7fbef5da4347da0db6872dc2b14c",
+   "audio/vocab_a2_4.mp3": "7af1be33a253d020e61fd960f38180cacb6eb31647f103e268de4be0dedc6514",
+   "audio/vocab_a2_5.mp3": "58b0f5c28fca9eccaba6c153e7ca7ce0f0abf0e877339302089d3eea09d9e8be",
+   "audio/vocab_b1b_1.mp3": "c2db96821272c6be1ea078dbc145ec2e56b687d899db95095b3480b0d95e4b34",
+   "audio/vocab_b1b_2.mp3": "4592224f5f32b30e5e0eecd4ebb80b6297e8af393cb52356da2c8e73e433f181",
+   "audio/vocab_b1b_3.mp3": "7af1be33a253d020e61fd960f38180cacb6eb31647f103e268de4be0dedc6514",
+   "audio/vocab_b1b_4.mp3": "25ec20f2e7dfe04b4f4d7028b998f7add5cf7fbef5da4347da0db6872dc2b14c",
+   "audio/vocab_b1b_5.mp3": "687ce5460c2420e3f139b3629f5f6123bd0d1c6bf5f61bc955c937cb7871e4e3"
+  },
+  "items": 10
  }
 }

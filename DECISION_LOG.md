@@ -22933,3 +22933,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 結果: gold誤対応0・合成ずらし0。coverage 71.3->83.0%(gold調整3記事)/85.2->91.9%(未見)/88.2->93.4%(ig)。公開7dir再produce(API 0)、diff Gate OK、Playwright全件NG0。不具合是正: 埋め込みメモリ上ベクトルと保存値の丸め差(verify不一致)。ユーザー判断: 可視性UI(D、継続)のみ。
 
 - 2026-10-30 SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02C(Vocabulary音声=生成側、承認済み仕様4項目の配線): Vocabulary & Expressions掲載全件を単体mp3化。KP重複は既存KP wavを変換再利用(TTS 0)、②追加解説のみ役割`vocab_extra_english`でKP英語と同一契約(KP3V・Master Audio Store・既存retry/fallback)に生成、新stage・新flag・Prompt/閾値変更なし。既存Gateが`kpv<n>_vocab_extra_english`として検査しfail-closed(M6)。X/Y/Z配線+実TTS証跡(X月・Z雪女、実費¥0.77、追加単価約¥0.33〜0.45/記事セット)。未了=Y実走(自らのRESTART_STORMでコピーrunSTOP)、er135組込み・rev01-g再生UI(別委任)、バックフィル。証跡=docs/research/SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01/EVIDENCE_02C.md。OPEN-620。分類: ユーザー承認済み仕様(2026-10-30原文4項目)の実装であり新規判断なし。
+
+
+## ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03B: 訳生成・M8・Vocabulary音声のEnd User組込み・asset rev01-g・8dir再produce(2026-10-30)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ENDUSER-EN-JA-LINKED-HIGHLIGHT-01_USER_02.md`、`2026-10-30_SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01_USER.md`): 全End Userページで英日連動、訳の無いパートは生成訳、Vocabulary掲載項目の全件再生。
+- 実施: (1)E1/E2是正(固有名詞のみWhisper prompt、In One Lineのmeanings取込)で⑭ End Userを公開可能に。(2)訳生成を公式hookへ配線(既定AUTO、承認済み訳の再生成0)。(3)M8 judge配線(gold A: 追加23群すべて正・誤対応0、coverage 83.0->94.3%等。B敵対対照3.1%は開示)。(4)asset rev01-g(Preview訳描画+Vocabulary再生UI)。(5)Vocab音声: 本番run自体に追加解説の生成関数だけを実行(tts stage全体は再実行しない=確定record・HR承認済み音声を保護)、End Userへ組込み(欠落はfail-closed)。(6)8dir再produce+Playwright PC/mobile全NG0、diff Gate OK。
+- 技術判断: 数値決定論照合の偽NG(they->二人/never again->二度と)は閾値を緩めず、retry時のPromptに不合格の指摘を付ける方式で是正(Z雪女の不成立段落5->1)。残る不成立(Zメロスadv_14・Z雪女std_11)は対訳照合が『英文にない情報の追加』を検出したfail-closed(英語のみ+warning)で、正常動作。
+- 残: 可視性UI(D、PC 47.8%/mobile 16.2%)、⑨Meta Adv Vocabulary『latter』音声(TTS Gate STOPPED、既存HR経路)。費用: 約¥25/Cap¥45。OPEN-612/618/620。分類: 承認済み仕様の実装であり新規判断なし(残の2件のみ判断候補)。
