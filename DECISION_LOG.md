@@ -22882,3 +22882,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ENDUSER-EN-JA-LINKED-HIGHLIGHT-01_USER.md`): End User視聴ページで英語文クリック再生時に対応する日本語訳も同時ハイライトする仕様をAPPROVED_FOR_PRODUCTION(目標PRODUCTION_WIRED、X/Y/Z・Std/Adv、既存+新規記事、追加Trial不要)。
 - 実施(コード変更0・API 0): 現状調査と設計(`docs/research/ENDUSER-EN-JA-LINKED-HIGHLIGHT-01/`)。結論: 文単位のEN-JA対応データは存在せず(訳は段落単位)、順序対応の成立はStd約15%/Adv約75%、長さのみのDPは誤対応を実測。設計=単調DP+埋め込み意味検証(誤ハイライトより非ハイライト)、`ja_align`オフセット方式(訳本文不変)、`highlight()`1点追加、新asset rev01-f+既公開5dirのAPI 0再produce。Zと非story部は日本語訳が無く連動対象外(別仕様)。
 - 分類: 承認済み新機能の配線(OPEN-618)。未配線。実装は設計のFable確認(+Opus条件A)後の委任_02。
+
+## 2026-10-30 SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_01: ユーザー承認4項目の原文保存・Phase1調査・設計
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01_USER.md`): 複数記事一括選定UI/Done/一括コピー/コメント直下配置、①ちょうど3件必須、残り全選択、Vocabulary 5表現音声化。4項目APPROVED_FOR_PRODUCTION、目標PRODUCTION_WIRED(OPEN-620)。
+- 実施(API 0、実装なし): 現行V3フォーム(form_logic.js/AIF1/er128)・Vocab5件構成(KP3+②2)・KP音声の物理形(記事segment内のen_audio区間)・Master Audio Store/KP3V再利用を調査。設計=V3拡張、AIF1を変えない連結一括形式+er128 restore_batch、②のみ新規TTS(er137)、rev01-f完了後にrev01-g。詳細=docs/research/SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01/{CURRENT_STATE_01,DESIGN_01}.md。
+- 分類: 承認済み仕様の実装計画(新仕様判断なし)。
