@@ -22906,3 +22906,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md`): ②④⑨⑭のStd/AdvのKP・単語・文法を選定(ニュアンスは全件不採用=廃止と整合)、⑭は自由コメントでKP表現を調整(equivalent width=等価幅、narrow down、turn something around)。
 - 実施: 8件確定(旧AIF2照合コードは廃止済みのため、旧er128で検証したうえで選定内容無変更のままAIF1へ機械変換して標準confirm)。⑭調整は既存CLI(confirm-revise)+Y姓先例のゲート群再利用の使い捨てtool(Rule7のみ閉じた定数ペアで免除・記録、Production側の受理面変更0)。4記事のaudio実行: ②④完了、⑨Std・⑭はHR Lock停止(迂回なし)。End Userは既存欠陥F1/F2で②④とも未完。Production code/Prompt編集0。
 - 分類: ユーザー指示に基づく制作実行(新規ユーザー判断なし)。判断候補=H2(Å↔angstroms ASR等価の追加/Writer規則/HR承認)。不具合F1/F2は修正へ進む(次委任案)。OPEN-612。
+
+## ENDUSER-EU06(雪女委任_06兼X委任_05): End User検証・下線対応の是正と公開(2026-10-30)
+- 是正2件(承認済み仕様との矛盾の是正であり仕様追加ではない): (1)`er135_enduser_page_verify_01.py` G検査のサンプル点を次パート最初の文のsync発話区間内へ(極短パート対応)+seek後に境界以下へ戻ったことを確認してから境界超えを待つ(古い再生位置の即成立を排除)。(2)`er135_enduser_page_01.py build_glossary`が、本文表示範囲外(devで承認済みの`HL_NOT_IN_DISPLAY_MEANING_ONLY`と同基準)の③だけを下線対応の必須から除外。受理面・閾値・方式の拡大なし。雪女dev+End User、X②④End Userを公開。分類: 不具合是正(11-8)。OPEN-616・OPEN-612。

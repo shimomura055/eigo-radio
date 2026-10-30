@@ -280,3 +280,10 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 - 影響: Å単独の等価追加(本委任)だけではHR Lockは解消しない。解消には(i)Å<->angstrom(s)と千位区切り数値(`N,NNN`)のtoken分割を**ASR長さ上限とRepetition QAのcanonical照合**にも揃える、または(ii)TTS入力段(`tts_safe_news_en`)で`Å`を`angstroms`へ展開して発話形=canonicalに揃える(Repetition QAの`7,620`分割は別途要)。いずれもProduction QA Gate側のコード変更(過去の同モジュール正規化はユーザー承認[REPETITION-QA-...-RECONCILE-02/03]の履歴あり)であり、**本委任の承認範囲(Fable判定H2=er021の等価追加)を超えるため実装せず停止**。
 ## 4. 費用
 本委任のrun追加分=¥62.92-¥50.31=¥12.61(run.log末尾`累計費用`、台帳=`er019_output/family_x_audio_production_wiring_01/jwst_mystery_emission_line__run_fx4_01/raw_usage_log.jsonl`、`compute_cost_jpy_so_far`)。案件累計≒¥432.4+¥12.6=¥445.0/Cap¥500。
+
+## 委任_05(2026-10-30、EU06): F1/F2是正・②④End User公開
+- **F2(④)実証**: 既存enduserを現行検証でverify-only 2回再現(NG 3/226・2/226。mobile: `continues_across_part_boundary`のgt=79.186=seek先(境界81.686-2.5)そのまま、pc: active=`adv_16-s020`[Part 2の文]=直前F項目[50%シーク]の古い再生位置)。= seek直後の古いgtで待機条件が即成立していた。是正後、同データで NG 0/226(`eu06_evidence/x4_fixed.json`)。
+- **F1(②Adv)**: `Now in Session`(英語タイトルのみ・本文に無い)が下線対応の必須で拒否されていた。`build_glossary`は、語句が当該levelのstory/oneline全文のどこにも無い③(devの`HL_NOT_IN_DISPLAY_MEANING_ONLY`と同基準)だけを除外し、本文にあるのに下線へ対応しない項目は従来どおりSTOP。除外はbuild_info.warningsに記録。CURRENT_SPEC End User節に除外を禁止する文なし(Grep確認)。End Userの一覧は『再生中パートの下線語』単位のため、除外項目はdevページの訳一覧にのみ残る。
+- 生成・検証: ②End User(224チェック NG 0)・④End User(226 NG 0)。公開=commit 93526f005。live: ② 224 / ④ 226 とも NG 0。既公開4記事(X月/Y再配達/Y姓/Zメロス)のverify-only退行 0(222/218/226/174 NG 0)。④の旧enduser(未commit)は破棄して再生成。
+- 気づき(次委任候補): ②の初回生成で埋め込みを新規取得した直後のverify_consistencyが1回 ENDUSER_JA_ALIGN 不一致(std_19/adv_18)、再実行(キャッシュ読込)で一致。仮説=初回はfloat32未丸め値、再計算は保存値(6桁丸め)(er135_enduser_align_01.py:251-254)。未実証。⑨⑭の初回生成でも再現しうる(その場合は再実行で回避可)。
+- 費用: 埋め込み初回取得のみ(約0.2円と推定、ログ未取得)。それ以外API 0。

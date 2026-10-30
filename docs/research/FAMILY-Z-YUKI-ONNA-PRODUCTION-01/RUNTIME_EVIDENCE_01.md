@@ -57,3 +57,10 @@
 - 状態: 完成候補ページはlocalに生成済みだが**publish-copy・live検証・commit/pushは未実施**(End User検証未通過のため公開dirを公開しない)。検証ツールの是正(短尺パートの扱い)はProduction codeのためFable判断待ち。
 - VOICE_TABLE: VOICE_TABLE_ZY05.md、a2/b1b全65clip不一致0(b1bのEN補助5clipはCharon=設計)。HR Lock 0。聞き分け=AUDIO_REVIEW_01.md(機械確認のみ、耳確認は未実施)。
 - 費用: 本委任0.37円。案件累計46.08円/Cap150。本日JST累計は委任開始時約969.7円+0.37=約970円(1,000円以内)。起動: 11:20:09(再利用のみ・API0)/11:20:58(comment_3再生成)/11:26:28(組立段・API0)。stop_scope rc=0全3回。**起動規則: 11:20:09→11:20:58の間隔49秒(≥150秒に不足、1回目はAPI 0の再利用空振り、影響なし)**。300秒窓内2回以内は遵守。
+
+## 委任_06(2026-10-30 12:3x-13:3x、管理ID FAMILY-Z-YUKI-ONNA-PRODUCTION-01 兼 X委任_05): End User検証G境界を是正→再produce→公開→live検証PASS
+- 基点=origin/main最新(一時worktree。ENDUSER-EN-JA-LINKED-HIGHLIGHT-01委任_02のrev01-f込み)。是正=`er135_enduser_page_verify_01.py`: `boundary_probe_time`(次パート最初の文のsync発話区間内、min(境界+1.0, 終端-0.15))+待機を『seek後に再生位置が境界以下へ戻ったことを確認→境界超え』の順に。検査の意味は不変。test: T20(極短パート=雪女タイトル相当fixture)・T21(順序)、er135系全266 PASS(align 44含む)。
+- 雪女End User: `produce`相当(`hook_run(…,'z')`、sync/whisperキャッシュ再利用=API 0、asset rev01-f、ja_align applicable=false)→verify_consistency ok→Playwright PC+モバイル模擬 **182チェック NG 0**(従来 NG 2/182)。公開=commit 93526f005(dev+End User)。live(GitHub Pages)でも **182 NG 0**(証跡 eu06_evidence/)。
+- 30節7項目(雪女End User到達経路): 対象=雪女End User(Std/Adv) / 経路=Z Production(組立段完了後のEnd User hook_run、実装は本委任で是正した検証のみ変更) / 通過工程=sync gate PASS(Std 0.92/Adv 0.60)・整合ok・Playwright 182 PASS / retry・fallback・LR=End User工程では発動なし(音声側のcomment_3 fallbackは委任_04/05で解消済み、再生成なし) / 直接原因(前回NG)=検証harnessの極短パート境界条件(日本語タイトル1.27秒) / 残る自動救済=なし / 判断依頼=ユーザー試聴のみ(AUDIO_REVIEW_01.md)。
+- 試聴チェックリスト: (1)Aoede(語り手)とLeda(Yuki: part1 c2/c4の囁き、part3 c3/c5/c7)の聞き分け (2)Algieba(Minokichi、part3 c1の1clip)が語り手と区別できるか (3)場面転換の間 (4)**comment_3(Std JA、日本語コメント『…ミノキチが、今、妻に…』)の『ミノキチ』の読み**(委任_05でこのsegmentのみ再生成、標準phase attempt4が PHONETIC_MATCH[ASR『美乃吉』]で採用) (5)日本語タイトル『雪女』が1.2秒と極短(発話0.63秒)であること。耳確認は未実施(機械確認のみ)。
+- 費用0円(API 0、TTS 0)。
