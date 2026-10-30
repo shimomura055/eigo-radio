@@ -1102,6 +1102,90 @@ class TestRestoreBatchLegacyAif2Coexistence(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class TestRestoreBatchFile(unittest.TestCase):
+    """委任_04(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): articles.jsonにbatchキーが無いとき、貼付ヘッダのバッチidから data/batches/<id>.json を解決する(追加のみ)。
+    正常系 / id不一致 / members欠落・余剰 / ファイル無し / id正規表現・パストラバーサル(fail-closed)。既存の articles.json batch 経路は TestRestoreBatch が無変更で検証。"""
+    BID = "sub04-bf-test"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.mkdtemp(prefix="sub04bf_")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def env(self, members=None, bid=None, write=True, schema="eigo_radio_batch_v1", doc_id=None):
+        d = tempfile.mkdtemp(dir=self.tmp)
+        os.makedirs(os.path.join(d, "batches"))
+        aj = os.path.join(d, "articles.json")
+        with open(aj, "w", encoding="utf-8") as f:
+            json.dump({"schema": "eigo_radio_selection_index_v1", "articles": []}, f)     # batchキー無し=新経路
+        bid = bid or self.BID
+        if write:
+            with open(os.path.join(d, "batches", bid + ".json"), "w", encoding="utf-8") as f:
+                json.dump({"schema": schema, "id": doc_id or bid, "members": list(members if members is not None else BATCH_STEMS)}, f)
+        return aj, d
+
+    def run_restore(self, text, aj, d):
+        return R.restore_batch(text, articles_json=aj, git_lookup=None)
+
+    def refused(self, text, frag, aj, d):
+        with self.assertRaises(R.RestoreError) as e:
+            self.run_restore(text, aj, d)
+        self.assertIn(frag, str(e.exception))
+
+    def test_normal_resolves_from_batch_file(self):
+        text, _ = make_batch_text(BATCH_STEMS, batch_id=self.BID)
+        aj, d = self.env()
+        ps = self.run_restore(text, aj, d)
+        self.assertEqual([p["restore_meta"]["batch"]["stem"] for p in ps], BATCH_STEMS)
+        self.assertEqual(ps[0]["restore_meta"]["batch"]["id"], self.BID)
+
+    def test_articles_json_batch_route_still_wins_and_is_unchanged(self):
+        text, _ = make_batch_text(BATCH_STEMS, batch_id="B-TEST")           # 旧経路: 大文字idも従来どおり受理(articles.json batch)
+        d = tempfile.mkdtemp(dir=self.tmp)
+        aj = os.path.join(d, "articles.json")
+        with open(aj, "w", encoding="utf-8") as f:
+            json.dump({"schema": "x", "articles": [], "batch": {"id": "B-TEST", "members": BATCH_STEMS}}, f)
+        self.assertEqual(len(R.restore_batch(text, articles_json=aj, git_lookup=None)), 3)
+
+    def test_header_id_without_batch_file_refused(self):
+        text, _ = make_batch_text(BATCH_STEMS, batch_id=self.BID)
+        aj, d = self.env(write=False)
+        self.refused(text, "batchファイルが見つかりません", aj, d)
+
+    def test_members_missing_and_extra_detected(self):
+        text, _ = make_batch_text(BATCH_STEMS[:2], batch_id=self.BID)
+        aj, d = self.env()
+        self.refused(text, "欠落", aj, d)
+        text3, _ = make_batch_text(BATCH_STEMS, batch_id=self.BID)
+        aj2, d2 = self.env(members=BATCH_STEMS[:2])
+        self.refused(text3, "対象外", aj2, d2)
+
+    def test_batch_file_id_mismatch_refused(self):
+        text, _ = make_batch_text(BATCH_STEMS, batch_id=self.BID)
+        aj, d = self.env(doc_id="other-id-zz")
+        self.refused(text, "schema/idが不正", aj, d)
+        aj2, d2 = self.env(schema="wrong")
+        self.refused(text, "schema/idが不正", aj2, d2)
+
+    def test_id_regex_and_path_traversal_fail_closed(self):
+        for bad in ("../evil", "A-BAD", "ab", "a/b", "x" * 65, "..\\evil"):
+            with self.assertRaises(R.RestoreError, msg=bad):
+                R.load_batch_file(bad, self.tmp)
+        self.assertEqual(R.BATCH_ID_RE.pattern, "^[a-z0-9][a-z0-9_-]{2,63}$")
+        # ヘッダにtraversal idが入った貼付も拒否(ファイルを読みに行かない)
+        text, _ = make_batch_text(BATCH_STEMS, batch_id="../evil")
+        aj, d = self.env(write=False)
+        self.refused(text, "batch id の形式が不正", aj, d)
+
+    def test_ui_publish_er128_regex_identical(self):
+        fl = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_test", "selection_form_v3", "form_logic.js"), encoding="utf-8").read()
+        m = re.search(r"var BATCH_ID_RE = /(.+?)/;", fl)
+        self.assertEqual(m.group(1), R.BATCH_ID_RE.pattern)
+
+
 class TestExportBatchKey(unittest.TestCase):
     """export_form_data_01.write_batch_key: articles[]は不変・batchキーのみ追加・改行コード保持・不正は無書込。"""
     TOOL = os.path.join(ROOT, "docs", "research", "KP-GATE-DROP-BACKFILL-PRODUCTION-01", "tools")

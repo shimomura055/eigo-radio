@@ -249,7 +249,9 @@ class SelectionFormV3Test(unittest.TestCase):
         s = open(os.path.join(FD, "index.html"), encoding="utf-8").read() + open(os.path.join(FD, "form_logic.js"), encoding="utf-8").read()
         for bad in ("api.openai.com", "generativelanguage", "XMLHttpRequest", "sendBeacon"):
             self.assertNotIn(bad, s)
-        self.assertEqual(s.count("fetch("), 2)         # data/articles.json と data/<article>.json のみ
+        # 委任_04(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): 同一オリジンの静的data 4種のみ(articles.json / <article>.json / batches/index.json / batches/<id>.json)。外部送信・API呼出なし
+        self.assertEqual(s.count("fetch("), 4)
+        self.assertEqual(len(re.findall(r"fetch\((?!['\"]https?:)", s)), 4)
 
     def test_page_display_source_is_japanese_gloss(self):
         """公開ページ/音声のKP日本語意味の元=japanese_gloss(フォームの日本語訳と同一項目)であることの静的照合。"""
@@ -432,7 +434,7 @@ class ReadableCopyV3Test(unittest.TestCase):
         self.assertIn("'https://chatgpt.com/'", h)                                         # URL超過時は q なしで開く
         self.assertNotIn("Claude Code向け指示案", js)
         self.assertIn("var LIMITS = [3, 5, 12];", js)
-        self.assertEqual(h.count("fetch("), 2)
+        self.assertEqual(h.count("fetch("), 4)       # 委任_04: 同一オリジン静的data 4種(上記と同じ)
 
 
 if __name__ == "__main__":

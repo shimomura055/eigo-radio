@@ -645,4 +645,88 @@ t('KPD: rare/hard candidates remain selectable (no gate)', () => {
   const tl = FL.terms(d), st = FL.newState(); assert.ok(FL.setChoice(st, tl, tl[0], 1, true)); assert.ok(FL.setChoice(st, tl, tl[1], 1, true)); assert.ok(FL.setChoice(st, tl, tl[2], 1, true));
 });
 
+// ======== 委任_04 (SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): 報告(batch)解決・名前空間・ルート・コピー欠落検査 (Opus M1/M2/M4/M5/M6/M10/M13) ========
+const stemE = a => String(a.data || '').replace(/^.*\//, '').replace(/\.json$/, '');
+const dataEntries = idx.articles.filter(a => a.data);
+const mkDoc = (id, members, extra) => Object.assign({ schema: 'eigo_radio_batch_v1', id, date: '2026-10-30', report_ref: 'x', members }, extra || {});
+t('04 batch id regex (M6): accepts a-z0-9_- 3..64, rejects traversal/uppercase/short/long/non-string', () => {
+  ['abc', 'a-b_c1', 'sub04-a-18sets-test', 'a'.repeat(64)].forEach(s => assert.strictEqual(FL.validBatchId(s), true, s));
+  ['', 'ab', 'A-bc', '../x', 'a/b', 'a\\b', '-abc', '_abc', 'a'.repeat(65), 'abc.json', 'ab c', null, undefined, 5, {}].forEach(s => assert.strictEqual(FL.validBatchId(s), false, String(s)));
+  assert.strictEqual(String(FL.BATCH_ID_RE), '/^[a-z0-9][a-z0-9_-]{2,63}$/');
+});
+t('04 resolveBatch (M1): stem exact match only -> all members resolved', () => {
+  const stems = dataEntries.slice(0, 4).map(stemE);
+  const r = FL.resolveBatch(idx, mkDoc('abc-test', stems, { test: true, member_sha256: { [stems[0]]: 'x' } }));
+  assert.strictEqual(r.ok, true); assert.deepStrictEqual(r.batch.members.map(stemE), stems); assert.strictEqual(r.batch.test, true); assert.strictEqual(r.batch.shas[stems[0]], 'x');
+});
+t('04 resolveBatch (M1): slug / slug__level loose matches are NOT accepted; 1 unresolved member -> whole batch error (no partial)', () => {
+  const e0 = dataEntries[0], stems = dataEntries.slice(0, 3).map(stemE);
+  [e0.slug, e0.slug + '__' + e0.level, stemE(e0) + 'x', 'nosuchstem__a2__prod'].forEach(bad => {
+    const r = FL.resolveBatch(idx, mkDoc('abc-test', [stems[1], bad, stems[2]]));
+    assert.strictEqual(r.ok, false, bad); assert.strictEqual(r.code, 'member_unresolved'); assert.deepStrictEqual(r.missing, [bad]); assert.strictEqual(r.batch, undefined);
+  });
+});
+t('04 resolveBatch: duplicate member / bad schema / bad id / empty / prototype-key are rejected', () => {
+  const s = stemE(dataEntries[0]);
+  assert.strictEqual(FL.resolveBatch(idx, mkDoc('abc-test', [s, s])).code, 'member_dup');
+  assert.strictEqual(FL.resolveBatch(idx, Object.assign(mkDoc('abc-test', [s]), { schema: 'x' })).code, 'bad_doc');
+  assert.strictEqual(FL.resolveBatch(idx, mkDoc('../evil', [s])).code, 'bad_id');
+  assert.strictEqual(FL.resolveBatch(idx, mkDoc('abc-test', [])).code, 'no_members');
+  assert.strictEqual(FL.resolveBatch(idx, null).ok, false);
+  assert.strictEqual(FL.resolveBatch(idx, mkDoc('abc-test', ['constructor'])).code, 'member_unresolved');
+  assert.strictEqual(FL.resolveBatch(idx, mkDoc('abc-test', ['__proto__'])).code, 'member_unresolved');
+});
+t('04 resolveBatch: every real article stem in articles.json resolves to itself (no loose collisions)', () => {
+  dataEntries.forEach(a => { const r = FL.resolveBatch(idx, mkDoc('abc-test', [stemE(a)])); assert.strictEqual(r.ok, true, stemE(a)); assert.strictEqual(r.batch.members[0], a); });
+});
+t('04 storeKey (namespace): per-batch, distinct from legacy key and dev key; same stem in two batches never shares state key', () => {
+  assert.strictEqual(FL.storeKey('abc-x'), 'eigo-kp-form-v3:b:abc-x'); assert.notStrictEqual(FL.storeKey('abc-x'), FL.storeKey('abc-y'));
+  assert.strictEqual(FL.storeKey(null, true), 'eigo-kp-form-v3:dev');
+  assert.ok(![FL.storeKey('abc-x'), FL.storeKey(null, true)].includes('eigo-kp-form-v3'));
+});
+t('04 resolveRoute (M2/M5): batch param > latest; no param -> latest (fromLatest); a only -> legacy_a (no articles); nothing -> none; dev', () => {
+  const bidx = { schema: 'eigo_radio_batch_index_v1', latest: 'rep-latest', batches: [] };
+  assert.deepStrictEqual(FL.resolveRoute({ batch: 'rep-old' }, bidx), { mode: 'batch', id: 'rep-old', latest: 'rep-latest', notLatest: 'rep-latest', aParam: null, fromLatest: false });
+  assert.strictEqual(FL.resolveRoute({ batch: 'rep-latest' }, bidx).notLatest, null);
+  const r = FL.resolveRoute({}, bidx); assert.strictEqual(r.mode, 'batch'); assert.strictEqual(r.id, 'rep-latest'); assert.strictEqual(r.fromLatest, true);
+  assert.strictEqual(FL.resolveRoute({ a: 'moon_shrinking__a2' }, bidx).mode, 'legacy_a');
+  assert.strictEqual(FL.resolveRoute({ a: 'moon_shrinking__a2' }, null).mode, 'legacy_a');
+  assert.strictEqual(FL.resolveRoute({}, null).mode, 'none'); assert.strictEqual(FL.resolveRoute({}, { latest: null, batches: [] }).mode, 'none');
+  assert.strictEqual(FL.resolveRoute({ batch: '../x' }, bidx).mode, 'error');
+  assert.strictEqual(FL.resolveRoute({ batch: 'rep-old', a: 'melos__b1b' }, bidx).aParam, 'melos__b1b');
+  assert.strictEqual(FL.resolveRoute({ dev: 'all' }, bidx).mode, 'dev');
+  assert.strictEqual(FL.resolveRoute({}, { latest: '../bad' }).mode, 'none');     // 不正latestは採用しない
+});
+t('04 listBatches (M4): test:true is excluded; invalid ids excluded', () => {
+  const b = { batches: [{ id: 'real-one', test: false }, { id: 'test-one', test: true }, { id: '../bad' }, null, { id: 'real-two' }] };
+  assert.deepStrictEqual(FL.listBatches(b).map(x => x.id), ['real-one', 'real-two']); assert.deepStrictEqual(FL.listBatches(null), []);
+});
+t('04 shaMismatches (M10): reports only stems whose live sha differs from the recorded one', () => {
+  const batch = { shas: { a: '1', b: '2', c: '3' } };
+  assert.deepStrictEqual(FL.shaMismatches(batch, { a: '1', b: 'X', c: '3', zz: '9' }), ['b']); assert.deepStrictEqual(FL.shaMismatches({ shas: {} }, { a: 'x' }), []);
+});
+t('04 batchCopyStems: parses SET headers of a real batch copy; N sets in order, each stem/comment once (duplicate/omission detectable)', () => {
+  const sets = dataEntries.filter(a => FL.validateArticle(rd(a.data)).length === 0 && !rd(a.data).kp_confirmed).slice(0, 3);
+  const items = sets.map(e => { const d = rd(e.data); d.__stem = stemE(e); d.__file_sha256 = 'abcdef0123456789'; const tl = FL.terms(d), st = FL.newState();
+    [0, 1, 2].forEach(i => FL.setChoice(st, tl, tl[i], 1, true));
+    const gid = FL.grammarIds(d); if (FL.hasGrammarSpec(d) && gid.length) FL.chooseGrammarNone(st, gid);
+    st.comment_phrase = 'PH-' + stemE(e); st.comment_word = 'WD-' + stemE(e); st.done = { sig: FL.doneSig(d, st), at: 't' }; return { entry: e, d, st }; });
+  const txt = FL.buildBatchReadable(items, { id: 'abc-test', date: '2026-10-30' });
+  const got = FL.batchCopyStems(txt);
+  assert.deepStrictEqual(got.map(g => g.stem), items.map(i => i.d.__stem)); assert.deepStrictEqual(got.map(g => g.i), [1, 2, 3]); assert.ok(got.every(g => g.n === 3));
+  items.forEach(i => { assert.strictEqual(txt.split('【フレーズ】PH-' + i.d.__stem).length - 1, 1); assert.strictEqual(txt.split('【単語】WD-' + i.d.__stem).length - 1, 1); });
+  assert.ok(txt.includes('バッチ=abc-test'));
+});
+t('04 ASSET_VERSION (M13): defined, and the same literal is what the smoke tool greps for', () => {
+  assert.ok(/^sel-v3-rev\d+-[a-z]$/.test(FL.ASSET_VERSION), FL.ASSET_VERSION);
+  assert.ok(new RegExp("var ASSET_VERSION = '" + FL.ASSET_VERSION + "'").test(fs.readFileSync(path.join(FD, 'form_logic.js'), 'utf8')));
+});
+t('04 index.html contract: no articles.json.batch resolver; per-batch STORE_KEY set only in init; dev key separate; no full-slot fallback', () => {
+  const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8');
+  assert.ok(!/FL\.batchSets\(/.test(h), '旧batchSets(IDX)解決を使わない(M11)');
+  assert.ok(!/localStorage\.(get|set|remove)Item\('eigo-kp-form-v3'\)/.test(h), '旧STORE_KEY直書きなし');
+  assert.ok(/STORE_KEY=FL\.storeKey\(BS\.id\)/.test(h) && /FL\.storeKey\(null,true\)/.test(h));
+  assert.ok(/gate\('対象の報告が指定されていません'/.test(h) && /gate\('旧形式のリンクです'/.test(h));
+  assert.ok(/data-asset-version/.test(h) && /__ASSET_VERSION/.test(h));
+});
 console.log('ALL PASS', n);

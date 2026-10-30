@@ -487,11 +487,68 @@
     return L.join('\n');
   }
 
+  // ======== 報告単位batch(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_04、DESIGN_03 + Opus M1-M14) ========
+  // M13: UI資産の版。live smokeがローカルHEADと一致を確認する(index.htmlもこの値を表示)
+  var ASSET_VERSION = 'sel-v3-rev04-a';
+  // M6: batch id。UI・publish tool・er128の3箇所で同一の正規表現(パストラバーサル対策)
+  var BATCH_ID_RE = /^[a-z0-9][a-z0-9_-]{2,63}$/;
+  function validBatchId(id) { return typeof id === 'string' && BATCH_ID_RE.test(id); }
+  function stemOfEntry(a) { return String((a && a.data) || '').replace(/^.*\//, '').replace(/\.json$/, ''); }
+  // 状態の名前空間(報告単位)。dev=true は ?dev=all 専用(報告状態と混ざらない)
+  function storeKey(batchId, dev) { return dev ? 'eigo-kp-form-v3:dev' : 'eigo-kp-form-v3:b:' + batchId; }
+  // M1: batch解決=stem完全一致のみ(slug一致・slug__level緩和なし)。1件でも未解決/重複ならok:false(部分表示しない)
+  function resolveBatch(idx, doc) {
+    if (!doc || typeof doc !== 'object' || doc.schema !== 'eigo_radio_batch_v1') return { ok: false, code: 'bad_doc', missing: [], dup: [] };
+    if (!validBatchId(doc.id)) return { ok: false, code: 'bad_id', missing: [], dup: [] };
+    if (!Array.isArray(doc.members) || !doc.members.length) return { ok: false, code: 'no_members', missing: [], dup: [] };
+    var byStem = Object.create(null); ((idx && idx.articles) || []).forEach(function (a) { if (a.data) byStem[stemOfEntry(a)] = a; });
+    var seen = Object.create(null), sets = [], missing = [], dup = [], keys = Object.create(null), kdup = [];
+    doc.members.forEach(function (m) {
+      var s = String(m);
+      if (seen[s]) { dup.push(s); return; } seen[s] = 1;
+      var a = byStem[s] || null;
+      if (!a) { missing.push(s); return; }
+      var k = stateKey(a); if (keys[k]) kdup.push(s); keys[k] = 1; sets.push(a);
+    });
+    if (missing.length) return { ok: false, code: 'member_unresolved', missing: missing, dup: dup };
+    if (dup.length) return { ok: false, code: 'member_dup', missing: [], dup: dup };
+    if (kdup.length) return { ok: false, code: 'state_key_dup', missing: [], dup: kdup };
+    return { ok: true, batch: { id: doc.id, date: doc.date || '', report_ref: doc.report_ref || '', test: !!doc.test, members: sets, shas: (doc.member_sha256 && typeof doc.member_sha256 === 'object') ? doc.member_sha256 : {} } };
+  }
+  // M2/M5: URL→画面の決定(純関数)。p={batch,a,dev}、bidx=data/batches/index.json(無ければnull)
+  function resolveRoute(p, bidx) {
+    p = p || {};
+    var latest = (bidx && validBatchId(bidx.latest)) ? bidx.latest : null;
+    if (p.dev === 'all') return { mode: 'dev', latest: latest };
+    if (p.batch !== undefined && p.batch !== null && p.batch !== '') {
+      if (!validBatchId(p.batch)) return { mode: 'error', code: 'bad_batch_id', latest: latest };
+      return { mode: 'batch', id: p.batch, latest: latest, notLatest: (latest && latest !== p.batch) ? latest : null, aParam: p.a || null, fromLatest: false };
+    }
+    if (p.a) return { mode: 'legacy_a', latest: latest, aParam: p.a };
+    if (latest) return { mode: 'batch', id: latest, latest: latest, notLatest: null, aParam: null, fromLatest: true };
+    return { mode: 'none', latest: null };
+  }
+  // M4: 一覧=test:trueを除外
+  function listBatches(bidx) { return ((bidx && Array.isArray(bidx.batches)) ? bidx.batches : []).filter(function (b) { return b && validBatchId(b.id) && !b.test; }); }
+  // M10: 公開時に記録したdata sha256とUIが読んだsha256の不一致stem
+  function shaMismatches(batch, loadedByStem) {
+    var out = [];
+    Object.keys(batch.shas || {}).forEach(function (s) { if (loadedByStem[s] && loadedByStem[s] !== batch.shas[s]) out.push(s); });
+    return out;
+  }
+  // 一括コピーに入る各SETのstemが、batch members(stem)と順序・件数まで完全一致するか(欠落・重複・余剰の検査)
+  function batchCopyStems(text) {
+    var out = [], re = /════ SET (\d+)\/(\d+) ｜ (\S+) ════/g, m;
+    while ((m = re.exec(text))) out.push({ i: Number(m[1]), n: Number(m[2]), stem: m[3] });
+    return out;
+  }
+
   return {
     LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
     buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, difficultyOf: difficultyOf, DIFF_LABEL: DIFF_LABEL, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex,
     KP_EXACT: KP_EXACT, SIG_VER: SIG_VER, normalizeState: normalizeState, doneSig: doneSig, doneStatus: doneStatus, doneErrors: doneErrors, selectRemaining: selectRemaining,
-    sanitizeComment: sanitizeComment, composeComment: composeComment, singleComment: singleComment, batchSets: batchSets, batchCopyErrors: batchCopyErrors, buildBatchReadable: buildBatchReadable, batchCode: batchCode, extractCode: extractCode, BATCH_PREFACE: BATCH_PREFACE };
+    sanitizeComment: sanitizeComment, composeComment: composeComment, singleComment: singleComment, batchSets: batchSets, batchCopyErrors: batchCopyErrors, buildBatchReadable: buildBatchReadable, batchCode: batchCode, extractCode: extractCode, BATCH_PREFACE: BATCH_PREFACE,
+    ASSET_VERSION: ASSET_VERSION, BATCH_ID_RE: BATCH_ID_RE, validBatchId: validBatchId, stemOfEntry: stemOfEntry, storeKey: storeKey, resolveBatch: resolveBatch, resolveRoute: resolveRoute, listBatches: listBatches, shaMismatches: shaMismatches, batchCopyStems: batchCopyStems };
 });

@@ -658,7 +658,40 @@ def _batch_split(t: str):
     return seps, ends
 
 
-def restore_batch(text: str, *, articles_json: str, legacy_form_data=None, data_dir: str = DEFAULT_DATA_DIR, git_lookup="default"):
+# ---- 委任_04(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): 報告(batch)ファイル解決(追加のみ。既存の articles.json batch 経路は無変更) ----
+# batch id の正規表現はUI(form_logic.js BATCH_ID_RE)・publish toolと同一。不一致=fail-closed(パストラバーサル対策)
+BATCH_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]{2,63}$")
+
+
+def load_batch_file(batch_id: str, batches_dir: str) -> dict:
+    """data/batches/<id>.json(schema=eigo_radio_batch_v1)を読み {id, members, ...} を返す。id不正/ファイル無し/schema・id・members不正は RestoreError(何も確定しない)。"""
+    if not isinstance(batch_id, str) or not BATCH_ID_RE.match(batch_id):
+        raise RestoreError(f"batch id の形式が不正です(英小文字/数字/_/-、3〜64文字): {batch_id!r}")
+    base = os.path.realpath(batches_dir)
+    path = os.path.realpath(os.path.join(base, batch_id + ".json"))
+    if os.path.dirname(path) != base:
+        raise RestoreError(f"batchファイルのパスがbatchesディレクトリ外です: {batch_id!r}")
+    if not os.path.isfile(path):
+        raise RestoreError(f"batchファイルが見つかりません: {path}(報告が未公開か、idが違います)")
+    with open(path, "rb") as f:
+        doc = json.loads(f.read().decode("utf-8-sig"))
+    if not isinstance(doc, dict) or doc.get("schema") != "eigo_radio_batch_v1" or doc.get("id") != batch_id:
+        raise RestoreError(f"batchファイルのschema/idが不正です: {path}")
+    ms = doc.get("members")
+    if not isinstance(ms, list) or not ms or len(set(ms)) != len(ms) or not all(isinstance(m, str) for m in ms):
+        raise RestoreError(f"batchファイルのmembersが空/重複/不正です: {path}")
+    return doc
+
+
+def resolve_batch_from_header(t: str, batches_dir: str) -> dict:
+    """貼付全文の一括ヘッダ『バッチ=<id>』からbatchファイルを解決する(articles.jsonにbatchキーが無い場合の経路)。"""
+    hs = list(BATCH_HEADER_RE.finditer(t))
+    if len(hs) != 1:
+        raise RestoreError(f"一括ヘッダ『件数=N / 生成=… / バッチ=…』が{len(hs)}個あります(ちょうど1個が必要)。batch(id/members)を特定できません(fail-closed)")
+    return load_batch_file(hs[0].group(3), batches_dir)
+
+
+def restore_batch(text: str, *, articles_json: str, legacy_form_data=None, data_dir: str = DEFAULT_DATA_DIR, git_lookup="default", batches_dir: str = None):
     """一括コピー(フォームの『まとめてコピー』)の貼付全文 -> payload v2のlist(SET順)。1件でも失敗なら RestoreError(何も返さず、全エラーを列挙)。
     検査: ヘッダ(件数/生成/バッチ)・SET区切り連番・END・BATCH1コード・各ブロックにAIF照合コードがちょうど1個・stem一致・重複セットなし・
     articles.json の batch(未指定=fail-closed)の id と members の完全一致(欠落/余剰セット検出)・各ブロックを既存restore()で照合・区分①ちょうど3件(kp_confirmedは免除)。
@@ -668,6 +701,9 @@ def restore_batch(text: str, *, articles_json: str, legacy_form_data=None, data_
     with open(articles_json, "rb") as f:
         art = json.loads(f.read().decode("utf-8-sig"))
     batch = art.get("batch")
+    if not isinstance(batch, dict) and (batch is None):
+        # 委任_04: articles.json に batch が無い場合のみ、貼付ヘッダのバッチidから data/batches/<id>.json を解決する(articles.json batch 経路は従来どおり)
+        batch = resolve_batch_from_header(t, batches_dir or os.path.join(os.path.dirname(os.path.abspath(articles_json)), "batches"))
     if not isinstance(batch, dict) or not batch.get("id") or not isinstance(batch.get("members"), list) or not batch["members"]:
         raise RestoreError("articles.json に batch(id/members)が指定されていません。一括受入は対象バッチが指定されている場合のみ行います(fail-closed)")
     members = list(batch["members"])

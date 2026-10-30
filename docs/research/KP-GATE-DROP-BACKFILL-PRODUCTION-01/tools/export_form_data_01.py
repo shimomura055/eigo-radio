@@ -349,6 +349,8 @@ def main(argv=None) -> int:
         bp.add_argument("--batch-id", default=None)
         bp.add_argument("--generated", default=None)
         ba = bp.parse_args(_av)
+        # 委任_04(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): 公開フォームはarticles.jsonのbatchキーを解決源にしない(Opus M11)。正規入口は tools/publish_selection_batch_01.py(2段階publish+live smoke)。本モードは er128 --articles-json 旧経路の互換のためだけに残置
+        print("[BATCH_KEY][DEPRECATED] --set-batch は公開フォームの報告指定には使えません(UIは data/batches/<id>.json を ?batch=<id> で解決)。公開は tools/publish_selection_batch_01.py を使ってください。", file=sys.stderr)
         try:
             res = write_batch_key(ba.articles_json, ba.members.split(","), ba.batch_id, ba.generated)
         except ValueError as e:
