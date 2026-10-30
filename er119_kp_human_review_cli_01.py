@@ -152,6 +152,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--actor", default="user", choices=("user", "evidence"))
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--data-dir", default=None)
+    p.add_argument("--legacy-form-data", default=None, help="撤去前に発行した旧AIF2フォームのdata file(git履歴から取得)。旧AIF2回答の移行受理(ニュアンス節は読み捨て)専用。照合不成立は拒否")
     p = sub.add_parser("declare-absent")
     p.add_argument("--runs", required=True, help="カンマ区切りのrun dir(個別run宣言。範囲・期限付きの宣言は受け付けない)")
     p.add_argument("--rounds", default="1", help="宣言が効く候補round(既定=1。再選定後のroundは別途明示宣言)")

@@ -48,6 +48,11 @@ KP_CONFIRMED_NOTE = "Key Phrase／Key Word 10件はユーザー確定済み。�
 CODE_RE = re.compile(r"AIF1-([A-Za-z0-9_]+)-([0-9a-f]{6})-([0-9a-f]{8})-([0-9a-f]{8})-([0-9a-f]{10})-([0-9a-f]{10}|0)-([0-9a-f]{8}|0)-([0-9a-f]{4})")
 # 旧AIF2(ニュアンス解説欄つきフォームの照合コード)は廃止(NUANCE-CORNER-ABOLITION-01、2026-10-30ユーザー決定)。検出して明示拒否するためだけに残す(黙って無視しない)。
 CODE2_RE = re.compile(r"AIF2-")
+# 移行受理(NUANCE-CORNER-ABOLITION-01 委任_03): 撤去前に発行・送信済みのAIF2回答だけを、撤去前の旧フォームdata(--legacy-form-data)で照合できる場合に限り受理する。
+# 新規発行フォームはAIF1のみ(AIF2の発行経路は存在しない)。ニュアンス節は読み捨て(採否は記録しない)。
+CODE2_FULL_RE = re.compile(r"AIF2-([A-Za-z0-9_]+)-([0-9a-f]{6})-([0-9a-f]{8})-([0-9a-f]{8})-([0-9a-f]{10})-([0-9a-f]{10}|0)-([0-9a-f]{8}|0)-([0-9a-f]{8}|0)-([0-9a-f]{4})")
+MARK_N_BEGIN, MARK_N_END = "【ニュアンス全文】", "【ニュアンスここまで】"
+LEGACY_DROP_KEYS = ("nuance", "nuance_spec")   # 旧dataと現行dataの差は、この2キーだけであること(それ以外の差異は別データとして拒否)
 NUANCE_ABOLISHED_MSG = ("NUANCE_CORNER_ABOLISHED: ニュアンス解説コーナーは廃止されました(2026-10-30)。旧フォーム(ニュアンス欄つき・照合コードAIF2)の回答は受け付けません。"
                         "フォームを再取得(再出力)して選び直してください")
 FENCE_RE = re.compile(r"^\s*```[A-Za-z0-9_-]*\s*$")
@@ -207,7 +212,7 @@ def _split_pair(s: str):
     return (s[:m.start()], s[m.end():]) if m else (s, None)
 
 
-def _parse_text(t: str, m: re.Match) -> dict:
+def _parse_text(t: str, m: re.Match, legacy: bool = False) -> dict:
     """照合コード行より前の本文を節に分解する。"""
     lines = t[:m.start()].split("\n")
     start = None
@@ -222,6 +227,7 @@ def _parse_text(t: str, m: re.Match) -> dict:
     got = {1: [], 2: [], 3: []}
     grams = []
     comment_lines = None
+    nuance_in = None
     sec = None
     i = 1
     while i < len(lines):
@@ -257,8 +263,29 @@ def _parse_text(t: str, m: re.Match) -> dict:
                 continue
             i += 1
             continue
-        if s.startswith("ニュアンス解説"):   # 旧フォームの欄見出し行(行頭の構造一致)=廃止済み。黙って読み飛ばさず明示拒否
-            raise RestoreError(NUANCE_ABOLISHED_MSG)
+        if s.startswith("ニュアンス解説"):   # 旧フォームの欄見出し行(行頭の構造一致)=廃止済み。通常は黙って読み飛ばさず明示拒否。移行受理(legacy)のときだけ節を読み捨てる
+            if not legacy:
+                raise RestoreError(NUANCE_ABOLISHED_MSG)
+            if nuance_in is not None:
+                raise RestoreError("『ニュアンス解説：』の行が複数あります。" + RECHECK_HINT)
+            name = (_split_pair(s)[1] or "").strip()
+            if name in ("採用", "不採用"):
+                j = i + 1
+                if j >= len(lines) or lines[j].strip() != MARK_N_BEGIN:
+                    raise RestoreError(f"ニュアンス解説（{name}）の{MARK_N_BEGIN}がありません。" + RECHECK_HINT)
+                k = j + 1
+                while k < len(lines) and lines[k].strip() != MARK_N_END:
+                    k += 1
+                if k >= len(lines):
+                    raise RestoreError(f"ニュアンス解説（{name}）の{MARK_N_END}がありません(途中で切れています)。" + RECHECK_HINT)
+                nuance_in = name
+                i = k + 1
+                continue
+            if name == "候補なし":
+                nuance_in = name
+                i += 1
+                continue
+            raise RestoreError(f"ニュアンス解説の行を『採用|不採用|候補なし』として解釈できません: {s!r}。" + RECHECK_HINT)
         if s.startswith("自由コメント"):
             comment_lines = [(_split_pair(s)[1] or "").lstrip()]
             sec = "c"
@@ -280,7 +307,7 @@ def _parse_text(t: str, m: re.Match) -> dict:
         raise RestoreError("『自由コメント：』の行がありません。" + RECHECK_HINT)
     while comment_lines and FENCE_RE.match(comment_lines[-1]):   # コードブロックの閉じ(```)がコメント末尾に残る場合
         comment_lines.pop()
-    return {"hdr": hdr, "items": got, "grammar": grams, "comment_lines": comment_lines}
+    return {"hdr": hdr, "items": got, "grammar": grams, "comment_lines": comment_lines, "nuance_decision": nuance_in}
 
 
 def _gloss_marker(gl_nfkc: str):
@@ -288,36 +315,87 @@ def _gloss_marker(gl_nfkc: str):
     return (gl_nfkc[:mm.start()].strip(), mm.group(1)) if mm else (gl_nfkc, None)
 
 
-def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
-    """貼付テキスト -> (payload v2, notes)。不一致は RestoreError(何も書かない)。
-    git_lookup(stem, d6) -> bytes|None: 現在のデータ版がd6と異なるとき選定時の版を返す関数(None=履歴参照なし)。"""
-    t = text.replace("\r\n", "\n").replace("\r", "\n")
-    if CODE2_RE.search(t):   # 旧AIF2(ニュアンス欄つきフォーム)=廃止済み。明示拒否
-        raise RestoreError(NUANCE_ABOLISHED_MSG)
+def _legacy_aif2_verify(t: str, data_dir: str, legacy_bytes: bytes):
+    """撤去前に発行・送信済みのAIF2回答の移行受理。旧フォームdata(legacy_bytes)に対して照合コード(チェック桁・d6・c8・t8)を検証し、
+    旧dataが現行dataと『nuance/nuance_spec以外同一』であることを確認する。成立しなければ NUANCE_CORNER_ABOLISHED で拒否(fail-closed)。
+    戻り値=(m, 現行data, 旧dataのnuance候補, legacy_meta)。"""
     m = None
-    for m in CODE_RE.finditer(t):
+    for m in CODE2_FULL_RE.finditer(t):
         pass
     if not m:
-        if re.search(r"AIF\d+-", t):
-            raise RestoreError("未対応の形式バージョンの照合コードです(AIF1のみ対応)")
-        raise RestoreError("照合コードが見つかりません。" + RECHECK_HINT)
-    stem, d6, c8, t8, s10, g10, m8, chk = m.groups()
+        raise RestoreError(NUANCE_ABOLISHED_MSG + "(旧データによる移行受理: AIF2照合コードを解釈できません)")
+    stem, d6, c8, t8, s10, g10, m8, n8, chk = m.groups()
     if sha(m.group(0)[:-5])[:4] != chk:
         raise RestoreError("照合コードが壊れています(チェック不一致)。" + RECHECK_HINT)
-    notes = []
-    dpath = os.path.join(data_dir, stem + ".json")
-    raw = open(dpath, "rb").read() if os.path.exists(dpath) else None
-    if raw is None or d6_of_bytes(raw) != d6:
-        raw2 = git_lookup(stem, d6) if git_lookup else None
-        if raw2 is None:
-            raise RestoreError(f"選定時のデータ版(d6={d6})が見つかりません(現在のデータと異なり、履歴にもありません)。フォームから選び直してください")
-        raw = raw2
-        notes.append(f"データ版を履歴から復元(d6={d6})")
-    d = json.loads(raw.decode("utf-8"))
-    if (d.get("candidates_sha256") or "0" * 8)[:8] != c8 or ((d.get("source") or {}).get("text_sha256") or "0" * 8)[:8] != t8:
+    if d6_of_bytes(legacy_bytes) != d6:
+        raise RestoreError(NUANCE_ABOLISHED_MSG + f"(--legacy-form-data のd6={d6_of_bytes(legacy_bytes)} が照合コードのd6={d6} と一致しません。移行受理できません)")
+    old = json.loads(legacy_bytes.decode("utf-8"))
+    if not old.get("nuance_spec"):
+        raise RestoreError(NUANCE_ABOLISHED_MSG + "(旧dataにニュアンス仕様マークがなく、AIF2発行フォームのdataではありません)")
+    if (old.get("candidates_sha256") or "0" * 8)[:8] != c8 or ((old.get("source") or {}).get("text_sha256") or "0" * 8)[:8] != t8:
         raise RestoreError("候補集合sha/本文shaが照合コードと一致しません(別データ)。" + RECHECK_HINT)
+    dpath = os.path.join(data_dir, stem + ".json")
+    if not os.path.exists(dpath):
+        raise RestoreError(f"現行フォームdataがありません: {dpath}")
+    cur = json.loads(open(dpath, "rb").read().decode("utf-8"))
+    if any(k in cur for k in LEGACY_DROP_KEYS):
+        raise RestoreError("現行フォームdataにニュアンスのキーが残っています(撤去済みでない)。移行受理できません")
+    strip = {k: v for k, v in old.items() if k not in LEGACY_DROP_KEYS}
+    if json.dumps(strip, sort_keys=True, ensure_ascii=False) != json.dumps(cur, sort_keys=True, ensure_ascii=False):
+        raise RestoreError(NUANCE_ABOLISHED_MSG + "(旧dataと現行dataがnuance/nuance_spec以外で異なります。別データのため移行受理しません)")
+    meta = {"legacy_aif2_accepted": True, "legacy_form_data_sha256": hashlib.sha256(legacy_bytes).hexdigest(), "legacy_form_data_d6": d6,
+            "legacy_aif2_collation_code": m.group(0), "nuance_section": "discarded(採否は記録しない)"}
+    return m, cur, (old.get("nuance") or None), meta
 
-    ps = _parse_text(t, m)
+
+def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None, legacy_form_data: bytes = None):
+    """貼付テキスト -> (payload v2, notes)。不一致は RestoreError(何も書かない)。
+    git_lookup(stem, d6) -> bytes|None: 現在のデータ版がd6と異なるとき選定時の版を返す関数(None=履歴参照なし)。
+    legacy_form_data: 撤去前に発行したAIF2フォームのdata bytes。AIF2回答は、これで照合できる場合に限りニュアンス節を読み捨てて受理する(移行受理)。"""
+    t = text.replace("\r\n", "\n").replace("\r", "\n")
+    legacy_meta = None
+    if CODE2_RE.search(t):   # 旧AIF2(ニュアンス欄つきフォーム)=廃止済み。旧data照合が成立する場合のみ移行受理、それ以外は明示拒否
+        if legacy_form_data is None:
+            raise RestoreError(NUANCE_ABOLISHED_MSG)
+        m, d, n_cand, legacy_meta = _legacy_aif2_verify(t, data_dir, legacy_form_data)
+        stem, d6, c8, t8, s10, g10, m8, n8, chk = m.groups()
+        notes = [f"旧AIF2フォームを移行受理(旧data d6={d6}で照合、ニュアンス節は読み捨て)"]
+    else:
+        m = None
+        for m in CODE_RE.finditer(t):
+            pass
+        if not m:
+            if re.search(r"AIF\d+-", t):
+                raise RestoreError("未対応の形式バージョンの照合コードです(AIF1のみ対応)")
+            raise RestoreError("照合コードが見つかりません。" + RECHECK_HINT)
+        stem, d6, c8, t8, s10, g10, m8, chk = m.groups()
+        if sha(m.group(0)[:-5])[:4] != chk:
+            raise RestoreError("照合コードが壊れています(チェック不一致)。" + RECHECK_HINT)
+        notes = []
+        dpath = os.path.join(data_dir, stem + ".json")
+        raw = open(dpath, "rb").read() if os.path.exists(dpath) else None
+        if raw is None or d6_of_bytes(raw) != d6:
+            raw2 = git_lookup(stem, d6) if git_lookup else None
+            if raw2 is None:
+                raise RestoreError(f"選定時のデータ版(d6={d6})が見つかりません(現在のデータと異なり、履歴にもありません)。フォームから選び直してください")
+            raw = raw2
+            notes.append(f"データ版を履歴から復元(d6={d6})")
+        d = json.loads(raw.decode("utf-8"))
+        if (d.get("candidates_sha256") or "0" * 8)[:8] != c8 or ((d.get("source") or {}).get("text_sha256") or "0" * 8)[:8] != t8:
+            raise RestoreError("候補集合sha/本文shaが照合コードと一致しません(別データ)。" + RECHECK_HINT)
+
+    ps = _parse_text(t, m, legacy=legacy_meta is not None)
+    if legacy_meta is not None:   # ニュアンス節は読み捨てるが、照合コードのn8と貼付の採否・旧dataの候補が整合することだけ確認する(捏造・改変検出用。採否は記録しない)
+        nd = ps["nuance_decision"]
+        if nd is None:
+            raise RestoreError("旧AIF2回答に『ニュアンス解説：』の行がありません。" + RECHECK_HINT)
+        if nd == "候補なし":
+            ok_n = (not n_cand) and n8 == "0"
+        else:
+            dec = {"採用": "adopt", "不採用": "reject"}[nd]
+            ok_n = bool(n_cand) and n8 == sha("v1\n" + dec + ":" + n_cand["candidate_sha256"])[:8]
+        if not ok_n:
+            raise RestoreError("旧AIF2回答のニュアンス節が照合コード(n8)と一致しません(改変の疑い)。" + RECHECK_HINT)
     hdr_body = _split_pair(ps["hdr"])[1] or ""
     if "｜" in hdr_body:
         nm, lv = hdr_body.rsplit("｜", 1)
@@ -407,6 +485,9 @@ def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
 
     payload = _build_payload(d, sel, gsel, comment, st_grammar_none=(not gsel))
     payload["restore_meta"] = {"tool": TOOL_ID, "code_version": CODE_VERSION, "collation_code": m.group(0)}
+    if legacy_meta is not None:
+        payload["restore_meta"]["code_version"] = "AIF2(legacy)"
+        payload["restore_meta"]["legacy"] = legacy_meta
     if d.get("kp_confirmed"):
         locked = _locked_selection(d, sel)
         payload["selection"]["key_phrase"] = locked[1]
@@ -498,21 +579,25 @@ def summarize(payload: dict, notes: list) -> dict:
             "payload_sha256": hashlib.sha256(payload_bytes(payload)).hexdigest(), "notes": notes}
 
 
-def load_restore(text_path: str, data_dir: str = DEFAULT_DATA_DIR):
+def load_restore(text_path: str, data_dir: str = DEFAULT_DATA_DIR, legacy_form_data_path: str = None):
     with open(text_path, "rb") as f:
         raw = f.read()
     try:
         text = raw.decode("utf-8-sig")
     except UnicodeDecodeError as e:
         raise RestoreError(f"貼付テキストがUTF-8として読めません: {e}") from e
-    payload, notes = restore(text, data_dir, lambda stem, d6: git_history_lookup(stem, d6, data_dir))
+    legacy_bytes = None
+    if legacy_form_data_path:
+        with open(legacy_form_data_path, "rb") as f:
+            legacy_bytes = f.read()
+    payload, notes = restore(text, data_dir, lambda stem, d6: git_history_lookup(stem, d6, data_dir), legacy_form_data=legacy_bytes)
     return raw, payload, notes
 
 
 def cmd_from_readable(text_path: str, run: str, level: str, by: str, user_ref: str, *, actor: str = "user", grammar_pending: bool = False,
-                      dry_run: bool = False, data_dir: str = DEFAULT_DATA_DIR) -> dict:
+                      dry_run: bool = False, data_dir: str = DEFAULT_DATA_DIR, legacy_form_data_path: str = None) -> dict:
     """貼付テキストを復元し、既存 cmd_from_form(検証・保存は無変更)へ委譲する。貼付原文は確定成功後に rev{N}_readable.txt へそのまま保存する。"""
-    raw, payload, notes = load_restore(text_path, data_dir)
+    raw, payload, notes = load_restore(text_path, data_dir, legacy_form_data_path)
     if payload["article"]["level"] != level:
         raise RestoreError(f"貼付のレベル({payload['article']['level']})が --level={level} と異なります")
     out = {"restored": summarize(payload, notes), "readable_sha256": hashlib.sha256(raw).hexdigest(), "dry_run": dry_run}
@@ -524,7 +609,9 @@ def cmd_from_readable(text_path: str, run: str, level: str, by: str, user_ref: s
     try:
         with os.fdopen(fd, "wb") as f:
             f.write(payload_bytes(payload))
-        res = c.cmd_from_form(run, level, tmp, by, user_ref, actor=actor, grammar_pending=grammar_pending)
+        legacy = (payload.get("restore_meta") or {}).get("legacy")   # 移行受理(旧AIF2)は確定recordのorigin.transcriptionへ由来を残す
+        extra = {"origin_extra": dict(legacy)} if legacy else {}   # 通常(AIF1)は従来どおりの呼出(引数追加なし)
+        res = c.cmd_from_form(run, level, tmp, by, user_ref, actor=actor, grammar_pending=grammar_pending, **extra)
     finally:
         try:
             os.remove(tmp)
@@ -552,13 +639,14 @@ def add_confirm_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--actor", default="user", choices=("user", "evidence"))
     p.add_argument("--dry-run", action="store_true", help="復元payloadと照合結果のみ出力し、確定しない")
     p.add_argument("--data-dir", default=DEFAULT_DATA_DIR)
+    p.add_argument("--legacy-form-data", default=None, help="撤去前に発行した旧AIF2フォームのdata file(git履歴から取り出したもの)。旧AIF2回答の移行受理(ニュアンス節は読み捨て)にだけ使う。照合が成立しなければ拒否")
 
 
 def run_confirm(a) -> int:
     """er128のCLIと同じ終了コード規約: 4=ISSUE(要確認)/2=拒否。"""
     try:
         out = cmd_from_readable(a.from_readable, a.run, a.level, a.by, a.user_ref, actor=a.actor, grammar_pending=a.grammar_pending,
-                                dry_run=a.dry_run, data_dir=a.data_dir)
+                                dry_run=a.dry_run, data_dir=a.data_dir, legacy_form_data_path=getattr(a, "legacy_form_data", None))
         print(json.dumps(out, ensure_ascii=False, indent=2))
         return 0
     except RestoreError as e:
@@ -582,6 +670,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--text", required=True)
     p.add_argument("--data-dir", default=DEFAULT_DATA_DIR)
     p.add_argument("--out", default=None)
+    p.add_argument("--legacy-form-data", default=None, help="旧AIF2回答の移行受理用(confirmと同じ)")
     add_confirm_args(sub.add_parser("confirm", help="復元して cmd_from_form へ委譲(確定)"))
     return ap
 
@@ -590,7 +679,7 @@ def run(argv=None) -> int:
     a = build_parser().parse_args(argv)
     if a.cmd == "restore":
         try:
-            _, payload, notes = load_restore(a.text, a.data_dir)
+            _, payload, notes = load_restore(a.text, a.data_dir, a.legacy_form_data)
         except RestoreError as e:
             print(f"[READABLE_RESTORE][REFUSED] {e}", file=sys.stderr)
             return 2

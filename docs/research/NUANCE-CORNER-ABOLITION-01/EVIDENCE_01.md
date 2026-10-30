@@ -36,3 +36,12 @@
 - LLM call: 4 call/記事セット → 0。
 - code: Step A = +631 / -1,302行(46ファイル、新設test 18件を含む)、Step B = +13 / -3,799行(er134本体1,177行+専用test 6本)。
 - test: 専用6ファイル撤去、混在test 15ファイルのnuance assertを削除/修正、新設1ファイル。
+
+## 7. 委任_03: 旧AIF2回答の移行受理(2026-10-30、API 0)
+- 背景: 撤去前に発行したフォームの回答9件(X 8=Std/Adv x 4記事、雪女Std 1。照合コードAIF2)が`NUANCE_CORNER_ABOLISHED`(er128_form_readable_restore_01)で確定不能になった(ユーザーのHR回答維持の要件と矛盾)。照合コードの機械生成による迂回は不採用。
+- 実装: `er128_form_readable_restore_01.py` `_legacy_aif2_verify`/`restore(legacy_form_data=)`/`_parse_text(legacy=)`、CLI `--legacy-form-data`(er128 restore/confirm・er119 confirm)。旧data(git履歴の撤去前blob)でチェック桁・d6・c8・t8・ニュアンス採否n8を検証し、旧dataと現行dataがnuance/nuance_spec以外同一であることを確認。成立時のみニュアンス節を読み捨てて受理(採否は記録しない)、確定recordのorigin.transcriptionへ`legacy_aif2_accepted=true`・旧data sha256・旧照合コードを記録。未指定/不成立は従来どおり拒否。AIF2の発行経路は存在しない(make_codeはAIF1専用、form_logic.jsにAIF2生成なし)。
+- test: `er136_nuance_abolition_test_01.py` T6(7件: 受理+読み捨て/旧data無し拒否/d6不一致拒否/現行data差異拒否/採否改ざん拒否/選択改ざん拒否/AIF2非発行)。er136=25 PASS、er128_form_readable_restore_test_01+er128_kp_confirmed_content_grammar_v2_test_01と合わせ129 PASS。
+- 9件の照合: `legacy_aif2_03/legacy_verification_9.json`(全件 旧data d6=照合コードd6一致、旧data sha256を記録)。
+- 確定: 雪女Std(a2)=本委任で移行受理経路にて10:34 rev1確定(`dryrun_yuki_onna__a2.json`/`confirm_yuki_onna__a2.json`)。X 8件=Family X Workerが09:59に確定済み(AIF2->AIF1コードの機械変換経由=`confirm_03/aif2_to_aif1_conversion_report.json`)のため本委任は触らず、移行受理経路の独立dry-runとの内容照合のみ実施(KP区分①②・文法件数が全8件一致、`x8_equivalence_check.txt`)。X 8件のrecordにはlegacy_aif2_accepted印がない(変換経由のため)。自由コメント(jwst)は反映していない(X Worker担当)。
+- KP review: X 4run・雪女とも全レベルREVIEWED(pending 0)。
+- Y姓live(github.io、no-cache): index.html 200・`<h3>ニュアンス解説`0、enduser/index.html 200、enduser/data/article.json 200・nuance 0、`er135 verify-only --base-url`(live)=TOTAL 170 NG 0(`y_surname_live_verify_only.json`)。フォームdata(untidiness a2/yuki a2/b1b)のnuance行0。Pages反映は待機なしで確認(Last-Modified 2026-10-30 01:31 GMT)。

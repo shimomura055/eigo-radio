@@ -260,5 +260,76 @@ class T5_M6_LegacyRecordAndRegenerate(GBase):
             self.assertIn("nuance_cand_b1b", err.getvalue())
 
 
+class T6_LegacyAif2Migration(unittest.TestCase):
+    """撤去前に発行・送信済みの旧AIF2回答は、撤去前の旧フォームdata(git履歴)で照合できる場合に限り受理(ニュアンス節は読み捨て)。それ以外は拒否のまま。
+    実データ(雪女Std。回答原文=delegation_log、旧data=git履歴のd6=651042)を使う。"""
+    STEM = "yuki_onna__a2__prod"
+    D6 = "651042"
+    HR = os.path.join(ROOT, "docs", "pm", "delegation_log", "2026-10-30_FAMILY-Z-YUKI-ONNA-PRODUCTION-01_USER_HR_01.md")
+
+    @classmethod
+    def setUpClass(cls):
+        t = open(cls.HR, encoding="utf-8").read().split("\n")
+        i = next(k for k, ln in enumerate(t) if ln.startswith("記事：雪女(Yuki-Onna)｜Standard"))
+        j = next(k for k in range(i, len(t)) if t[k].startswith("照合コード") and "AIF2-" in t[k])
+        cls.text = "\n".join(t[i:j + 1]) + "\n"
+        cls.old = R.git_history_lookup(cls.STEM, cls.D6)
+
+    def setUp(self):
+        if self.old is None:
+            self.skipTest("旧フォームdata(git履歴)が取得できない環境")
+
+    def test_accepts_with_matching_legacy_data_and_discards_nuance(self):
+        payload, notes = R.restore(self.text, legacy_form_data=self.old)
+        self.assertTrue(payload["restore_meta"]["legacy"]["legacy_aif2_accepted"])
+        self.assertEqual(payload["restore_meta"]["legacy"]["legacy_form_data_d6"], self.D6)
+        self.assertEqual(len(payload["restore_meta"]["legacy"]["legacy_form_data_sha256"]), 64)
+        self.assertEqual(payload["article"]["level"], "a2")
+        self.assertNotIn("nuance", json.dumps(payload, ensure_ascii=False).lower().replace("nuance_section", ""))
+        self.assertNotIn("nuance", payload["selection"])
+        self.assertNotEqual(payload.get("schema_minor"), 2)
+        cc._reject_abolished_nuance_payload(payload)   # 確定側のガードも通る(例外なし)
+        self.assertTrue(any("移行受理" in n for n in notes))
+
+    def test_refused_without_legacy_data(self):
+        with self.assertRaises(R.RestoreError) as e:
+            R.restore(self.text)
+        self.assertIn("NUANCE_CORNER_ABOLISHED", str(e.exception))
+
+    def test_refused_when_legacy_data_does_not_match_code(self):
+        other = self.old.replace(b'"name"', b'"nam3"', 1)   # d6が変わる=別データ
+        with self.assertRaises(R.RestoreError) as e:
+            R.restore(self.text, legacy_form_data=other)
+        self.assertIn("NUANCE_CORNER_ABOLISHED", str(e.exception))
+
+    def test_refused_when_current_data_differs_beyond_nuance_keys(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            cur = json.load(open(os.path.join(R.DEFAULT_DATA_DIR, self.STEM + ".json"), encoding="utf-8"))
+            cur["name"] = cur["name"] + "X"
+            json.dump(cur, open(os.path.join(td, self.STEM + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+            with self.assertRaises(R.RestoreError) as e:
+                R.restore(self.text, data_dir=td, legacy_form_data=self.old)
+            self.assertIn("NUANCE_CORNER_ABOLISHED", str(e.exception))
+
+    def test_refused_when_nuance_decision_is_tampered(self):
+        bad = self.text.replace("ニュアンス解説：不採用", "ニュアンス解説：採用", 1)
+        self.assertNotEqual(bad, self.text)
+        with self.assertRaises(R.RestoreError) as e:
+            R.restore(bad, legacy_form_data=self.old)
+        self.assertIn("n8", str(e.exception))
+
+    def test_refused_when_selection_is_tampered(self):
+        bad = self.text.replace("- mist：霧\n", "", 1)
+        with self.assertRaises(R.RestoreError):
+            R.restore(bad, legacy_form_data=self.old)
+
+    def test_aif2_is_never_issued(self):
+        src = open(os.path.join(ROOT, "er128_form_readable_restore_01.py"), encoding="utf-8").read()
+        self.assertEqual(R.CODE_VERSION, "AIF1")
+        self.assertNotIn('f"AIF2-', src)                     # make_codeはAIF1専用(AIF2の発行経路なし)
+        self.assertNotIn("AIF2-", re.sub(r"#[^\n]*", "", open(os.path.join(FORM_DIR, "form_logic.js"), encoding="utf-8").read()))
+
+
 if __name__ == "__main__":
     unittest.main()
