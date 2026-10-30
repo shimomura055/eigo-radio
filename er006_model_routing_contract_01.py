@@ -136,7 +136,7 @@ PROCESS_MODEL_MAP = {
     "STUDY_TEXT_GRAMMAR_EXTRACT": SUPPORT_MODEL,
     "STUDY_TEXT_GRAMMAR_EXPLAIN": SUPPORT_MODEL,
     # NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02A(2026-10-29、ニュアンス解説、ユーザーAPPROVED_FOR_PRODUCTION)で追加(追加のみ、既存キー不変)。
-    # 候補生成(er134 generate_candidate)と主題重複判定の段2(er134 judge_overlap。生成とは別call・別Prompt)。SUPPORT_MODEL=gpt-6-luna(新規モデルなし)。
+    # DEPRECATED(2026-10-30 NUANCE-CORNER-ABOLITION-01 ユーザー決定): ニュアンス解説コーナー廃止につき呼出元0(er134撤去済み)。過去usage logと閉集合testの整合のため定義のみ残置。新規利用禁止(OSFは別名の別processを使う)。
     "NUANCE_EXPLANATION": SUPPORT_MODEL,
     "NUANCE_OVERLAP_JUDGE": SUPPORT_MODEL,
     # RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C1(2026-10-10、ユーザーGo)で追加(追加のみ、既存キー不変)。

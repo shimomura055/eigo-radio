@@ -61,6 +61,18 @@ class T1_Dangling(unittest.TestCase):
                 src = f.read()
             self.assertIsNone(re.search(r"import\s+er134|from\s+er134", src), name)
 
+    def test_deprecated_er006_nuance_processes_have_no_callers(self):
+        """M7: er006のNUANCE_EXPLANATION/NUANCE_OVERLAP_JUDGEは定義のみ残置(DEPRECATED)。呼出元は0(Dangling)。閉集合を検査するtestは参照してよい。"""
+        pat = re.compile(r"NUANCE_EXPLANATION|NUANCE_OVERLAP_JUDGE")
+        offenders = []
+        for name in os.listdir(ROOT):
+            if not name.endswith(".py") or name == "er006_model_routing_contract_01.py" or "test" in name:
+                continue
+            with open(os.path.join(ROOT, name), encoding="utf-8", errors="replace") as f:
+                if pat.search(f.read()):
+                    offenders.append(name)
+        self.assertEqual(offenders, [])
+
     def test_removed_api_surface_is_gone(self):
         for mod, names in ((g, ("render_nuance_html_block", "nuance_is_adopted", "expected_nuance_blocks", "verify_nuance_in_section", "NUANCE_RESULT_FILENAME", "NUANCE_ADOPTED")),
                            (p2w, ("nuance_for_display", "finalize_nuance", "form_nuance_bundle")),
