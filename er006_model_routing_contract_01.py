@@ -131,6 +131,10 @@ PROCESS_MODEL_MAP = {
     # FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_16(2026-10-25、ユーザーT1正式承認)で追加(追加のみ、既存キー不変)。Part 1の本文引用英文の日本語訳
     # (入力=引用英文のみ、解説LLMとは独立call)。SUPPORT_MODELを参照(新規モデルなし)。
     "KEY_PHRASE_SOURCE_SENTENCE_JA": SUPPORT_MODEL,
+    # ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03T(2026-10-30)で追加(追加のみ、既存キー不変)。End Userページ用の英日対訳の新規生成
+    # (ENDUSER_JA_TRANSLATE=文脈付き翻訳、ENDUSER_JA_VERIFY=対訳照合)。SUPPORT_MODELを参照(新規モデルなし)。未配線(standalone)。
+    "ENDUSER_JA_TRANSLATE": SUPPORT_MODEL,
+    "ENDUSER_JA_VERIFY": SUPPORT_MODEL,
     # PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03(2026-10-25、Part 2 Grammar & Sentence Structure、ユーザーAPPROVED_FOR_PRODUCTION)で追加(追加のみ、既存キー不変)。
     # 候補抽出(Step A'')と解説生成(Step B)。SUPPORT_MODEL=gpt-6-luna(Trial-07/08と同一、新規モデルなし)。
     "STUDY_TEXT_GRAMMAR_EXTRACT": SUPPORT_MODEL,
