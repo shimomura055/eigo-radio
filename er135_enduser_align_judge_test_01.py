@@ -49,7 +49,11 @@ class J1_Parse(unittest.TestCase):
         self.assertEqual(routing.PROCESS_MODEL_MAP[J.PROCESS], routing.SUPPORT_MODEL)
         self.assertIsNone(inspect.signature(AL.align_paragraph).parameters["judge"].default)
         self.assertIsNone(inspect.signature(AL.build_article_align).parameters["judge"].default)
-        self.assertNotIn("judge", inspect.getsource(E.hook_run) + inspect.getsource(E.produce_enduser) + inspect.getsource(E.build_enduser))
+        # 委任_03B: ライブラリ直呼び(build_enduser)の既定はOFF。正式経路(hook_run/produce_enduser)は既定でM8を使い、judge_llm=Noneで無効。
+        self.assertIsNone(inspect.signature(E.build_enduser).parameters["judge"].default)
+        for fn in (E.hook_run, E.produce_enduser):
+            self.assertIs(inspect.signature(fn).parameters["judge_llm"].default, E.AUTO_JUDGE_LLM)
+        self.assertIsNone(E._resolve_judge(None, "x"))
         self.assertNotIn("judge", "".join(AL.PARAMS.keys()).replace("judge_tau", ""))
 
 

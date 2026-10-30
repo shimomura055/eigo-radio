@@ -310,11 +310,20 @@ def structure_check(ja: str, en: str) -> None:
 # ------------------------------------------------------------
 # Prompt / parse
 # ------------------------------------------------------------
-def build_translate_prompt(targets: list, context: list) -> str:
+RETRY_NOTE_LABEL = "# 前回の訳への指摘(同じ誤りを繰り返さない。retry時のみ付く)\n"
+RETRY_NOTE_NUMBER_HINT = ("英文にない数字・数詞を訳に入れない(英文の they/them は「二人」のような人数にせず「彼ら」と訳す。"
+                          "never ... again は「二度と」でなく「もう決して…ない」のように数を含まない表現にする)")
+
+
+def build_translate_prompt(targets: list, context: list, notes: dict | None = None) -> str:
+    """notes={targets内の0始まりindex: 指摘文}はretry時のみ(初回のPromptは従来と同一)。"""
     ctx = ""
     if context:
         ctx = TRANSLATE_CONTEXT_LABEL + "\n".join(f"- {s['en']}" for s in context) + "\n\n"
-    return TRANSLATE_HEAD + ctx + TRANSLATE_TARGET_LABEL + "\n".join(f"{i}. {s['en']}" for i, s in enumerate(targets, 1)) + "\n" + TRANSLATE_BODY
+    nt = ""
+    if notes:
+        nt = "\n" + RETRY_NOTE_LABEL + "\n".join(f"- {i + 1}番: {m}" for i, m in sorted(notes.items())) + "\n"
+    return TRANSLATE_HEAD + ctx + TRANSLATE_TARGET_LABEL + "\n".join(f"{i}. {s['en']}" for i, s in enumerate(targets, 1)) + "\n" + nt + TRANSLATE_BODY
 
 
 def build_verify_prompt(pairs: list) -> str:
@@ -498,6 +507,7 @@ def translate_part(part_id: str, sentences: list, *, level: str, family: str, ca
     fresh = {}   # 照合前の訳
 
     # --- 翻訳(初回+retry1回。件数/ID不一致=pending全体、個別NG=その段落のみretry) ---
+    notes_by_sid = {}   # retry時のみ: 前回のlocal_check不合格の文 -> 指摘(同じ誤りの反復を避ける)
     for _attempt in range(MAX_TRANSLATE_ATTEMPTS):
         if not pending:
             break
@@ -505,8 +515,9 @@ def translate_part(part_id: str, sentences: list, *, level: str, family: str, ca
         tset = {s["sid"] for s in targets}
         context = [s for s in sents if s["sid"] not in tset]
         calls["translate"] += 1
+        notes = {i: notes_by_sid[s["sid"]] for i, s in enumerate(targets) if s["sid"] in notes_by_sid} if _attempt else None
         try:
-            ja_list = parse_response(llm("translate", build_translate_prompt(targets, context)), targets)
+            ja_list = parse_response(llm("translate", build_translate_prompt(targets, context, notes)), targets)
         except ModelContractError:
             raise
         except ValueError as e:
@@ -516,14 +527,20 @@ def translate_part(part_id: str, sentences: list, *, level: str, family: str, ca
         by_sid = {s["sid"]: j for s, j in zip(targets, ja_list)}
         still = []
         for pi in pending:
-            try:
-                for s in paras[pi]:
+            first_err = None
+            for s in paras[pi]:   # 段落内の全文を検査する(retryの指摘に不合格の文すべてを載せるため、最初の不合格で止めない)
+                try:
                     structure_check(by_sid[s["sid"]], s["en"])
                     check_numbers(s["en"], by_sid[s["sid"]])
+                except ValueError as e:
+                    first_err = first_err or e
+                    msg = str(e)
+                    notes_by_sid[s["sid"]] = (RETRY_NOTE_NUMBER_HINT if msg.startswith("数値不一致") else msg) + f"(前回の訳: {by_sid[s['sid']]})"
+            if first_err is None:
                 fresh[pi] = [by_sid[s["sid"]] for s in paras[pi]]
                 failures.pop(pi, None)
-            except ValueError as e:
-                failures[pi] = f"local_check: {e}"
+            else:
+                failures[pi] = f"local_check: {first_err}"
                 still.append(pi)
         pending = still
 

@@ -71,23 +71,63 @@ def parse(text: str, n: int) -> list:
     return out
 
 
-def make_judge(llm):
+CACHE_FILENAME = "ja_align_judge_v1.json"
+
+
+def _cache_load(cache_dir):
+    import os
+    p = os.path.join(str(cache_dir), CACHE_FILENAME)
+    if not os.path.exists(p):
+        return {}
+    d = json.load(open(p, encoding="utf-8"))
+    return d.get("entries", {}) if isinstance(d, dict) and d.get("schema") == "ja_align_judge_v1" else {}
+
+
+def _cache_save(cache_dir, entries):
+    import os
+    os.makedirs(str(cache_dir), exist_ok=True)
+    p = os.path.join(str(cache_dir), CACHE_FILENAME)
+    with open(p + ".tmp", "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"schema": "ja_align_judge_v1", "entries": entries}, f, ensure_ascii=False, indent=1, sort_keys=True)
+        f.write("\n")
+    os.replace(p + ".tmp", p)
+
+
+def make_judge(llm, cache_dir=None):
     """judge(en_texts, ja_texts, pairs) -> [bool]*len(pairs)。llm(prompt)->str は必須(既定の実APIへ黙って落ちない)。
-    1段落につき1 call(pairsが12を超えるときは分割)。応答不正は全pair不採用(再試行しない=費用を増やさない。再実行は次回build)。"""
+    1段落につき1 call(pairsが12を超えるときは分割)。応答不正は全pair不採用(再試行しない=費用を増やさない。再実行は次回build)。
+    cache_dir指定時: 鍵=プロンプトのsha256、値=パース成功した応答のみ保存(同じ入力の再実行は同じ判定・API 0。失敗は非キャッシュ)。
+    通信失敗等の例外=そのchunkは全pair不採用(failuresに記録)。応答modelが契約と違う場合(ModelContractError)だけは伝播してSTOP。"""
     if llm is None:
         raise ValueError("judge llm が無い(実API既定へフォールバックしない)")
-    stats = {"calls": 0, "pairs": 0, "ok": 0, "failures": []}
+    stats = {"calls": 0, "pairs": 0, "ok": 0, "failures": [], "cache_hits": 0}
+    cache = _cache_load(cache_dir) if cache_dir else None
 
     def judge(en_texts, ja_texts, pairs):
         res = []
         for i in range(0, len(pairs), MAX_PAIRS_PER_CALL):
             chunk = pairs[i:i + MAX_PAIRS_PER_CALL]
-            stats["calls"] += 1
             stats["pairs"] += len(chunk)
+            prompt = build_prompt(en_texts, ja_texts, chunk)
+            key = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
             try:
-                got = parse(llm(build_prompt(en_texts, ja_texts, chunk)), len(chunk))
+                if cache is not None and key in cache:
+                    stats["cache_hits"] += 1
+                    got = parse(cache[key], len(chunk))
+                else:
+                    stats["calls"] += 1
+                    text = llm(prompt)
+                    got = parse(text, len(chunk))
+                    if cache is not None:
+                        cache[key] = text
+                        _cache_save(cache_dir, cache)
             except JudgeError as e:
                 stats["failures"].append(str(e)[:80])
+                got = [False] * len(chunk)
+            except DefaultLLM.ModelContractError:
+                raise
+            except Exception as e:                       # noqa: BLE001  通信失敗等=このchunkは不採用(英語のみ表示の安全側)
+                stats["failures"].append(f"exception: {type(e).__name__}: {str(e)[:60]}")
                 got = [False] * len(chunk)
             stats["ok"] += sum(got)
             res += got

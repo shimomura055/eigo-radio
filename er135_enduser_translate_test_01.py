@@ -22,7 +22,7 @@ JA = {
 
 
 def _targets(prompt):
-    body = prompt.split(T.TRANSLATE_TARGET_LABEL, 1)[1].split("\n# 出力形式")[0]
+    body = prompt.split(T.TRANSLATE_TARGET_LABEL, 1)[1].split("\n# 出力形式")[0].split("\n" + T.RETRY_NOTE_LABEL)[0]
     return [re.match(r"^\d+\. (.*)$", l).group(1) for l in body.strip().split("\n")]
 
 
@@ -230,6 +230,34 @@ class TestChecks(Base):
     def test_routing_keys(self):
         self.assertEqual(T.routing.require_model("ENDUSER_JA_TRANSLATE", "gpt-6-luna"), "gpt-6-luna")
         self.assertEqual(T.routing.require_model("ENDUSER_JA_VERIFY", "gpt-6-luna"), "gpt-6-luna")
+
+
+class TestRetryNote(Base):
+    """E2(Z実走で観測): 『they→二人』『never again→二度と』の数詞が英文にない数としてlocal_check不合格 -> retryに指摘を付けて直す。"""
+
+    JA2 = {"They shut the door.": "二人は戸を閉めた。", "She was never seen again.": "彼女は二度と姿を見せなかった。"}
+    FIX = {"They shut the door.": "彼らは戸を閉めた。", "She was never seen again.": "彼女はもう決して姿を見せなかった。"}
+
+    def test_first_prompt_has_no_note_and_retry_prompt_names_failed_sentences(self):
+        sents = S("They shut the door.", "She was never seen again.")
+        first = lambda ts, ja: json.dumps({"translations": [{"id": i, "ja": self.JA2[t]} for i, t in enumerate(ts, 1)]}, ensure_ascii=False)
+        llm = FakeLLM(ja=dict(self.FIX), translate_script=[first])
+        r = run(sents, llm, self.d)
+        tr = [p for k, p in llm.prompts if k == "translate"]
+        self.assertEqual(len(tr), 2)                                     # 初回 + retry1回(上限不変)
+        self.assertNotIn(T.RETRY_NOTE_LABEL, tr[0])                      # 初回のPromptは従来と同一
+        self.assertIn(T.RETRY_NOTE_LABEL, tr[1])
+        self.assertIn("1番:", tr[1])
+        self.assertIn("2番:", tr[1])                                     # 段落内の不合格の文すべてに指摘が付く
+        self.assertIn("二人は戸を閉めた。", tr[1])                        # 前回の訳を示す
+        self.assertEqual([r["ja"]["s1"], r["ja"]["s2"]], [self.FIX["They shut the door."], self.FIX["She was never seen again."]])
+
+    def test_retry_that_still_fails_stays_fail_closed(self):
+        sents = S("They shut the door.")
+        llm = FakeLLM(ja=dict(self.JA2))                                 # 毎回『二人』のまま
+        r = run(sents, llm, self.d)
+        self.assertEqual(llm.n("translate"), 2)
+        self.assertIsNone(r["ja"]["s1"])                                 # 数の余剰はfail-closed(英語のみ)
 
 
 class TestNumbers(unittest.TestCase):

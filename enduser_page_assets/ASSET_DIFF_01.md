@@ -1,4 +1,4 @@
-# production asset 差分一覧(DEV rev01-e -> production rev01-f)
+# production asset 差分一覧(DEV rev01-e -> production rev01-g)
 
 許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。
 
@@ -37,9 +37,25 @@
 | J24 | app.js | ADD | rev01-f: tick()で文と文の間の保持群(jaHold)を更新してからhighlight()を呼ぶ(再生・シーク・クリック・レベル切替は従来どおりtick/highlightに集約) |
 | J25 | app.js | ADD | rev01-f: 検証用の状態__EUPに点灯中のJA群(jg)を追加 |
 | C5 | style.css | ADD | rev01-f: 日本語訳の対応群の点灯(.sent.onと同じ変数・同じ見た目) |
+| H4a | index.html | ADD | rev01-g: キャッシュ更新用のbuild-id(rev01-e -> rev01-g。assetの更新が古いJSキャッシュで隠れない) |
+| H4b | index.html | ADD | rev01-g: style.cssのcache-bust |
+| H4c | index.html | ADD | rev01-g: body data-build |
+| H4d | index.html | ADD | rev01-g: app.jsのcache-bust |
+| J26 | app.js | ADD | rev01-g: Previewカードにも日本語訳(trHtml)を出す(訳が無いPreviewは空文字=表示不変)。Adv Previewの生成訳の表示場所 |
+| J27 | app.js | ADD | rev01-g: Vocabulary単体音声の状態(mode='vocab'・vocabI=再生中の項目・resumeAt=再生前の通し位置) |
+| J28 | app.js | ADD | rev01-g: Vocabulary & Expressionsの各項目(summary内=閉じていても押せる)に英語音声の再生ボタン(article.jsonのvocab[i].audioがある項目) |
+| J29 | app.js | ADD | rev01-g: playVocab/endVocab(単体mp3を共有プレーヤで再生。終端で通し再生の状態へ戻す=再生前の位置・自動再生なし) |
+| J30 | app.js | ADD | rev01-g: vocabモードの長さ(単体mp3のdur) |
+| J31 | app.js | ADD | rev01-g: vocabモードは全編のどの部分でもない(通し再生のpart強調・文ハイライトを出さない) |
+| J32 | app.js | ADD | rev01-g: nowLabelにvocab項目名 |
+| J33 | app.js | ADD | rev01-g: vocabモード中はtickが文ハイライト(英語・日本語)を更新しない(単体音声の秒を全編の秒と取り違えない) |
+| J34 | app.js | ADD | rev01-g: Vocabulary再生ボタンのclick(summary内のためdetailsの開閉を抑止) |
+| J35 | app.js | ADD | rev01-g: 単体音声の終端でendVocab() |
+| J36 | app.js | ADD | rev01-g: 検証用の状態__EUPにvocab項目(vi)を追加 |
+| C6 | style.css | ADD | rev01-g: Vocabulary再生ボタンのレイアウト(PC=右横、mobile=意味の下) |
 
 sha256:
 
-- index.html: `86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab`
-- app.js: `44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77`
-- style.css: `6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f`
+- index.html: `d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a`
+- app.js: `f616522b87e883ebd316fbb145949a2061ad3d33fd8cbafa74234eb8d0fb2091`
+- style.css: `0b0a668a9db5575c130e14c0fabcd822c16d3421611a44c5653f1ef54f171ef4`

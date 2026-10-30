@@ -346,6 +346,27 @@ class T4_EmphasisAndGlossary(unittest.TestCase):
         _a, _s, bi2 = Built("x_moon", html=outside).data()
         self.assertTrue(any("zzzunused" in w for w in bi2["warnings"]))
 
+    def test_oneline_underline_uses_its_row_meaning_list(self):
+        """OPEN-612 E2(⑭ Std 'a lower limit'): In One Lineの下線(lk3)は、その行内の『本文中の意味』一覧(ul.lk-meaning)に対応づけられる(以前はstory行のみ読んでいた)。
+        一覧が無ければ従来どおりSTOP(黙って通さない)。"""
+        h = fx_html("x_moon")
+        old = "a thick rock layer with many gaps may have slowed cooling"
+        self.assertEqual(h.count(old), 1)
+        span = '<span class="lk3" data-hl="p_e2test0001">many gaps</span>'
+        i = h.index(old)
+        j = h.index("</div>", i)
+        body = h[:i] + old.replace("many gaps", span) + h[i + len(old):j] + "</div>"
+        with_ul = body + '<ul class="lk-meaning"><li>many gaps ＝ すき間が多い</li></ul>' + h[j + len("</div>"):]
+        without_ul = body + h[j + len("</div>"):]
+        art, _sp, _bi = Built("x_moon", html=with_ul).data()
+        one = [p for p in art["levels"]["std"]["parts"] if p["kind"] == "oneline"][0]
+        self.assertEqual(one["meanings"], ["many gaps ＝ すき間が多い"])
+        self.assertIn({"en": "many gaps", "ja": "すき間が多い", "vi": None}, one["glossary"])
+        self.assertEqual(stop_code(Built("x_moon", html=without_ul).data), "ENDUSER_GLOSSARY_ASSERT")
+        # 一覧を持たない既存記事のoneline partには meanings キーを足さない(article.json不変)
+        art0, _s0, _b0 = Built("x_moon").data()
+        self.assertFalse(any("meanings" in p for L in art0["levels"].values() for p in L["parts"] if p["kind"] == "oneline"))
+
     def test_glossary_assert_violations_are_stop(self):
         # (a) 本文中の意味一覧(ul.lk-meaning)の項目が欠けた
         h = mutate(fx_html("x_moon"), "<ul class=\"lk-meaning\"><li>radius ＝ 中心から外側までの長さ</li></ul>", "<ul class=\"lk-meaning\"></ul>")
@@ -1126,9 +1147,31 @@ class T16_ProperNounsForRun(unittest.TestCase):
             self.assertEqual(sorted(pn["en"]), ["Masago", "Tajomaru", "Takehiro"])
             self.assertEqual(before, sorted(p.name for p in rd.rglob("*")))          # 読み取りのみ
 
-    def test_xy_title_and_kp(self):
+    def test_xy_title_general_words_are_not_prompted(self):
+        """OPEN-612 E1: Title Caseの題の一般語(Wrinkles等)はpromptに入れない。固有名詞の根拠(本文の文中の大文字/全大文字)がある語とKP表現だけ。"""
+        rows = {"std": [{"kind": "topic", "sentences": [{"text": "Today's topic is Wrinkles on the Moon."}]},
+                        {"kind": "script", "sentences": [{"text": "Scientists say the Moon is shrinking."}]},
+                        {"kind": "kp", "kp": {"expressions": ["make an effort"]}}]}
+        pn = E.proper_nouns_for_run(None, "x", rows, {"topic_en": "Wrinkles on the Moon"})
+        self.assertEqual(pn["en"], ["Moon", "make an effort"])          # Wrinklesは本文で小文字/文頭のみ=根拠なし
+
+    def test_xy_title_no_body_evidence_means_no_title_words(self):
         pn = E.proper_nouns_for_run(None, "x", {"std": [{"kp": {"expressions": ["make an effort"]}}, {"kind": "script"}]}, {"topic_en": "Wrinkles on the Moon"})
-        self.assertEqual(pn["en"], ["Wrinkles", "Moon", "make an effort"])
+        self.assertEqual(pn["en"], ["make an effort"])
+
+    def test_xy_jwst_title_function_words_dropped_acronym_kept(self):
+        """⑭(E1の再現): 題 'Not in the Picture, but Its Light Reaches Us! JWST's "Cosmic Case File"' から Not/Its/Us/Light/Cosmic...を除き、JWSTだけ残す。"""
+        t = "Not in the Picture, but Its Light Reaches Us! JWST’s “Cosmic Case File”."
+        rows = {"adv": [{"kind": "topic", "sentences": [{"text": "Today's topic is " + t}]}, {"kind": "script", "sentences": [{"text": "It is a light that reaches us."}]}]}
+        pn = E.proper_nouns_for_run(None, "x", rows, {"topic_en": t})
+        self.assertEqual(pn["en"], ["JWST"])
+        for bad in ("Not", "Its", "Us", "Picture", "Light", "Reaches", "Cosmic", "Case", "File"):
+            self.assertNotIn(bad, pn["en"])
+
+    def test_xy_sentence_initial_capital_is_not_evidence(self):
+        rows = {"std": [{"kind": "script", "sentences": [{"text": "Light travels far. \"Case closed,\" she said."}]}]}
+        pn = E.proper_nouns_for_run(None, "x", rows, {"topic_en": "Light and Case"})
+        self.assertEqual(pn["en"], [])
 
 
 class T17_GlossaryHeadingPreferred(unittest.TestCase):

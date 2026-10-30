@@ -220,9 +220,9 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
             rec("C", pre + "notice_hidden_when_none", (not nt) or nt["hidden"], nt)
         want_ja = [pt for pt in parts if pt.get("ja")]
         got = page.evaluate("() => [...document.querySelectorAll('.tr')].map(e => ({src: e.dataset.src, n: e.querySelectorAll('p').length, after: e.previousElementSibling ? (e.previousElementSibling.classList.contains('gloss') || e.previousElementSibling.classList.contains('script')) : false}))")
-        rec("C", pre + "translation_blocks_equal_approved_data", len(got) == len(want_ja) and all(g["src"] in ("approved_ja_manuscript", "approved_ja_original_in_dev_page") and g["after"] for g in got), dict(want=len(want_ja), got=len(got)))
-        no_ja_en = [pt for pt in parts if pt["kind"] in ("comment", "story", "oneline") and not pt.get("ja")]
-        leaked = page.evaluate("(idxs) => idxs.filter(i => { const b=document.querySelector('[data-part=\"'+i+'\"].partblock, [data-part=\"'+i+'\"].comment'); return b && b.querySelector('.tr'); })", [pt["idx"] for pt in no_ja_en])
+        rec("C", pre + "translation_blocks_equal_approved_data", len(got) == len(want_ja) and all(g["src"] in ("approved_ja_manuscript", "approved_ja_original_in_dev_page", "generated") and g["after"] for g in got), dict(want=len(want_ja), got=len(got)))
+        no_ja_en = [pt for pt in parts if pt["kind"] in ("preview", "comment", "story", "oneline") and not pt.get("ja")]
+        leaked = page.evaluate("(idxs) => idxs.filter(i => { const b=document.querySelector('[data-part=\"'+i+'\"].partblock, [data-part=\"'+i+'\"].comment, section.card[data-part=\"'+i+'\"]'); return b && b.querySelector('.tr'); })", [pt["idx"] for pt in no_ja_en])
         rec("C", pre + "blocks_without_approved_translation_show_none", not leaked, leaked)
         # ---- D 学習コーナー(0件は見出し・枠ごと非表示/順序) ----
         h2 = page.evaluate("() => [...document.querySelectorAll('.card h2')].map(h => h.textContent)")
@@ -344,6 +344,59 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
             maxt = max([x[1] for x in segs] or [0])
             ok = bool(started) and abs(first_t - ea["start"]) < 0.6 and samples[-1][2] and (not samples[-1][3]) and ea["end"] - 0.2 <= maxt <= ea["end"] + 0.35
             rec("H", pre + f"kp{i + 1}_plays_english_window_only", ok, dict(window=[ea["start"], ea["end"]], first_t=first_t, max_t=round(maxt, 3), stopped=samples[-1][2], back_to_full=not samples[-1][3]))
+        # ---- V Vocabulary & Expressions の英語音声(rev01-g。掲載項目は全件再生可) ----
+        vocab = L["vocab"]
+        vbtns = page.query_selector_all("#vocab details.vi summary button[data-act=vocab]") if vocab else []
+        rec("V", pre + "vocab_play_button_for_every_item", len(vbtns) == len(vocab) and all(isinstance(v.get("audio"), dict) for v in vocab), dict(btns=len(vbtns), vocab=len(vocab)))
+        if vocab:
+            codes = {v["audio"]["file"]: _head_ok(base + "/enduser/" + v["audio"]["file"]) for v in vocab if v.get("audio")}
+            badv = {f: c for f, c in codes.items() if c not in (200, 206)}
+            rec("V", pre + "vocab_audio_refs_200_or_206", len(codes) == len(vocab) and not badv, dict(n=len(codes), bad=dict(list(badv.items())[:3])))
+            # 通し再生の途中(20秒付近)で各項目を押す: その項目の単体mp3が最後まで再生され、文ハイライトは出ず、終端で通し再生の状態(位置・停止)へ戻る
+            bad_play = []
+            for i, v in enumerate(vocab):
+                try:   # 直前の項目の終端で通し音声のsrcが戻る途中(metadata未取得)にseekしない(取得前のcurrentTime代入は0へ戻る=検査側の競合)
+                    page.wait_for_function("() => document.getElementById('aud').readyState >= 1", timeout=5000)
+                except Exception:
+                    pass
+                page.evaluate("(t) => { const a=document.getElementById('aud'); a.currentTime=t; a.play(); }", 20.0)
+                page.wait_for_timeout(500)
+                before_open = page.evaluate("(i) => document.getElementById('vi-' + %s + '-' + i).open" % json.dumps(lv), i)
+                btn = vbtns[i]
+                btn.scroll_into_view_if_needed()
+                btn.click()
+                try:
+                    page.wait_for_function("(i) => window.__EUP && window.__EUP.mode === 'vocab' && window.__EUP.vi === i && !document.getElementById('aud').paused", arg=i, timeout=5000)
+                except Exception:
+                    pass
+                page.wait_for_timeout(250)
+                s_ = A()
+                during = dict(mode=(s_["eup"] or {}).get("mode"), vi=(s_["eup"] or {}).get("vi"), paused=s_["paused"], src_ok=s_["src"].endswith("/enduser/" + v["audio"]["file"]),
+                              active=(s_["eup"] or {}).get("active"), jg=(s_["eup"] or {}).get("jg"))
+                after_open = page.evaluate("(i) => document.getElementById('vi-' + %s + '-' + i).open" % json.dumps(lv), i)
+                try:
+                    page.wait_for_function("() => window.__EUP && window.__EUP.mode === 'full' && document.getElementById('aud').paused", timeout=int(v["audio"]["dur"] * 1000) + 6000)
+                except Exception:
+                    pass
+                e_ = A()
+                if not (during["mode"] == "vocab" and during["vi"] == i and not during["paused"] and during["src_ok"] and not during["active"] and not during["jg"]
+                        and before_open == after_open and (e_["eup"] or {}).get("mode") == "full" and e_["paused"] and abs(e_["t"] - 20.0) < 2.5 and e_["err"] is None):
+                    bad_play.append(dict(i=i, heading=v["heading"], during=during, open=[before_open, after_open], end=dict(mode=(e_["eup"] or {}).get("mode"), paused=e_["paused"], t=e_["t"])))
+            rec("V", pre + "vocab_each_item_plays_own_audio_and_returns", not bad_play, bad_play[:2])
+            # 再生中の一時停止ボタン(共有プレーヤ)で止まり、その後の通し再生が壊れていない
+            vbtns[0].scroll_into_view_if_needed()
+            vbtns[0].click()
+            page.wait_for_timeout(200)
+            page.click("#pp")
+            page.wait_for_timeout(300)
+            p1 = A()
+            page.evaluate("window.scrollTo(0, 0)")
+            page.click("#playAll")                      # 一時停止後に『全体を再生』で通し再生へ戻れる(共有プレーヤの状態が壊れていない)
+            page.wait_for_timeout(1500)
+            p2 = A()
+            rec("V", pre + "vocab_pause_then_full_playback_still_works", p1["paused"] and (not p2["paused"]) and (p2["eup"] or {}).get("mode") == "full" and (p2["eup"] or {}).get("gt", 0) > 0.5
+                and "/enduser/audio/vocab_" not in p2["src"], dict(paused_in_vocab=p1["paused"], mode=(p2["eup"] or {}).get("mode"), gt=(p2["eup"] or {}).get("gt"), src=p2["src"][-40:]))
+            page.evaluate("document.getElementById('aud').pause()")
         # ---- I 意味一覧(覚えておきたい表現) ----
         has_gl = any(pt.get("glossary") for pt in parts)
         if has_gl:
@@ -535,7 +588,7 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
             bad5.append((btn, st["eup"].get("active"), st["onJhl"]))
     rec("J", pre + "J5_seek_and_skip_buttons_sync", not bad5, bad5)
     # ---- 一時停止・再開の状態一致 ----
-    first_sid = next(s for s in sids_all if s in sid2key)
+    first_sid = next((s for s in sids_all if s in sid2key), sids_all[0])   # 連動対象の群が無いlevel(訳の生成が全段落不成立等)でも一時停止/再開の整合を検査する
     page.click(f'[data-sid="{first_sid}"]')
     page.wait_for_timeout(500)
     page.click("#pp")                                  # 一時停止

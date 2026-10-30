@@ -162,12 +162,33 @@ class L3_GeneratedTranslations(unittest.TestCase):
         self.assertEqual(stat[("adv", "preview")], "missing")
         self.assertTrue(all(r["linked"] == 0 for rows in lt["parts"].values() for r in rows))
 
-    def test_build_enduser_and_hook_do_not_enable_generation_by_default(self):
+    def test_library_build_is_off_by_default_but_official_hook_generates_missing_parts(self):
+        """委任_03B: build_enduser(ライブラリ直呼び)の既定は生成しない(None)。正式経路(hook_run/produce_enduser)は既定で本番LLM(DefaultLLM)を使い、
+        明示的にNoneを渡したときだけ生成しない。実APIへ黙って落ちる経路(make_translator(None))は無い。"""
         self.assertIsNone(inspect.signature(E.build_enduser).parameters["translate_llm"].default)
-        src = inspect.getsource(E.hook_run) + inspect.getsource(E.produce_enduser)
-        self.assertNotIn("translate_llm", src)                            # 委任_03Bまで配線しない
+        for fn in (E.hook_run, E.produce_enduser):
+            self.assertIs(inspect.signature(fn).parameters["translate_llm"].default, E.AUTO_TRANSLATE_LLM)
+        self.assertIsNone(E._resolve_translate_llm(None))                   # 明示None=生成しない
+        sentinel = object()
+        self.assertIs(E._resolve_translate_llm(sentinel), sentinel)         # 注入されたllmはそのまま
+        self.assertIsInstance(E._resolve_translate_llm(E.AUTO_TRANSLATE_LLM), TR.DefaultLLM)
         with self.assertRaises(ValueError):
-            E.make_translator("x", None)                                  # 実API既定へ黙って落ちない
+            E.make_translator("x", None)                                    # 実API既定へ黙って落ちない
+
+    def test_translate_exception_is_part_failure_but_model_contract_is_fatal(self):
+        """通信失敗等=そのpartだけ訳不成立(英語のみ+failures記録)。応答モデルが契約と違う=fallbackせずSTOP(例外を伝播)。"""
+        b = Built("x_moon")
+        def boom(part_id, sentences, *, level, family):
+            raise RuntimeError("network down")
+        art, _sp, bi = b.data(align_store=mk_store(), translate_fn=boom)
+        gt = bi["generated_translation"]
+        self.assertTrue(gt["failures"] and all(f["reasons"][0].startswith("exception: RuntimeError") for f in gt["failures"]))
+        self.assertTrue(any("訳の新規生成が不成立" in w for w in bi["warnings"]))
+        self.assertFalse(any(p.get("ja_source") == "generated" for L in art["levels"].values() for p in L["parts"]))
+        def contract(part_id, sentences, *, level, family):
+            raise TR.ModelContractError("model mismatch")
+        with self.assertRaises(TR.ModelContractError):
+            b.data(align_store=mk_store(), translate_fn=contract)
 
     def test_z_story_and_all_english_parts_get_generated_translation_with_mock(self):
         b = Built("z_melos02")
@@ -204,21 +225,24 @@ class L3_GeneratedTranslations(unittest.TestCase):
         self.assertTrue(bi["ja_align"]["applicable"])
         self.assertEqual(bi["ja_align"]["embedding"]["api_calls"], 0)
 
-    def test_preview_is_not_generated_until_the_asset_can_render_it(self):
-        """現行asset(rev01-f)のPreviewカードはtrHtmlを呼ばない=訳を描画できない。生成だけ走ってpage_verify(J2)で不合格になるのを防ぐ。03Bでasset rev01-g(J26)に更新するとき GENERATE_KINDS に preview が入る。"""
-        self.assertNotIn("preview", E.GENERATE_KINDS)
+    def test_preview_is_generated_because_asset_rev01_g_renders_it(self):
+        """asset rev01-g(J26)はPreviewカードにも訳(trHtml)を出す。Previewは GENERATE_KINDS に入り、訳の無いAdv Previewだけ生成する。Std Previewは日本語本文=対象外。"""
+        self.assertIn("preview", E.GENERATE_KINDS)
         js = (ROOT / "enduser_page_assets" / E.R.ASSET_BUILD_ID / "app.js").read_text(encoding="utf-8")
-        self.assertNotIn("sentHtml(p)) + trHtml(p)", js)
+        self.assertIn("sentHtml(p)) + trHtml(p)", js)
         b = Built("x_moon")
         llm = MockLLM()
         with tempfile.TemporaryDirectory() as d:
             art, _sp, bi = b.data(align_store=mk_store(), translate_fn=E.make_translator(d, llm))
         pv = [p for p in art["levels"]["adv"]["parts"] if p["kind"] == "preview"]
-        self.assertTrue(pv and all("ja" not in p for p in pv))
+        self.assertTrue(pv and all(p.get("ja_source") == "generated" and p.get("ja") for p in pv))
+        for p in art["levels"]["std"]["parts"]:
+            if p["kind"] == "preview":
+                self.assertNotIn("ja", p)                      # Std Previewは日本語本文(英語対なし)=生成しない
         for p in pv:
             for pa in p["paragraphs"]:
-                for s in pa:
-                    self.assertNotIn(s["text"], llm.seen_en)
+                for s_ in pa:
+                    self.assertIn(s_["text"], llm.seen_en)
 
     def test_approved_translations_are_never_regenerated(self):
         b = Built("x_moon")
@@ -237,7 +261,7 @@ class L3_GeneratedTranslations(unittest.TestCase):
                             self.assertNotIn(s["text"], llm.seen_en)       # 承認済みのstory英文はLLMに渡していない
         stat = {(lv, r["kind"]): r["status"] for lv, rows in bi["link_targets"]["parts"].items() for r in rows}
         self.assertEqual(stat[("adv", "story")], "approved_ja_manuscript")
-        self.assertEqual(stat[("adv", "preview")], "missing")                # 現行assetはPreviewカードに訳を描画しない -> asset更新(03B)まで生成しない
+        self.assertEqual(stat[("adv", "preview")], "generated")              # asset rev01-gはPreviewカードに訳を描画する -> 生成する
         self.assertEqual(stat[("adv", "oneline")], "generated")
         self.assertEqual(stat[("std", "oneline")], "generated")
         self.assertEqual(stat[("adv", "comment")], "generated")

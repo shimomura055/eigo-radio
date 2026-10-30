@@ -256,7 +256,7 @@ def _parse_row(tr: Node, lv: str, idx: int, family: str) -> dict:
         row["_ref_text"] = _ws("".join(s.text(skip=_skip_chunk_mark) for s in scripts))
         row["_ref_marks"] = _merge_marks([(sp.attrs.get("data-hl", ""), [k for k in sp.classes() if k in D.LK_CLASSES][0], _ws(sp.text()))
                                           for s in scripts for sp in s.find_all(pred=lambda x: x.tag in ("span", "strong") and any(k in D.LK_CLASSES for k in x.classes()))])
-        if kind == "story":
+        if kind in ("story", "oneline"):       # In One Lineの下線(lk3)も行内の『本文中の意味』一覧(ul.lk-meaning)に対応する(OPEN-612 E2: ⑭ Std 'a lower limit')
             row["meanings"] = meanings
         if ja_blocks:
             row["ja_blocks"] = ja_blocks
@@ -848,7 +848,13 @@ def generate_missing_translations(levels: dict, family: str, translate_fn) -> di
             if p["kind"] not in GENERATE_KINDS or p.get("ja") or not _part_en_only(p):
                 continue
             sents = [{"sid": s["sid"], "en": s["text"], "para": pi} for pi, pa in enumerate(p["paragraphs"]) for s in pa]
-            res = translate_fn(f"{lv}:{p['key']}", sents, level=lv, family=family)
+            try:
+                res = translate_fn(f"{lv}:{p['key']}", sents, level=lv, family=family)
+            except TR.ModelContractError:
+                raise                                                  # 応答モデルが契約と違う=fallbackせずSTOP
+            except Exception as e:                                     # noqa: BLE001  通信失敗等=そのpartは訳不成立(英語のみ+warning。次回実行はcache再利用で不足分のみ)
+                info["failures"].append({"level": lv, "key": p["key"], "reasons": [f"exception: {type(e).__name__}: {str(e)[:120]}"]})
+                continue
             meta = res["meta"]
             for k in ("translate", "verify"):
                 info["api_calls"][k] += int(meta["api_calls"].get(k, 0))
@@ -914,8 +920,35 @@ def build_link_targets(article: dict) -> dict:
     return {"parts": parts, "summary": summary}
 
 
+def load_vocab_audio(run_dir, rows_by_level, study_by_level) -> dict | None:
+    """production run(`<run>/{a2,b1b}/vocab_audio/vocab_audio.json` + mp3)からVocabulary音声を読む。掲載Vocabularyがあるlevelは**全件必須**:
+    vocab_audio.jsonが無い/completeでない/mp3が無い・sha不一致=ENDUSER_VOCAB_AUDIO_INCOMPLETEでSTOP。掲載Vocabularyが無いlevelは対象外。
+    戻り値 {"docs": {a2|b1b: doc}, "paths": {rel: Path}, "sha": {rel: sha256}}。掲載Vocabularyが全levelで0件ならNone(音声不要)。"""
+    import er137_vocab_extra_audio_01 as V
+    docs, paths, shas = {}, {}, {}
+    for lv_run, akey in V.LEVEL_TO_ARTICLE_KEY.items():
+        if akey not in rows_by_level or not (study_by_level.get(akey) or {}).get("vocab"):
+            continue
+        d = Path(run_dir) / lv_run / "vocab_audio"
+        jp = d / "vocab_audio.json"
+        if not jp.is_file():
+            stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", f"{akey}: Vocabulary音声の索引(vocab_audio.json)が無い。TTS段(tts)でVocabulary追加解説の英語音声を生成し、組立のGate後にexportしてから再実行してください(音声なしの項目を掲載しません)")
+        doc = json.loads(jp.read_text(encoding="utf-8"))
+        if doc.get("schema") != V.SCHEMA_VERSION or not doc.get("complete"):
+            stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", f"{akey}: vocab_audio.jsonがcompleteでない: {doc.get('errors')}")
+        docs[lv_run] = doc
+        for r in doc["items"]:
+            if not r.get("file") or not r.get("mp3"):
+                stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", f"{akey}: 音声の無い項目あり: {r.get('term')}")
+            mp = d / r["mp3"]
+            if not mp.is_file() or sha256_file(mp) != r["sha256"]:
+                stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", f"{akey}: mp3が無い/sha不一致: {r['mp3']}")
+            paths[r["file"]], shas[r["file"]] = mp, r["sha256"]
+    return {"docs": docs, "paths": paths, "sha": shas} if docs else None
+
+
 def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level: dict, ja: dict | None, meta: dict, *,
-                       kp_audio: dict | None = None, probe=None, extra_build_info: dict | None = None, align_store=None, translate_fn=None) -> tuple:
+                       kp_audio: dict | None = None, probe=None, extra_build_info: dict | None = None, align_store=None, translate_fn=None, judge=None, vocab_audio=None) -> tuple:
     """(article, sync_public_by_level, build_info)を返す。検査(sync受入・glossary assert・validate_output)をすべて通ったときだけ返る。"""
     if probe is None:
         stop("ENDUSER_PROBE_MISSING", "probe(音声sha/長さ)が必要")
@@ -943,7 +976,7 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
             if "paragraphs" in r:
                 p["paragraphs"] = r["paragraphs"]
                 sent_n += len(r["sentences"])
-            if r["kind"] == "story":
+            if r["kind"] == "story" or (r["kind"] == "oneline" and r.get("meanings")):      # oneline: 一覧がある行だけ(無い既存記事のarticle.jsonは不変)
                 p["meanings"] = r.get("meanings", [])
             if r["kind"] == "kp":
                 p["kp_header"] = r["kp_header"]
@@ -975,7 +1008,7 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
         for lv in levels:
             trans_cov[lv] = translation_coverage_of(levels[lv]["parts"])
     # 英語文 -> 日本語訳の連動(ja_align)。訳が表示されるpart。align_store無し(testの直接呼出)は未適用。埋め込み失敗は全null+degraded(M5。生成は止めない)
-    ja_info = AL.build_article_align(article, align_store, name_map=None) if align_store is not None else None
+    ja_info = AL.build_article_align(article, align_store, name_map=None, judge=judge) if align_store is not None else None
     build_info = {
         "schema": R.SCHEMA_BUILD_INFO, "id": meta["id"], "family": meta["family"], "asset_build": R.ASSET_BUILD_ID,
         "dev_index_sha256": meta["dev_index_sha256"], "audio_sha256": dict(sorted(audio_sha.items())),
@@ -994,6 +1027,12 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
         build_info["cost"]["translate_cost_jpy"] = gen_info["cost_jpy"]
         if gen_info["failures"]:
             build_info["warnings"].append("日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): " + "; ".join(f"{f['level']} {f['key']}" for f in gen_info["failures"])[:300])
+    if judge is not None and hasattr(judge, "stats"):       # M8(LLM確認)を使った記録。新しい対応は作らない(DP候補の可否のみ)
+        import er135_enduser_align_judge_01 as JU
+        build_info["judge"] = {"model": JU.MODEL, "prompt_sha256": JU.PROMPT_SHA256, **{k: judge.stats[k] for k in ("calls", "pairs", "ok", "cache_hits")},
+                               "failures": list(judge.stats["failures"])}
+        if judge.stats["failures"]:
+            build_info["warnings"].append("対応づけのLLM確認で不成立のchunkあり(該当群は点灯しない=安全側): " + "; ".join(judge.stats["failures"])[:200])
     if ja_info is not None:
         build_info["ja_align"] = ja_info
         build_info["cost"].update({"embedding_api_calls": ja_info["embedding"]["api_calls"], "embedding_tokens": ja_info["embedding"]["tokens"],
@@ -1008,6 +1047,17 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
                 build_info["warnings"].extend(v)
             else:
                 build_info[k] = v
+    if vocab_audio is not None:       # Vocabulary & Expressions掲載項目の英語音声(全件必須=fail-closed。音声なしの項目を掲載したまま通さない)
+        import er137_vocab_extra_audio_01 as V
+        try:
+            V.apply_to_article(article, vocab_audio["docs"])
+        except V.VocabAudioIncomplete as e:
+            stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", str(e)[:400])
+        bad = V.validate_article(article)
+        if bad:
+            stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", "; ".join(bad)[:400])
+        build_info["vocab_audio"] = {"required": True, "files": {rel: vocab_audio["sha"][rel] for rel in sorted(vocab_audio["sha"])},
+                                     "items": sum(len(L.get("vocab") or []) for L in article["levels"].values())}
     validate_output(article, sync_public, build_info, rows_by_level, study_by_level, meta, probe=probe)
     return article, sync_public, build_info
 
@@ -1036,7 +1086,8 @@ _S_FIELD = _obj({"label": S_STR, "html": S_STR})
 # 英語文群 -> 日本語訳の範囲(UTF-16 code unitのオフセット [段落index,開始,終了])。ja=nullは非ハイライト
 _S_JA_GROUP = _obj({"g": S_INT, "sids": _arr(S_STR), "ja": {"type": ["array", "null"], "items": S_INT}, "conf": S_NUM,
                     "how": {"type": "string", "enum": list(AL.HOWS)}})
-_S_ITEM = _obj({"heading": S_STR_OR_NULL, "fields": _arr(_S_FIELD)})
+_S_VOCAB_AUDIO = _obj({"kind": {"type": "string", "enum": ["standalone"]}, "file": S_STR, "dur": S_NUM, "sha256": S_STR})
+_S_ITEM = _obj({"heading": S_STR_OR_NULL, "fields": _arr(_S_FIELD), "audio": _S_VOCAB_AUDIO}, required=["heading", "fields"])
 _S_PART = _obj({
     "idx": S_INT, "key": S_STR, "label": S_STR, "kind": {"type": "string", "enum": ["sfx", "fixed", "topic", "jtitle", "preview", "kp", "comment", "story", "oneline"]},
     "start": S_NUM, "dur": S_NUM, "seg": S_STR,
@@ -1074,6 +1125,8 @@ SCHEMA_BUILD_INFO_SPEC = _obj({
     "ja_align": {"type": "object"},
     "link_targets": {"type": "object"},
     "generated_translation": {"type": "object"},
+    "judge": {"type": "object"},
+    "vocab_audio": {"type": "object"},
     "timeline_check": {"type": "object"},
     "episode_check": {"type": "object"},
 }, required=["schema", "id", "family", "asset_build", "dev_index_sha256", "audio_sha256", "assets", "files", "sync", "translation_coverage", "glossary", "ja_manuscript", "warnings", "cost"])
@@ -1252,8 +1305,8 @@ def check_assets(assets_dir=ASSET_DIR) -> dict:
 # ------------------------------------------------------------
 # 書込(M4: 一時dir→一括rename。失敗時にenduser/を書かない・既存enduser/を失敗時に削除しない)
 # ------------------------------------------------------------
-def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR) -> dict:
-    """data=build_enduser_data()の戻り値 (article, sync_public_by_level, build_info)。"""
+def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR, vocab_audio_paths: dict | None = None) -> dict:
+    """data=build_enduser_data()の戻り値 (article, sync_public_by_level, build_info)。vocab_audio_paths={enduser相対path: 元mp3 Path}(Vocabulary音声。コピー後にsha照合)。"""
     article, sync_public, build_info = data
     out_dir = Path(out_dir)
     shas = check_assets(assets_dir)                     # 失敗=ここでSTOP(何も書かない)
@@ -1276,6 +1329,14 @@ def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR) -> dict:
         put("data/article.json", article)
         for lv, sp in sync_public.items():
             put(f"data/sync_{lv}.json", sp)
+        for rel, src in sorted((vocab_audio_paths or {}).items()):
+            dst = tmp / rel
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dst)
+            if sha256_file(dst) != (build_info.get("vocab_audio") or {}).get("files", {}).get(rel):
+                stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", f"{rel}: コピー後のsha256が索引と一致しない")
+        if build_info.get("vocab_audio") and set(build_info["vocab_audio"]["files"]) != set(vocab_audio_paths or {}):
+            stop("ENDUSER_VOCAB_AUDIO_INCOMPLETE", "build_info.vocab_audioのfilesとコピー対象が一致しない")
         bi = json.loads(json.dumps(build_info))
         bi["assets"] = dict(shas)
         bi["files"] = {**files, **{n: shas[n] for n in ASSET_FILES}}
@@ -1304,8 +1365,10 @@ def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR) -> dict:
 # 一括(build)
 # ------------------------------------------------------------
 def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja_manuscript=None, kp_audio=None, asr=None, probe=None,
-                  assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None, align_cache_dir=None, align_store=None, translate_llm=None, translate_cache_dir=None) -> dict:
-    """translate_llm: 訳が無い英語part(story/preview/comment/oneline)を新規生成するときだけ渡す llm(kind, prompt)->str。
+                  assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None, align_cache_dir=None, align_store=None, translate_llm=None, translate_cache_dir=None,
+                  judge=None, vocab_audio="auto") -> dict:
+    """vocab_audio: "auto"=run_dirがあるとき掲載Vocabularyの英語音声を全件必須で組込む(無ければENDUSER_VOCAB_AUDIO_INCOMPLETEでSTOP)/ load_vocab_audio()の戻り値dict=それを組込む(test用)/ None=組込まない(run_dir無しの直呼び)。
+    translate_llm: 訳が無い英語part(story/preview/comment/oneline)を新規生成するときだけ渡す llm(kind, prompt)->str。
     既定None=生成しない(その部分は ja_source=missing=連動N/A・英語のみ)。実生成を有効にするのは委任_03B(hook_runからの受け渡し)。"""
     t0 = time.time()
     dev_dir = Path(dev_dir).resolve()    # 相対pathだと音声pathが二重結合になる(runnerのctx.pages_dirは相対)
@@ -1336,10 +1399,12 @@ def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja
         if not tcd:
             raise ValueError("translate_llmを渡すときは translate_cache_dir(または align_cache_dir)が必要")
         translate_fn = make_translator(tcd, translate_llm)
+    va = (vocab_audio if isinstance(vocab_audio, dict)
+          else load_vocab_audio(run_dir, rows_by_level, study_by_level) if (vocab_audio == "auto" and run_dir) else None)
     article, sync_public, build_info = build_enduser_data(rows_by_level, sync_by_level, study_by_level, ja, meta, kp_audio=kp_audio, probe=probe, extra_build_info=extra,
-                                                          align_store=store, translate_fn=translate_fn)
+                                                          align_store=store, translate_fn=translate_fn, judge=judge, vocab_audio=va)
     build_info["cost"]["build_wall_s"] = round(time.time() - t0, 2)
-    res = write_enduser_page(out_dir or (dev_dir / ENDUSER_DIRNAME), (article, sync_public, build_info), assets_dir)
+    res = write_enduser_page(out_dir or (dev_dir / ENDUSER_DIRNAME), (article, sync_public, build_info), assets_dir, vocab_audio_paths=(va or {}).get("paths"))
     res["article"] = article
     return res
 
@@ -1418,6 +1483,23 @@ def verify_consistency(public_dir, assets_dir=None, cache_dir=None) -> dict:
         checked["link_targets"] = bi.get("link_targets", {}).get("summary")
     except Exception as e:                              # noqa: BLE001
         bad("ENDUSER_LINK_TARGETS", f"link_targets/生成訳の検査で例外: {type(e).__name__}: {e}")
+    # Vocabulary音声: 掲載項目の全件にaudioがあり、mp3が実在しshaが一致(build_info.vocab_audioとも一致)
+    try:
+        import er137_vocab_extra_audio_01 as VA
+        has_vocab = any(L.get("vocab") for L in art["levels"].values())
+        va_bi = bi.get("vocab_audio")
+        if va_bi:
+            for msg in VA.validate_article(art, str(ed)):
+                bad("ENDUSER_VOCAB_AUDIO", msg)
+            want = {v["audio"]["file"]: v["audio"]["sha256"] for L in art["levels"].values() for v in L.get("vocab") or [] if v.get("audio")}
+            if want != va_bi.get("files"):
+                bad("ENDUSER_VOCAB_AUDIO", "build_info.vocab_audio.filesがarticle.jsonのvocab[].audioと一致しない")
+            checked["vocab_audio"] = len(want)
+        elif any(v.get("audio") for L in art["levels"].values() for v in L.get("vocab") or []):
+            bad("ENDUSER_VOCAB_AUDIO", "vocab[].audioがあるのにbuild_info.vocab_audioが無い")
+        checked["vocab_items"] = sum(len(L.get("vocab") or []) for L in art["levels"].values()) if has_vocab else 0
+    except Exception as e:                              # noqa: BLE001
+        bad("ENDUSER_VOCAB_AUDIO", f"Vocabulary音声の検査で例外: {type(e).__name__}: {e}")
     # ファイルsha
     for rel, sha in bi["files"].items():
         p = ed / rel
@@ -1591,6 +1673,28 @@ def episode_checks(dev_dir, rows_by_level: dict, meta: dict, probe, run_dir=None
     return out
 
 
+_TITLE_FUNCTION_WORDS = frozenset(
+    "a an the and or but nor so yet for of in on at to by from with without into onto over under about as is are was were be been it its it's i we us you he she they them his her "
+    "their our my your this that these those not no do does did how what why who when where which if than then there here can will would could should may might must".split())
+
+
+def _is_acronym_like(w: str) -> bool:
+    """全大文字(2字以上: JWST)または語中に大文字を持つ(iPhone)語。Title Caseの語頭大文字だけの語はFalse。"""
+    core = re.sub(r"['\-].*$", "", w)
+    return (len(core) >= 2 and core.isupper()) or any(c.isupper() for c in core[1:])
+
+
+def _mid_sentence_capitalised(texts) -> set:
+    """本文の文中(文頭・引用符直後を除く)で大文字始まりで現れる語の集合。固有名詞の根拠(題のTitle Case由来の大文字と区別する)。"""
+    out = set()
+    for t in texts:
+        for m in re.finditer(r"[A-Z][A-Za-z'\-]+", t or ""):
+            before = t[:m.start()].rstrip()
+            if before and before[-1] not in ".!?\"“”‘’'(:;—" :
+                out.add(m.group(0))
+    return out
+
+
 def proper_nouns_for_run(run_dir, family: str, rows_by_level: dict | None = None, meta: dict | None = None) -> dict:
     """FZ-DIALOGUE-LR-ADOPTION-01 委任_07: runから機械的に得られる固有名詞(Whisper initial_prompt + 既知名正規化用。ページ表示の名前は不変)。
     戻り値 {"en":[...], "ja":[...]}。Production rosterを読み取るだけ(書込なし)。
@@ -1618,8 +1722,16 @@ def proper_nouns_for_run(run_dir, family: str, rows_by_level: dict | None = None
                 if re.search(r"(?<![A-Za-z])" + re.escape(cap) + r"(?![A-Za-z])", text) and not re.search(r"(?<![A-Za-z])" + re.escape(name) + r"(?![A-Za-z])", text):
                     add(en, cap)
     else:
+        # 題(Title Case)の大文字語を全部promptに入れると、Whisperが列挙を模倣して小文字の機能語(in the/but等)を脱落させる(OPEN-612 E1)。
+        # 固有名詞と言える根拠のある語だけ入れる: 全大文字/語中大文字(JWST・iPhone等)、または本文(題以外の行)の文中で大文字始まりで現れる語。
+        # 一般語・機能語・Title Case由来の大文字は除く。
+        body = [s_["text"] for lv_rows in (rows_by_level or {}).values() for r in lv_rows if r.get("kind") != "topic" for s_ in (r.get("sentences") or [])]
+        mid_caps = _mid_sentence_capitalised(body)
         for w in re.findall(r"[A-Z][A-Za-z'\-]+", (meta or {}).get("topic_en", "") or ""):
-            add(en, w)
+            if w.lower() in _TITLE_FUNCTION_WORDS:
+                continue
+            if _is_acronym_like(w) or w in mid_caps:
+                add(en, w)
         for lv_rows in (rows_by_level or {}).values():
             for r in lv_rows:
                 for ex in (r.get("kp") or {}).get("expressions", []) if isinstance(r.get("kp"), dict) else []:
@@ -1627,8 +1739,34 @@ def proper_nouns_for_run(run_dir, family: str, rows_by_level: dict | None = None
     return {"en": en, "ja": ja}
 
 
+class _AutoLLM:
+    """正式経路(hook_run/produce_enduser)の既定: 訳が無いpartの生成に本番LLM(DefaultLLM=gpt-6-luna、routing ENDUSER_JA_TRANSLATE/VERIFY)を使う。
+    明示的に`translate_llm=None`を渡したときだけ生成しない(test・生成を伴わない再検証用)。承認済みの訳があるpartは再生成しない。"""
+
+
+AUTO_TRANSLATE_LLM = _AutoLLM()
+AUTO_JUDGE_LLM = _AutoLLM()        # M8(対応づけのLLM確認)の既定。明示的に`judge_llm=None`で無効
+
+
+def _resolve_judge(judge_llm, cache_dir):
+    """AUTO -> 本番LLM(DefaultLLM=gpt-6-luna、routing ENDUSER_JA_ALIGN_JUDGE)+応答キャッシュ。None -> 使わない。注入されたllm(prompt)->strはそのまま。"""
+    if judge_llm is None:
+        return None
+    import er135_enduser_align_judge_01 as JU
+    if isinstance(judge_llm, _AutoLLM):
+        judge_llm = JU.DefaultLLM()
+    return JU.make_judge(judge_llm, cache_dir=cache_dir)
+
+
+def _resolve_translate_llm(translate_llm):
+    if isinstance(translate_llm, _AutoLLM):
+        import er135_enduser_translate_01 as TR
+        return TR.DefaultLLM()
+    return translate_llm
+
+
 def produce_enduser(dev_dir, family: str, *, run_dir=None, cache_dir, ja_manuscript=None, y_article_ja=None, model="medium",
-                    out_dir=None, align_mode="direct") -> dict:
+                    out_dir=None, align_mode="direct", translate_llm=AUTO_TRANSLATE_LLM, judge_llm=AUTO_JUDGE_LLM) -> dict:
     """正式経路の一括生成(API 0): dev index.html -> 行抽出 -> 02A `sync_level`(ローカルfaster-whisper。tts_textは渡さず直接整列=Fable決定)
     -> §6-2(4)(5) -> build_enduser(validator込み・atomic書込)。失敗は`EnduserPageStop(ENDUSER_*)`(dev index.htmlと既存enduser/は不変)。
     再実行時は`cache_dir`(segment mp3 sha256単位のASR生出力)によりASR 0回。"""
@@ -1654,7 +1792,8 @@ def produce_enduser(dev_dir, family: str, *, run_dir=None, cache_dir, ja_manuscr
         sync_wall[lv] = round(time.time() - t1, 1)
     ep = episode_checks(dev_dir, rows_by_level, meta, probe, run_dir=run_dir)
     res = build_enduser(dev_dir, family, sync_by_level, run_dir=run_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, probe=probe,
-                        out_dir=out_dir, extra_build_info={"episode_check": ep}, align_cache_dir=cache_dir)
+                        out_dir=out_dir, extra_build_info={"episode_check": ep}, align_cache_dir=cache_dir,
+                        translate_llm=_resolve_translate_llm(translate_llm), translate_cache_dir=cache_dir, judge=_resolve_judge(judge_llm, cache_dir))
     res["sync_by_level"] = {lv: {"gate": s["gate"]["status"], "min_row_ratio": s["gate"]["token_match"]["min_row_ratio"], "cost": s["cost"],
                                  "wall_s": sync_wall[lv]} for lv, s in sync_by_level.items()}
     res["episode_check"] = ep
@@ -1671,10 +1810,21 @@ def find_x_ja_manuscript(source_dir):
     return None
 
 
-def hook_run(dev_dir, family: str, *, run_dir, cache_dir, ja_manuscript=None, y_article_ja=None, result_json=None, browser_verify=True, model="medium") -> dict:
+def _gen_summary(bi: dict) -> dict:
+    """生成訳の要約(件数・失敗・実費)。生成を行わなかった/不要だったときは calls 0。"""
+    g = bi.get("generated_translation")
+    if not g:
+        return {"enabled": False, "parts": 0, "failures": [], "api_calls": {"translate": 0, "verify": 0}, "cost_jpy": 0.0}
+    return {"enabled": True, "parts": sum(len(v) for v in g["parts"].values()), "failures": g["failures"], "api_calls": g["api_calls"],
+            "cost_jpy": g["cost_jpy"], "cache_hits": g.get("cache_hits", 0)}
+
+
+def hook_run(dev_dir, family: str, *, run_dir, cache_dir, ja_manuscript=None, y_article_ja=None, result_json=None, browser_verify=True, model="medium",
+             translate_llm=AUTO_TRANSLATE_LLM, judge_llm=AUTO_JUDGE_LLM) -> dict:
     """runner hook共通入口: 生成 -> verify_consistency -> Playwright検証(PC+モバイル模擬)。失敗は`EnduserPageStop(ENDUSER_*)`。
     成功時は要約dictを返し、result_jsonへ保存する(公開dirには置かない)。"""
-    res = produce_enduser(dev_dir, family, run_dir=run_dir, cache_dir=cache_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, model=model)
+    res = produce_enduser(dev_dir, family, run_dir=run_dir, cache_dir=cache_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, model=model,
+                          translate_llm=translate_llm, judge_llm=judge_llm)
     vc = verify_consistency(dev_dir, cache_dir=cache_dir)
     if not vc["ok"]:
         raise EnduserPageStop("ENDUSER_CONSISTENCY", "生成直後のverify_consistencyが不合格: " + json.dumps(vc["violations"], ensure_ascii=False)[:600])
@@ -1682,6 +1832,7 @@ def hook_run(dev_dir, family: str, *, run_dir, cache_dir, ja_manuscript=None, y_
                "sync": res["sync_by_level"], "episode_check": res["episode_check"], "translation_coverage": res["build_info"]["translation_coverage"],
                "dev_index_sha256": res["build_info"]["dev_index_sha256"], "enduser_index_sha256": res["build_info"]["files"]["index.html"],
                "total_wall_s": res["total_wall_s"], "api_calls": 0, "browser_verify": None,
+               "generated_translation": _gen_summary(res["build_info"]), "judge": res["build_info"].get("judge"),
                "ja_align": {"coverage": ((res["build_info"].get("ja_align") or {}).get("coverage")), "degraded": ((res["build_info"].get("ja_align") or {}).get("degraded") or []),
                             "embedding": ((res["build_info"].get("ja_align") or {}).get("embedding")), "recompute": vc["checked"].get("ja_align", {}).get("recompute")}}
     if browser_verify:
@@ -1790,6 +1941,8 @@ def main(argv=None) -> int:
     pr.add_argument("--y-article-ja")
     pr.add_argument("--result-json")
     pr.add_argument("--no-browser", action="store_true")
+    pr.add_argument("--no-translate", action="store_true", help="訳が無いpartの新規生成をしない(既定は生成する=正式経路と同じ)")
+    pr.add_argument("--no-judge", action="store_true", help="対応づけのLLM確認(M8)をしない(既定は使う=正式経路と同じ)")
     pc = sub.add_parser("publish-copy", help="Y公開手順の補助: pages_dirのenduser/を公開dirへcopyしコピー先で検証")
     pc.add_argument("--pages-dir", required=True)
     pc.add_argument("--public-dir", required=True)
@@ -1798,7 +1951,8 @@ def main(argv=None) -> int:
     try:
         if a.cmd == "produce":
             r = hook_run(a.dev_dir, a.family, run_dir=a.run_dir, cache_dir=a.cache_dir, ja_manuscript=a.ja_manuscript, y_article_ja=a.y_article_ja,
-                         result_json=a.result_json, browser_verify=not a.no_browser)
+                         result_json=a.result_json, browser_verify=not a.no_browser,
+                         translate_llm=(None if a.no_translate else AUTO_TRANSLATE_LLM), judge_llm=(None if a.no_judge else AUTO_JUDGE_LLM))
             print(json.dumps(r, ensure_ascii=False, indent=1))
             return 0
         if a.cmd == "publish-copy":

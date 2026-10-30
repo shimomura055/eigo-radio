@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(現行rev01-f。旧rev01-eは凍結・残置)をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
+"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(現行rev01-g。rev01-f・旧rev01-eは残置[rev01-e=藪の中のみ凍結])をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
 
  - 入力 : DEV rev01-e(`user_test/dev_enduser_page_01/{index.html,app.js,style.css}`。**読み取りのみ・DEVは不変**)
  - 出力 : `enduser_page_assets/rev01-e/{index.html,app.js,style.css,ASSET_SHA256.json}` と `ASSET_DIFF_01.md`(許可リスト=EDITSの一覧)
@@ -18,7 +18,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 DEV_DIR = ROOT / "user_test" / "dev_enduser_page_01"
-OUT_DIR = HERE / "rev01-f"
+OUT_DIR = HERE / "rev01-g"
 FILES = ("index.html", "app.js", "style.css")
 
 
@@ -169,6 +169,61 @@ EDITS = [
     dict(id="C5", file="style.css", kind="ADD", why="rev01-f: 日本語訳の対応群の点灯(.sent.onと同じ変数・同じ見た目)",
          old=".kpitem .th2{margin-top:6px}\n",
          new=".kpitem .th2{margin-top:6px}\n.jhl{border-radius:4px;transition:background .12s}\n.jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\n"),
+    # ---------------- rev01-g(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03B) ----------------
+    dict(id="H4a", file="index.html", kind="ADD", why="rev01-g: キャッシュ更新用のbuild-id(rev01-e -> rev01-g。assetの更新が古いJSキャッシュで隠れない)",
+         old='<meta name="build-id" content="rev01-e">', new='<meta name="build-id" content="rev01-g">'),
+    dict(id="H4b", file="index.html", kind="ADD", why="rev01-g: style.cssのcache-bust",
+         old='href="style.css?v=rev01-e"', new='href="style.css?v=rev01-g"'),
+    dict(id="H4c", file="index.html", kind="ADD", why="rev01-g: body data-build",
+         old='<body data-build="rev01-e">', new='<body data-build="rev01-g">'),
+    dict(id="H4d", file="index.html", kind="ADD", why="rev01-g: app.jsのcache-bust",
+         old='src="app.js?v=rev01-e"', new='src="app.js?v=rev01-g"'),
+    dict(id="J26", file="app.js", kind="ADD", why="rev01-g: Previewカードにも日本語訳(trHtml)を出す(訳が無いPreviewは空文字=表示不変)。Adv Previewの生成訳の表示場所",
+         old="      out += card('Preview', ja ? '<div class=\"jp\">' + sentHtml(p) + '</div>' : sentHtml(p), { part: p.idx, btn: btns(p) });",
+         new="      out += card('Preview', (ja ? '<div class=\"jp\">' + sentHtml(p) + '</div>' : sentHtml(p)) + trHtml(p), { part: p.idx, btn: btns(p) });"),
+    dict(id="J27", file="app.js", kind="ADD", why="rev01-g: Vocabulary単体音声の状態(mode='vocab'・vocabI=再生中の項目・resumeAt=再生前の通し位置)",
+         old="var mode = 'full', curIdx = null, kpEnd = null;   // 'full'(全体音声) / 'kp'(Key Phrase英語区間のみ)",
+         new="var mode = 'full', curIdx = null, kpEnd = null, vocabI = null, resumeAt = null;   // 'full'(全体音声) / 'kp'(Key Phrase英語区間のみ) / 'vocab'(Vocabulary項目の単体音声)"),
+    dict(id="J28", file="app.js", kind="ADD", why="rev01-g: Vocabulary & Expressionsの各項目(summary内=閉じていても押せる)に英語音声の再生ボタン(article.jsonのvocab[i].audioがある項目)",
+         old="'><summary><b class=\"vh\">' + esc(it.heading) + '</b><span class=\"vm\">' + mean + '</span></summary><dl>' +",
+         new="'><summary><b class=\"vh\">' + esc(it.heading) + '</b><span class=\"vm\">' + mean + '</span>' + (it.audio ? '<button type=\"button\" class=\"seek part vplay\" data-act=\"vocab\" data-i=\"' + vi + '\" aria-label=\"' + esc(it.heading) + ' の英語音声を再生\">▶ 英語音声</button>' : '') + '</summary><dl>' +"),
+    dict(id="J29", file="app.js", kind="ADD", why="rev01-g: playVocab/endVocab(単体mp3を共有プレーヤで再生。終端で通し再生の状態へ戻す=再生前の位置・自動再生なし)",
+         old="  function endKp() {",
+         new=("  function playVocab(vi) {   // rev01-g: Vocabulary項目の英語音声(KPと同じ契約の単体mp3。区間指定なし)\n"
+              "    var it = L.vocab && L.vocab[vi], au = it && it.audio; if (!au) return;\n"
+              "    if (mode !== 'vocab') resumeAt = mode === 'full' ? (A.currentTime || 0) : (mode === 'kp' && curIdx != null ? parts[curIdx].start : null);\n"
+              "    mode = 'vocab'; vocabI = vi; curIdx = null; kpEnd = null;\n"
+              "    ensureSrc(new URL(au.file, location.href).href);\n"
+              "    withMeta(function () { A.currentTime = 0; playNow(); }); labels();\n"
+              "  }\n"
+              "  function endVocab() {   // 単体音声の終端: 停止して通し再生の状態へ戻す(自動再生しない)\n"
+              "    var at = resumeAt; A.pause(); mode = 'full'; vocabI = null; resumeAt = null;\n"
+              "    ensureSrc(audioUrl(L.main)); withMeta(function () { A.currentTime = at || 0; tick(); });\n"
+              "  }\n"
+              "  function endKp() {")),
+    dict(id="J30", file="app.js", kind="ADD", why="rev01-g: vocabモードの長さ(単体mp3のdur)",
+         old="var d = mode === 'kp' && curIdx != null ? parts[curIdx].dur : L.total_sec;",
+         new="var d = mode === 'vocab' && vocabI != null ? L.vocab[vocabI].audio.dur : (mode === 'kp' && curIdx != null ? parts[curIdx].dur : L.total_sec);"),
+    dict(id="J31", file="app.js", kind="ADD", why="rev01-g: vocabモードは全編のどの部分でもない(通し再生のpart強調・文ハイライトを出さない)",
+         old="    if (mode === 'kp') return curIdx;\n",
+         new="    if (mode === 'vocab') return null;\n    if (mode === 'kp') return curIdx;\n"),
+    dict(id="J32", file="app.js", kind="ADD", why="rev01-g: nowLabelにvocab項目名",
+         old="$('nowLabel').textContent = (mode === 'kp' && curIdx != null) ?",
+         new="$('nowLabel').textContent = (mode === 'vocab' && vocabI != null) ? ('英語音声: ' + L.vocab[vocabI].heading) : (mode === 'kp' && curIdx != null) ?"),
+    dict(id="J33", file="app.js", kind="ADD", why="rev01-g: vocabモード中はtickが文ハイライト(英語・日本語)を更新しない(単体音声の秒を全編の秒と取り違えない)",
+         old="    if (sync.length) { var ga = findActive(gt()); jaHold = ga ? null : gapGroup(gt()); highlight(ga); }\n",
+         new="    if (sync.length) { var ga = mode === 'vocab' ? null : findActive(gt()); jaHold = (ga || mode === 'vocab') ? null : gapGroup(gt()); highlight(ga); }\n"),
+    dict(id="J34", file="app.js", kind="ADD", why="rev01-g: Vocabulary再生ボタンのclick(summary内のためdetailsの開閉を抑止)",
+         old="    if (b.dataset.act === 'stop') { A.pause(); tick(); return; }",
+         new="    if (b.dataset.act === 'vocab') { e.preventDefault(); playVocab(Number(b.dataset.i)); return; }\n    if (b.dataset.act === 'stop') { A.pause(); tick(); return; }"),
+    dict(id="J35", file="app.js", kind="ADD", why="rev01-g: 単体音声の終端でendVocab()",
+         old="A.addEventListener('ended', function () { tick(); });",
+         new="A.addEventListener('ended', function () { if (mode === 'vocab') endVocab(); else tick(); });"),
+    dict(id="J36", file="app.js", kind="ADD", why="rev01-g: 検証用の状態__EUPにvocab項目(vi)を追加",
+         old="src: A.src, jg: activeG };", new="src: A.src, jg: activeG, vi: vocabI };"),
+    dict(id="C6", file="style.css", kind="ADD", why="rev01-g: Vocabulary再生ボタンのレイアウト(PC=右横、mobile=意味の下)",
+         old=".jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\n",
+         new=".jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\ndetails.vi summary .vplay{margin-left:12px;vertical-align:middle;font-size:13px}\n@media(max-width:640px){details.vi summary .vplay{display:block;margin:6px 0 4px 0}}\n"),
 ]
 
 
@@ -204,10 +259,10 @@ def main():
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         for n, t in res.items():
             (OUT_DIR / n).write_bytes(t.encode("utf-8"))
-        man = {"asset_build": "rev01-f", "derived_from": "DEV rev01-e + EDITS(機械的派生。許可リスト=derive_assets_01.py EDITS。rev01-fは連動ハイライトJ19-J25/C5を追加)", "files": shas,
+        man = {"asset_build": "rev01-g", "derived_from": "DEV rev01-e + EDITS(機械的派生。許可リスト=derive_assets_01.py EDITS。rev01-fは連動ハイライトJ19-J25/C5、rev01-gはPreview訳J26・Vocabulary音声J27-J36/C6・build-id H4を追加)", "files": shas,
                "edits": [{"id": e["id"], "file": e["file"], "kind": e["kind"], "why": e["why"]} for e in EDITS]}
         (OUT_DIR / "ASSET_SHA256.json").write_text(json.dumps(man, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-        lines = ["# production asset 差分一覧(DEV rev01-e -> production rev01-f)", "", "許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。", "",
+        lines = ["# production asset 差分一覧(DEV rev01-e -> production rev01-g)", "", "許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。", "",
                  "| id | file | 種別 | 内容 |", "|---|---|---|---|"]
         lines += [f"| {e['id']} | {e['file']} | {e['kind']} | {e['why']} |" for e in EDITS]
         lines += ["", "sha256:", ""] + [f"- {n}: `{s}`" for n, s in shas.items()]
