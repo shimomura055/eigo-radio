@@ -5,33 +5,91 @@
   "text_sha256": "7abb52d8cd852605305bff005ec486bd38acc1a8dd1f4906290aad99e8d498fe",
   "candidates_sha256": "3a330fa954c0df70073516020143fcd72a952d225f35346551adf9f4c884ccd7",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 3,
   "article_key": {
     "family": "x",
     "slug": "untidiness_family_resource",
     "level": "a2"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_9252f11bef",
+      "p_fd3fca2cae",
+      "p_b244ad3053"
+    ],
+    "vocab": [
+      "p_9252f11bef",
+      "p_fd3fca2cae",
+      "p_b244ad3053",
+      "p_860360acc7",
+      "p_d3f0d26b7b"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_9252f11bef": null,
-    "p_fd3fca2cae": null,
-    "p_51ca6d79ed": null,
-    "p_860360acc7": null,
-    "p_d3f0d26b7b": null,
-    "p_b5867ae5b6": null,
-    "p_aa68f9a3b4": null,
-    "p_b244ad3053": null,
-    "p_5ea9c348e5": null
+    "p_9252f11bef": "SELECTED_KP",
+    "p_fd3fca2cae": "SELECTED_KP",
+    "p_51ca6d79ed": "NOT_SELECTED",
+    "p_860360acc7": "SELECTED_VOCAB",
+    "p_d3f0d26b7b": "SELECTED_VOCAB",
+    "p_b5867ae5b6": "NOT_SELECTED",
+    "p_aa68f9a3b4": "NOT_SELECTED",
+    "p_b244ad3053": "SELECTED_KP",
+    "p_5ea9c348e5": "NOT_SELECTED"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-30T09:59:20.017588+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_ALARM",
+    "judged_status": "REDUNDANCY_NG",
+    "nonblocking": true,
+    "key": "3b7a4e141cde47eceafc610c66b886161d8e1f60ebd1d36db16fd914dd313f82",
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_NG",
+        "duplicate_pairs": [
+          {
+            "rank_a": 1,
+            "rank_b": 5,
+            "meaning_overlap": "PASS",
+            "usage_context_overlap": "PASS",
+            "grammatical_teaching_value_overlap": "PASS",
+            "conceptual_role_overlap": "FAIL",
+            "reasoning": "「hear it out」は最後まで聞くこと、「need another look」は再検討を要することなので、表現自体の意味や構文は異なります。ただし記事内ではどちらも、物をしまう前にその働き・価値を考慮するよう促す役割を担っており、異なる比喩でほぼ同じ内容を伝えています。"
+          }
+        ],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "alarm_pairs": [
+      {
+        "set": "vocab",
+        "rank_a": 1,
+        "rank_b": 5,
+        "reasoning": "「hear it out」は最後まで聞くこと、「need another look」は再検討を要することなので、表現自体の意味や構文は異なります。ただし記事内ではどちらも、物をしまう前にその働き・価値を考慮するよう促す役割を担っており、異なる比喩でほぼ同じ内容を伝えています。",
+        "aspects": {
+          "meaning_overlap": "PASS",
+          "usage_context_overlap": "PASS",
+          "grammatical_teaching_value_overlap": "PASS",
+          "conceptual_role_overlap": "FAIL"
+        },
+        "candidate_id_a": "p_9252f11bef",
+        "candidate_id_b": "p_b244ad3053",
+        "used_form_a": "hear it out",
+        "used_form_b": "need another look"
+      }
+    ]
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -42,8 +100,47 @@
         "round": 1,
         "candidates_sha256": "3a330fa954c0df70073516020143fcd72a952d225f35346551adf9f4c884ccd7"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:20.017617+09:00",
+      "event": "select",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_9252f11bef",
+            "p_fd3fca2cae",
+            "p_b244ad3053"
+          ],
+          "vocab": [
+            "p_9252f11bef",
+            "p_fd3fca2cae",
+            "p_b244ad3053",
+            "p_860360acc7",
+            "p_d3f0d26b7b"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-30T10:06:23.526617+09:00",
+      "event": "final_redundancy_alarm",
+      "by": "runner",
+      "detail": {
+        "pairs": [
+          [
+            "p_9252f11bef",
+            "p_b244ad3053"
+          ]
+        ],
+        "blocking": false
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "2db8ec5fac067fdbd8f0c783cf83ed6ca1bb2d8858e31d4f8bf16b5322d80724",
+  "std_part1": true,
+  "redundancy_alarms": []
 }

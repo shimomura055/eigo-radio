@@ -5,36 +5,65 @@
   "text_sha256": "937862fe9e6e705e1f58943d9e12c2f3368a327f37eff75a237b3a1160992790",
   "candidates_sha256": "d1d0facbac9a7f890a8a794ca9998b1477c84ad55d1dc3a2f2632a20dc84a414",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 3,
   "article_key": {
     "family": "x",
     "slug": "untidiness_family_resource",
     "level": "b1b"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_8de00fd0a1",
+      "p_9252f11bef",
+      "p_321f0d969d"
+    ],
+    "vocab": [
+      "p_8de00fd0a1",
+      "p_9252f11bef",
+      "p_321f0d969d",
+      "p_d3f0d26b7b",
+      "p_860360acc7"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_caabb33f9e": null,
-    "p_8de00fd0a1": null,
-    "p_9252f11bef": null,
-    "p_7dfa9396e5": null,
-    "p_9d9ba1ef4e": null,
-    "p_d3f0d26b7b": null,
-    "p_860360acc7": null,
-    "p_321f0d969d": null,
-    "p_6a411c7619": null,
-    "p_2f029c7f77": null,
-    "p_8b53d69e57": null,
-    "p_5615efbb21": null
+    "p_caabb33f9e": "NOT_SELECTED",
+    "p_8de00fd0a1": "SELECTED_KP",
+    "p_9252f11bef": "SELECTED_KP",
+    "p_7dfa9396e5": "NOT_SELECTED",
+    "p_9d9ba1ef4e": "NOT_SELECTED",
+    "p_d3f0d26b7b": "SELECTED_VOCAB",
+    "p_860360acc7": "SELECTED_VOCAB",
+    "p_321f0d969d": "SELECTED_KP",
+    "p_6a411c7619": "NOT_SELECTED",
+    "p_2f029c7f77": "NOT_SELECTED",
+    "p_8b53d69e57": "NOT_SELECTED",
+    "p_5615efbb21": "NOT_SELECTED"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-30T09:59:25.213580+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "3c0e81e0e8893f1a818242e03ed29c87b13d0039301091f9141187f08fdf2a80"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -45,8 +74,69 @@
         "round": 1,
         "candidates_sha256": "d1d0facbac9a7f890a8a794ca9998b1477c84ad55d1dc3a2f2632a20dc84a414"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:25.213600+09:00",
+      "event": "select",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_8de00fd0a1",
+            "p_9252f11bef",
+            "p_321f0d969d"
+          ],
+          "vocab": [
+            "p_8de00fd0a1",
+            "p_9252f11bef",
+            "p_321f0d969d",
+            "p_d3f0d26b7b",
+            "p_860360acc7"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-30T09:59:25.213642+09:00",
+      "event": "redundancy_alarm",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "n": 1,
+        "pairs": [
+          [
+            "p_9252f11bef",
+            "p_2f029c7f77"
+          ]
+        ],
+        "blocking": false
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "9b9831a4aca0bf66243effb7c618e76bfa2cf32ae65d1ac39de8c78b86ee2887",
+  "std_part1": true,
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_9252f11bef",
+      "candidate_id_b": "p_2f029c7f77",
+      "used_form_a": "hear it out",
+      "used_form_b": "dismiss",
+      "ai_rank_a": 3,
+      "ai_rank_b": 10,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「言い分を最後まで聞く」と「疑問も持たずに退けない」は、物を片付ける前にその役割を考慮するという同じ助言を表します。表現の構文は異なりますが、意味と記事内での役割は実質的に重なります。",
+      "source": "candidate_qa"
+    }
+  ]
 }

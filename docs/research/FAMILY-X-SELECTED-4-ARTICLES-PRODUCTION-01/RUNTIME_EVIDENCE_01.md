@@ -205,3 +205,53 @@ scaffold rc=4
 - 本日JST累計(概算、`tools/daily_cost.py`、2026-10-29 00:00 JST以降、openai/gemini/openai_asrのtoken記録+TrialのUSD→JPY済cost_jpy。gemini_batch・perplexity等の単価未登録は0円扱い=下限): 手順は`tools/daily_cost.py`の冒頭コメントとREPORT参照。
 ## フォームdata差し替え
 `user_test/selection_form_v3/data/{ai_chat_sponsored_persuasion,meta_waddle_world}__{a2,b1b}__prod.json`(export_form_data_01.py再実行、node実ロジックで8データadopt/reject両方OK・validateIndex errs [])。articles.json変更なし(題・slug・data pathは同じ)。
+
+# 委任_03(ユーザーHR回答8件の確定→⑭KP表現調整→scaffold再開→TTS/ASR→ページ。2026-10-30 08:51〜12:30 JST)
+## 0. 状態サマリ(記事別)
+| 記事 | 確定 | audio(TTS/ASR/QA/assemble) | 試聴ページ(dev) | End User | 停止理由 |
+|---|---|---|---|---|---|
+| ②散らかり | Std/Adv済 | Std20/20・Adv19/19 OK(HR Lock 0、Adv `full_story_part3_k1`のみFALLBACK_APPLIED[fallback経路3回目でOK]) | 生成済・Playwright PASS(audio47/47再生、console error 0、4xx 0) | **未生成**(ENDUSER_GLOSSARY_ASSERT) | End User adapterの既存欠陥(F1) |
+| ④AI説得広告 | Std/Adv済 | Std24/24・Adv23/23 OK(HR Lock 0、retry/fallback/LR 0) | 生成済 | 生成済だがPlaywright 2回NG(G: `highlight_moves_into_next_part`) | verifier側の既存欠陥の疑い(F2) |
+| ⑨Meta Waddle | Std/Adv済 | Adv18/18 OK。**Std `full_story_part3_k2` HR Lock**(HUMAN_REVIEW_REQUIRED) | 未生成(page builderがassemble BLOCKEDで停止) | 未生成 | HR Lock(H1) |
+| ⑭JWST | Std/Adv済+調整反映 | **Std/Adv とも `full_story_part2_k3` HR Lock**(単位記号Å)。Std `japanese_title`/`preview`は外来語/記号表記でHR待ち | 未生成 | 未生成 | HR Lock(H2/H3) |
+
+## 1. 確定(ユーザーHR回答8件)
+- 原文保存=`docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md`(逐語、照合コード含む)。
+- 先行条件待ち: er128/er119/er120/er135/er019 runnerの未commit差分(NUANCE-CORNER-ABOLITION-01 委任_02 Step A/B)が消える(commit a39acf3bf/28df78151)まで **08:51〜09:56 JST(65分)待機**(5分間隔polling。90分上限内)。
+- 旧AIF2回答は廃止済みで `NUANCE_CORNER_ABOLISHED` により拒否(dry-run 8件rc=2)。指示のとおり「ニュアンス節を除いた版」で再試行したが、拒否判定は照合コード接頭辞`AIF2-`(er128_form_readable_restore_01.py:49-50,295)で行われるため同じ拒否(rc=2)。
+- 解決(Production code編集0): `tools/fx4c_aif2_to_aif1.py`(使い捨て、旧er128をgit blob `a39acf3bf^`から読込)で、(1)旧restoreがAIF2照合コード・データ版(d6、git履歴から復元)・選定を完全検証、(2)ニュアンス決定=不採用(0件)を確認、(3)選定内容(区分別candidate_id・文法・コメント)から現行`make_code`でAIF1コードを再計算し、ニュアンス節を除いたreadableを生成、(4)現行restoreの復元payloadが旧payloadとニュアンス欄以外で完全一致、を8件すべてで確認(`confirm_03/aif2_to_aif1_conversion_report.json`)。選定内容は無変更。その後は標準CLI `er119_kp_human_review_cli_01.py confirm --from-readable`(dry-run rc=0→確定 rc=0)を8件に実施(`confirm_03/dryrun_*.json`, `confirm_*.json`)。
+
+## 2. ⑭の自由コメント反映(ユーザー指示=承認済み入力、本文英文は無改変)
+- equivalent width の意味→「等価幅」(Std/Adv): 既存CLI `er128_kp_confirmed_content_01.py confirm-revise --gloss p_17ef61522a=等価幅`(record rev2、API 0)。
+- narrow down the source→`narrow down`(Std/Adv)、turn the usual steps around→`turn something around`(Std): `tools/fx4c_revise_expression_jwst.py`(Y姓記事の`apply_user_decision_surname_choice_02`と同じゲート群を再利用: 出典文内の表層形・validate_canonicalization_item・CMU・記号・Human NG・gloss再整合・QA 12項目再判定[全PASS必須]・候補全体Redundancy QA)。`turn something around`はRule7(source_span内の連続部分文字列でない)に不合格のため、**Rule7のみ・閉じた定数ペアに限り免除**し候補item・確定レコード履歴に記録(Y姓先例`my son→someone`と同型。Production側の受理面は無変更)。確定は未生成段の前なので音声・解説の部分再生成は不要(以降のscaffold再開で新表現から生成)。
+- 反映後の確定レコード(rev3, live): Std=equivalent width/等価幅・narrow down/絞り込む・turn something around/何かを逆にする、Adv=equivalent width/等価幅・narrow down/絞り込む・celestial/天体の。KP解説(`kp_general_explanations.json`)のphrasesも同表現。`narrow down`のgloss=「絞り込む」・`turn something around`のgloss=「何かを逆にする」はユーザー指定外のためgloss再整合(LLM)の出力。
+- 実行時のretry: Std requalifyの初回はQA再判定が`NOT_REJUDGED`(LLM応答のkey不一致/不正のいずれか。応答未保存のため原因未特定)で拒否され何も書かず終了、再実行(応答保存を追加)で合格。Advも合格。
+- 重複アラーム(表示のみ、止めない): Std `line's absence from images`(③) x `show up`(③)=変更前から存在(不変)。
+- **未確認**: ⑭のページ・KP音声とのend-to-end一致照合(audio/pageがHR Lockで未完のため)。
+
+## 3. 実行(起動時刻 JST、`run03/launch_times.txt`)
+- `stop_scope_check_01` 各起動前 rc=0(`run03/stop_check_*.json`)。
+- audio(`er019_family_x_audio_production_runner_01.py --slug <slug> --run run_fx4_01 --level both --stage all --budget-jpy 100`、各1起動・再起動0): ②10:05:25 PID103038 / ④10:05:25 PID103043 / ⑨10:11:30 PID103320 / ⑭10:14頃 PID103408。窓内<=2・間隔>=150秒順守(RESTART_STORM 0)。style_profile=fx_20261017(既存run記録をresume)、tts_backend=speech_metadata_flash_lite(既定)、ASR=Primary gpt-4o-mini-transcribe+Secondary azure-speech-stt。
+- ページ: `er019_family_x_listening_page_01.py --slug <slug> --run-name run_fx4_01 --web user_test/family_x_<slug>_01`(②11:35頃・⑭11:42頃・④⑨11:46頃。CPU内処理、API 0)。
+
+## 4. retry/fallback/LR発動
+- ②Adv `full_story_part3_k1`: fallback経路(3回目)でOK(`[WARN][STYLE-PROFILE][M3] FALLBACK_APPLIED`、試行1・2=TRUE_CONTENT_MISMATCH→3=NORMALIZED_MATCH)。他0。
+- ④: 発動0。
+- ⑨Std `full_story_part3_k2`: 標準2回+fallback1回(上限3)とも不合格→LR発動`HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA`→HR Lock。試行1はASR PASS(NORMALIZED_MATCH)だがStd 6%減速後のASR再検証で`TRUE_CONTENT_MISMATCH`(post_slowdown_ng)、試行2・3は`adult's smartphone`の`'s`欠落でmismatch。
+- ⑭Std/Adv `full_story_part2_k3`: 標準2回+fallback1回(Std)/3回(Adv)ともTRUE_CONTENT_MISMATCH→HR Lock(StdはLR発動・候補なし)。
+
+## 5. HR Lock(PM_GOVERNANCE 30節 7項目。迂回・再生成上限回避なし)
+### H1 ⑨ Std `full_story_part3_k2`(`meta_waddle_world__run_fx4_01/a2`)
+1.対象: ⑨Standard 本文Part3後段chunk(71語)。判断対象=この音声を採用するか/再生成。 2.経路: audio runner stage=all→chunk TTS→ASR(primary gpt-4o-mini-transcribe/secondary azure)→6%減速→減速後ASR再検証→LR。 3.判定: 試行1=primary PASSだが減速後TRUE_CONTENT_MISMATCH、試行2・3=TRUE_CONTENT_MISMATCH(`adult's`→`adult`)、secondary未承認。 4.救済: 標準2+fallback1(上限3)・LR発動して候補0。 5.直接原因: TTSが`an adult's smartphone`の`'s`を落とす発話を続けた(`audit/tts_generation_results.json`)。 6.残る自動救済: なし(上限到達)。 7.依頼: HR(ユーザー試聴承認)または当該chunk再生成の指示。assemble=BLOCKED_STD_CHUNK_SLOWDOWN_GATE(Gate維持)。区分=正常なHR Lock(不具合ではない、TTSの発話揺れ)。
+### H2 ⑭ Std/Adv `full_story_part2_k3`(単位記号「Å」)
+1.対象: ⑭Standard/Advanced本文Part2最終chunk。2.経路: 同上。3.判定: 期待文`at least 7,620 Å`に対しASRが`7,620 angstroms`と文字起こし(Std 3回・Adv 3回すべて。primary/secondary共に同じ)=`TRUE_CONTENT_MISMATCH`/`NG_BOTH secondary_not_accepted`。音声は正しく「angstroms」と読まれている(ASR全文で確認)。4.救済: Std=標準2+fallback1・LR候補0、Adv=3回。5.**直接原因(仕様ギャップ=不具合分類:修正へ進む)**: 単位記号`Å`↔`angstroms`の等価をASR比較が持たない(リポジトリ全体で`angstrom`のコード対応0件=Grep)。B3の核心数値`≥7620 Å`を本文が保持する限り必ず不一致になる。6.残る自動救済: なし。7.依頼: (i)ASR比較の記号↔語の等価表への追加、または(ii)`Å`を「angstroms」と表記するWriter規則、または(iii)HR(ユーザー試聴承認)。(i)(ii)はProduction code/Prompt/規則の変更にあたるため本委任では実装していない(**判断候補**)。
+### H3 ⑭ Std `japanese_title` / `preview`
+JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査ファイル」`、preview文)が「外来語/記号表記が残っており機械判定できない(Human Review待ち)」でSTOPPED。原因=`JWST`(英字略語)が日本語読み辞書/意図的英語発話に対応していない。判断依頼=JWSTの読み(ジェイ・ダブリュー・エス・ティー)の辞書登録または承認(既存JA reading HR経路)。
+
+## 6. End User page 関連の既存欠陥(Production code編集禁止のため未修正)
+- **F1** ②Adv: `ENDUSER_GLOSSARY_ASSERT: adv: level一覧の本文中の意味1件のうち、下線に対応しない項目あり([0])`(er135_enduser_page_01.py:781付近)。ユーザーが③に選んだ`Now in Session`は記事**英語タイトル**の語句で本文(Full Story)に出現せず、dev側は`HL_NOT_IN_DISPLAY_MEANING_ONLY`(訳リストのみ=notice、`er_learning_highlight_01.py:313`)で許容するが、End User adapterは「③の全項目が本文の下線に対応」を要求してSTOP。HR候補としてユーザーに提示された項目がEnd Userで拒否される形のため**不具合(11-8、修正へ進む)**。修正案(次委任): End User adapterが`meaning_only`項目を許容する、またはHR候補生成が表示範囲外の③を提示しない。(`Now in Session`が該当項目だという特定は推定: ③pool[0]、本文に不在、英語タイトルに存在。)
+- **F2** ④: End User生成済みだが、ブラウザ検証`G adv_highlight_moves_into_next_part`がNG(1回目pc: continues_across_part_boundary+highlight、mobile: highlight。再実行`verify-only`でもpc/mobileのhighlightが同じくNG、active=`adv_16-s020`=Full Story Part 2の文、期待=Part 1の文)。仮説(**未実証**。probe試行は再現条件を再現できず不成立): `er135_enduser_page_verify_01.py:279-290`が「再生位置を境界-2.5秒へ移す→`gt>境界+1.0`を待つ」際、直前のF項目(seek 50%=約149秒)の古いgtで待機条件が即成立し古いactiveを読む。最短durのpair境界(Comment1→Part1=81.7秒)が50%位置より前にある記事構造で起きやすい。NCA Step Aの差分(ニュアンス欄削除)とは無関係(diff確認)。同期データ(`enduser/data/sync_adv.json`: adv_14-s004=81.946〜83.766)は境界直後に正しい文を指す。検証側の不具合(11-8)として次委任で原因確定と修正案。
+
+## 7. 費用(本委任、JST。`compute_cost_jpy_so_far`を2026-10-30T00:59Z以降のraw_usage_logに適用、gemini_batch込み)
+- ②¥14.48 / ④¥12.33 / ⑨¥21.50 / ⑭¥43.76(openai 24.47=LR・KP解説・Part1/2・requalify等) = **合計¥92.07**。案件累計 ≒ ¥340.3 + ¥92.1 = **¥432.4 / Cap¥500**(¥450未達)。本日JST累計概算 ≒ ¥330 + gemini_batch(188 call、tool上0円扱い。実費は上記に含む分のみ把握)。
+- 残見込み: H1〜H3解消後のTTS再生成+LR+JA title等≒¥10〜20、End User再生成はAPI 0 → 累計≒¥445〜455(¥450付近。到達時は再報告)。

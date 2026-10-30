@@ -20,7 +20,7 @@
       "candidate_id": "p_17ef61522a",
       "selection_phrase": "equivalent width",
       "used_form": "equivalent width",
-      "japanese_gloss": "光の線の特徴を表す幅",
+      "japanese_gloss": "等価幅",
       "source_sentence": "The authors used the line's absence from images to estimate its \"equivalent width,\" a measure of the line's features",
       "source_sentence_id": "S30",
       "word_count": 2,
@@ -34,8 +34,8 @@
         "display_phrase": "equivalent width",
         "key_phrase": "equivalent width",
         "used_form": "equivalent width",
-        "japanese_gloss": "光の線の特徴を表す幅",
-        "japanese_gloss_tts": "光の線の特徴を表す幅",
+        "japanese_gloss": "等価幅",
+        "japanese_gloss_tts": "等価幅",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -102,7 +102,7 @@
           "import_flags": [],
           "gloss_equals_naive_ja": false
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "HUMAN_RESOLVED"
       },
       "kind": "phrase",
       "flags": {
@@ -115,7 +115,7 @@
         "validate": "PASS",
         "cmu": "PASS",
         "canonicalization": "PASS",
-        "gloss": "ALIGNED",
+        "gloss": "HUMAN_RESOLVED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
@@ -231,11 +231,11 @@
     {
       "candidate_id": "p_a72939f319",
       "selection_phrase": "narrow down the source",
-      "used_form": "narrow down the source",
-      "japanese_gloss": "発生源を絞り込む",
+      "used_form": "narrow down",
+      "japanese_gloss": "絞り込む",
       "source_sentence": "The empty space had become a clue that could help narrow down the source",
       "source_sentence_id": "S34",
-      "word_count": 4,
+      "word_count": 2,
       "reason_ja": "候補や範囲を絞り込む句動詞表現。",
       "origin": "call1",
       "raw_rank": 3,
@@ -244,11 +244,11 @@
         "source_span": "narrow down the source",
         "source_sentence": "The empty space had become a clue that could help narrow down the source",
         "display_phrase": "narrow down the source",
-        "key_phrase": "narrow down the source",
-        "used_form": "narrow down the source",
-        "japanese_gloss": "発生源を絞り込む",
-        "japanese_gloss_tts": "発生源を絞り込む",
-        "changed_from_display_phrase": false,
+        "key_phrase": "narrow down",
+        "used_form": "narrow down",
+        "japanese_gloss": "絞り込む",
+        "japanese_gloss_tts": "絞り込む",
+        "changed_from_display_phrase": true,
         "normalization_reason": "inherit_selection_normalization",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
@@ -288,9 +288,9 @@
         "gloss_alignment": {
           "version": "ER-003-KP-GLOSS-ALIGN-02",
           "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
+          "original_japanese_gloss": "発生源を絞り込む",
           "current_gloss_consistent_verdict": false,
-          "reasoning": "候補となる発生源を少なくして、より特定しやすくする意味なので、「絞り込む」が自然。",
+          "reasoning": "「発生源」は最終的なkey phraseに含まれず、本文の文脈に依存した訳になっています。「絞り込む」でnarrow downの意味を表せます。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -303,16 +303,27 @@
             "pass": true,
             "note": "必須内容語なし(機械検査対象外)"
           },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "It means to reduce the possible origins to a smaller set so the origin can be identified more precisely.",
-          "naive_ja": "発生源を狭くする",
-          "naive_ja_conveys": "no",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
+          "attempts_count": 1
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "gloss": {
+            "status": "REALIGNED",
+            "by": "fx4c_revise_expression_jwst"
+          },
+          "qa": {
+            "status": "PASS",
+            "by": "fx4c_revise_expression_jwst",
+            "model_id": "gpt-6-luna"
+          },
+          "user_instruction": {
+            "tool": "fx4c_revise_expression_jwst",
+            "from": "narrow down the source",
+            "to": "narrow down",
+            "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+            "exemption": null
+          }
+        }
       },
       "kind": "phrase",
       "flags": {
@@ -324,23 +335,57 @@
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "PASS",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
       "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 3
+      "ai_rank": 3,
+      "rescue": {
+        "gloss": {
+          "status": "REALIGNED",
+          "by": "fx4c_revise_expression_jwst"
+        },
+        "qa": {
+          "status": "PASS",
+          "by": "fx4c_revise_expression_jwst",
+          "model_id": "gpt-6-luna"
+        },
+        "user_instruction": {
+          "tool": "fx4c_revise_expression_jwst",
+          "from": "narrow down the source",
+          "to": "narrow down",
+          "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+          "exemption": null
+        }
+      },
+      "rescue_note": "修正済み(元: narrow down the source。ユーザー指示で `narrow down`)・QA再判定済み",
+      "requalified": {
+        "tool": "fx4c_revise_expression_jwst",
+        "from": "narrow down the source",
+        "to": "narrow down",
+        "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)",
+        "by": "user-hr-2026-10-30",
+        "exemption": null,
+        "old_item_sha256": "069049d9ca445a3f30fa5efbdb069ba7bb375b7bbe249d5ca77d136922d58e01",
+        "old_kind": "phrase",
+        "new_kind": "phrase",
+        "old_gloss": "発生源を絞り込む",
+        "display_phrase_kept": "narrow down the source",
+        "source_span_kept": "narrow down the source"
+      }
     },
     {
       "candidate_id": "p_a052ec5e7e",
       "selection_phrase": "turned the usual steps around",
-      "used_form": "turn the usual steps around",
-      "japanese_gloss": "いつもの手順を逆にする",
+      "used_form": "turn something around",
+      "japanese_gloss": "何かを逆にする",
       "source_sentence": "But this time, researchers turned the usual steps around",
       "source_sentence_id": "S7",
-      "word_count": 5,
+      "word_count": 3,
       "reason_ja": "手順を逆転させる意味の慣用的な言い方。",
       "origin": "call1",
       "raw_rank": 4,
@@ -349,10 +394,10 @@
         "source_span": "turned the usual steps around",
         "source_sentence": "But this time, researchers turned the usual steps around",
         "display_phrase": "turned the usual steps around",
-        "key_phrase": "turn the usual steps around",
-        "used_form": "turn the usual steps around",
-        "japanese_gloss": "いつもの手順を逆にする",
-        "japanese_gloss_tts": "いつもの手順を逆にする",
+        "key_phrase": "turn something around",
+        "used_form": "turn something around",
+        "japanese_gloss": "何かを逆にする",
+        "japanese_gloss_tts": "何かを逆にする",
         "changed_from_display_phrase": true,
         "normalization_reason": "lemma_normalization",
         "qa": {
@@ -393,31 +438,63 @@
         "gloss_alignment": {
           "version": "ER-003-KP-GLOSS-ALIGN-02",
           "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
+          "original_japanese_gloss": "いつもの手順を逆にする",
           "current_gloss_consistent_verdict": false,
-          "reasoning": "物を回転させる意味ではなく、通常の手順の順序を逆にすることを表す。",
+          "reasoning": "現在のグロスにある「いつもの手順」は最終的なkey phraseに含まれていません。最終表現のsomethingを「何か」で表し、turn aroundの意味を「逆にする」で示しています。",
           "adopted_attempt": 1,
-          "added_word_mappings": [],
+          "added_word_mappings": [
+            {
+              "english_word": "something",
+              "japanese_span": "何か"
+            }
+          ],
           "machine_check_record_only": {
-            "required_words": [],
-            "covered": {},
+            "required_words": [
+              "something"
+            ],
+            "covered": {
+              "something": "何か"
+            },
             "uncovered": [],
             "span_not_in_gloss": [],
             "symbol_only_spans": [],
             "malformed_mappings": 0,
-            "pass": true,
-            "note": "必須内容語なし(機械検査対象外)"
+            "pass": true
           },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "It means to reverse the order or arrangement of the steps normally followed.",
-          "naive_ja": "いつもの手順を回転させる",
-          "naive_ja_conveys": "no",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
+          "attempts_count": 1
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "gloss": {
+            "status": "REALIGNED",
+            "by": "fx4c_revise_expression_jwst"
+          },
+          "qa": {
+            "status": "PASS",
+            "by": "fx4c_revise_expression_jwst",
+            "model_id": "gpt-6-luna"
+          },
+          "user_instruction": {
+            "tool": "fx4c_revise_expression_jwst",
+            "from": "turn the usual steps around",
+            "to": "turn something around",
+            "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+            "exemption": {
+              "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+              "reasons": [
+                "key_phrase('turn something around')がdisplay_phraseと一致せず、source_span('turned the usual steps around')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ],
+              "pair": [
+                "turn the usual steps around",
+                "turn something around"
+              ],
+              "candidate_id": "p_a052ec5e7e",
+              "scope": "このtool内の閉じた定数ペアのみ。Production側の受理面は変更なし",
+              "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+              "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)"
+            }
+          }
+        }
       },
       "kind": "phrase",
       "flags": {
@@ -429,14 +506,74 @@
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "PASS",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
       "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 4
+      "ai_rank": 4,
+      "rescue": {
+        "gloss": {
+          "status": "REALIGNED",
+          "by": "fx4c_revise_expression_jwst"
+        },
+        "qa": {
+          "status": "PASS",
+          "by": "fx4c_revise_expression_jwst",
+          "model_id": "gpt-6-luna"
+        },
+        "user_instruction": {
+          "tool": "fx4c_revise_expression_jwst",
+          "from": "turn the usual steps around",
+          "to": "turn something around",
+          "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+          "exemption": {
+            "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+            "reasons": [
+              "key_phrase('turn something around')がdisplay_phraseと一致せず、source_span('turned the usual steps around')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            ],
+            "pair": [
+              "turn the usual steps around",
+              "turn something around"
+            ],
+            "candidate_id": "p_a052ec5e7e",
+            "scope": "このtool内の閉じた定数ペアのみ。Production側の受理面は変更なし",
+            "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+            "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)"
+          }
+        }
+      },
+      "rescue_note": "修正済み(元: turn the usual steps around。ユーザー指示で `turn something around`)・QA再判定済み",
+      "requalified": {
+        "tool": "fx4c_revise_expression_jwst",
+        "from": "turn the usual steps around",
+        "to": "turn something around",
+        "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)",
+        "by": "user-hr-2026-10-30",
+        "exemption": {
+          "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+          "reasons": [
+            "key_phrase('turn something around')がdisplay_phraseと一致せず、source_span('turned the usual steps around')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ],
+          "pair": [
+            "turn the usual steps around",
+            "turn something around"
+          ],
+          "candidate_id": "p_a052ec5e7e",
+          "scope": "このtool内の閉じた定数ペアのみ。Production側の受理面は変更なし",
+          "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+          "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)"
+        },
+        "old_item_sha256": "f60e424818235a0b56783053c958ffa678cbb374a4a6617400f806c7672d1335",
+        "old_kind": "phrase",
+        "new_kind": "phrase",
+        "old_gloss": "いつもの手順を逆にする",
+        "display_phrase_kept": "turned the usual steps around",
+        "source_span_kept": "turned the usual steps around"
+      }
     },
     {
       "candidate_id": "p_8371d65ba4",
@@ -1205,7 +1342,7 @@
         "usage_context_overlap": "FAIL",
         "grammatical_teaching_value_overlap": "PASS",
         "conceptual_role_overlap": "FAIL",
-        "reasoning": "記事中の「doesn't show up」は、線が画像に現れないことを表し、「line's absence from images」と同じ観察内容・役割を担います。ただし前者は句動詞、後者は名詞句で、文法的な学習価値は異なります。"
+        "reasoning": "この文脈では「line's absence from images」と「doesn't show up」は、線が画像に現れていないという同じ事実を表しています。名詞句と句動詞という文法上の学習価値は異なりますが、内容の言い換えに当たります。"
       }
     ],
     "model_id": "gpt-6-luna"
@@ -1379,5 +1516,38 @@
   "text_sha256": "49e80412534f2e5828eabfdc04e0db6ba5fdb1bb0985a18b01fc7e7260a45fac",
   "schema": "kp_candidates_v1",
   "kind": "kp",
-  "candidates_sha256": "1b65418d4120c7d0ed457183bea5ccaaae6bafb32c02e30869584918aaedffe6"
+  "candidates_sha256": "5c29ef9ae301b5bf961d31fc8fa9440e5c75b8e69a63cf67fd9ac0082ecb6e67",
+  "requalify_provenance": {
+    "tool": "fx4c_revise_expression_jwst",
+    "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+    "changes": [
+      [
+        "p_a72939f319",
+        "narrow down the source",
+        "narrow down"
+      ],
+      [
+        "p_a052ec5e7e",
+        "turn the usual steps around",
+        "turn something around"
+      ]
+    ],
+    "previous_candidates_sha256": "4abad783412b77b3f351ee18411ee27cb091b88e635ffacc705173c9c8dab35a",
+    "previous_redundancy_qa": {
+      "status": "REDUNDANCY_NG",
+      "duplicate_pairs": [
+        {
+          "rank_a": 5,
+          "rank_b": 11,
+          "meaning_overlap": "FAIL",
+          "usage_context_overlap": "FAIL",
+          "grammatical_teaching_value_overlap": "PASS",
+          "conceptual_role_overlap": "FAIL",
+          "reasoning": "記事中の「doesn't show up」は、線が画像に現れないことを表し、「line's absence from images」と同じ観察内容・役割を担います。ただし前者は句動詞、後者は名詞句で、文法的な学習価値は異なります。"
+        }
+      ],
+      "model_id": "gpt-6-luna"
+    },
+    "presentable_filter_version": "presentable_v1_2026-10-29"
+  }
 }

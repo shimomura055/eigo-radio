@@ -1,0 +1,144 @@
+{
+ "tool": "fx4c_revise_expression_jwst",
+ "levels": {
+  "a2": {
+   "level": "a2",
+   "changes": [
+    {
+     "candidate_id": "p_a72939f319",
+     "from": "narrow down the source",
+     "to": "narrow down",
+     "exemption": null,
+     "gates": "deterministic PASS",
+     "span": "narrow down the source",
+     "display": "narrow down the source",
+     "gloss_after": "絞り込む",
+     "gloss_before": "発生源を絞り込む",
+     "qa": {
+      "qa_standalone_natural_unit": "PASS",
+      "qa_no_residual_context_word": "PASS",
+      "qa_meaning_or_usage_unchanged": "PASS",
+      "qa_reusable_other_context": "PASS",
+      "qa_traceable_contiguous_span": "PASS",
+      "qa_listening_blocker_value_preserved": "PASS",
+      "qa_standalone_comprehensibility": "PASS",
+      "qa_not_over_minimized": "PASS",
+      "qa_context_sufficiency": "PASS",
+      "qa_core_meaning_preserved": "PASS",
+      "qa_no_semantic_role_loss": "PASS",
+      "qa_person_reference_generalized": "PASS"
+     },
+     "gloss_status": "ALIGN_PASS"
+    },
+    {
+     "candidate_id": "p_a052ec5e7e",
+     "from": "turn the usual steps around",
+     "to": "turn something around",
+     "exemption": {
+      "rule": "er003_key_words_canonicalization.validate_canonicalization_item Rule7",
+      "reasons": [
+       "key_phrase('turn something around')がdisplay_phraseと一致せず、source_span('turned the usual steps around')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "pair": [
+       "turn the usual steps around",
+       "turn something around"
+      ],
+      "candidate_id": "p_a052ec5e7e",
+      "scope": "このtool内の閉じた定数ペアのみ。Production側の受理面は変更なし",
+      "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+      "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)"
+     },
+     "gates": "deterministic PASS(Rule7のみ免除・記録)",
+     "span": "turned the usual steps around",
+     "display": "turned the usual steps around",
+     "gloss_after": "何かを逆にする",
+     "gloss_before": "いつもの手順を逆にする",
+     "qa": {
+      "qa_standalone_natural_unit": "PASS",
+      "qa_no_residual_context_word": "PASS",
+      "qa_meaning_or_usage_unchanged": "PASS",
+      "qa_reusable_other_context": "PASS",
+      "qa_traceable_contiguous_span": "PASS",
+      "qa_listening_blocker_value_preserved": "PASS",
+      "qa_standalone_comprehensibility": "PASS",
+      "qa_not_over_minimized": "PASS",
+      "qa_context_sufficiency": "PASS",
+      "qa_core_meaning_preserved": "PASS",
+      "qa_no_semantic_role_loss": "PASS",
+      "qa_person_reference_generalized": "PASS"
+     },
+     "gloss_status": "ALIGN_PASS"
+    }
+   ],
+   "model": {
+    "process": "B1_SUPPORT",
+    "model": "gpt-6-luna"
+   },
+   "redundancy_qa": {
+    "status": "REDUNDANCY_NG",
+    "duplicate_pairs": [
+     {
+      "rank_a": 5,
+      "rank_b": 11,
+      "meaning_overlap": "FAIL",
+      "usage_context_overlap": "FAIL",
+      "grammatical_teaching_value_overlap": "PASS",
+      "conceptual_role_overlap": "FAIL",
+      "reasoning": "この文脈では「line's absence from images」と「doesn't show up」は、線が画像に現れていないという同じ事実を表しています。名詞句と句動詞という文法上の学習価値は異なりますが、内容の言い換えに当たります。"
+     }
+    ],
+    "model_id": "gpt-6-luna"
+   },
+   "redundant_with_changed": {},
+   "archived": [],
+   "refinalized": false,
+   "record_revision": 3,
+   "candidates_sha256": "5c29ef9ae301b5bf961d31fc8fa9440e5c75b8e69a63cf67fd9ac0082ecb6e67"
+  },
+  "b1b": {
+   "level": "b1b",
+   "changes": [
+    {
+     "candidate_id": "p_a72939f319",
+     "from": "narrow down the source",
+     "to": "narrow down",
+     "exemption": null,
+     "gates": "deterministic PASS",
+     "span": "narrow down the source",
+     "display": "narrow down the source",
+     "gloss_after": "絞り込む",
+     "gloss_before": "発生源を絞り込む",
+     "qa": {
+      "qa_standalone_natural_unit": "PASS",
+      "qa_no_residual_context_word": "PASS",
+      "qa_meaning_or_usage_unchanged": "PASS",
+      "qa_reusable_other_context": "PASS",
+      "qa_traceable_contiguous_span": "PASS",
+      "qa_listening_blocker_value_preserved": "PASS",
+      "qa_standalone_comprehensibility": "PASS",
+      "qa_not_over_minimized": "PASS",
+      "qa_context_sufficiency": "PASS",
+      "qa_core_meaning_preserved": "PASS",
+      "qa_no_semantic_role_loss": "PASS",
+      "qa_person_reference_generalized": "PASS"
+     },
+     "gloss_status": "ALIGN_PASS"
+    }
+   ],
+   "model": {
+    "process": "B1_SUPPORT",
+    "model": "gpt-6-luna"
+   },
+   "redundancy_qa": {
+    "status": "REDUNDANCY_PASS",
+    "duplicate_pairs": [],
+    "model_id": "gpt-6-luna"
+   },
+   "redundant_with_changed": {},
+   "archived": [],
+   "refinalized": false,
+   "record_revision": 3,
+   "candidates_sha256": "368b9a593a5bca44127a5012d68197e32eb7cc28e06f801753dceaffeb272fe5"
+  }
+ }
+}

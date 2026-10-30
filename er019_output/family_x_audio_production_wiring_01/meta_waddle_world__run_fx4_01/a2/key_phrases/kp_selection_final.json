@@ -1,0 +1,74 @@
+{
+  "schema": "kp_selection_final_v1",
+  "level": "a2",
+  "review_status": "REVIEWED",
+  "selection_signature": "b15a61d04757cac681c3324bc5903319996479a3890dec659c072427b14ba391",
+  "text_sha256": "df0c5f8e646038a5302c4428dad8f1004702e5b8f3c3a311364416c189dbb23c",
+  "candidates_sha256": "2c8329dad8654ef17d1e87fc13c6f14d0231c232588105a9b6ff8bf6fe78284c",
+  "round": 1,
+  "selection": {
+    "kp": [
+      "p_31b52a8827",
+      "p_d4f78d0814",
+      "p_fc93c7f821"
+    ],
+    "vocab": [
+      "p_31b52a8827",
+      "p_d4f78d0814",
+      "p_fc93c7f821",
+      "p_d3977d2e93",
+      "p_dc917a7753"
+    ]
+  },
+  "ng_candidate_ids": [],
+  "final_redundancy_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "489753c031c0b8e3af0adb2558cd1e02f83be2f6118d8c0d289fcf91eb1ce58d"
+  },
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_31b52a8827",
+      "candidate_id_b": "p_3924eb9259",
+      "used_form_a": "make room for",
+      "used_form_b": "gaps in a busy day",
+      "ai_rank_a": 2,
+      "ai_rank_b": 5,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "PASS",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "2は時間を確保する行為、5は忙しい日の空き時間を指し、意味そのものは同じではありません。ただし記事ではどちらもペットのために日々の時間を確保できるかという同じ文脈・役割に結びついています。",
+      "source": "candidate_qa"
+    }
+  ],
+  "redundancy_telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 1,
+    "alarm_count": 1,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29"
+  },
+  "mode_used": null,
+  "finalized_at": "2026-10-30T10:11:53.169436+09:00"
+}

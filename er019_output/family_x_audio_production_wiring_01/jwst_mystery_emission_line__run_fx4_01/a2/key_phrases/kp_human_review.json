@@ -3,37 +3,66 @@
   "kind": "kp",
   "level": "a2",
   "text_sha256": "49e80412534f2e5828eabfdc04e0db6ba5fdb1bb0985a18b01fc7e7260a45fac",
-  "candidates_sha256": "1b65418d4120c7d0ed457183bea5ccaaae6bafb32c02e30869584918aaedffe6",
+  "candidates_sha256": "5c29ef9ae301b5bf961d31fc8fa9440e5c75b8e69a63cf67fd9ac0082ecb6e67",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 5,
   "article_key": {
     "family": "x",
     "slug": "jwst_mystery_emission_line",
     "level": "a2"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_17ef61522a",
+      "p_a72939f319",
+      "p_a052ec5e7e"
+    ],
+    "vocab": [
+      "p_17ef61522a",
+      "p_a72939f319",
+      "p_a052ec5e7e",
+      "p_0d053ac26d",
+      "p_afb0c45eaa"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_17ef61522a": null,
-    "p_487be2baec": null,
-    "p_a72939f319": null,
-    "p_a052ec5e7e": null,
-    "p_8371d65ba4": null,
-    "p_0d053ac26d": null,
-    "p_cb3fca157f": null,
-    "p_b6af7691e1": null,
-    "p_afb0c45eaa": null,
-    "p_e85c55be64": null,
-    "p_0e6a89d8eb": null
+    "p_17ef61522a": "SELECTED_KP",
+    "p_487be2baec": "NOT_SELECTED",
+    "p_a72939f319": "SELECTED_KP",
+    "p_a052ec5e7e": "SELECTED_KP",
+    "p_8371d65ba4": "NOT_SELECTED",
+    "p_0d053ac26d": "SELECTED_VOCAB",
+    "p_cb3fca157f": "NOT_SELECTED",
+    "p_b6af7691e1": "NOT_SELECTED",
+    "p_afb0c45eaa": "SELECTED_VOCAB",
+    "p_e85c55be64": "NOT_SELECTED",
+    "p_0e6a89d8eb": "NOT_SELECTED"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-30T09:59:44.559698+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "3536a9f37ccc3624870275389818b2763330fce89d8dde7882b9aff54e42f40d"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -44,8 +73,102 @@
         "round": 1,
         "candidates_sha256": "1b65418d4120c7d0ed457183bea5ccaaae6bafb32c02e30869584918aaedffe6"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:44.559718+09:00",
+      "event": "select",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_17ef61522a",
+            "p_a72939f319",
+            "p_a052ec5e7e"
+          ],
+          "vocab": [
+            "p_17ef61522a",
+            "p_a72939f319",
+            "p_a052ec5e7e",
+            "p_0d053ac26d",
+            "p_afb0c45eaa"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-30T09:59:44.559755+09:00",
+      "event": "redundancy_alarm",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "n": 1,
+        "pairs": [
+          [
+            "p_8371d65ba4",
+            "p_0e6a89d8eb"
+          ]
+        ],
+        "blocking": false
+      }
+    },
+    {
+      "at": "2026-10-30T10:00:15.469010+09:00",
+      "event": "confirm_revise",
+      "by": "er128",
+      "detail": {
+        "candidate_ids": [
+          "p_17ef61522a"
+        ],
+        "by": "user-hr-2026-10-30"
+      }
+    },
+    {
+      "at": "2026-10-30T10:02:38.272545+09:00",
+      "event": "requalify_user_decision",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "changes": [
+          [
+            "p_a72939f319",
+            "narrow down the source",
+            "narrow down"
+          ],
+          [
+            "p_a052ec5e7e",
+            "turn the usual steps around",
+            "turn something around"
+          ]
+        ],
+        "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)",
+        "old_candidates_sha256": "4abad783412b77b3f351ee18411ee27cb091b88e635ffacc705173c9c8dab35a"
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "37bb7957373c19e3e4e6000c49e804afa2a3451205d3c1d413bd9cc6c562bf0a",
+  "std_part1": true,
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_8371d65ba4",
+      "candidate_id_b": "p_0e6a89d8eb",
+      "used_form_a": "line's absence from images",
+      "used_form_b": "show up",
+      "ai_rank_a": 5,
+      "ai_rank_b": 11,
+      "slot_a": "meaning_display",
+      "slot_b": "meaning_display",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "記事中の「doesn't show up」は、線が画像に現れないことを表し、「line's absence from images」と同じ観察内容・役割を担います。ただし前者は句動詞、後者は名詞句で、文法的な学習価値は異なります。",
+      "source": "candidate_qa"
+    }
+  ]
 }

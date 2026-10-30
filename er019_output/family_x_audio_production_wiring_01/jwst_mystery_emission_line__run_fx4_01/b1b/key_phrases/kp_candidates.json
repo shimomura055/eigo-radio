@@ -20,7 +20,7 @@
       "candidate_id": "p_17ef61522a",
       "selection_phrase": "equivalent width",
       "used_form": "equivalent width",
-      "japanese_gloss": "スペクトル線の強さを示す等価幅",
+      "japanese_gloss": "等価幅",
       "source_sentence": "The authors used the line's absence from the images to estimate that its \"equivalent width,\" a measure of the line's features, was at least 7,620 Å",
       "source_sentence_id": "S25",
       "word_count": 2,
@@ -34,8 +34,8 @@
         "display_phrase": "equivalent width",
         "key_phrase": "equivalent width",
         "used_form": "equivalent width",
-        "japanese_gloss": "スペクトル線の強さを示す等価幅",
-        "japanese_gloss_tts": "スペクトル線の強さを示す等価幅",
+        "japanese_gloss": "等価幅",
+        "japanese_gloss_tts": "等価幅",
         "changed_from_display_phrase": false,
         "normalization_reason": "none",
         "qa": {
@@ -102,7 +102,7 @@
           "import_flags": [],
           "gloss_equals_naive_ja": false
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "HUMAN_RESOLVED"
       },
       "kind": "phrase",
       "flags": {
@@ -115,7 +115,7 @@
         "validate": "PASS",
         "cmu": "PASS",
         "canonicalization": "PASS",
-        "gloss": "ALIGNED",
+        "gloss": "HUMAN_RESOLVED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
@@ -126,11 +126,11 @@
     {
       "candidate_id": "p_a72939f319",
       "selection_phrase": "narrow down the source",
-      "used_form": "narrow down the source",
-      "japanese_gloss": "発生源を絞り込む",
+      "used_form": "narrow down",
+      "japanese_gloss": "絞り込む",
       "source_sentence": "The blank space had become a clue that could help narrow down the source",
       "source_sentence_id": "S27",
-      "word_count": 4,
+      "word_count": 2,
       "reason_ja": "候補を絞り込む句動詞の使い方が学べる。",
       "origin": "call1",
       "raw_rank": 2,
@@ -139,11 +139,11 @@
         "source_span": "narrow down the source",
         "source_sentence": "The blank space had become a clue that could help narrow down the source",
         "display_phrase": "narrow down the source",
-        "key_phrase": "narrow down the source",
-        "used_form": "narrow down the source",
-        "japanese_gloss": "発生源を絞り込む",
-        "japanese_gloss_tts": "発生源を絞り込む",
-        "changed_from_display_phrase": false,
+        "key_phrase": "narrow down",
+        "used_form": "narrow down",
+        "japanese_gloss": "絞り込む",
+        "japanese_gloss_tts": "絞り込む",
+        "changed_from_display_phrase": true,
         "normalization_reason": "inherit_selection_normalization",
         "qa": {
           "qa_standalone_natural_unit": "PASS",
@@ -183,9 +183,9 @@
         "gloss_alignment": {
           "version": "ER-003-KP-GLOSS-ALIGN-02",
           "status": "GLOSS_REALIGNED",
-          "original_japanese_gloss": null,
+          "original_japanese_gloss": "発生源を絞り込む",
           "current_gloss_consistent_verdict": false,
-          "reasoning": "候補をしぼって発生源を特定しやすくする意味なので、「絞り込む」としました。",
+          "reasoning": "「発生源」は最終的なkey_phraseに含まれないため、現在のグロスは意味を加えています。「絞り込む」でnarrow downの意味を表せます。",
           "adopted_attempt": 1,
           "added_word_mappings": [],
           "machine_check_record_only": {
@@ -198,16 +198,27 @@
             "pass": true,
             "note": "必須内容語なし(機械検査対象外)"
           },
-          "attempts_count": 1,
-          "meaning_stage": "applied",
-          "meaning_stage_path": "newgen_meaning_v1",
-          "meaning_in_text_en": "It means reducing the possible origins to a smaller set so the origin can be identified.",
-          "naive_ja": "その発生源を狭くする",
-          "naive_ja_conveys": "partly",
-          "import_flags": [],
-          "gloss_equals_naive_ja": false
+          "attempts_count": 1
         },
-        "gloss_alignment_status": "ALIGNED"
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "gloss": {
+            "status": "REALIGNED",
+            "by": "fx4c_revise_expression_jwst"
+          },
+          "qa": {
+            "status": "PASS",
+            "by": "fx4c_revise_expression_jwst",
+            "model_id": "gpt-6-luna"
+          },
+          "user_instruction": {
+            "tool": "fx4c_revise_expression_jwst",
+            "from": "narrow down the source",
+            "to": "narrow down",
+            "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+            "exemption": null
+          }
+        }
       },
       "kind": "phrase",
       "flags": {
@@ -219,14 +230,48 @@
       "gates": {
         "validate": "PASS",
         "cmu": "PASS",
-        "canonicalization": "PASS",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
         "gloss": "ALIGNED",
         "symbol": "PASS",
         "src_d1": "NA"
       },
       "auto_eligible": true,
       "human_selectable": true,
-      "ai_rank": 2
+      "ai_rank": 2,
+      "rescue": {
+        "gloss": {
+          "status": "REALIGNED",
+          "by": "fx4c_revise_expression_jwst"
+        },
+        "qa": {
+          "status": "PASS",
+          "by": "fx4c_revise_expression_jwst",
+          "model_id": "gpt-6-luna"
+        },
+        "user_instruction": {
+          "tool": "fx4c_revise_expression_jwst",
+          "from": "narrow down the source",
+          "to": "narrow down",
+          "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+          "exemption": null
+        }
+      },
+      "rescue_note": "修正済み(元: narrow down the source。ユーザー指示で `narrow down`)・QA再判定済み",
+      "requalified": {
+        "tool": "fx4c_revise_expression_jwst",
+        "from": "narrow down the source",
+        "to": "narrow down",
+        "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)",
+        "by": "user-hr-2026-10-30",
+        "exemption": null,
+        "old_item_sha256": "d49afab294c3ff3d24786a5cee56e600cc14989a9f240880207945d7c790ad60",
+        "old_kind": "phrase",
+        "new_kind": "phrase",
+        "old_gloss": "発生源を絞り込む",
+        "display_phrase_kept": "narrow down the source",
+        "source_span_kept": "narrow down the source"
+      }
     },
     {
       "candidate_id": "p_ac5c981b2d",
@@ -1172,5 +1217,23 @@
   "text_sha256": "33ec46beb6f1f64a641a6c852ae3596538bcef7a7674dce6c2ed575c912f827b",
   "schema": "kp_candidates_v1",
   "kind": "kp",
-  "candidates_sha256": "7f0bc16d183feb7dafcfe820c3d6f2f8fcba476ce8d1ced95f59caa112d3cecd"
+  "candidates_sha256": "368b9a593a5bca44127a5012d68197e32eb7cc28e06f801753dceaffeb272fe5",
+  "requalify_provenance": {
+    "tool": "fx4c_revise_expression_jwst",
+    "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+    "changes": [
+      [
+        "p_a72939f319",
+        "narrow down the source",
+        "narrow down"
+      ]
+    ],
+    "previous_candidates_sha256": "1f3dee30d3377dc0bd4cbec33aa8fe893239e7cf36b3309e2e2f65d9aaed42af",
+    "previous_redundancy_qa": {
+      "status": "REDUNDANCY_PASS",
+      "duplicate_pairs": [],
+      "model_id": "gpt-6-luna"
+    },
+    "presentable_filter_version": "presentable_v1_2026-10-29"
+  }
 }

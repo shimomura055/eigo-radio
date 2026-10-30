@@ -1,0 +1,40 @@
+{
+  "schema": "kp_redundancy_alarm_v1",
+  "level": "a2",
+  "selection_signature": "b15a61d04757cac681c3324bc5903319996479a3890dec659c072427b14ba391",
+  "blocking": false,
+  "candidate_qa_alarms": [
+    {
+      "candidate_id_a": "p_31b52a8827",
+      "candidate_id_b": "p_3924eb9259",
+      "used_form_a": "make room for",
+      "used_form_b": "gaps in a busy day",
+      "ai_rank_a": 2,
+      "ai_rank_b": 5,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "PASS",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "2は時間を確保する行為、5は忙しい日の空き時間を指し、意味そのものは同じではありません。ただし記事ではどちらもペットのために日々の時間を確保できるかという同じ文脈・役割に結びついています。",
+      "source": "candidate_qa"
+    }
+  ],
+  "final_set_alarms": [],
+  "telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 1,
+    "alarm_count": 1,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29",
+    "reached_next_stage": "runner_kp_stage_passed"
+  },
+  "checked_at": "2026-10-30T10:11:53.192934+09:00"
+}

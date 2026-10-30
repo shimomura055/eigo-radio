@@ -1,0 +1,40 @@
+{
+  "schema": "kp_redundancy_alarm_v1",
+  "level": "a2",
+  "selection_signature": "37bb7957373c19e3e4e6000c49e804afa2a3451205d3c1d413bd9cc6c562bf0a",
+  "blocking": false,
+  "candidate_qa_alarms": [
+    {
+      "candidate_id_a": "p_8371d65ba4",
+      "candidate_id_b": "p_0e6a89d8eb",
+      "used_form_a": "line's absence from images",
+      "used_form_b": "show up",
+      "ai_rank_a": 5,
+      "ai_rank_b": 11,
+      "slot_a": "meaning_display",
+      "slot_b": "meaning_display",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "記事中の「doesn't show up」は、線が画像に現れないことを表し、「line's absence from images」と同じ観察内容・役割を担います。ただし前者は句動詞、後者は名詞句で、文法的な学習価値は異なります。",
+      "source": "candidate_qa"
+    }
+  ],
+  "final_set_alarms": [],
+  "telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 1,
+    "alarm_count": 1,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29",
+    "reached_next_stage": "runner_kp_stage_passed"
+  },
+  "checked_at": "2026-10-30T10:15:03.488815+09:00"
+}

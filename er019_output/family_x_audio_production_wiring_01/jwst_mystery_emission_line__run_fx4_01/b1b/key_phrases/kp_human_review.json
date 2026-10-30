@@ -3,36 +3,65 @@
   "kind": "kp",
   "level": "b1b",
   "text_sha256": "33ec46beb6f1f64a641a6c852ae3596538bcef7a7674dce6c2ed575c912f827b",
-  "candidates_sha256": "7f0bc16d183feb7dafcfe820c3d6f2f8fcba476ce8d1ced95f59caa112d3cecd",
+  "candidates_sha256": "368b9a593a5bca44127a5012d68197e32eb7cc28e06f801753dceaffeb272fe5",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 5,
   "article_key": {
     "family": "x",
     "slug": "jwst_mystery_emission_line",
     "level": "b1b"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_17ef61522a",
+      "p_a72939f319",
+      "p_27121bb436"
+    ],
+    "vocab": [
+      "p_17ef61522a",
+      "p_a72939f319",
+      "p_27121bb436",
+      "p_cd44df4acf",
+      "p_afb0c45eaa"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_17ef61522a": null,
-    "p_a72939f319": null,
-    "p_ac5c981b2d": null,
-    "p_cd44df4acf": null,
-    "p_4628088ca0": null,
-    "p_0d053ac26d": null,
-    "p_27121bb436": null,
-    "p_d3f0314968": null,
-    "p_b6af7691e1": null,
-    "p_afb0c45eaa": null
+    "p_17ef61522a": "SELECTED_KP",
+    "p_a72939f319": "SELECTED_KP",
+    "p_ac5c981b2d": "NOT_SELECTED",
+    "p_cd44df4acf": "SELECTED_VOCAB",
+    "p_4628088ca0": "NOT_SELECTED",
+    "p_0d053ac26d": "NOT_SELECTED",
+    "p_27121bb436": "SELECTED_KP",
+    "p_d3f0314968": "NOT_SELECTED",
+    "p_b6af7691e1": "NOT_SELECTED",
+    "p_afb0c45eaa": "SELECTED_VOCAB"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-30T09:59:48.527745+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "c3a76e2e402dec4865c24dc959eb0eaf3abae6eaaf0e7142f1854a260685a765"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -43,8 +72,61 @@
         "round": 1,
         "candidates_sha256": "7f0bc16d183feb7dafcfe820c3d6f2f8fcba476ce8d1ced95f59caa112d3cecd"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:48.527768+09:00",
+      "event": "select",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_17ef61522a",
+            "p_a72939f319",
+            "p_27121bb436"
+          ],
+          "vocab": [
+            "p_17ef61522a",
+            "p_a72939f319",
+            "p_27121bb436",
+            "p_cd44df4acf",
+            "p_afb0c45eaa"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-30T10:00:18.731986+09:00",
+      "event": "confirm_revise",
+      "by": "er128",
+      "detail": {
+        "candidate_ids": [
+          "p_17ef61522a"
+        ],
+        "by": "user-hr-2026-10-30"
+      }
+    },
+    {
+      "at": "2026-10-30T10:03:45.214901+09:00",
+      "event": "requalify_user_decision",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "changes": [
+          [
+            "p_a72939f319",
+            "narrow down the source",
+            "narrow down"
+          ]
+        ],
+        "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "user_spec": "HR回答 自由コメント(⑭): narrow down the source->narrow down(Std/Adv)、turn the usual steps around->turn something around(Std)",
+        "old_candidates_sha256": "1f3dee30d3377dc0bd4cbec33aa8fe893239e7cf36b3309e2e2f65d9aaed42af"
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "0d17ab5a3b6f6415e5361bcd8ab3fcc5efe85bb3d47974bdb270aa52331d86dc",
+  "std_part1": true,
+  "redundancy_alarms": []
 }

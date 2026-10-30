@@ -1,0 +1,53 @@
+# Vocabulary & Expressions
+
+(translation_status: PROVIDED)
+
+## 1. equivalent width
+
+- 本文中の意味: 等価幅
+- 本文の英文: The authors used the line's absence from the images to estimate that its "equivalent width," a measure of the line's features, was at least 7,620 Å
+- 日本語訳: 著者たちは、画像にその線が写っていないことを利用して、その線の特徴を示す指標である「等価幅」が少なくとも7,620 Åあると推定した。
+
+### 解説
+
+**equivalent width** は、主に天文学や分光学で使われる専門用語で、スペクトル線の強さを「同じ面積を持つ長方形の幅」に置き換えて表した量です。吸収線なら、連続スペクトルから差し引かれた光の量と同じ面積になる長方形を考えます。線の見た目の幅そのものではなく、線の強さを表す指標で、通常は波長と同じ単位で表されます。**spectral line**（スペクトル線）、**absorption line**（吸収線）と一緒に使われます。
+
+## 2. narrow down
+
+- 本文中の意味: 絞り込む
+- 本文の英文: The blank space had become a clue that could help narrow down the source
+- 日本語訳: 空白部分は、発生源を絞り込む手がかりになり得るものになっていた。
+
+### 解説
+
+**narrow down** は、候補や範囲を絞り込んで、選択肢を少なくしたり、特定のものに近づいたりする表現です。**narrow down the choices / options / list**（選択肢・一覧を絞る）、**narrow down the search**（検索範囲を絞る）、**narrow down the possibilities**（可能性を絞る）のように使います。**reduce** が広く「減らす」を表すのに対し、**narrow down** には、複数の候補から選別していくという意味合いがあります。
+
+## 3. take an unexpected turn
+
+- 本文中の意味: 思わぬ展開になる
+- 本文の英文: Then the investigation took an unexpected turn
+- 日本語訳: その後、調査は予想外の展開を見せた。
+
+### 解説
+
+**take an unexpected turn** は、物事の展開や状況が予想外の方向に進む、という表現です。**the situation / events / conversation took an unexpected turn** のように、状況、出来事、会話などの変化について使われます。ここでの **turn** は「方向転換」から来た比喩で、必ずしも悪い変化とは限りません。悪化を明確に表す **take a turn for the worse** とは異なり、予想外であることに焦点があります。
+
+## 4. celestial
+
+- 本文中の意味: 天体の
+- 本文の英文: In the area they observed, they closed small windows that overlapped with some celestial objects already known, while leaving almost all the others open
+- 日本語訳: 彼らは観測した領域で、すでに知られている天体の一部と重なる小さな窓を閉じ、ほかのほぼすべての窓は開けたままにした。
+
+### 解説
+
+**celestial** は「空や宇宙に関する」「天体の」という意味の形容詞です。**celestial body**（天体）、**celestial objects**（天体）、**celestial event**（天文現象）のように使われます。科学的な説明にも、詩的・文学的な表現にも見られます。また、文脈によっては「天上の」「神々しい」という意味にもなります。**astronomical** も天文学に関係する意味で使われますが、**celestial** は空や天体そのものを描写する響きがあります。
+
+## 5. frustrate
+
+- 本文中の意味: いら立たせる
+- 本文の英文: A mystery like this, enough to frustrate any detective, has appeared in space
+- 日本語訳: どんな探偵も手を焼くような謎が、宇宙に現れた。
+
+### 解説
+
+**frustrate** は、目標の達成や計画の実行を妨げる、または人をいら立たせる、という意味です。**frustrate someone’s plans / efforts / attempts**（人の計画・努力・試みを妨げる）のように使うほか、問題や遅れなどが人をいら立たせる場合にも使います。単に「腹を立てさせる」というより、思うように進めないことや、目標を阻まれることに重点があります。**annoy** が主に「いら立たせる」を表すのに対し、**frustrate** には進展や達成を妨げられる含みがあります。人の気持ちを表す **frustrated**（いら立った、行き詰まった）や、物事を形容する **frustrating**（いら立たしい）もよく使われます。

@@ -1,0 +1,113 @@
+{
+  "schema": "kp_selection_final_v1",
+  "level": "a2",
+  "review_status": "REVIEWED",
+  "selection_signature": "924227429e5224ab37f2dc506569db07fe0c44ffc0f8039fc3505159dd5a204c",
+  "text_sha256": "7bd525e4c83bb3496c2323761f47cf5b53b2681e74f3b51ba04f3102d6456842",
+  "candidates_sha256": "f688fdbba5b6e229b8a9f252baa17f4068f94768205befaae40265f77fd9fdd0",
+  "round": 1,
+  "selection": {
+    "kp": [
+      "p_ab05132249",
+      "p_c731e034bb",
+      "p_8cda666c6d"
+    ],
+    "vocab": [
+      "p_ab05132249",
+      "p_c731e034bb",
+      "p_8cda666c6d",
+      "p_8fc41ece90"
+    ]
+  },
+  "ng_candidate_ids": [],
+  "final_redundancy_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "cccea94062da995ccb16cfdf3c358cf4712a92b3e979e864b0b6a8e668d5dd55"
+  },
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_ab05132249",
+      "candidate_id_b": "p_a9296ef44f",
+      "used_form_a": "sales pitch",
+      "used_form_b": "persuasion",
+      "ai_rank_a": 3,
+      "ai_rank_b": 7,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "sales pitchは商品を選ばせるための売り込みで、この文脈では説得の一形態として使われています。名詞句としての売り込みと、より一般的な名詞 persuasion の文法的学習価値は異なりますが、記事内で指す販売説得の役割は大きく重なります。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_ab05132249",
+      "candidate_id_b": "p_cd0de7c91e",
+      "used_form_a": "sales pitch",
+      "used_form_b": "persuade",
+      "ai_rank_a": 3,
+      "ai_rank_b": 8,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "sales pitchは相手に商品を選ばせる売り込みで、persuadeもこの文脈ではその選択へ相手を導くことを指します。名詞句と動詞の構文上の学習価値は別ですが、販売説得という意味・役割は実質的に重なります。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_a9296ef44f",
+      "candidate_id_b": "p_cd0de7c91e",
+      "used_form_a": "persuasion",
+      "used_form_b": "persuade",
+      "ai_rank_a": 7,
+      "ai_rank_b": 8,
+      "slot_a": "meaning_display",
+      "slot_b": "meaning_display",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "persuasionは説得という名詞、persuadeは説得するという動詞で、記事ではどちらも人を商品選択へ導く働きを指します。名詞と動詞で構文上の学習価値は異なりますが、意味・使用場面・記事内の役割は実質的に重なります。",
+      "source": "candidate_qa"
+    }
+  ],
+  "redundancy_telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 3,
+    "alarm_count": 3,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29"
+  },
+  "mode_used": null,
+  "finalized_at": "2026-10-30T10:05:50.365950+09:00"
+}

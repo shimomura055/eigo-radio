@@ -1,0 +1,81 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Not in the Picture, but Its Light Reaches Us! JWST’s “Cosmic Case File”
+
+“We hear a voice, but cannot see a face.” This kind of mystery could frustrate any detective. Now it has appeared in space. NIRSpec, an instrument on JWST, picked up a “line of light.” But this time, researchers turned the usual steps around.
+
+Usually, researchers choose an object in an image to study. Then they study its light closely. It is like making a guest list, then talking to each person alone. This time, they did the opposite. They did not use a list. They tried to find the source by following the “voice” that reached them.
+
+In the area they studied, they closed small windows that overlapped with some known space objects. They left almost all the other windows open. They looked for lines of light at a certain wavelength. They did not search the whole universe. But in this area, they no longer limited the search to objects seen in images.
+
+Then they found a line of light. But when they checked a deep image, they found no object like a point at that spot. The voice had reached them. But there was no face in the picture. So whose voice was it?
+
+What’s more, the line appeared again and again in data from observations in different directions. Still, it was too soon to say, “We have found a space object with no visible form!” Not seeing something in an image does not mean it does not exist. They could not confirm that an image showed an object where the line was.
+
+Then the investigation took an unexpected turn. The fact that it “doesn’t show up” became evidence. The authors used the line’s absence from images to estimate its “equivalent width,” a measure of the line’s features. They found it was at least 7,620 Å. This did not mean it was exactly 7,620 Å. It meant it was at least that much. The empty space had become a clue that could help narrow down the source.
+
+So what was it? The researchers considered well-known types of light lines as possible answers. But none fully explained the wavelength and equivalent width. They also could not explain why no other lines had been found. The key line that would solve the mystery has not been heard yet. The authors say more observations are needed to study the light more closely.
+
+The case is still unsolved. But there is something to learn. If we do not decide too early who to investigate, we may find clues outside the list. A list is useful. But it may not include everything in the universe. How much closer will the next observation bring us to the source of this voice?
+
+## In one line
+JWST found the line many times, but deep images showed no object there. That absence helped set a lower limit for its equivalent width, but more observations are needed to find its source.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "equivalent width",
+    "japanese_gloss": "等価幅",
+    "source_sentence": "The authors used the line's absence from images to estimate its \"equivalent width,\" a measure of the line's features"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "narrow down",
+    "japanese_gloss": "絞り込む",
+    "source_sentence": "The empty space had become a clue that could help narrow down the source"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "turn something around",
+    "japanese_gloss": "何かを逆にする",
+    "source_sentence": "But this time, researchers turned the usual steps around"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "wavelength",
+    "japanese_gloss": "波長",
+    "source_sentence": "They looked for lines of light at a certain wavelength"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "frustrate",
+    "japanese_gloss": "いら立たせる",
+    "source_sentence": "This kind of mystery could frustrate any detective"
+  }
+]

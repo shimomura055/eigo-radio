@@ -5,35 +5,64 @@
   "text_sha256": "94f8cf4a551adc9dbf76330ae38f91ddb9e9fabf4a0912e4838db040e7376177",
   "candidates_sha256": "fd0b3f442dc0621b39adf6281e6a197d00ff16a2f1e86561e18f775143639dc1",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 3,
   "article_key": {
     "family": "x",
     "slug": "ai_chat_sponsored_persuasion",
     "level": "b1b"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_c4a11ad39d",
+      "p_a9008be6cd",
+      "p_5cd15f7135"
+    ],
+    "vocab": [
+      "p_c4a11ad39d",
+      "p_a9008be6cd",
+      "p_5cd15f7135",
+      "p_717155ef88",
+      "p_11037490f6"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_c4a11ad39d": null,
-    "p_88f790dc5f": null,
-    "p_a9008be6cd": null,
-    "p_b8f343217d": null,
-    "p_25ebc7f202": null,
-    "p_a9296ef44f": null,
-    "p_11037490f6": null,
-    "p_cd0de7c91e": null,
-    "p_5cd15f7135": null,
-    "p_8fc41ece90": null,
-    "p_717155ef88": null
+    "p_c4a11ad39d": "SELECTED_KP",
+    "p_88f790dc5f": "NOT_SELECTED",
+    "p_a9008be6cd": "SELECTED_KP",
+    "p_b8f343217d": "NOT_SELECTED",
+    "p_25ebc7f202": "NOT_SELECTED",
+    "p_a9296ef44f": "NOT_SELECTED",
+    "p_11037490f6": "SELECTED_VOCAB",
+    "p_cd0de7c91e": "NOT_SELECTED",
+    "p_5cd15f7135": "SELECTED_KP",
+    "p_8fc41ece90": "NOT_SELECTED",
+    "p_717155ef88": "SELECTED_VOCAB"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-30T09:59:32.978705+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "4cbf218dd23c79105b2992b4d5f6fc97fcf7b118ceb20ae8ee88d30d7fe785ef"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -44,8 +73,117 @@
         "round": 1,
         "candidates_sha256": "fd0b3f442dc0621b39adf6281e6a197d00ff16a2f1e86561e18f775143639dc1"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:32.978724+09:00",
+      "event": "select",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_c4a11ad39d",
+            "p_a9008be6cd",
+            "p_5cd15f7135"
+          ],
+          "vocab": [
+            "p_c4a11ad39d",
+            "p_a9008be6cd",
+            "p_5cd15f7135",
+            "p_717155ef88",
+            "p_11037490f6"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-30T09:59:32.978785+09:00",
+      "event": "redundancy_alarm",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "n": 3,
+        "pairs": [
+          [
+            "p_a9008be6cd",
+            "p_a9296ef44f"
+          ],
+          [
+            "p_a9008be6cd",
+            "p_cd0de7c91e"
+          ],
+          [
+            "p_a9296ef44f",
+            "p_cd0de7c91e"
+          ]
+        ],
+        "blocking": false
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "69503423c869d1a70059b066829f6dc57b2d9237d973832a2204537bd1ca9ac5",
+  "std_part1": true,
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_a9008be6cd",
+      "candidate_id_b": "p_a9296ef44f",
+      "used_form_a": "Sales pitch",
+      "used_form_b": "persuasion",
+      "ai_rank_a": 3,
+      "ai_rank_b": 6,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「sales pitch」は販売を目的とする説得、「persuasion」は説得行為を指し、記事ではいずれも商品選択を促す働きを表します。前者は売り込みに限定される一方、文法上は名詞句の種類が異なります。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_a9008be6cd",
+      "candidate_id_b": "p_cd0de7c91e",
+      "used_form_a": "Sales pitch",
+      "used_form_b": "persuade",
+      "ai_rank_a": 3,
+      "ai_rank_b": 8,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「sales pitch」は販売のための説得的な働きかけで、「persuade」は説得する行為を表し、記事ではどちらも商品選択を促す文脈です。名詞句と動詞で構文上の学習価値は異なります。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_a9296ef44f",
+      "candidate_id_b": "p_cd0de7c91e",
+      "used_form_a": "persuasion",
+      "used_form_b": "persuade",
+      "ai_rank_a": 6,
+      "ai_rank_b": 8,
+      "slot_a": "meaning_display",
+      "slot_b": "meaning_display",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「persuasion」と「persuade」は同じ説得の概念を名詞と動詞で表し、記事でも商品選択を促す行為を指します。名詞と動詞の使い分けは異なるため、文法上の学習価値は重複しません。",
+      "source": "candidate_qa"
+    }
+  ]
 }

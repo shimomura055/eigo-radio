@@ -1,0 +1,83 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# The Trial of “Leaving Things Out” Is Now in Session
+
+A supplement sits alone in the kitchen. It is here again today. It was here yesterday, too. “Left out again!” A lawyer speaks for the “put it away” side. They quickly ask for it to be removed. But the court says, “Not so fast.” This supplement may need a lawyer to speak for it.
+
+The charge is that it makes the kitchen look bad. But the defense says, “If I put it away, I might forget to take it.” So it does more than take up space. When someone can see it, it helps them remember. In a way, it is a “kitchen reminder.”
+
+This comes from a study of homes in New Zealand. Researchers used photos while talking with people in 22 homes. Several people lived together in each home. One person kept supplements where they could see them, so they would not forget to take them.
+
+For the person who wants it put away, it is “something in the way.” For the person who left it there, it is “a sign that helps me remember.” They see the same thing, but in different ways. One sees something to remove. The other sees a worker still doing its job. No wonder the kitchen meeting gets heated.
+
+If you say, “Straight into the cupboard!” and make the person put it away, the kitchen will look neat. But you might also remove the reminder the person relied on. Storage: a success. Its help in daily life needs another look. It is not that simple.
+
+The study gives us another way to look at clutter. It is not always a sign that someone has failed. It can also help people in daily life. A scorecard might say, “The fewer things you can see, the better.” But that could take points away from the ways each home has found to make life work.
+
+Do you have any “things left out that are still doing a job” at home? If you ask, “Why don’t you put that away?” it can feel like you are questioning someone in court. Ask instead, “What does having it there help with?” That can turn the talk into a planning meeting about how to make daily life work.
+
+But don’t rush to say, “Science proves that if you leave it out, you won’t forget!” The person in the study gave that reason. The study did not test whether keeping it in sight works. Many people in the study had a high level of education, too. So we cannot say these results fit every home.
+
+So the verdict is not, “Clutter is completely innocent!” First, ask, “What job is that thing doing there?” Don’t call it wrong just because it is out. Before you bring out the storage box, hear it out. That supplement may be taking its job quite seriously.
+
+## In one line
+A study of homes in New Zealand suggests clutter can sometimes help daily life, as one person kept supplements in sight to remember them. Before putting something away, ask what it helps with. The study did not test whether keeping supplements in sight stops people from missing doses.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "hear it out",
+    "japanese_gloss": "最後まで話を聞く",
+    "source_sentence": "Before you bring out the storage box, hear it out"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "take points away from",
+    "japanese_gloss": "～から点を差し引く",
+    "source_sentence": "But that could take points away from the ways each home has found to make life work"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "verdict",
+    "japanese_gloss": "結論",
+    "source_sentence": "So the verdict is not, \"Clutter is completely innocent"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "clutter",
+    "japanese_gloss": "散らかった物",
+    "source_sentence": "The study gives us another way to look at clutter"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "need another look",
+    "japanese_gloss": "改めて見直す必要がある",
+    "source_sentence": "Its help in daily life needs another look"
+  }
+]

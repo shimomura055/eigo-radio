@@ -1,0 +1,80 @@
+{
+  "schema": "kp_redundancy_alarm_v1",
+  "level": "b1b",
+  "selection_signature": "69503423c869d1a70059b066829f6dc57b2d9237d973832a2204537bd1ca9ac5",
+  "blocking": false,
+  "candidate_qa_alarms": [
+    {
+      "candidate_id_a": "p_a9008be6cd",
+      "candidate_id_b": "p_a9296ef44f",
+      "used_form_a": "Sales pitch",
+      "used_form_b": "persuasion",
+      "ai_rank_a": 3,
+      "ai_rank_b": 6,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「sales pitch」は販売を目的とする説得、「persuasion」は説得行為を指し、記事ではいずれも商品選択を促す働きを表します。前者は売り込みに限定される一方、文法上は名詞句の種類が異なります。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_a9008be6cd",
+      "candidate_id_b": "p_cd0de7c91e",
+      "used_form_a": "Sales pitch",
+      "used_form_b": "persuade",
+      "ai_rank_a": 3,
+      "ai_rank_b": 8,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「sales pitch」は販売のための説得的な働きかけで、「persuade」は説得する行為を表し、記事ではどちらも商品選択を促す文脈です。名詞句と動詞で構文上の学習価値は異なります。",
+      "source": "candidate_qa"
+    },
+    {
+      "candidate_id_a": "p_a9296ef44f",
+      "candidate_id_b": "p_cd0de7c91e",
+      "used_form_a": "persuasion",
+      "used_form_b": "persuade",
+      "ai_rank_a": 6,
+      "ai_rank_b": 8,
+      "slot_a": "meaning_display",
+      "slot_b": "meaning_display",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「persuasion」と「persuade」は同じ説得の概念を名詞と動詞で表し、記事でも商品選択を促す行為を指します。名詞と動詞の使い分けは異なるため、文法上の学習価値は重複しません。",
+      "source": "candidate_qa"
+    }
+  ],
+  "final_set_alarms": [],
+  "telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 3,
+    "alarm_count": 3,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29",
+    "reached_next_stage": "runner_kp_stage_passed"
+  },
+  "checked_at": "2026-10-30T10:06:25.144755+09:00"
+}

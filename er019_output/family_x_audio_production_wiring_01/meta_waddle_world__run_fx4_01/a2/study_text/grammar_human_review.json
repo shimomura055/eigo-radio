@@ -4,24 +4,39 @@
   "level": "Standard",
   "text_sha256": "b1df83d948f1ee216f9253816769108ee18179ca8baa29e50b287194fa5e86ba",
   "candidates_sha256": "7241ced3e30cadd897a821eded57cb6e0404a65d93c1bfb2c0071d9a58313fee",
-  "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
-  "article_key": {
-    "family": "x",
-    "slug": "meta_waddle_world",
-    "level": "a2"
-  },
+  "status": "REVIEWED",
   "mode_declaration": null,
-  "selection": {},
+  "selection": {
+    "choice": "pick",
+    "candidate_ids": [
+      "g3106d82186"
+    ],
+    "zero_reason": null
+  },
   "accept_ai_default": false,
   "accepted_candidates_sha256": null,
-  "verdicts": {},
+  "verdicts": {
+    "g3106d82186": "SELECTED",
+    "g5df5dd244f": "NOT_SELECTED"
+  },
   "ng": [],
   "reselect_count": 0,
   "reextract_count": 0,
-  "decision": null,
-  "last_human_op_at": null,
+  "decision": {
+    "choice": "pick",
+    "candidate_ids": [
+      "g3106d82186"
+    ],
+    "candidates_sha256": "7241ced3e30cadd897a821eded57cb6e0404a65d93c1bfb2c0071d9a58313fee",
+    "reason": "form_submission:docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+    "by": "user-hr-2026-10-30",
+    "accept_ai": false,
+    "explanation_sha_by_id": {
+      "g3106d82186": "659dfebdf8fa04126d0409fa64e5d7ae6b53ad7aa63333575f43a8a882b0a8ca",
+      "g5df5dd244f": "0e8467b1a1426986ebaebeb2a2d6eb937d74848d0f542387d4c843ea087065c3"
+    },
+    "channel": "form"
+  },
   "history": [
     {
       "at": "2026-10-29T22:29:06.248143+09:00",
@@ -32,7 +47,68 @@
         "candidates_sha256": "7241ced3e30cadd897a821eded57cb6e0404a65d93c1bfb2c0071d9a58313fee",
         "status": "PENDING_REVIEW"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:36+0900",
+      "event": "finalize",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "source": "human_pick",
+        "status": "REVIEWED",
+        "choice": "pick",
+        "candidate_ids": [
+          "g3106d82186"
+        ],
+        "reason": "form_submission:docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "channel": "form",
+        "round": 1,
+        "candidates_sha256": "7241ced3e30cadd897a821eded57cb6e0404a65d93c1bfb2c0071d9a58313fee",
+        "mode_declaration": null,
+        "not_selected": [
+          {
+            "candidate_id": "g5df5dd244f",
+            "para": "P6",
+            "sentence": "It may matter more if they want to make room for one during the gaps in a busy day.",
+            "feature_class": "CMP",
+            "tier": "T1",
+            "rank": 2,
+            "teaching_value_ja": "比較級に比較の基準が明示されているかを確認し、条件節が比較基準を示すとは限らないと読む。",
+            "tier_table_row": {
+              "para": "P6",
+              "cls": "CMP",
+              "tier": "T1",
+              "eligible": true,
+              "why_not": [],
+              "tv": "HIGH",
+              "tv_ja": "比較級に比較の基準が明示されているかを確認し、条件節が比較基準を示すとは限らないと読む。",
+              "front_kind": "",
+              "sentence": "It may matter more if they want to make room for one during the gaps in a busy day.",
+              "single_span_ok": true,
+              "cross_para_flag": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-30T09:59:36.689422+09:00",
+      "event": "form_submission",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "user_ref": "docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md",
+        "candidate_ids": [
+          "g3106d82186"
+        ]
+      }
     }
   ],
-  "selection_signature": null
+  "selection_signature": "d5ff4031f353afc5323358d4a89969780bbea7c97b3aa091d0c4b1e76c7d6081",
+  "article_key": {
+    "family": "x",
+    "slug": "meta_waddle_world",
+    "level": "a2"
+  },
+  "round": 1,
+  "last_human_op_at": "2026-10-30T09:59:36.689329+09:00",
+  "revision": 2
 }

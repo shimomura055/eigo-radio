@@ -1,0 +1,40 @@
+{
+  "schema": "kp_redundancy_alarm_v1",
+  "level": "b1b",
+  "selection_signature": "9b9831a4aca0bf66243effb7c618e76bfa2cf32ae65d1ac39de8c78b86ee2887",
+  "blocking": false,
+  "candidate_qa_alarms": [
+    {
+      "candidate_id_a": "p_9252f11bef",
+      "candidate_id_b": "p_2f029c7f77",
+      "used_form_a": "hear it out",
+      "used_form_b": "dismiss",
+      "ai_rank_a": 3,
+      "ai_rank_b": 10,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "「言い分を最後まで聞く」と「疑問も持たずに退けない」は、物を片付ける前にその役割を考慮するという同じ助言を表します。表現の構文は異なりますが、意味と記事内での役割は実質的に重なります。",
+      "source": "candidate_qa"
+    }
+  ],
+  "final_set_alarms": [],
+  "telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 1,
+    "alarm_count": 1,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29",
+    "reached_next_stage": "runner_kp_stage_passed"
+  },
+  "checked_at": "2026-10-30T10:07:09.595082+09:00"
+}

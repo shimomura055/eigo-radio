@@ -1,0 +1,74 @@
+{
+  "schema": "kp_selection_final_v1",
+  "level": "a2",
+  "review_status": "REVIEWED",
+  "selection_signature": "37bb7957373c19e3e4e6000c49e804afa2a3451205d3c1d413bd9cc6c562bf0a",
+  "text_sha256": "49e80412534f2e5828eabfdc04e0db6ba5fdb1bb0985a18b01fc7e7260a45fac",
+  "candidates_sha256": "5c29ef9ae301b5bf961d31fc8fa9440e5c75b8e69a63cf67fd9ac0082ecb6e67",
+  "round": 1,
+  "selection": {
+    "kp": [
+      "p_17ef61522a",
+      "p_a72939f319",
+      "p_a052ec5e7e"
+    ],
+    "vocab": [
+      "p_17ef61522a",
+      "p_a72939f319",
+      "p_a052ec5e7e",
+      "p_0d053ac26d",
+      "p_afb0c45eaa"
+    ]
+  },
+  "ng_candidate_ids": [],
+  "final_redundancy_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "3536a9f37ccc3624870275389818b2763330fce89d8dde7882b9aff54e42f40d"
+  },
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_8371d65ba4",
+      "candidate_id_b": "p_0e6a89d8eb",
+      "used_form_a": "line's absence from images",
+      "used_form_b": "show up",
+      "ai_rank_a": 5,
+      "ai_rank_b": 11,
+      "slot_a": "meaning_display",
+      "slot_b": "meaning_display",
+      "slot_label_a": "本文意味(③)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "FAIL",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "記事中の「doesn't show up」は、線が画像に現れないことを表し、「line's absence from images」と同じ観察内容・役割を担います。ただし前者は句動詞、後者は名詞句で、文法的な学習価値は異なります。",
+      "source": "candidate_qa"
+    }
+  ],
+  "redundancy_telemetry": {
+    "final_qa_status": "REDUNDANCY_PASS",
+    "final_qa_alarm_pairs": 0,
+    "candidate_qa_alarm_pairs": 1,
+    "alarm_count": 1,
+    "nonblocking": true,
+    "review_status": "REVIEWED",
+    "filter_version": "presentable_v1_2026-10-29"
+  },
+  "mode_used": null,
+  "finalized_at": "2026-10-30T10:15:03.459868+09:00"
+}

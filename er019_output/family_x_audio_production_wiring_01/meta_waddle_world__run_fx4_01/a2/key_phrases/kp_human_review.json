@@ -5,34 +5,63 @@
   "text_sha256": "df0c5f8e646038a5302c4428dad8f1004702e5b8f3c3a311364416c189dbb23c",
   "candidates_sha256": "2c8329dad8654ef17d1e87fc13c6f14d0231c232588105a9b6ff8bf6fe78284c",
   "round": 1,
-  "status": "PENDING_REVIEW",
-  "revision": 1,
+  "status": "REVIEWED",
+  "revision": 3,
   "article_key": {
     "family": "x",
     "slug": "meta_waddle_world",
     "level": "a2"
   },
-  "selection": {},
+  "selection": {
+    "kp": [
+      "p_31b52a8827",
+      "p_d4f78d0814",
+      "p_fc93c7f821"
+    ],
+    "vocab": [
+      "p_31b52a8827",
+      "p_d4f78d0814",
+      "p_fc93c7f821",
+      "p_d3977d2e93",
+      "p_dc917a7753"
+    ]
+  },
   "accepted_qa_fail": [],
   "accept_ai_default": false,
   "accept_ai_shown_candidates_sha256": null,
   "verdicts": {
-    "p_dbf7552ef9": null,
-    "p_31b52a8827": null,
-    "p_d4f78d0814": null,
-    "p_d3977d2e93": null,
-    "p_3924eb9259": null,
-    "p_dc917a7753": null,
-    "p_420dd328be": null,
-    "p_3812e4ce01": null,
-    "p_fc93c7f821": null,
-    "p_891cde22cc": null
+    "p_dbf7552ef9": "NOT_SELECTED",
+    "p_31b52a8827": "SELECTED_KP",
+    "p_d4f78d0814": "SELECTED_KP",
+    "p_d3977d2e93": "SELECTED_VOCAB",
+    "p_3924eb9259": "NOT_SELECTED",
+    "p_dc917a7753": "SELECTED_VOCAB",
+    "p_420dd328be": "NOT_SELECTED",
+    "p_3812e4ce01": "NOT_SELECTED",
+    "p_fc93c7f821": "SELECTED_KP",
+    "p_891cde22cc": "NOT_SELECTED"
   },
   "ng": [],
   "reselect_count": 0,
-  "last_human_op_at": null,
+  "last_human_op_at": "2026-10-30T09:59:36.678106+09:00",
   "mode_used": null,
-  "final_qa": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "489753c031c0b8e3af0adb2558cd1e02f83be2f6118d8c0d289fcf91eb1ce58d"
+  },
   "published_selection_signature": null,
   "history": [
     {
@@ -43,8 +72,69 @@
         "round": 1,
         "candidates_sha256": "2c8329dad8654ef17d1e87fc13c6f14d0231c232588105a9b6ff8bf6fe78284c"
       }
+    },
+    {
+      "at": "2026-10-30T09:59:36.678126+09:00",
+      "event": "select",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_31b52a8827",
+            "p_d4f78d0814",
+            "p_fc93c7f821"
+          ],
+          "vocab": [
+            "p_31b52a8827",
+            "p_d4f78d0814",
+            "p_fc93c7f821",
+            "p_d3977d2e93",
+            "p_dc917a7753"
+          ]
+        },
+        "ng": [],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-30T09:59:36.678168+09:00",
+      "event": "redundancy_alarm",
+      "by": "user-hr-2026-10-30",
+      "detail": {
+        "n": 1,
+        "pairs": [
+          [
+            "p_31b52a8827",
+            "p_3924eb9259"
+          ]
+        ],
+        "blocking": false
+      }
     }
   ],
-  "selection_signature": null,
-  "std_part1": true
+  "selection_signature": "b15a61d04757cac681c3324bc5903319996479a3890dec659c072427b14ba391",
+  "std_part1": true,
+  "redundancy_alarms": [
+    {
+      "candidate_id_a": "p_31b52a8827",
+      "candidate_id_b": "p_3924eb9259",
+      "used_form_a": "make room for",
+      "used_form_b": "gaps in a busy day",
+      "ai_rank_a": 2,
+      "ai_rank_b": 5,
+      "slot_a": "key_phrase",
+      "slot_b": "meaning_display",
+      "slot_label_a": "Key Phrase(①)",
+      "slot_label_b": "本文意味(③)",
+      "aspects": {
+        "meaning_overlap": "PASS",
+        "usage_context_overlap": "FAIL",
+        "grammatical_teaching_value_overlap": "PASS",
+        "conceptual_role_overlap": "FAIL"
+      },
+      "reasoning": "2は時間を確保する行為、5は忙しい日の空き時間を指し、意味そのものは同じではありません。ただし記事ではどちらもペットのために日々の時間を確保できるかという同じ文脈・役割に結びついています。",
+      "source": "candidate_qa"
+    }
+  ]
 }
