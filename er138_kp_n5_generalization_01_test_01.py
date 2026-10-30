@@ -758,6 +758,22 @@ class TestJ2DeferredRejudge(unittest.TestCase):
         r, calls = self._run({"kept calm": True}, b1=("kept calm",), p7=())
         self.assertEqual(calls, [["kept calm"]])
 
+    def test_sel_deferred_rejudge_technical_failure_raises_N5TechnicalFailure_after_retry_limit(self):
+        """委任_04: 再判定call(SEL_DEFERRED)の技術失敗は既存retry上限(MAX_ATTEMPTS)後にN5TechnicalFailureとして伝播する(結果を返さない=呼出側の外側retryへ)。
+        call_llm/_send/retryは正式関数、_sendだけ差替え(1回目SEL=sub-span F、再判定SEL=ネットワーク失敗)。"""
+        sleeps = []
+        spans = {"a lower limit": False}
+        sel_ok = {"judgements": [{"id": 1, "cls": "F", "chunk_type": "none", "reason_ja": "r", "difficulty": "advanced", "keep": False, "passive_fragment": False}]}
+        s = Scripted(b1=[{"candidates": [{"span": "set a lower limit", "sentence": self.TEXT}]}],
+                     sel=[sel_ok, RuntimeError("net1"), RuntimeError("net2")])
+        gate = lambda units, screen=None: (lambda c: (dict(c, n5_origin="B1", item={"display_phrase": c["span"], "reason_ja": ""}), []))
+        items = [{"display_phrase": "a lower limit", "source_sentence": self.TEXT}]
+        with mock.patch.object(n5, "preflight", lambda: None), mock.patch.object(n5, "_send", s), mock.patch.object(n5, "make_b1_gate", gate):
+            with self.assertRaises(n5.N5TechnicalFailure):
+                n5.pool_and_select(self.TEXT, items, n5.N5Ctx("A2_SUPPORT", sleep_fn=sleeps.append), include_b1=True, units=[])
+        self.assertEqual([c[0] for c in s.calls], ["b1", "sel", "sel", "sel"])      # 再判定callが発行され、既存retry上限(2)まで試行して失敗
+        self.assertEqual(sleeps, [2])
+
     def test_rejudged_superset_F_is_not_picked_and_not_counted_in_E(self):
         r, calls = self._run({"a lower limit": False, "set a lower limit": False})
         self.assertEqual(r["picked"], [])

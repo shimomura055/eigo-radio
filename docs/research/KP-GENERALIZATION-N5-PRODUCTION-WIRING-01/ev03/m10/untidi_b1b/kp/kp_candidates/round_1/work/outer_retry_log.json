@@ -1,0 +1,105 @@
+{
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "excluded_in": [],
+      "stages": {
+        "canonicalization_0": "CANONICALIZATION_PASS",
+        "n5_l3": {
+          "targets": 7,
+          "kept": 6,
+          "dropped_by_stage": {
+            "n5_generalize": 1
+          },
+          "reverted": 1,
+          "check_relation": {
+            "SAME": 4,
+            "SENSE_SHIFT": 1,
+            "MODIFIER_DROPPED_OK": 1
+          },
+          "flags": {
+            "PERSONIFIED_THING": 1,
+            "PERSON_OVERRIDE": 1,
+            "PRONOUN_SLOT": 1,
+            "FRAME_MISMATCH": 1,
+            "VER_FIXED_FORM": 1,
+            "CONTENT_DROPPED": 1
+          },
+          "reconcile": {
+            "SAME": 5,
+            "FRAME_MISMATCH": 1
+          },
+          "form_changed_vs_span": 5,
+          "verify_missing": 0,
+          "check_missing_retry": null,
+          "check_missing_dropped": 0,
+          "max_words_dropped": 0
+        },
+        "n5_person_repair": {
+          "n5_items": 6,
+          "n5_gloss_rewritten": 0
+        },
+        "presentable_filter": {
+          "version": "presentable_v1_2026-10-29",
+          "checked": 11,
+          "dropped": 1,
+          "dropped_by_code": {
+            "rescue_unverified": 1
+          }
+        },
+        "backfill_canonicalization_0": "CANONICALIZATION_PASS",
+        "backfill_n5_l3": {
+          "targets": 2,
+          "kept": 2,
+          "dropped_by_stage": {},
+          "reverted": 0,
+          "check_relation": {
+            "SAME": 2
+          },
+          "flags": {},
+          "reconcile": {
+            "SAME": 2
+          },
+          "form_changed_vs_span": 0,
+          "verify_missing": 0,
+          "check_missing_retry": null,
+          "check_missing_dropped": 0,
+          "max_words_dropped": 0
+        },
+        "backfill_n5_person_repair": {
+          "n5_items": 2,
+          "n5_gloss_rewritten": 0
+        },
+        "backfill_presentable_filter": {
+          "version": "presentable_v1_2026-10-29",
+          "checked": 2,
+          "dropped": 0,
+          "dropped_by_code": {}
+        },
+        "redundancy_qa": "REDUNDANCY_NG"
+      },
+      "call1_status": "KEY_WORDS_STRUCTURE_PASS",
+      "n5_l1": {
+        "p7_in": 6,
+        "picked": 7,
+        "picked_origin": {
+          "P7": 4,
+          "B1": 3
+        }
+      },
+      "call2_status": "OK",
+      "backfill": {
+        "triggered": true,
+        "status": "OK",
+        "E": 2,
+        "added": 2
+      },
+      "n_candidates": 12,
+      "n_auto_eligible": 12,
+      "n_gate_dropped": 2,
+      "n_rescued": 0,
+      "rescued_not_auto": []
+    }
+  ],
+  "excluded_phrases": []
+}

@@ -4,7 +4,7 @@ import sys, os, json, glob
 ROOT = os.path.abspath(os.getcwd())
 sys.path.insert(0, ROOT)
 EV = os.path.join(ROOT, "docs/research/KP-GENERALIZATION-N5-PRODUCTION-WIRING-01/ev03")
-CAP = 25.0       # 委任_03 M10再replay枠(個別Cap¥70の内訳目安)。J2検証part1/part2の実費も合算する
+CAP = float(os.environ.get("M10_CAP", "25.0"))  # 委任_03枠。委任_04は累計(委任_03実費+untidi_b1b見積り7)で M10_CAP=31 を指定
 cid = sys.argv[1]
 import er005_cost_logger as cl
 import er053_cost_aggregate_01 as agg

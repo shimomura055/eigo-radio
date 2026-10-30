@@ -355,6 +355,33 @@ class TestRetryAndFailure(N5Case):
         self.assertFalse(r["ok"])
         self.assertTrue(any(e.get("failure") == "n5_select_failed" for e in r["outer_retry_log"]))
 
+    def test_sel_deferred_rejudge_technical_failure_is_outer_retry_and_emits_no_n5less_candidates(self):
+        """委任_04(J2是正のSEL再判定call): 再判定(SEL_DEFERRED)が技術失敗(retry上限)したらN5TechnicalFailure -> 外側retry。N5なし候補は出さない。
+        collect_poolが包含dedupeで落としたB1候補を返す条件(defer_out)だけ複製条件として与え、SEL/call_llm/retry/外側retryは正式関数。"""
+        real_collect = n5.collect_pool
+        sel_n = {"n": 0}
+
+        def collect_with_defer(text, base, b1, **kw):
+            pool, rej = real_collect(text, base, b1, **kw)
+            if kw.get("defer_out") is not None:
+                kw["defer_out"].append({"cand": {"span": "stay high", "sentence": ""}, "blocked_by": "retail prices"})
+            return pool, rej
+
+        def sel(user, me):
+            sel_n["n"] += 1
+            if "stay high" in user and sel_n["n"] >= 2:      # 再判定call(2回目以降のsel)のみ技術失敗
+                return RuntimeError("network down in SEL_DEFERRED")
+            return SmartSend().default_sel(user)
+        s = SmartSend(sel=sel)
+        with mock.patch.object(n5, "collect_pool", collect_with_defer):
+            env, r, _ = self.run_gen(s, env_kw=dict(call1_seq=[CALL1, CALL1, CALL1]))
+        self.assertTrue(any("stay high" in c[2] for c in s.stage_calls("sel")))                 # 再判定callが実際に発行された
+        self.assertFalse(r["ok"])
+        self.assertEqual(r["status"], "OUTER_RETRY_EXHAUSTED")
+        self.assertTrue(all(e.get("failure") == "n5_select_failed" for e in r["outer_retry_log"]))
+        self.assertNotIn("doc", r)                                                              # 候補docを返さない(N5なし候補なし)
+        self.assertEqual(s.stage_calls("gen5"), [])                                              # L1で止まり、N5なしでL3(GEN5)・後段へ進まない
+
     def test_contract_error_in_initial_chain_propagates_as_stop(self):
         s = SmartSend(ver5=lambda u, me: n5.N5ContractError("model mismatch"))
         with self.assertRaises(n5.N5ContractError):

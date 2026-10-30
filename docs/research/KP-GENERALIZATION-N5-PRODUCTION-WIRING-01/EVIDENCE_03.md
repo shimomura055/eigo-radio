@@ -20,7 +20,7 @@
 - 委任_02からのコード差分=`er138_kp_n5_generalization_01.py`(L1の`pool_and_select`/`collect_pool`/`select`のlabel引数)とそのtestのみ(`git diff --name-only 3d404cfc6`)。L3・配線(er119)・routing・pricing無変更 → 他3level(X b1b・Y a2・Z b1b)の委任_02証拠はL3以降について有効(L1のみ本是正の影響)。ただし§4のとおり本是正後のY a2・Z b1bも実測した。
 
 ## 3. M10統合replay再実行(実API、Production `generate_candidates`公式経路、基準は`ev03/m10_thresholds_fixed.md`=委任_02と同一)
-対象: jwst_m_b1b・untidi_a2・melos_a2(3level、費用¥19.05)。**untidi_b1bは個別Cap¥70の見通しのため未実施**(M10 guardが実行前に拒否[API 0]。untidi_b1bはTrial replay[API 0、19ケースexact]には含まれる。Fableが必要と判断すれば約¥7で追加実施可)。
+対象: jwst_m_b1b・untidi_a2・melos_a2(3level、費用¥19.05)。**untidi_b1bは委任_03では個別Cap見通しのため未実施→委任_04で実施済み(¥7.85、§10)**。以下は委任_03時点の3level記録(4level集計は§10・`ev03/m10/analysis.txt`)。
 
 | level | 費用 | 結果 |
 |---|---|---|
@@ -57,7 +57,7 @@ X=`er019_family_x_audio_production_runner_01.py --slug untidiness_family_resourc
 1. **技術失敗injection(X a2、実run)**: harness=`ev03/inject_run.py`(runnerをrunpyで1回起動、`_send`のGEN5送信前に1つのcallの全attempt[MAX_ATTEMPTS=2]を例外化=課金なし。ログ`ev03/inject_log.jsonl` 00:23:01・00:23:03)。結果: N5 L3のGEN5が`N5TechnicalFailure`→`canonicalization_N5_TECHNICAL_FAILURE`として**外側retry(outer_attempt 1→2)で回復**。最終doc(`ev03/x/kp_candidates_a2.json`)は`outer_attempts=2`、phrase候補5件**全てn5記録あり(N5なし候補0)**、attempt 1の候補docは保存されない(`outer_retry_log`にfailureのみ記録)。injection前に課金されたのはattempt 1のL1(B1+SEL)¥0.47のみ。
 2. **Y再選定round(実run)**: b1b `reselect --ng 3:...`(NG=`hard on`)→同コマンド再実行で round 2 を再生成(¥6.86のうちN5 ¥4.29)。NG句`hard on`は復活せず、round 1文書は`kp_candidates.SUPERSEDED_1.json`へ退避(`ev03/y/kp_candidates_b1b_round1.json`=round 1)、`kp_human_review.json`にNG記録(`ev03/y/kp_human_review_b1b.json`)。
 3. **Z再選定round(実run)**: a2 `reselect --ng 1:...`(NG=`made my blood turn cold`)→再実行でround 2(¥5.00のうちN5 ¥4.18)。round 1は1 phrase(shortfall)→round 2は5 phrase+補完。NG句は復活せず(`ev03/z/kp_human_review_a2.json`)。
-4. **人称書換(Z person_repair)の実例**: 全7候補docで`n5_gloss_rewritten=0`(Z a2 r1/r2・b1b を含む)。実例は**0件=未観測**と明記する(作為的に発生させない)。mock test(`TestApplyToItem`等)のみ確認。
+4. **人称書換(Z person_repair)の実例**: 全7候補docで`n5_gloss_rewritten=0`(Z a2 r1/r2・b1b を含む)。実例は**0件=未観測**と明記する(作為的に発生させない)。mock test(`TestApplyToItem`等)のみ確認。→委任_04で正式関数を通すdeterministic fixtureによる発火・更新の観測を追加(§10-2。自然発生の実例ではなくfixture)。
 
 ## 6. 量産単価の実測(N5段、1記事セット=Std+Adv、`ev03/cost_table.json`)
 
@@ -83,4 +83,38 @@ Trial見積¥6.28/セットとの差異: 委任_02(X ¥6.92・Y ¥8.90・Z ¥5.5
 - M11(進行中のrun): 委任_02一覧のPENDING_REVIEW 42件を精査 — 全件が証跡run(`*_ev_*`)・バックアップ(`*_pre02a_backup`)・継承コピー(`inherited_from_*`)・superseded run(`surname_choice/run_01`は`run_02/03`で確定済み、OPEN_ITEMS参照)・scaffold停止のみのrun(`ai_island_temple__run_ai_01`は`run_form_prod_01`で制作継続、user_test公開済み)であり、**実運用でN5 marker無しのKP候補を待機している記事は0件**(分類C・現タスクと独立)。
 
 ## 9. 12必須項目の充足(X/Y/Z×a2/b1b、OPEN-625に反映)
-①〜⑩: 委任_02で確認(6/6)+本委任で再確認(X a2・Y a2/b1b・Z a2/b1b)。⑪Z人称整合でN5 gloss書換: **実run0件(全7docで`n5_gloss_rewritten=0`)=未観測**(mock testのみ)。⑫再選定round/resume/技術失敗injection/stage別費用: 再選定=X(委任_02)・Y・Z実run確認、resume API 0=X実run確認(委任_02)、技術失敗injection=X a2実run確認、費用=実測済み。**未観測=⑪のみ。PRODUCTION_WIRED提案は不可**(全充足時のみの条件に従う)。⑪は自然発生を待つか、mock test+複数run0件観測を受入基準として足りるとするかはFable判断(ユーザー原文`delegation_log/2026-10-30_KP-GENERALIZATION-N5-PRODUCTION-WIRING-01_USER.md`の受入条件[「全6経路で必要条件が満たされた場合のみPRODUCTION_WIRED」]に⑪の実例要求の明文はなく、12項目はDESIGN_01/Fable委任文の受入基準)。
+①〜⑩: 委任_02で確認(6/6)+本委任で再確認(X a2・Y a2/b1b・Z a2/b1b)。⑪Z人称整合でN5 gloss書換(委任_04でfixture検証を追加=§10-2。以下は委任_03時点の記録): **実run0件(全7docで`n5_gloss_rewritten=0`)=未観測**(mock testのみ)。⑫再選定round/resume/技術失敗injection/stage別費用: 再選定=X(委任_02)・Y・Z実run確認、resume API 0=X実run確認(委任_02)、技術失敗injection=X a2実run確認、費用=実測済み。**未観測=⑪のみ。PRODUCTION_WIRED提案は不可**(全充足時のみの条件に従う)。⑪は自然発生を待つか、mock test+複数run0件観測を受入基準として足りるとするかはFable判断(ユーザー原文`delegation_log/2026-10-30_KP-GENERALIZATION-N5-PRODUCTION-WIRING-01_USER.md`の受入条件[「全6経路で必要条件が満たされた場合のみPRODUCTION_WIRED」]に⑪の実例要求の明文はなく、12項目はDESIGN_01/Fable委任文の受入基準)。
+
+## 10. 委任_04(受入補助、2026-10-31): M10 untidi_b1b・⑪fixture・SEL_DEFERRED技術失敗経路・費用
+個別Cap¥15固定。実費 **¥7.98**(M10 untidi_b1b ¥7.85+⑪fixture ¥0.13[2回実行の合算])。開始時と各有料run前に`stop_scope_check`(rc=0。`ev03/stop_check_04_start.json`・`stop_check_m10_untidi_b1b.json`・`stop_check_p11*.json`)、起動は`launch_gate.py`経由(150秒間隔・300秒窓2回以内を維持)。
+
+### 10-1. M10 untidi_b1b(委任_03と同一基準`ev03/m10_thresholds_fixed.md`、公式`generate_candidates`・N5既定ON・1 round、費用¥7.85)
+- 4level集計(`ev03/m10/analysis.txt`・`analysis.json`): Trial生存候補28 → 同span保持13・N5 drop 2(`make life work` [untidi_a2、SEL=F]・`taking its job quite seriously` [untidi_b1b、n5_generalize: 一般形組立失敗=lemma'job'が本文語'its'の語形違いでない])・**既存Gate喪失1件(`gets heated` [untidi_b1b]、canonicalization_qa=救済後の表現が未検査[QA再判定=NOT_REJUDGED]のfail-closed)=1/28=3.6%(基準15%以下)**・未再現12(P7/B1がそのspanを返さない=LLM非決定性、J2の分子に入れない)。J2トリガ(a)(b)とも非該当。
+- `gets heated`の喪失は既存Gate(仕様①の救済後未検査fail-closed、`er119_kp_candidates_01.py`の`presentation_blockers`(`er119_kp_human_review_01.py:521`))によるN5と無関係の除外で、N5配線が原因ではない(補完`backfill OK`で代替が補われている)。分類=実害なし(Trial/Production差のLLM非決定性)。
+- §4A②(untidi_b1b/untidi_a2): `take points away from` → **`take something away from`** (untidi_a2、SAME、訳=『何かをあるものから取り除く、差し引く』、canon前の訳は『評価を下げる』=訳が修正されて旧訳は残っていない。Trial訳は『〜から点数などを差し引く、取り去る』)。**訳は『差し引く』であり『減点』という語そのものではない**(Trialの訳『点数などを差し引く』と比べると『点数』が落ちた汎用訳。意味は同方向)。untidi_b1bの`taking points away`はTrialでは`take points away`だが、今回Productionは`end up taking points away`(P7のspan境界差)を返し、**N5は`SENSE_SHIFT`で本文形へrevert**(reverted=True、used_form=`end up taking points away`、訳=『最終的に点を差し引く』=本文語義)=期待の『本文形revert』と同種の安全側処理。`taking points away`そのもの(span一致)はNOT_SEEN(未再現)。
+- §4A①: `hear it out → hear someone out`保持(untidi_a2: 『人の話を最後まで聞く』・untidi_b1b: 『人の話を最後まで聞く』、canon前の訳『話を最後まで聞く』/『言い分を最後まで聞く』から修正済み・旧訳残存なし)。
+- 4level通算: §4A①②③④⑤の喪失なし(③④⑤は委任_03分、②b1bはrevertとして処理)。
+
+### 10-2. ⑪ Z人称整合でのN5 gloss書換 fixture検証(`ev03/p11_fixture.py`・`p11_fixture_result.json`・`p11_fixture.log`、費用API実LLM ¥0.13[2回実行の合算、1回¥0.066])
+**自然発生の実例ではなくfixtureである(⑪の自然発生は引き続き0件=未観測)。** Production code変更なし・mockなし。
+- 入力: `ev03/z/kp_candidates_a2_round1.json`の実候補`made my blood turn cold`(key=`make someone's blood turn cold`、N5記録あり)の複製。発火条件として`japanese_gloss`と`n5.gloss_ja`だけを具体人称入りの『あなたをぞっとさせ、強い恐怖を感じさせる』に差替え(それ以外は実docのまま)。決定論check`ga.person_reference_mismatch`が不整合を返すことを事前確認(`mismatch_before`)。
+- 処理: 正式関数`er119_kp_candidates_01._gate_chain`(`er119_kp_candidates_01.py:326-345`の人称整合step) → Zと同じ配線`kcand.make_person_repair_fn(text, er026_family_z_fiction_production_runner_01._person_repair_factory(ctx,"a2"), ...)`(`er026_family_z_fiction_production_runner_01.py:2215`と同じ組合せ) → `ga.align_glosses`(実LLM、SUPPORT_MODEL)。canon_fnは入力供給のみ(fixture入力を返す)、n5_target=False(L3は呼ばない)。
+- 観測: `n5_gloss_rewritten=1`(`stages.n5_person_repair`、`er119_kp_candidates_01.py:343`) / `item.japanese_gloss` = 『人をぞっとさせ、強い恐怖を感じさせる』(旧『あなた…』が人称整合で書換) / `candidate.japanese_gloss`・`japanese_gloss_tts`も同値 / `gloss_alignment_status=ALIGNED` / 人称不整合は解消(`mismatch_after=None`) / `n5.person_repair={gloss_before: 旧, gloss_after: 新, ...}`を記録 / 候補は提示集合(gates全PASS、`dropped=[]`)に残る。対照(不整合なしの実doc)は`n5_gloss_rewritten=0`・書換なし・API 0相当。
+- **観測した差異(所見)**: `item.n5.gloss_ja`は書換後も旧gloss『あなたを…』のまま(`er119_kp_candidates_01.py:338-340`は`n5.person_repair`にbefore/afterを記録するのみで`n5.gloss_ja`は更新しない)。旧訳が残る場所は`gloss_alignment.original_japanese_gloss`・`n5.gloss_ja`・`n5.person_repair.gloss_before`の**監査用フィールドだけ**。下流(HR依頼書/V3フォーム/TTS組立/`finalize_kp`)が読むのは`japanese_gloss`/`japanese_gloss_tts`(`n5.gloss_ja`の参照はProduction内0件、Grep: `er*.py`で`n5`.gloss_ja読出なし)。ユーザー原文:93『日本語訳が旧語義のまま残る問題の防止』は出力に出る訳について満たされている。分類=実害なし(`n5.gloss_ja`は監査記録でありN5確定時点の値を保持する設計とも読めるため修正せず。同期が望ましいかはFable判断、修正する場合はコード1行+test)。
+
+### 10-3. SEL_DEFERRED再判定callの技術失敗経路(API 0、test追加)
+- コード: 再判定callは`select(..., label="SEL_DEFERRED")`(`er138_kp_n5_generalization_01.py:1289`) → `call_llm`(`:800-836`)が既存retry(MAX_ATTEMPTS=2、sleep(2))後に`N5TechnicalFailure`を送出 → `pool_and_select`は握らず伝播 → `er119_kp_candidates_01.py:506-512`(初回)が`failure="n5_select_failed"`として外側retryへ(最終attemptは`OUTER_RETRY_EXHAUSTED`で候補0)、補完は`:765`で補完失敗として扱う。N5なし候補は出ない。
+- test(新規、いずれもPASS): `er138_kp_n5_generalization_01_test_01.py` `TestJ2DeferredRejudge.test_sel_deferred_rejudge_technical_failure_raises_N5TechnicalFailure_after_retry_limit`(`_send`差替え、呼出列=b1,sel,sel,sel[再判定が2回試行]・sleep=[2]・N5TechnicalFailure) / `er138_wiring_test_01.py` `TestRetryAndFailure.test_sel_deferred_rejudge_technical_failure_is_outer_retry_and_emits_no_n5less_candidates`(正式`generate_candidates`、再判定callが発行され失敗→`OUTER_RETRY_EXHAUSTED`・全failure=`n5_select_failed`・docなし・GEN5以降へ進まない)。実行: er138 test 60件OK・wiring test 32件OK。
+
+### 10-4. 費用(JST日次。`ev03/cost_by_jst_day.py`・`cost_by_jst_day.json`、daily_cost.pyと同じ区切り、LLM costのみ=下限値)
+| JST日 | 管理ID | 実費 |
+|---|---|---|
+| 10-30 | 委任_02(ev02) | ¥72.69(記録上¥73.38のうちQA12 jsonl外分¥0.69) |
+| 10-31 | 委任_03(ev03) | ¥60.99(jsonl計上。記録¥63.57との差¥2.58=J2検証callの`j2_part*.json`計上分) |
+| 10-31 | 委任_04 | ¥7.98 |
+| 10-31 KPN5計 | | ¥71.55 |
+他管理IDの本日(10-31 JST)分: main tree実行の`daily_cost.py 2026-10-30T15:00:00`=¥212.9(下限。内訳の大半=ONE-STEP/NUANCE系Trial usage_logでtimestampなしのため過大側の可能性)。10-31 JST暫定累計 ≒ ¥284(KPN5 ¥71.55+他¥212.9)。10-30 JST: KPN5 ¥72.69(main treeの10-29T15基準total=¥353.0から10-31分¥212.9を引いた≒¥140が他管理ID分[gemini_batch等0円扱い¥207相当は含まず下限])。いずれもprovider単価未登録(gemini_batch・TTS)は0円扱いの**下限値**。日次1,000円に対し十分余裕。
+注: worktreeで`daily_cost.py`を走らせるとcheckout mtimeで旧Trial logが全件混入し過大になる(wt TOTAL ¥568〜828は不採用)ため、KPN5分は専用集計、他分はmain treeで読取のみ実行(`PYTHONDONTWRITEBYTECODE=1`)。
+
+### 10-5. check_decision_quality(非ブロッキング)
+`docs/pm/tools/check_decision_quality.py --packet docs/pm/RESULT_PACKET_KPN5_03.md` → status=OK・findings 0(warn 0・info 0)。`ev03/dq_03.json`。
