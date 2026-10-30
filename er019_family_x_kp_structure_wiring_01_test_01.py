@@ -387,6 +387,20 @@ class TextCacheReuseTests(unittest.TestCase):
         gen_mock.assert_not_called()
         self.assertTrue(result["reused_from_previous_run"])
 
+    def test_regenerates_when_cached_bundle_has_qa_ng_item(self):
+        # 委任_05: QA NG(語数超過)が残るbundleは同一署名でも再利用せず再生成する(NGが永久に固定されない)。
+        cached = {"key_phrase_explanations_text": {
+            "phrases_signature": ["raise privacy concerns", "roll out"],
+            "items": {1: {"english_explanation": "x", "status": "NG"},
+                      2: {"english_explanation": "y", "status": "OK"}}, "audit": {}}}
+        fresh = {"items": {1: {"english_explanation": "x", "status": "OK"},
+                           2: {"english_explanation": "y", "status": "OK"}}, "audit": {}}
+        with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
+                                return_value=fresh) as gen_mock:
+            result = runner._resolve_kp_explanations_text(self.kp_items, cached)
+        gen_mock.assert_called_once()
+        self.assertFalse(result["reused_from_previous_run"])
+
     def test_regenerates_when_phrase_signature_changed(self):
         cached = {"key_phrase_explanations_text": {
             "phrases_signature": ["a different phrase", "roll out"],

@@ -1105,5 +1105,71 @@ class GenerateNewsNarrationWideMarginScopeTests(unittest.TestCase):
         self.assertTrue(result.get("repetition_qa_checked"))
 
 
+class AngstromAndThousandsSeparatorSurfaceDifferenceTests(unittest.TestCase):
+    """FAMILY-X-SELECTED-4 委任_05(OPEN-612、不具合是正11-8): canonicalのÅ/千位区切り`7,620`と、ASR(faster-whisper)の
+    `angstroms`/`7`+`,620`分割という表記差だけを両側で揃える(閾値canon_count>=2・方式・受理面は無変更)。
+    別数値・別単位・本当の反復はflaggedのまま。"""
+    CANON = ("The authors estimated that its equivalent width was at least 7,620 Å. "
+             "Not confirmed to be 7,620 Å, but at least 7,620 Å. The blank space became a clue.")
+
+    @staticmethod
+    def _w(texts, start=0.0):
+        return [{"text": t, "start": start + i * 0.3, "end": start + i * 0.3 + 0.25} for i, t in enumerate(texts)]
+
+    def _asr_words(self, split=True, unit="angstroms."):
+        a = ["at", "least", "7", ",620", unit] if split else ["at", "least", "7,620", unit]
+        mid = ["Not", "confirmed", "to", "be"] + (["7", ",620"] if split else ["7,620"]) + ["angstroms,", "but"]
+        return self._w(a) + self._w(mid, 5.0) + self._w(a, 10.0)
+
+    def test_a_split_thousands_and_angstroms_resolve_to_intentional_repeat(self):
+        r = repetition_qa.detect_ngram_repetition(self._asr_words(split=True), canonical_text=self.CANON, min_words=3)
+        self.assertFalse(r["flagged"], r)
+        tgt = [m for m in r["matches"] if "7" in m["span_text"]]
+        self.assertTrue(tgt, r)
+        for m in tgt:
+            self.assertGreaterEqual(m["canonical_repeat_count"], 2, m)
+
+    def test_b_whole_thousands_token_from_asr_is_also_equalized(self):
+        r = repetition_qa.detect_ngram_repetition(self._asr_words(split=False), canonical_text=self.CANON, min_words=3)
+        self.assertFalse(r["flagged"], r)
+
+    def test_c_singular_angstrom_from_asr_is_equalized(self):
+        r = repetition_qa.detect_ngram_repetition(self._asr_words(split=True, unit="angstrom."), canonical_text=self.CANON, min_words=3)
+        self.assertFalse(r["flagged"], r)
+
+    def test_d_real_repeat_with_single_canonical_occurrence_still_flagged(self):
+        canon = "The authors estimated that its equivalent width was at least 7,620 Å. The blank space became a clue."
+        r = repetition_qa.detect_ngram_repetition(self._asr_words(split=True), canonical_text=canon, min_words=3)
+        self.assertTrue(r["flagged"], r)
+        self.assertTrue(any(m["canonical_repeat_count"] == 1 for m in r["flagged_matches"]), r)
+
+    def test_e_different_number_is_not_absorbed(self):
+        canon = self.CANON.replace("7,620", "7,640")
+        r = repetition_qa.detect_ngram_repetition(self._asr_words(split=True), canonical_text=canon, min_words=3)
+        self.assertTrue(r["flagged"], r)
+
+    def test_f_different_unit_is_not_absorbed(self):
+        canon = self.CANON.replace("Å", "nanometers")
+        r = repetition_qa.detect_ngram_repetition(self._asr_words(split=True), canonical_text=canon, min_words=3)
+        self.assertTrue(r["flagged"], r)
+
+    def test_g_no_angstrom_no_thousands_tokens_identical_to_prior_behavior(self):
+        words = self._w(["The", "store", "reopened", "after", "two", "months."])
+        r = repetition_qa.detect_ngram_repetition(words, canonical_text="The store reopened after two months.", min_words=3)
+        self.assertFalse(r["flagged"], r)
+        self.assertEqual(repetition_qa._asr_token_parts("months."), ["months"])
+        self.assertEqual(repetition_qa._normalize_tokens("It cost 10,000 dollars."), ["it", "cost", "10", "000", "dollars"])
+
+    def test_h_length_cap_helper_counts_standalone_symbol_only_and_sites_use_it(self):
+        import er021_en_asr_semantic_equivalence_production_01 as e21
+        self.assertEqual(e21.angstrom_symbol_extra_chars("at least 7,620 Å, and 5 Å."), 18)
+        self.assertEqual(e21.angstrom_symbol_extra_chars("Åland and plain text"), 0)
+        self.assertEqual(e21.angstrom_symbol_extra_chars(""), 0)
+        for mod in (repro01, news_tail_fix, crosslevel_common):
+            src = inspect.getsource(mod)
+            self.assertIn("angstrom_symbol_extra_chars(", src, mod.__name__)
+            self.assertNotIn("max_len = len(text) + max_extra_chars", src, mod.__name__)
+
+
 if __name__ == "__main__":
     unittest.main()

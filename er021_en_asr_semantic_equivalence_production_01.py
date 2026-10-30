@@ -118,6 +118,29 @@ _CURRENCY_SYMBOLS = {"$": "USD", "£": "GBP", "€": "EUR"}
 # 長さ単位オングストローム: 記号Å(ASR側は読み"angstrom(s)"になる)。lower()後の形で照合する。
 _ANGSTROM_UNIT_FORMS = {"å", "Å".lower(), "angstrom", "angstroms"}
 _ANGSTROM_UNIT_CANON = "angstrom"
+# FAMILY-X-SELECTED-4 委任_05(OPEN-612、不具合是正11-8): 上記Å<->angstrom(s)の閉じた1対応を、同根の後段Gate(ASR長さ上限・Repetition QA
+# canonical照合)が共通に参照するための公開helper(個別Gateに別々の対応表を持たせない。他単位へ一般化しない)。
+# 記号Å(英字に隣接しない単独のÅ/U+212B)はASR転写で読み「angstroms」(9文字、直前に空白が入る場合は+1)になる。
+_ANGSTROM_SYMBOL_RE = re.compile("(?<![A-Za-z])[ÅÅ](?![A-Za-z])")
+ANGSTROM_SPOKEN_EXTRA_CHARS_PER_SYMBOL = len("angstroms")  # ' angstroms'(10) - 記号(1) = 9
+
+
+def angstrom_symbol_extra_chars(text) -> int:
+    """canonical text中のÅ記号1個につき、ASR転写が最大でこの文字数だけ長くなる(長さ上限の余裕に加算する用)。
+    Å以外・英字に隣接するÅ(固有名等)は0。表記差の吸収のみで、長さ上限の比率・max_extra_charsそのものは変えない。"""
+    if not text:
+        return 0
+    return ANGSTROM_SPOKEN_EXTRA_CHARS_PER_SYMBOL * len(_ANGSTROM_SYMBOL_RE.findall(text))
+
+
+def angstrom_symbol_to_word(text: str) -> str:
+    """canonical text中の単独Åを語「angstrom」(前後に空白)へ置換する(Repetition QAのcanonical照合用)。"""
+    return _ANGSTROM_SYMBOL_RE.sub(" angstrom ", text)
+
+
+def canon_angstrom_token(token: str) -> str:
+    """正規化済みtoken(小文字化・句読点除去後)がangstrom(s)/Åなら単数形「angstrom」へ揃える。それ以外は無変更。"""
+    return _ANGSTROM_UNIT_CANON if token in _ANGSTROM_UNIT_FORMS else token
 _CURRENCY_WORDS = {"dollar": "USD", "dollars": "USD", "pound": "GBP", "pounds": "GBP",
                     "euro": "EUR", "euros": "EUR"}
 

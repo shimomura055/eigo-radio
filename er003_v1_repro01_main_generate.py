@@ -28,6 +28,7 @@ import er003_b1_p4c_audio as p4c
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
 import er002_gemini_client as gclient  # 委任_03: 記録voice=実送信voice(effective_voice)
+import er021_en_asr_semantic_equivalence_production_01 as er021_equiv  # 委任_05(OPEN-612): ASR長さ上限のÅ<->angstroms表記差吸収(単一定義を共有)
 import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
@@ -306,7 +307,7 @@ def generate_narration_snippet_verified_strict(
             "canonical_text": text, "symbol_findings": symbol_findings,
         }
     asr_language = "en-US" if language == "en" else "ja-JP"
-    max_len = len(text) + max_extra_chars
+    max_len = len(text) + er021_equiv.angstrom_symbol_extra_chars(text) + max_extra_chars
     attempts_log = []
     classification_history = []
     # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):

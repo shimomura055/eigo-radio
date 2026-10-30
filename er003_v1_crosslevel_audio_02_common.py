@@ -33,6 +33,7 @@ import er003_b1_p9a_audio as p9a
 import er002_gemini_client as gclient  # 委任_03: 記録voice=実送信voice(effective_voice)
 import er003_v1_a2_audio_02_generate as audio02
 import er003_v1_repro01_main_generate as repro01
+import er021_en_asr_semantic_equivalence_production_01 as er021_equiv  # 委任_05(OPEN-612): ASR長さ上限のÅ<->angstroms表記差吸収(単一定義を共有)
 import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
@@ -190,7 +191,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         standard["fallback_used"] = False
         return standard
 
-    max_len = len(text) + max_extra_chars
+    max_len = len(text) + er021_equiv.angstrom_symbol_extra_chars(text) + max_extra_chars
     fallback_attempts = []
     fallback_classification_history = []
     # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目、
@@ -361,7 +362,7 @@ def _generate_english_segment_unified(blk, text: str, out_path: str, expected_su
         standard["fallback_used"] = False
         return standard
 
-    max_len = len(text) + max_extra_chars
+    max_len = len(text) + er021_equiv.angstrom_symbol_extra_chars(text) + max_extra_chars
     fallback_attempts = []
     fallback_classification_history = []
     cooldown_events = []
@@ -598,7 +599,7 @@ def _local_rewrite_recovery_for_english_segment_with_fallback(
     retts_classification_history: list = []
 
     def _retts_fn(rewritten_text: str) -> dict:
-        retts_max_len = len(rewritten_text) + max_extra_chars
+        retts_max_len = len(rewritten_text) + er021_equiv.angstrom_symbol_extra_chars(rewritten_text) + max_extra_chars
         outcome = _run_a2_minimal_fallback_attempt(
             rewritten_text, out_path, retts_max_len, retts_classification_history,
             enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,

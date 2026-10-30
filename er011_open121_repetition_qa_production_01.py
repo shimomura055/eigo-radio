@@ -83,6 +83,7 @@ import soundfile as sf
 
 import er006_asr_provider_routing_01 as asr_routing
 import er006_preprod_hardening_01_validation as en_validator
+import er021_en_asr_semantic_equivalence_production_01 as er021_equiv  # 委任_05: Å<->angstrom(s)の閉じた1対応の単一定義を共有
 import er008_disfluency_qa_18 as dq18
 
 # ============================================================
@@ -445,6 +446,14 @@ _HYPHEN_BOUNDARY_RE = re.compile(
     r"|(?<=[0-9])-(?=[A-Za-z])"
 )
 
+# FAMILY-X-SELECTED-4 委任_05(OPEN-612、不具合是正11-8。ユーザー承認済みの本規則群[RECONCILE-02/03]と同じ「canonical側・ASR側の
+# 表記ゆれのみを両側に同一適用して吸収」する対称正規化への追加2点。閾値canon_count>=2・判定意味・受理面は無変更):
+#   (iii) 長さ単位記号Å: canonicalのÅを語angstromへ置換し、両側のangstrom/angstroms/Åを単数形angstromへ揃える(定義はer021に1箇所。
+#         他単位へ一般化しない)。
+#   (iv)  千位区切り数値`N,NNN`: ASR(faster-whisper)が`7`+`,620`の2語に分割する一方canonicalは1語の非対称を、両側とも千位区切りの
+#         カンマ位置でtokenを分割して揃える(`7,620`->`7`,`620`)。ASR側は1語が複数tokenに展開され得るため語indexを保持する。
+_THOUSANDS_SEP_RE = re.compile(r"(?<=\d),(?=\d{3}(?!\d))")
+
 _ONES = en_validator._ONES
 _TENS = en_validator._TENS
 _NUM_WORD_VOCAB = en_validator._NUM_WORD_VOCAB
@@ -510,7 +519,7 @@ def _normalize_token_numeric_equiv(word):
     w = word
     if len(w) > 1 and w[0] in "-–—" and (w[1].isalpha() or w[1].isdigit()):
         w = w[1:]
-    t = dq18._normalize_token(w)
+    t = er021_equiv.canon_angstrom_token(dq18._normalize_token(w))
     if t == "one":
         return t
     if t in _ONES:
@@ -524,9 +533,20 @@ def _normalize_tokens(text):
     """canonical側: (i)ダッシュ境界統一→分割→(ii)数詞畳み込み→
     既存`dq18._normalize_token`(句読点除去+小文字化)。"""
     text = _dash_unify(text)
+    text = er021_equiv.angstrom_symbol_to_word(text)
+    text = _THOUSANDS_SEP_RE.sub(" ", text)
     raw_tokens = text.split()
     folded = _fold_cardinal_words(raw_tokens)
-    return [dq18._normalize_token(t) for t in folded]
+    return [er021_equiv.canon_angstrom_token(dq18._normalize_token(t)) for t in folded]
+
+
+def _asr_token_parts(word):
+    """ASR 1語を正規化tokenの列へ展開する。通常は1語=1 token(従来と同一)。千位区切り数値を1語で出力した場合のみ
+    canonical側(`_normalize_tokens`)と同じ位置で分割する。"""
+    pieces = _THOUSANDS_SEP_RE.sub(" ", word).split()
+    if len(pieces) <= 1:
+        return [_normalize_token_numeric_equiv(word)]
+    return [_normalize_token_numeric_equiv(p) for p in pieces]
 
 
 def find_repeated_spans(tokens, min_words=1):
@@ -581,21 +601,27 @@ def detect_ngram_repetition(words, canonical_text=None, min_words=METHOD_A_MIN_W
     # ASR側token(綴り小数のまま書き起こされる)にも、canonical側
     # `_normalize_tokens()`と同じ`_normalize_token_numeric_equiv()`を
     # 適用し、比較前の表記を揃える(判定ロジック自体は無変更)。
-    tokens = [_normalize_token_numeric_equiv(w["text"]) for w in words]
+    tokens = []
+    widx = []  # token index -> words index(1語が複数tokenへ展開される千位区切り数値用。通常は恒等)
+    for wi, w in enumerate(words):
+        for t in _asr_token_parts(w["text"]):
+            tokens.append(t)
+            widx.append(wi)
     spans = find_repeated_spans(tokens, min_words=min_words)
     canonical_tokens = _normalize_tokens(canonical_text) if canonical_text else None
     matches = []
     for i, j, k in spans:
         span_tokens = tokens[i:i + k]
-        span_text = " ".join(w["text"] for w in words[i:i + k])
+        wi0, wi1, wj0, wj1 = widx[i], widx[i + k - 1], widx[j], widx[j + k - 1]
+        span_text = " ".join(w["text"] for w in words[wi0:wi1 + 1])
         canon_count = _canonical_repeat_count(span_tokens, canonical_tokens) if canonical_tokens is not None else None
         intentional = (canon_count is not None and canon_count >= 2)
-        gap_seconds = round(words[j]["start"] - words[i + k - 1]["end"], 3)
+        gap_seconds = round(words[wj0]["start"] - words[wi1]["end"], 3)
         category = "word" if k == 1 else ("phrase" if k <= 4 else "sentence")
         matches.append({
             "span_text": span_text, "n_words": k, "category": category,
-            "first_start_s": round(words[i]["start"], 3), "first_end_s": round(words[i + k - 1]["end"], 3),
-            "second_start_s": round(words[j]["start"], 3), "second_end_s": round(words[j + k - 1]["end"], 3),
+            "first_start_s": round(words[wi0]["start"], 3), "first_end_s": round(words[wi1]["end"], 3),
+            "second_start_s": round(words[wj0]["start"], 3), "second_end_s": round(words[wj1]["end"], 3),
             "gap_seconds": gap_seconds, "canonical_repeat_count": canon_count, "intentional": intentional,
             "flagged": not intentional,
         })

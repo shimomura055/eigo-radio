@@ -22911,3 +22911,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 
 ## ENDUSER-EU06(雪女委任_06兼X委任_05): End User検証・下線対応の是正と公開(2026-10-30)
 - 是正2件(承認済み仕様との矛盾の是正であり仕様追加ではない): (1)`er135_enduser_page_verify_01.py` G検査のサンプル点を次パート最初の文のsync発話区間内へ(極短パート対応)+seek後に境界以下へ戻ったことを確認してから境界超えを待つ(古い再生位置の即成立を排除)。(2)`er135_enduser_page_01.py build_glossary`が、本文表示範囲外(devで承認済みの`HL_NOT_IN_DISPLAY_MEANING_ONLY`と同基準)の③だけを下線対応の必須から除外。受理面・閾値・方式の拡大なし。雪女dev+End User、X②④End Userを公開。分類: 不具合是正(11-8)。OPEN-616・OPEN-612。
+
+## FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_05: Å同根の後段Gate偽NG是正(2026-10-30)
+- 是正(承認済み機構との矛盾の是正11-8、Fable判定B。仕様追加・閾値変更なし): ASR長さ上限とRepetition QA canonical照合に、委任_04でsemantic classificationへ入れたÅ<->angstrom(s)の閉じた1対応と千位区切り`N,NNN`のASR分割を揃えた(定義はer021に1箇所)。他単位への一般化なし。
+- 付随の不具合是正: KP解説textのQA NGを含むbundleを同一署名で再利用しない(再実行で再生成可能に)。語数基準・Promptは無変更。
+- 結果: ⑭ Std/Adv `full_story_part2_k3`のHR Lock解消(approve_regenerate+標準cascade 1起動、実費¥7.47)。Adv KP1解説text(19語)のNG再生成は再実行待ち。ユーザー判断なし。

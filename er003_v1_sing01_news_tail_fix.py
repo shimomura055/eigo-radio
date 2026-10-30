@@ -31,6 +31,7 @@ import er003_b1_p9a_audio as p9a
 import er002_gemini_client as gclient  # 委任_03: 記録voice=実送信voice(effective_voice)
 import er003_audio_tts_asr_safety as safety
 import er003_v1_repro01_main_generate as repro01
+import er021_en_asr_semantic_equivalence_production_01 as er021_equiv  # 委任_05(OPEN-612): ASR長さ上限のÅ<->angstroms表記差吸収(単一定義を共有)
 import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
 import er006_pronunciation_ledger_01 as pronun_ledger
@@ -151,7 +152,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             standard_style_prefix, text)
         if en_pronunciation_resolver_info.get("hints_applied"):
             standard_style_prefix = augmented_style_prefix
-    max_len = len(text) + max_extra_chars
+    max_len = len(text) + er021_equiv.angstrom_symbol_extra_chars(text) + max_extra_chars
     attempts_log = []
     classification_history = []
     cooldown_events = []

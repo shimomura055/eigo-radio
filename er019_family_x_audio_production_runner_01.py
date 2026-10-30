@@ -1873,7 +1873,12 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
     gloss_signature = [[kp_explanation_gen.explanation_phrase(it), it.get("key_phrase"), it.get("japanese_gloss", "")] for it in kp_items]
     _has_status = any(it.get("gloss_alignment_status") for it in kp_items)
     cached_bundle = (cached or {}).get("key_phrase_explanations_text")
-    if (cached_bundle and cached_bundle.get("phrases_signature") == signature
+    # FAMILY-X-SELECTED-4 委任_05(不具合是正11-8): QA NG(語数超過等)が残るbundleは再利用しない。再利用すると、同一phrase署名の
+    # 再実行が常に同じNGを返し、Gate(text-gate NG -> TTS STOP -> assemble BLOCK)のSTOPPED文言が案内する
+    # 「Key Phrase解説textの再生成」が構造的に不可能になる(Prompt・max_words・retry上限[技術retry合計1回]は無変更)。
+    _bundle_all_ok = bool(cached_bundle) and all(
+        (v or {}).get("status") == "OK" for v in (cached_bundle.get("items") or {}).values())
+    if (cached_bundle and _bundle_all_ok and cached_bundle.get("phrases_signature") == signature
             and (not _has_status or cached_bundle.get("gloss_signature") == gloss_signature)):
         reused = dict(cached_bundle)
         reused["reused_from_previous_run"] = True

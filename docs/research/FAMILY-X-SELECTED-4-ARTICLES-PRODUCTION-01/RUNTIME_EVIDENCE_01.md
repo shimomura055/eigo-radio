@@ -287,3 +287,25 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 - 生成・検証: ②End User(224チェック NG 0)・④End User(226 NG 0)。公開=commit 93526f005。live: ② 224 / ④ 226 とも NG 0。既公開4記事(X月/Y再配達/Y姓/Zメロス)のverify-only退行 0(222/218/226/174 NG 0)。④の旧enduser(未commit)は破棄して再生成。
 - 気づき(次委任候補): ②の初回生成で埋め込みを新規取得した直後のverify_consistencyが1回 ENDUSER_JA_ALIGN 不一致(std_19/adv_18)、再実行(キャッシュ読込)で一致。仮説=初回はfloat32未丸め値、再計算は保存値(6桁丸め)(er135_enduser_align_01.py:251-254)。未実証。⑨⑭の初回生成でも再現しうる(その場合は再実行で回避可)。
 - 費用: 埋め込み初回取得のみ(約0.2円と推定、ログ未取得)。それ以外API 0。
+
+# 委任_05(2026-10-30、Cap ¥20固定。⑭のÅ同根の後段Gate偽NG是正=不具合11-8)
+## 0. 結論
+- Å/千位区切りの表記差を、ASR長さ上限とRepetition QA canonical照合の両方で吸収(閾値・方式・受理面は無変更)。既存attempt(API 0)の再判定で効果を実証後、既存`approve_regenerate`でLock解除→標準cascadeで1起動。**⑭ Std/Adv の `full_story_part2_k3` はHR Lock解消(RESOLVED。Std 9回目累計・Adv 7回目累計、HR Lock登録0)**。
+- しかしAdv assembleが**別のGate**でBLOCK: `BLOCKED_STYLE_PROFILE_GATE`(`kp1_explanation` KP_EXPLANATION_STATUS_NOT_OK)。原因=Adv KP1『equivalent width』の英語解説textが19語(max_words 15超過、技術retry済み)でtext-gate NG→TTS STOP。bundleが同一phrase署名でNGのまま再利用され続ける不具合(下記§3)。コード是正は済(test PASS)だが**再実行は有料run再起動のため委任文の許可回数(1回)を使い切っており未実施**=Fable指示待ち。
+- ⑭のdev/End Userページは**未生成**(Part C未了)。Std(a2)はassemble OK(`a2/assembled/Family_X_Audio_A2_JWST_MYSTERY_EMISSION_LINE.wav`、323.3秒)。
+## 1. 是正(共通helperを1箇所に定義し、3消費先が共有)
+- 単一定義: `er021_en_asr_semantic_equivalence_production_01.py`の既存`_ANGSTROM_UNIT_FORMS/_CANON`(委任_04のsemantic等価)に、公開helper `angstrom_symbol_extra_chars`(長さ上限用: 単独Å1個につき+9文字)・`angstrom_symbol_to_word`・`canon_angstrom_token`を追加(英字隣接のÅは対象外、他単位へ一般化なし)。
+- ①ASR長さ上限: `max_len = len(text) + angstrom_symbol_extra_chars(text) + max_extra_chars`を英語narrationの3モジュール計4か所(`er003_v1_sing01_news_tail_fix.py`・`er003_v1_repro01_main_generate.py`・`er003_v1_crosslevel_audio_02_common.py`の2か所+retts)に適用。max_extra_chars・判定ロジック(`er078`)は無変更。
+- ②Repetition QA方式A: `er011_open121_repetition_qa_production_01.py`の既存対称正規化(RECONCILE-02/03のdash・数詞)に2点追加=(iii)canonicalのÅを語angstromへ置換し両側のangstrom/angstroms/Åを単数形に揃える、(iv)千位区切り`N,NNN`を両側でカンマ位置で分割(ASRが1語で出す場合も展開、語indexを保持し時刻出力は従来どおり)。閾値canon_count>=2・find_repeated_spans不変。
+- er021の原子(atoms)層をRepetition QAへ流用しなかった理由: Repetition QAはword-level timestampと1:1のtoken列で動き(区間の時刻出力・span検出)、er021 atomsは文単位の意味等価判定でtimestamp対応を持たない。方式変更になるため、既存の対称token正規化へ表記差のみ追加し、Å対応の定義だけer021から共有した。
+- test: `AngstromAndThousandsSeparatorSurfaceDifferenceTests` 8件(Å=angstroms/angstrom・`7,620`↔`7 ,620`・ASR1語`7,620`が偽NGにならない/canonical1回のみの本当の反復・別数値`7,640`・別単位nanometers・は引き続きflagged、既存tokenization不変、長さhelper・3モジュール適用)。回帰: er011 repetition wiring 84 passed、er021 wiring/trial/time 125 passed(+214 subtests)、er078 wiring_13/en_wiring/judge_01+crosslevel sidecar 158 passed、runner/style_profile/kp系129 passed、kp_structure 37 passed。
+## 2. 既存attempt再判定(API 0)→効果実証
+- Adv(長さ): `run05/rejudge_length_adv.json`(是正前の既存3 attempt: primary_len 406/406/405, secondary 402/401/400, max_len 396 -> 新max_len 423[Å 3個x9=27]で全てlen OK)。実run後のAdv第1 attempt: primary_len 403 <= max_len 423(旧396なら超過)=`run05/rejudge_length_adv_postrun_b1b_attempt7.json`。
+- Std(Repetition QA): `run05/rejudge_repetition_std.json`(Std attempt4〜6のwavをローカルfaster-whisperで方式A再判定): 旧flagged ` 7 ,620  angstroms.` canonical_repeat_count=0 → 新 flagged=False(count=2、意図的反復)。3/3。
+## 3. 新たな後段blocker(KP解説text): 不具合11-8
+- 事実: `audit/tts_generation_results.json` `key_phrase_explanations_text`: kp1 `a way to measure the strength of a line in a spectrum by comparing it with the surrounding light`(19語>15、new_fact_tokens []、retried_for_qa true)、`reused_from_previous_run: true`(委任_03のKP表現調整時に生成・NG確定、今回runで再利用)。`_resolve_kp_explanations_text`は署名一致なら**NGを含むbundleも再利用**するため、再実行しても再生成されない(runner STOPPED文言「Key Phrase解説textの再生成が必要」が構造的に実行不能)。
+- 是正(コード、未適用run): `_bundle_all_ok`=bundle内全itemがstatus OKのときのみ再利用(NGがあれば再生成=従来の『技術retry合計1回』『max_words 15』『Prompt』は無変更)。test`test_regenerates_when_cached_bundle_has_qa_ng_item`。再実行時の追加費用見込み: 解説LLM 1〜2 call(約0.05円)+kp1解説TTS(約1円以下)。再生成後も15語超過なら`NG`のままfail-closed(語数を満たす表現にはLLMの再試行が必要。Prompt変更は承認範囲外のため行わない)。
+## 4. 実行
+- stop_scope_check: 開始時・audio前とも rc=0(`run05/stop0.json`、`run05/stop_audio.json`)。`approve_regenerate`(a2/b1b) -> REGENERATE_APPROVED(`tools/fx4e_approve_regenerate_jwst_k3.py`、sha一致assert、API 0)。
+- audio: `er019_family_x_audio_production_runner_01.py --slug jwst_mystery_emission_line --run run_fx4_01 --level both --stage all --budget-jpy 83`(13:52:12起動、1起動・再起動0、`run05/launch_times.txt`・`audio_jwst.log`)。run内retry: Std 標準2+fallback1の後に6%減速後ASRでTRUE_CONTENT_MISMATCH(`Then,`の余分なカンマ=従来と同型の表記差)→標準・fallback・減速後で最終OK(累計9回、LRなし、`[WARN][STYLE-PROFILE][M3] FALLBACK_APPLIED`は非ブロッキングwarning)。Adv=第1 attempt(NUMERIC_EQUIVALENCE_MATCH)でOK。HR Lock登録0件。
+- 費用: run累計 62.92 -> 70.39 = **¥7.47**(Cap ¥20内)。案件累計 ≒ ¥445.0 + 7.5 = **¥452.5 / Cap ¥500**。本日JST累計: 開始時 ≒¥339.8(`daily_cost.py 2026-10-29T15:00:00`、gemini_batch 198 callは0円扱い)+7.5。
