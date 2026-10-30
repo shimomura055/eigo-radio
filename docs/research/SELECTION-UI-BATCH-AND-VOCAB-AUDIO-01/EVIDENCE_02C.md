@@ -38,17 +38,26 @@
 | X 月のしわ | Adv(b1b) | 5 | 3 | 2 (over its entire history[ENGLISH_LOCK fallback経由でOK]、puzzling) | 0 | PASS | (同上) |
 | Z 雪女(コピー: yuki_onna/run_vocab_ev_02c_01) | Std(a2) | 5 | 3 | 2 (get what you deserve, mist) | 0 | PASS(mist=PASS_VOTE_2OF3/PASS_WITH_WARNING、下記) | 合計¥0.4465 |
 | Z 雪女 | Adv(b1b) | 5 | 3 | 2 (take shelter, go no farther) | 0 | PASS | (同上) |
-| Y 再配達(コピー: redelivery_fee/run_vocab_ev_02c_01) | Adv(b1b) | 5 | - | - | - | **未実走(下記)** | 0 |
+| Y 再配達(コピー: redelivery_fee/run_vocab_ev_02c_02、元=run_style_fix_01) | Adv(b1b) | 5 | 3 | 2 (when it suits someone=生成 / end up receiving=Store hit) | 0 | PASS(PASS_DUAL/judge PASS、ASR 'When it suits someone.' / 'end up receiving.') | 実費¥0.1359(Cap ¥3) |
+| Y 再配達 | Std(a2) | - | - | - | - | 対象外: 元run(run_style_fix_01)に`key_phrases/a2/vocab_confirmed.json`が無い(Y StdはPart 1未確定)=②無しは従来どおりキー無し | 0 |
 - Master Audio Store: 全②entryに`master_audio_id`/`master_audio_key`登録(ev02c/*/_vocab_extra_results.json)。Store hit 1件(work out)はAPI 0。cost logger: 実segment名`vocab_extra<n>_english`/`vocab_extra_<n>_en`で記録(ev02c/*/usage_log_this_run.jsonl、gemini/openai_asr/azure)。
 - 出力: 掲載vocab全件(X Std4+Adv5、Z Std5+Adv5)の単体mp3+`vocab_audio.json complete=true`。公開済みarticle.jsonのコピーへ`apply_to_article`→`validate_article(public_dir)`=違反0(ev02c/*/enduser/article_audio_report.json)。同じ公開済み(audio無し)articleは`validate_article`で全件`AUDIO_MISSING`=現状は音声なし掲載である事実の確認。1件欠落させると`apply_to_article`が停止(fail-closed実演)。
 - 独立ASR(公開用mp3そのものを別ASR=ローカルfaster-whisper mediumで転写): 19件中18件一致(ev02c/asr_check_mp3.json)。不一致1件=Z Std `mist`→`missed`(同音語。生成時の本番ASRはopenai'MEST'/azure'Missed.'/whisperでPASS_VOTE_2OF3=既存規則でPASS_WITH_WARNING扱い。`mist`と`missed`は同発音のため音声欠陥とは言えないが、**ユーザー試聴は任意で推奨**)。
 - 実費合計(X+Z)¥0.772。本日累計(daily_cost 2026-10-29T15:00:00基準、並行Worker全体)=開始時¥346.0 → 終了時¥392.8(うち本委任¥0.77)。
 - 追加量産単価(実測): 1記事セット(Std+Adv)あたり ¥0.33(X、②4件中Store hit1)〜¥0.45(Z、②4件全生成)=**約¥0.3〜0.5/記事セット(目標70円の0.5〜0.65%)**。Store hit率が上がれば更に下がる。保存・配信はmp3 数KB×4〜10でPages無料枠内=増分0。
 
+### 4-Y. Y再配達の実TTS証跡(委任_02C-2、2026-10-30)
+- 新コピーrun `er121_output/family_y_production_01/redelivery_fee/run_vocab_ev_02c_02`(元=run_style_fix_01の全414ファイルshaが実走前後で一致)。1起動(Y runner `--stages tts_b1b --regenerate-stage tts_b1b --approved-budget-jpy 3`、`--theme-package`/`--reuse-manifest`/STANDARD指定、本番関数 er121 audio -> `xr._generate_vocab_extra_segments`)。STOP/RESTART_STORMなし。
+- 掲載5件=KP再利用3(sit right with someone / take the trouble / on top of)+②追加2(when it suits someone=新規生成、end up receiving=Master Audio Store hit)。Gate(`ya.load_y_sources`=既存Audio Validation Gate+er137 gate hook)=GATE_PASS、`vocab_audio.json complete=true errors=[]`。
+- 生成時ASR: 2件とも kp_dual_check vote=PASS_DUAL/judge=PASS(row P+S)。Master Audio Store: master_audio_id 928b5e08...(生成)/30fde2c9...(hit)。cost logger: `vocab_extra4_english` gemini 1 + openai_asr 1 + azure 1(hitの項目は0 call)。`tts_generation_results.json`の`vocab_extra`に v4/v5。
+- 公開済みarticle(user_test/family_y_production_redelivery_fee_03)のコピーへ`apply_to_article`->`validate_article(public_dir)`=違反0、原articleは5件`AUDIO_MISSING`(=現状音声なし掲載の確認)、1件欠落でfail-closed STOP。独立ASR(公開mp3、ローカルfaster-whisper medium)=5/5一致。
+- 証跡: ev02c/y_redelivery_fee/(b1b_vocab_extra_results.json / b1b_vocab_audio.json / usage_log_this_run.jsonl / asr_check_mp3.json / enduser/)。実費¥0.1359、本日累計(daily_cost 2026-10-29T15:00:00基準・並行Worker全体)¥392.8->¥392.9(開始時と本委任後)。Y追加量産単価=約¥0.14/記事セット(Adv、②2件中Store hit 1)。
+- 起動規則違反の記録(前委任02C): Worker自身がYコピーrun(run_vocab_ev_02c_01)を300秒に3回起動(1回目=theme-package引数漏れ、2回目=find_kp_dir是正前、3回目)し、RESTART_STORM STOPを自作した。STOPは解除せず記録として残置(run_vocab_ev_02c_01/STOP、元runへの影響なし)。本委任02C-2では新コピーrunで、引数をparser検証(API 0)してから1起動のみ実施。補足: 本委任でも最初のコピー元を誤り(run_01、audit/style_profile.json無し)Style固定記録のM2 STOP(rc=2、API 0、課金なし)を1回出した(別dir[scratchへ退避済み]、約90秒後に正しいコピー元run_style_fix_01の新dirで1起動)。dirが別のためRESTART_STORM対象外だが、150秒間隔の運用目安は守れていない。
+
 ## 6. 失敗経路(最終成果物まで)
 TTS失敗(STOPPED)→(既存retry/fallback=KP英語と同一)→Gate: `EPISODE_BLOCKED_BY_AUDIO_VALIDATION: …kpv5_vocab_extra_english=STOPPED`でAssembly中止(Z: stage_ttsが`FamilyZTtsClipFailedStop`、M2存在assertがSTOP)→Human Review承認(`human_approved_segments.json`、本文sha一致)でその項目だけ通過→`export_level`は未承認/欠落でcomplete=false・strictでSTOP→`apply_to_article`でSTOP。すなわち**音声欠落項目を掲載したまま通す経路は無い**(testで固定、最終成果物=Assemblyされない/article.jsonが作られない)。
 
 ## 7. 残課題・限界(正直に)
-1. **Y実TTS未実走**: Yコピーrunの起動を3回/300秒行い(1回目=theme-package引数漏れで0円STOP、2回目=是正後に完走したがYのvocab置き場がX配置と違い②が0件扱いになる不具合を発見→`find_kp_dir`で是正、3回目=再試行)、自ら**RESTART_STORMのSTOP**(`er121_output/.../redelivery_fee/run_vocab_ev_02c_01/STOP`)を自動作成させた。STOP回避は禁止のため以後Yは未実走(Yコピーrunの`--clear-stop`か、新コピーrunでの再実走許可が必要=Fable判断)。Yは**X共通の同一関数**(`xr._generate_vocab_extra_segments`)を通り、`_finish_results`の保存とGate hookはtest(配線grep+X/Y配置テスト)で確認、Z実走は同じ`vocab_extra`契約とGateを通過済み。
+1. Y実TTSは委任_02C-2で実走済み(4-Y節)。前委任の起動規則違反(3起動/300秒)と自作STOPの経緯も4-Y節に記録(STOPは残置)。Y StdはPart 1未確定(vocab_confirmed無し)のため②対象外。
 2. er135のarticle.json組込み(3節)は未実施(UI委任)。生成側成果物(mp3+`vocab_audio.json`+`apply_to_article`/`validate_article`)は完成。
 3. 公開済み記事のバックフィル(Y再配達・Y姓・X月reselect・Z メロス/雪女等)は未実施(別途。Storehit/resumeで低コスト、上記単価)。進行中のX4記事・Y姓Std等は次回tts stage実行で自動(tts未実行runは`assert_results_complete`がAssembly前にSTOPして案内)。
