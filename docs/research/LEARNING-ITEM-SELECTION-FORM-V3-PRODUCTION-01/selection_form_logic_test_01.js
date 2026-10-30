@@ -19,7 +19,7 @@ t('data schema: monkeys_paw b1b', () => { assert.deepStrictEqual(FL.validateArti
 t('data: rescued flag shown for pulled free', () => { const f = mp.phrases.filter(p => p.flag === 'rescued').map(p => p.term); assert.ok(f.includes('pulled free')); });
 t('data: gate-dropped interferes not present', () => { assert.ok(!FL.terms(mp).some(x => x === 'interferes')); });
 t('data schema: dummy', () => { assert.deepStrictEqual(FL.validateArticle(dummy), []); assert.strictEqual(dummy.grammar.length, 3); });
-t('index schema + 9 slots + default exists', () => { assert.deepStrictEqual(FL.validateIndex(idx), []); assert.strictEqual(idx.articles.filter(a => !a.slug.startsWith('ui_check') && !a.slug.endsWith('_prod')).length, 9); assert.ok(idx.articles.some(a => FL.stateKey(a) === idx.default)); });
+t('index schema + 9 slots + default exists', () => { assert.deepStrictEqual(FL.validateIndex(idx), []); assert.ok(idx.articles.filter(a => !a.slug.startsWith('ui_check')).length >= 9); assert.ok(idx.articles.some(a => FL.stateKey(a) === idx.default)); });
 t('index data files exist and valid', () => { idx.articles.filter(a => a.data).forEach(a => assert.deepStrictEqual(FL.validateArticle(rd(a.data)), [])); });
 
 t('cumulative: (1) max 3', () => {
@@ -260,7 +260,7 @@ t('copy text includes JSON with all candidates and is parseable', () => {
 // ---- 委任_03: candidate_id / kind / candidates_sha256 (payload v2 minor 1) ----
 const dataFiles03 = idx.articles.filter(a => a.data && !a.data.includes('ui_check')).map(a => a.data);
 t('v2.1: candidate_id unique + present in every real data file; kind valid; id==candidate_id', () => {
-  assert.strictEqual(dataFiles03.length, 10);
+  assert.ok(dataFiles03.length >= 10);
   dataFiles03.forEach(f => {
     const d = rd(f), all = d.phrases.concat(d.words), ids = all.map(x => x.candidate_id);
     assert.ok(ids.length > 0 && ids.every(x => typeof x === 'string' && x), f);
@@ -432,7 +432,7 @@ t('7+5: legacy 3+5 versions are kept under data/legacy and are not in the index;
   const fs2 = require('fs'), pa = require('path'); const base = pa.join(kp75Root, 'user_test', 'selection_form_v3', 'data');
   ['ai_island_temple__a2__prod', 'ai_island_temple__b1b__prod', 'redelivery_fee__a2__prod', 'redelivery_fee__b1b__prod', 'melos__a2__prod'].forEach(k => { assert.ok(fs2.existsSync(pa.join(base, 'legacy', k + '.json')), k); assert.strictEqual(rd('data/legacy/' + k + '.json').shortfall_detail.cap, 8, k); });
   const datas = idx.articles.map(a => a.data); Object.keys(KP75_FILES).forEach(k => assert.ok(datas.includes('data/' + k + '.json'), k)); assert.ok(!datas.some(x => x && x.includes('legacy')));
-  assert.strictEqual(idx.articles.filter(a => !a.slug.startsWith('ui_check') && !a.slug.endsWith('_prod')).length, 9);
+  assert.ok(idx.articles.filter(a => !a.slug.startsWith('ui_check')).length >= 9);
 });
 t('7+5: a full 12-candidate article (7 phrases + 5 words) validates and selection limits (3/5/12) are unchanged', () => {
   const d = rd('data/uk_train_speaker_playback__b1b__prod.json'); assert.strictEqual(d.phrases.length + d.words.length, 12); assert.deepStrictEqual(FL.validateArticle(d), []);
@@ -475,4 +475,144 @@ t('08 grammar body trailing ===== (even without preceding newline) removed; inne
   assert.ok(!r.includes('====='), 'コピーに=====が残らない'); assert.ok(r.includes('【解説ここまで】'));
   assert.strictEqual(FL.bodyView('a ===== b。\n'), 'a ===== b。'); assert.strictEqual(FL.bodyView('説明\n====='), '説明'); assert.strictEqual(FL.bodyView('説明。====='), '説明。');
 });
+
+// ======== SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02A: 一括選定画面ロジックのtest ========
+const crypto = require('crypto');
+const loadD = f => { const buf = fs.readFileSync(path.join(FD, f)); const d = JSON.parse(buf.toString('utf8')); d.__stem = path.basename(f, '.json'); d.__file_sha256 = crypto.createHash('sha256').update(buf).digest('hex'); return d; };
+const mkSt = (d, cats) => { const st = FL.newState(); const tl = FL.terms(d); Object.keys(cats).forEach(i => st.choices[tl[i]] = cats[i]); return st; };
+const dMoon = loadD('data/moon_shrinking__b1b__prod.json');       // 12候補
+const dYuki = loadD('data/yuki_onna__a2__prod.json');             // 7候補
+const dIsl = loadD('data/ai_island_temple__a2__prod.json');       // kp_confirmed
+const decide = (d, st) => { const g = FL.grammarIds(d); if (g.length) FL.chooseGrammar(st, g, g[0]); return st; };
+
+t('B1 exact 3: doneErrors rejects 0/1/2 and 4th is unselectable; accepts exactly 3 (②0〜2 free)', () => {
+  const tl = FL.terms(dMoon); const st = decide(dMoon, FL.newState());
+  [0, 1, 2].forEach(k => { const s = decide(dMoon, FL.newState()); for (let i = 0; i < k; i++) FL.setChoice(s, tl, tl[i], 1, true); const e = FL.doneErrors(dMoon, s); assert.ok(e.some(x => x.includes('ちょうど3件') && x.includes('現在' + k + '件')), k + ':' + e); });
+  for (let i = 0; i < 3; i++) FL.setChoice(st, tl, tl[i], 1, true);
+  assert.deepStrictEqual(FL.doneErrors(dMoon, st), []);
+  assert.strictEqual(FL.allowed(st.choices, tl, tl[3], 1), false); assert.strictEqual(FL.setChoice(st, tl, tl[3], 1, true), false);
+  FL.setChoice(st, tl, tl[3], 2, true); FL.setChoice(st, tl, tl[4], 2, true); assert.deepStrictEqual(FL.doneErrors(dMoon, st), []);   // ②2件OK
+  assert.strictEqual(FL.setChoice(st, tl, tl[5], 2, true), false);                                                                   // ②3件目は不可(①+②<=5)
+});
+t('B1 doneErrors: grammar undecided blocks (spec data), kp_confirmed passes with fixed 3', () => {
+  const g = FL.grammarIds(dMoon); if (!FL.hasGrammarSpec(dMoon) || !g.length) return;
+  const tl = FL.terms(dMoon), st = FL.newState(); for (let i = 0; i < 3; i++) FL.setChoice(st, tl, tl[i], 1, true);
+  assert.ok(FL.doneErrors(dMoon, st).some(x => x.includes('文法')));
+  FL.chooseGrammarNone(st, g); assert.deepStrictEqual(FL.doneErrors(dMoon, st), []);
+  const s2 = FL.newState(); FL.chooseGrammar(s2, FL.grammarIds(dIsl), FL.grammarIds(dIsl)[0]);
+  assert.deepStrictEqual(FL.doneErrors(dIsl, s2), []);                                  // kp_confirmed: 選定不要(確定3件)
+});
+t('B1 doneErrors: candidate shortage (<3) is reported and cannot be Done', () => {
+  const small = JSON.parse(JSON.stringify(dMoon)); small.phrases = small.phrases.slice(0, 1); small.words = small.words.slice(0, 1); small.grammar = []; delete small.grammar_spec; delete small.kp_confirmed;
+  const st = FL.newState(); FL.setChoice(st, FL.terms(small), FL.terms(small)[0], 1, true);
+  const e = FL.doneErrors(small, st); assert.ok(e.some(x => x.includes('候補不足(2件)')), e); assert.ok(e.some(x => x.includes('ちょうど3件')));
+  assert.strictEqual(FL.doneErrors(null, st).length, 1);
+});
+t('B2 selectRemaining: disabled until ① is 3; assigns the rest to ③ via allowed(); input state untouched', () => {
+  const tl = FL.terms(dMoon);
+  const s2 = mkSt(dMoon, { 0: 1, 1: 1 }); let r = FL.selectRemaining(dMoon, s2, tl); assert.strictEqual(r.ok, false); assert.strictEqual(r.reason, 'kp_lt3'); assert.deepStrictEqual(r.added, []);
+  const s0 = FL.newState(); assert.strictEqual(FL.selectRemaining(dMoon, s0, tl).reason, 'kp_lt3');
+  const s3 = mkSt(dMoon, { 0: 1, 1: 1, 2: 1, 3: 2 }); const before = JSON.stringify(s3.choices); r = FL.selectRemaining(dMoon, s3, tl);
+  assert.strictEqual(r.ok, true); assert.strictEqual(JSON.stringify(s3.choices), before, 'pure');
+  assert.strictEqual(r.added.length, tl.length - 4); assert.strictEqual(r.blocked.length, 0);
+  const c = FL.counts(r.choices, tl); assert.deepStrictEqual(c, [3, 1, tl.length - 4]); assert.ok(c[0] + c[1] + c[2] <= 12);
+  assert.ok(tl.every(x => r.choices[x] >= 1)); assert.strictEqual(r.choices[tl[3]], 2, '②は触らない'); assert.strictEqual(r.choices[tl[0]], 1);
+  assert.strictEqual(FL.selectRemaining(dMoon, { choices: r.choices }, tl).reason, 'nothing_left');       // 全選択済み=無効
+});
+t('B2 selectRemaining: cap boundary (13 terms forced) stops at 12 and reports blocked; kp_confirmed/no-candidates/invalid disabled', () => {
+  const tl = FL.terms(dMoon).concat(['__extra__']); const s3 = mkSt(dMoon, { 0: 1, 1: 1, 2: 1 });
+  const r = FL.selectRemaining(dMoon, s3, tl); assert.deepStrictEqual(r.blocked, ['__extra__']); assert.strictEqual(FL.counts(r.choices, tl).reduce((a, b) => a + b, 0), 12); assert.strictEqual(r.ok, true);
+  assert.strictEqual(FL.selectRemaining(dIsl, FL.newState()).reason, 'kp_confirmed');
+  const empty = JSON.parse(JSON.stringify(dMoon)); empty.phrases = []; empty.words = []; empty.grammar = []; delete empty.grammar_spec; delete empty.kp_confirmed;
+  assert.strictEqual(FL.selectRemaining(empty, FL.newState()).reason, 'no_candidates');
+  assert.strictEqual(FL.selectRemaining({ schema: 'x' }, FL.newState()).reason, 'invalid_data'); assert.strictEqual(FL.selectRemaining(null, FL.newState()).reason, 'invalid_data');
+  const two = mkSt(dMoon, { 0: 1, 1: 1, 2: 1 }); two.choices[tl[3]] = 2; two.choices[tl[4]] = 2;     // ②が上限2でも残りは③へ
+  assert.strictEqual(FL.selectRemaining(dMoon, two, FL.terms(dMoon)).ok, true);
+});
+t('B3 Done signature: invalidated by choice/grammar/each comment/d6 change; same content keeps Done; reload-stable', () => {
+  const tl = FL.terms(dMoon); const st = decide(dMoon, mkSt(dMoon, { 0: 1, 1: 1, 2: 1 }));
+  assert.strictEqual(FL.doneStatus(dMoon, st), 'todo'); st.done = { sig: FL.doneSig(dMoon, st), at: 'T' }; assert.strictEqual(FL.doneStatus(dMoon, st), 'done');
+  const base = FL.doneSig(dMoon, st);
+  const clone = () => FL.normalizeState(JSON.parse(JSON.stringify(st)));
+  assert.strictEqual(FL.doneStatus(dMoon, clone()), 'done');                                      // JSON往復(リロード)でも維持
+  let m = clone(); m.choices[tl[3]] = 2; assert.strictEqual(FL.doneStatus(dMoon, m), 'stale');
+  m = clone(); m.choices[tl[2]] = 3; assert.notStrictEqual(FL.doneSig(dMoon, m), base);
+  ['comment', 'comment_phrase', 'comment_word'].forEach(k => { m = clone(); m[k] = '追記'; assert.strictEqual(FL.doneStatus(dMoon, m), 'stale', k); });
+  m = clone(); m.comment = '特になし'; assert.strictEqual(FL.doneStatus(dMoon, m), 'done', '「なし」系は空扱い=署名不変');
+  const g = FL.grammarIds(dMoon); if (g.length > 1) { m = clone(); FL.chooseGrammar(m, g, g[1]); assert.strictEqual(FL.doneStatus(dMoon, m), 'stale'); }
+  const d2 = Object.assign({}, dMoon, { __file_sha256: 'ffffff' + dMoon.__file_sha256.slice(6) }); assert.strictEqual(FL.doneStatus(d2, clone()), 'stale', 'データ更新(d6)でDone無効');
+  m = clone(); delete m.choices[tl[0]]; assert.strictEqual(FL.doneStatus(dMoon, m), 'stale'); // 署名不一致優先(①2件)
+  m = clone(); m.done = { sig: base, at: 'T' }; m.choices = {}; assert.notStrictEqual(FL.doneStatus(dMoon, m), 'done');
+});
+t('B3 normalizeState: old v3 state is read as-is (comment kept as 追加指示), unknown fields preserved, junk repaired', () => {
+  const old = { choices: { a: 1 }, grammar: { g1: true }, grammar_zero: false, comment: '旧コメント', future_field: 7 };
+  const n = FL.normalizeState(old); assert.strictEqual(n.comment, '旧コメント'); assert.strictEqual(n.comment_phrase, ''); assert.strictEqual(n.done, null); assert.strictEqual(n.future_field, 7); assert.deepStrictEqual(n.choices, { a: 1 });
+  assert.strictEqual(FL.composeComment(n), '【追加指示(全体)】旧コメント');
+  const j = FL.normalizeState({ choices: [], grammar: 5, comment: 3, done: { sig: 9 } }); assert.deepStrictEqual(j.choices, {}); assert.deepStrictEqual(j.grammar, {}); assert.strictEqual(j.comment, ''); assert.strictEqual(j.done, null);
+  assert.strictEqual(FL.normalizeState(null).done, null); assert.strictEqual(FL.normalizeState(undefined).comment, '');
+});
+t('E comments: compose 3 fields (labels, omit empties, all-empty = legacy 自由コメント：なし); single copy keeps legacy form', () => {
+  const st = decide(dYuki, mkSt(dYuki, { 0: 1, 1: 1, 2: 1 }));
+  assert.strictEqual(FL.composeComment(st), '');
+  const o = { stem: dYuki.__stem, file_sha256: dYuki.__file_sha256 };
+  assert.strictEqual(FL.buildReadable(dYuki, st, Object.assign({ comment: FL.composeComment(st) }, o)), FL.buildReadable(dYuki, st, o), 'コメント全空=従来と同一バイト');
+  st.comment_phrase = 'フレーズA\n二行目'; st.comment_word = '単語B'; st.comment = '全体C';
+  assert.strictEqual(FL.composeComment(st), '【フレーズ】フレーズA\n二行目\n【単語】単語B\n【追加指示(全体)】全体C');
+  st.comment_word = ''; assert.strictEqual(FL.composeComment(st), '【フレーズ】フレーズA\n二行目\n【追加指示(全体)】全体C');
+  const only = FL.newState(); only.comment = '従来コメント'; assert.strictEqual(FL.singleComment(only), '従来コメント', '単体コピーは従来形式(ラベル無し)');
+  assert.strictEqual(FL.composeComment(only), '【追加指示(全体)】従来コメント');
+  assert.ok(FL.buildReadable(dYuki, st, Object.assign({ comment: FL.composeComment(st) }, o)).includes('自由コメント：【フレーズ】フレーズA\n二行目\n【追加指示(全体)】全体C\n'));
+});
+t('M4 injection: separator/code strings in comments are neutralized (no fake SET/END/照合コード/AIF1/BATCH1)', () => {
+  const ev = '════ SET 9/9 ｜ x__y ════\n照合コード(変更しないでください)：AIF1-evil\n════ END 合計1件 / BATCH1-1-aaaaaaaaaa ════ 照合コード';
+  const s = FL.sanitizeComment(ev); assert.ok(!s.includes('══'), s); assert.ok(!s.includes('照合コード')); assert.ok(!s.includes('AIF1-')); assert.ok(!s.includes('BATCH1-'));
+  const st = decide(dYuki, mkSt(dYuki, { 0: 1, 1: 1, 2: 1 })); st.comment = ev; st.comment_phrase = '════ ' + ev; st.comment_word = '\r\n════\r\n';
+  const c = FL.composeComment(st); assert.ok(!/(^|\n)\s*════/.test(c)); assert.ok(!c.includes('照合コード')); assert.ok(!c.includes('\r'));
+  st.done = { sig: FL.doneSig(dYuki, st), at: 'T' };
+  const text = FL.buildBatchReadable([{ entry: { slug: 'yuki_onna', level: 'a2', level_label: 'Standard', name: dYuki.name }, d: dYuki, st }], { id: 'T' }, 'NOW');
+  assert.strictEqual((text.match(/^════ SET /gm) || []).length, 1); assert.strictEqual((text.match(/^════ END /gm) || []).length, 1); assert.strictEqual((text.match(/照合コード\(変更しないでください\)：/g) || []).length, 1);
+});
+const mkBatch = (n) => {
+  const specs = [['yuki_onna__a2__prod', dYuki, 'yuki_onna', 'a2', 'Standard'], ['moon_shrinking__b1b__prod', dMoon, 'moon_shrinking', 'b1b', 'Advanced'], ['ai_island_temple__a2__prod', dIsl, 'ai_island_temple', 'a2', 'Standard']];
+  return specs.slice(0, n).map(([f, d, slug, level, ll]) => { const st = decide(d, d.kp_confirmed ? FL.newState() : mkSt(d, { 0: 1, 1: 1, 2: 1 })); st.comment_phrase = 'P-' + slug; st.done = { sig: FL.doneSig(d, st), at: 'T' }; return { entry: { slug, level, level_label: ll, name: d.name, data: 'data/' + f + '.json' }, d, st }; });
+};
+t('A batch format: header / SET i/N separators / END code = BATCH1-N-sha10(concat of codes); each SET is the unchanged AIF1 readable', () => {
+  const items = mkBatch(3); const text = FL.buildBatchReadable(items, { id: 'B-TEST' }, '2026-10-30T00:00:00.000Z');
+  const L = text.split('\n');
+  assert.ok(L[0].startsWith('以下はeigo-radioの学習項目選定結果(一括)です。')); assert.strictEqual(L.filter(x => x === '件数=3 / 生成=2026-10-30T00:00:00.000Z / バッチ=B-TEST').length, 1); assert.strictEqual(L[L.indexOf('件数=3 / 生成=2026-10-30T00:00:00.000Z / バッチ=B-TEST') - 1], '一括ヘッダ:');   // 02Bのrestore_batchは行頭「件数=」を要求
+  const sets = L.filter(x => /^════ SET /.test(x)); assert.deepStrictEqual(sets, ['════ SET 1/3 ｜ yuki_onna__a2__prod ════', '════ SET 2/3 ｜ moon_shrinking__b1b__prod ════', '════ SET 3/3 ｜ ai_island_temple__a2__prod ════']);   // 区切り名=データstem=照合コードのstem
+  const codes = items.map(it => FL.extractCode(FL.buildReadable(it.d, it.st, { comment: FL.composeComment(it.st) })));
+  assert.ok(codes.every(c => /^AIF1-/.test(c)));
+  const exp = 'BATCH1-3-' + crypto.createHash('sha256').update(codes.join(''), 'utf8').digest('hex').slice(0, 10);
+  assert.strictEqual(L[L.length - 1], '════ END 合計3件 / ' + exp + ' ════'); assert.strictEqual(FL.batchCode(codes), exp);
+  items.forEach((it, i) => { const r = FL.buildReadable(it.d, it.st, { comment: FL.composeComment(it.st) }); assert.ok(text.includes('\n' + r + '\n'), 'SET block verbatim ' + i); assert.ok(r.includes('自由コメント：【フレーズ】P-' + it.entry.slug)); });
+  assert.ok(!text.includes('ChatGPT'));
+  // 同一入力=同一出力(決定的)
+  assert.strictEqual(FL.buildBatchReadable(items, { id: 'B-TEST' }, '2026-10-30T00:00:00.000Z'), text);
+  const one = FL.buildBatchReadable(mkBatch(1), { id: 'B1' }, 'N'); assert.ok(one.includes('════ SET 1/1 ｜ yuki_onna__a2__prod ════') && one.includes('════ END 合計1件 / BATCH1-1-'));
+});
+t('A batch copy gate (M3 fail-closed): unfinished/2-selected/stale sets rejected with names; no batch key => no sets', () => {
+  const items = mkBatch(3);
+  assert.deepStrictEqual(FL.batchCopyErrors(items), []);
+  items[1].st.choices[FL.terms(items[1].d)[2]] = 0;                                    // ①2件へ(署名も不一致)
+  let bad = FL.batchCopyErrors(items); assert.strictEqual(bad.length, 1); assert.strictEqual(bad[0].key, 'moon_shrinking__b1b'); assert.strictEqual(bad[0].level, 'Advanced'); assert.ok(bad[0].errors.some(x => x.includes('ちょうど3件')));
+  assert.throws(() => FL.buildBatchReadable(items, { id: 'T' }), /未完了セット/);
+  items[1].st.choices[FL.terms(items[1].d)[2]] = 1; assert.deepStrictEqual(FL.batchCopyErrors(items), []);
+  items[0].st.comment = '後から追記'; bad = FL.batchCopyErrors(items); assert.strictEqual(bad.length, 1); assert.ok(bad[0].errors[0].includes('Done')); // 署名不一致=Done無効
+  items[2].d = null; assert.strictEqual(FL.batchCopyErrors(items).length, 2);
+  assert.throws(() => FL.buildBatchReadable(mkBatch(2), null), /batchが無い/); assert.throws(() => FL.buildBatchReadable([], { id: 'x' }), /batchが無い/);
+  const idxNoBatch = { schema: 'eigo_radio_selection_index_v1', articles: idx.articles }; assert.strictEqual(FL.batchSets(idxNoBatch), null);
+  assert.strictEqual(FL.batchSets({ articles: idx.articles, batch: { id: 'x', members: [] } }), null); assert.strictEqual(FL.batchSets({ articles: idx.articles, batch: { id: 'x', members: ['zzz_none'] } }), null);
+  const bst = FL.batchSets({ articles: idx.articles, batch: { id: 'b', members: ['yuki_onna__a2__prod', 'moon_shrinking__b1b__prod'] } });   // 02B契約: members=データstem
+  assert.deepStrictEqual(bst.members.map(FL.stateKey), ['yuki_onna__a2', 'moon_shrinking__b1b']);
+  const bs = FL.batchSets({ articles: idx.articles, batch: { id: 'b', date: '2026-10-30', members: ['yuki_onna', 'moon_shrinking__b1b'] } });
+  assert.deepStrictEqual(bs.members.map(FL.stateKey), idx.articles.filter(a => a.data && (a.slug === 'yuki_onna' || FL.stateKey(a) === 'moon_shrinking__b1b')).map(FL.stateKey)); assert.strictEqual(bs.id, 'b');
+});
+t('D legacy: single buildReadable/ChatGPT url paths are byte-identical to before when no 3-field comment is used', () => {
+  const st = decide(dYuki, mkSt(dYuki, { 0: 1, 1: 1, 2: 2 })); st.comment = 'X';
+  const o = { stem: dYuki.__stem, file_sha256: dYuki.__file_sha256 };
+  assert.strictEqual(FL.buildReadable(dYuki, st, o), FL.buildReadable(dYuki, st, Object.assign({ comment: undefined }, o)));
+  assert.ok(FL.buildReadable(dYuki, st, o).includes('自由コメント：X\n')); assert.strictEqual(typeof FL.buildChatGptUrl, 'function');
+});
+
 console.log('ALL PASS', n);

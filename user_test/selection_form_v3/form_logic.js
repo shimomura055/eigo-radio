@@ -3,6 +3,7 @@
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(); else root.FormLogic = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
+  var KP_EXACT = 3;                 // 2026-10-30(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): 区分①はちょうど3件(Done/一括コピーの条件)。②は0〜2件任意、③は累積12まで不変
   var LIMITS = [3, 5, 12];          // 累積上限: ①<=3, ①+②<=5, ①+②+③<=12
   var GRAMMAR_MAX = 1;              // 新仕様(2026-10-27ユーザー正式決定): 文法は原則1件(0件可・2件同時選択禁止)
   var GRAMMAR_TOP_N = 2;            // ユーザーへ提示する文法はAI評価Top 1・Top 2の最大2件のみ
@@ -64,7 +65,7 @@
     if (checked && !grammarCanToggle(st.grammar, gids, id)) return false;
     st.grammar[id] = !!checked; if (checked) st.grammar_zero = false; return true;
   }
-  function newState() { return { choices: {}, grammar: {}, grammar_zero: false, comment: '' }; }
+  function newState() { return { choices: {}, grammar: {}, grammar_zero: false, comment: '', comment_phrase: '', comment_word: '', done: null }; }
   // ユーザー確定済みKP/KW(kp_confirmed)がある記事は、保存状態(choices)ではなく確定内容を常に採用する(再選定不可)
   function choicesOf(d, st) {
     if (d && d.kp_confirmed) { var m = {}; (d.kp_confirmed.selection || []).forEach(function (r) { m[r.term] = r.category; }); return m; }
@@ -292,7 +293,7 @@
     if (!gs.length) L.push('文法：選定なし');
     gs.forEach(function (g) { L.push('文法：' + g.title, MARK_BEGIN, bodyView(g.body), MARK_END); });
     L.push('');
-    var com = normalizeComment(st.comment);
+    var com = normalizeComment(opts.comment !== undefined ? opts.comment : st.comment);   // 一括画面は合成コメント(opts.comment)を渡す。未指定=従来どおりst.comment
     L.push('自由コメント：' + (com || 'なし'));
     L.push('', '照合コード(変更しないでください)：' + makeCode(stem, d6, d, selIds, gs.map(function (g) { return [g.candidate_id || g.id, g.explanation_sha256 || '']; }), com));
     return L.join('\n');
@@ -357,9 +358,131 @@
     });
     return e;
   }
+  // ======== 一括選定画面(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02A、設計=DESIGN_01.md + Opus条件Aレビュー反映M1-M5) ========
+  var SIG_VER = 'sig1';
+  // 保存状態の正規化(下位互換: 旧state[choices/grammar/grammar_zero/comment]を読み、未知フィールドは保持。旧commentは「追加指示(全体)」として保持)
+  function normalizeState(raw) {
+    var o = (raw && typeof raw === 'object' && !Array.isArray(raw)) ? Object.assign({}, raw) : {};
+    o.choices = (o.choices && typeof o.choices === 'object' && !Array.isArray(o.choices)) ? o.choices : {};
+    o.grammar = (o.grammar && typeof o.grammar === 'object' && !Array.isArray(o.grammar)) ? o.grammar : {};
+    o.grammar_zero = o.grammar_zero === true;
+    ['comment', 'comment_phrase', 'comment_word'].forEach(function (k) { if (typeof o[k] !== 'string') o[k] = ''; });
+    o.done = (o.done && typeof o.done === 'object' && typeof o.done.sig === 'string') ? { sig: o.done.sig, at: String(o.done.at || '') } : null;
+    return o;
+  }
+  // M4 区切り注入対策: コメントが照合コード行・一括区切り・AIF1/BATCH1コードを偽装できないよう置換する(内容の他部分は不変)
+  function sanitizeComment(text) {
+    var t = String(text == null ? '' : text).replace(/\r\n?/g, '\n');
+    t = t.replace(/═{2,}/g, '──').replace(/照合コード/g, '照合 コード').replace(/AIF1-/g, 'AIF1_').replace(/BATCH1-/g, 'BATCH1_');
+    return t.split('\n').map(function (l) { return l.replace(/\s+$/, ''); }).join('\n');
+  }
+  function commentPart(raw) { return sanitizeComment(normalizeComment(raw)).trim(); }
+  // 3欄→単一合成文字列(AIF1のm8互換のため単一文字列)。空欄は行ごと省略。全空=''(=従来の「なし」と同一)
+  function composeComment(st) {
+    var L = [], p = commentPart(st.comment_phrase), w = commentPart(st.comment_word), g = commentPart(st.comment);
+    if (p) L.push('【フレーズ】' + p);
+    if (w) L.push('【単語】' + w);
+    if (g) L.push('【追加指示(全体)】' + g);
+    return L.join('\n');
+  }
+  // 単体コピー(従来形式維持): フレーズ/単語コメントが無ければ従来どおり自由コメントそのまま(ラベル無し)
+  function singleComment(st) {
+    return (commentPart(st.comment_phrase) || commentPart(st.comment_word)) ? composeComment(st) : normalizeComment(st.comment);
+  }
+  // M1 Done署名: stem/d6/正規化choices(term順)/文法/3コメント欄/SIG_VER。内容が1つでも変わればsigが変わりDoneが自動解除される
+  function doneSig(d, st) {
+    var tl = terms(d), ch = choicesOf(d, st);
+    var gids = grammarIds(d), gsel = grammarChosen(st.grammar, gids);
+    var arr = [SIG_VER, d.__stem || '', d.__file_sha256 ? String(d.__file_sha256).slice(0, 6) : '000000',
+      tl.map(function (t) { return t + ':' + (ch[t] || 0); }), gsel, st.grammar_zero === true && !gsel.length,
+      commentPart(st.comment_phrase), commentPart(st.comment_word), commentPart(st.comment)];
+    return sha256Hex(JSON.stringify(arr));
+  }
+  // Done条件(具体的エラー配列。コメントは任意): ①ちょうど3件(kp_confirmedは確定3件で自動充足)/文法決定済み/validateArticle/提示候補>=3
+  function doneErrors(d, st) {
+    if (!d) return ['この記事枠にはデータがありません。'];
+    var e = [], ve = validateArticle(d);
+    if (ve.length) e.push('候補データの形式エラー: ' + ve.join(', '));
+    var tl = terms(d);
+    if (tl.length < KP_EXACT) e.push('候補不足(' + tl.length + '件)のためKey Phraseを' + KP_EXACT + '件選べません。品質基準を下げず停止します。候補の補充が必要です。');
+    var c = counts(choicesOf(d, st), tl);
+    if (c[0] !== KP_EXACT) e.push('① Key Phraseはちょうど' + KP_EXACT + '件必要です(現在' + c[0] + '件)。');
+    if (grammarBlocked(d, st)) e.push('文法が未決定です。Top 1・Top 2のどちらかを1件選ぶか「適切な候補なし(0件)」を選んでください。');
+    return e;
+  }
+  // 'done'(署名一致+エラー無し) | 'stale'(Done済みだった内容が変わった=要再確認) | 'todo'
+  function doneStatus(d, st) {
+    if (!d) return 'todo';
+    var ok = !!(st.done && st.done.sig && st.done.sig === doneSig(d, st));
+    if (ok) return doneErrors(d, st).length ? 'todo' : 'done';
+    return st.done && st.done.sig ? 'stale' : 'todo';
+  }
+  // 「残りをすべて選択」(純関数。stは変更しない): 未選択の提示候補を表示順に③へ。allowed()を必ず通す。
+  // 無効条件: kp_confirmed / データ不正 / 候補なし / ①が3件未満 / 未選択0。戻り値 { ok, reason, choices(新), added[], blocked[] }
+  function selectRemaining(d, st, tl) {
+    var termList = tl || (d ? terms(d) : []);
+    var fail = function (r) { return { ok: false, reason: r, choices: Object.assign({}, (st && st.choices) || {}), added: [], blocked: [] }; };
+    if (!d || validateArticle(d).length) return fail('invalid_data');
+    if (d.kp_confirmed) return fail('kp_confirmed');
+    if (!termList.length) return fail('no_candidates');
+    var work = { choices: Object.assign({}, (st && st.choices) || {}) };
+    if (counts(work.choices, termList)[0] < KP_EXACT) return fail('kp_lt3');
+    var rest = termList.filter(function (t) { return !(work.choices[t] >= 1 && work.choices[t] <= 3); });
+    if (!rest.length) return fail('nothing_left');
+    var added = [], blocked = [];
+    rest.forEach(function (t) { if (allowed(work.choices, termList, t, 3)) { work.choices[t] = 3; added.push(t); } else blocked.push(t); });
+    return { ok: added.length > 0, reason: added.length ? '' : 'blocked', choices: work.choices, added: added, blocked: blocked };
+  }
+  // ---- 対象バッチ ----
+  // articles.json の任意キー batch:{id,date,members:[...]}。members要素=データファイルstem(例 moon_shrinking__b1b__prod。02Bのexport/restore_batchの契約)。slug / "slug__level" も許容。無ければ null(=一括コピー不可・M3 fail-closed。全35枠フォールバックはしない)
+  function batchSets(idx) {
+    var b = idx && idx.batch;
+    if (!b || !Array.isArray(b.members) || !b.members.length) return null;
+    var m = {}; b.members.forEach(function (x) { m[String(x)] = 1; });
+    var stemOf = function (a) { return String(a.data || '').replace(/^.*\//, '').replace(/\.json$/, ''); };
+    var sets = (idx.articles || []).filter(function (a) { return a.data && (m[stemOf(a)] || m[a.slug] || m[stateKey(a)]); });   // members=データファイル名stem(02B export/restore_batchと同一)。slug / slug__level も許容
+    return sets.length ? { id: String(b.id || ''), date: b.date || '', members: sets } : null;
+  }
+  // items=[{entry,d,st}]。未完了セット(データ無し/署名不一致/エラー)を列挙
+  function batchCopyErrors(items) {
+    var out = [];
+    (items || []).forEach(function (it) {
+      var name = it.entry.name, lv = it.entry.level_label || it.entry.level, key = stateKey(it.entry);
+      if (!it.d) { out.push({ key: key, name: name, level: lv, errors: ['データを読み込めていません。'] }); return; }
+      var errs = doneErrors(it.d, it.st);
+      if (!errs.length && doneStatus(it.d, it.st) !== 'done') errs = ['Doneになっていません(内容変更後は再度Doneを押してください)。'];
+      if (errs.length) out.push({ key: key, name: name, level: lv, errors: errs });
+    });
+    return out;
+  }
+  var BATCH_PREFACE = PREFACE.replace('選定結果です', '選定結果(一括)です');
+  function extractCode(readable) {
+    var m = /照合コード\(変更しないでください\)：(AIF1-\S+)/.exec(readable);
+    return m ? m[1] : null;
+  }
+  // BATCH1-<N>-<全照合コード(SET順)を区切り無しで連結したsha256の先頭10桁>
+  function batchCode(codes) { return 'BATCH1-' + codes.length + '-' + sha256Hex(codes.join('')).slice(0, 10); }
+  // DESIGN_01 §2 のコピー形式。各SETは buildReadable をそのまま(コメントのみ合成文字列)。fail-closed: 1件でも未完了なら例外
+  function buildBatchReadable(items, batch, now) {
+    if (!batch || batch.id === undefined || !items || !items.length) throw new Error('buildBatchReadable: batchが無いため一括コピーを作りません');
+    var bad = batchCopyErrors(items);
+    if (bad.length) throw new Error('buildBatchReadable: 未完了セットがあります: ' + bad.map(function (b) { return b.name + '｜' + b.level; }).join(', '));
+    var N = items.length, L = [BATCH_PREFACE.replace(/\n+$/, ''), '一括ヘッダ:', '件数=' + N + ' / 生成=' + (now || new Date().toISOString()) + ' / バッチ=' + batch.id, ''], codes = [];
+    items.forEach(function (it, i) {
+      var r = buildReadable(it.d, it.st, { comment: composeComment(it.st) });
+      var c = extractCode(r); if (!c) throw new Error('buildBatchReadable: 照合コードを抽出できません ' + stateKey(it.entry));
+      codes.push(c);
+      L.push('════ SET ' + (i + 1) + '/' + N + ' ｜ ' + (it.d.__stem || stateKey(it.entry)) + ' ════', r, '');   // 区切り名=データファイルstem(=照合コードのstem。02B restore_batchが一致を検査)
+    });
+    L.push('════ END 合計' + N + '件 / ' + batchCode(codes) + ' ════');
+    return L.join('\n');
+  }
+
   return {
     LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
     buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
-    validateArticle: validateArticle, validateIndex: validateIndex };
+    validateArticle: validateArticle, validateIndex: validateIndex,
+    KP_EXACT: KP_EXACT, SIG_VER: SIG_VER, normalizeState: normalizeState, doneSig: doneSig, doneStatus: doneStatus, doneErrors: doneErrors, selectRemaining: selectRemaining,
+    sanitizeComment: sanitizeComment, composeComment: composeComment, singleComment: singleComment, batchSets: batchSets, batchCopyErrors: batchCopyErrors, buildBatchReadable: buildBatchReadable, batchCode: batchCode, extractCode: extractCode, BATCH_PREFACE: BATCH_PREFACE };
 });
