@@ -22898,3 +22898,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ENDUSER-EN-JA-LINKED-HIGHLIGHT-01_USER.md`): 英語再生に合わせ対応する日本語訳を点灯。
 - 実施: `er135_enduser_align_01`(DP+embedding+安全側null)、article.json `ja_align`、asset rev01-f(DEV app.js不変、J19-J25/C5)、page_verify連動検査。M1-M10(Opus review)を採用。既公開X月/Y再配達/Y姓/Zを再produce(diff Gate OK)、live検証。Std 56-70%/Adv 78-93%、誤点灯0。
 - 分類: ユーザー指示に基づく実装(新規ユーザー判断なし)。UI可視性・M8 LLM判定・USER_02拡張は判断候補/次委任としてFableへ報告。OPEN-618。
+
+## FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_03: ユーザーHR回答8件確定・⑭KP表現調整・audio実行(2026-10-30)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_01.md`): ②④⑨⑭のStd/AdvのKP・単語・文法を選定(ニュアンスは全件不採用=廃止と整合)、⑭は自由コメントでKP表現を調整(equivalent width=等価幅、narrow down、turn something around)。
+- 実施: 8件確定(旧AIF2照合コードは廃止済みのため、旧er128で検証したうえで選定内容無変更のままAIF1へ機械変換して標準confirm)。⑭調整は既存CLI(confirm-revise)+Y姓先例のゲート群再利用の使い捨てtool(Rule7のみ閉じた定数ペアで免除・記録、Production側の受理面変更0)。4記事のaudio実行: ②④完了、⑨Std・⑭はHR Lock停止(迂回なし)。End Userは既存欠陥F1/F2で②④とも未完。Production code/Prompt編集0。
+- 分類: ユーザー指示に基づく制作実行(新規ユーザー判断なし)。判断候補=H2(Å↔angstroms ASR等価の追加/Writer規則/HR承認)。不具合F1/F2は修正へ進む(次委任案)。OPEN-612。
