@@ -1,6 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
+- 2026-10-30 | ONE-STEP-FURTHER-CORNER-TRIAL-01-DECISION-01 One Step Further(新学習コーナー案)をユーザー正式判断でREJECTED(Closeout、UDR #225判断済み) | **ユーザー正式判断**(原文=docs/pm/delegation_log/2026-10-30_ONE-STEP-FURTHER-CORNER-TRIAL-01_USER_FINAL.md)。理由=意味保持は改善したが学習価値・発見性が安定せず、単価影響大(約¥15〜19/セット)。対応=Production導入・追加Trial禁止/OPEN-614 CLOSED/Family Yは本機能なしで完成候補整理→最終試聴(OPEN-598)/Trial成果・知見は保持(LESSONS_01.md)。詳細は本文セクション参照。
 - 2026-10-30 | NUANCE-CORNER-ABOLITION-01-DECISION-02 撤去実装完了(委任_02、ユーザー決定済み廃止の実装): 恒久撤去(flag方式不採用)・2 commit(Step A=振る舞い撤去、Step B=死コード整理)。3 runner(X/Y/Z)のN1呼出/finalize/見積/page検査・er120の表示/期待値・HR(exporter/V3フォーム/form_logic.js/er128/er119)・End User adapter/verifyから撤去し、逆流防止は構造判定ガード(`count_nuance_blocks`=`<h3>ニュアンス解説</h3>`見出しの構造一致)のみ残置。旧データは読まない・削除しない(OSF Trial参照元を保全)、旧フォーム形式は`NUANCE_CORNER_ABOLISHED`で明示拒否。er134本体+専用test6本撤去、廃止ガードtest新設。er006の2 processはDEPRECATED注記のみ。OSF名前空間の約束=将来実装は`osf_*`・別record key・別id/見出し/process名で、旧ニュアンスと識別子を共有しない。Y姓記事はpages再実行でニュアンス節撤去(完成承認は保留継続)、X4記事のフォームdata再出力(候補sha不変)。OPEN-617=PRODUCTION_WIRED_PENDING_FABLE。証跡=docs/research/NUANCE-CORNER-ABOLITION-01/EVIDENCE_01.md
 - 2026-10-30 | NUANCE-CORNER-ABOLITION-01-DECISION-01 ユーザー正式決定: 現行ニュアンス解説コーナーを廃止(説明のわかりにくさ・学習価値不足)、改善Prompt v3はREJECTED、ニュアンス以外の承認済み仕様は維持、Production撤去は対象Family・全レベルでPRODUCTION_WIREDまで確認、過去完成記事の本文・音声は不変・遡及撤去は未承認一括変更をしない。One Step Furtherは最優先Trial(正式採否未決定・未配線)、Y姓記事は最終完成承認保留。廃止とOSF追加は別仕様変更。委任_01=影響調査・撤去設計のみ(Production code未編集、API 0)。UDR #224判断済み・#223不要化・#225最優先Trial明記、OPEN-609 CLOSED/REJECTED・OPEN-610/611撤去対象・OPEN-598承認保留・OPEN-617新規。原文=docs/pm/delegation_log/2026-10-30_NUANCE-CORNER-ABOLITION-01_USER.md
 - 2026-10-29 | FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01-DECISION-01 Family X選定4記事(②④⑨⑭)を既存の承認済みProduction経路・Prompt・Gateのみで制作開始し、本文Std/Adv・学習項目候補までを完了してKP/文法/ニュアンスHR待機(rc=4)で停止 | 新仕様なし・Production code編集0・品質基準変更なし。④原記事=ITmedia NEWS(arXiv:2604.04263)を特定。実費約¥242.6/Cap400。OPEN-612。根拠=`docs/research/FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01/`
@@ -188,6 +189,15 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
 
 ---
+
+## ONE-STEP-FURTHER-CORNER-TRIAL-01-DECISION-01: One Step Further REJECTED(2026-10-30)
+
+- 判断: ユーザー正式判断でREJECTED。Production導入・追加Trialは行わない。追加のユーザー承認不要、既存の承認済み仕様・品質基準を維持。
+- 理由: 意味保持は改善したが、期待した学習価値・発見性を安定して実現できず、量産単価への影響も大きい(約¥15〜19/セット、目標70円の21〜27%)。
+- 4対応: (1)Production導入・追加Trial禁止 (2)SSOT反映・Closeout(OPEN-614 CLOSED、UDR #225判断済み) (3)Family Y記事は本機能なしで完成候補を整理し最終試聴へ(OPEN-598、ニュアンス節撤去後のpages再実行はNUANCE-CORNER-ABOLITION-01) (4)Trial成果・知見は記録保持。
+- Trial経緯: 委任_01 VALIDATED(条件付き)案 -> ユーザーの実例確認で無効(意味対応NG) -> 委任_02改善 -> 委任_03最終再設計(Step1-5工程・回帰12/12検出・8表現) -> Closeout=USER_DECISION_REQUIRED -> ユーザー判断REJECTED。費用累計¥170.4(上限¥70を最終委任で¥8.22超過)。
+- Fable受入の誤りの記録: 委任_01で「ユーザー原文と一致」と判定しVALIDATED案としたが、意味対応NGを見逃していた(同系列モデル自己監査の限界)。以後は別ベンダー監査+回帰セットを前提とする。
+- 出典: docs/research/ONE-STEP-FURTHER-CORNER-TRIAL-01/{FABLE_ACCEPTANCE_03,LESSONS_01,RESULT_03}.md
 
 ## 索引(Index): 全Decisionエントリ一覧
 
