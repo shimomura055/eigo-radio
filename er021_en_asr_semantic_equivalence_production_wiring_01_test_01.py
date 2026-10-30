@@ -949,5 +949,50 @@ class StrictTier1SynthesisRuleTest(unittest.TestCase):
         self.assertTrue(result["diff_anchored"])
 
 
+class AngstromUnitSymbolEquivalenceTest(unittest.TestCase):
+    """FAMILY-X-SELECTED-4 委任_04(OPEN-612、不具合是正11-8): 単位記号Å<->読み
+    angstrom(s)の閉じた1対応(既存の記号<->語等価と同型)。他単位への一般化なし。"""
+
+    def _match(self, canonical, asr):
+        return val.classify_asr_match(canonical, asr, segment_id=APPLICABLE_SEGMENT_ID)
+
+    def test_angstrom_symbol_matches_angstroms(self):
+        r = self._match("They found it was at least 7,620 Å. It meant it was at least that much.",
+                        "They found it was at least 7,620 angstroms. It meant it was at least that much.")
+        self.assertTrue(r.should_pass)
+
+    def test_angstrom_sign_u212b_and_singular_and_no_space(self):
+        for canon in ("It was 5 Å wide.", "It was 5Å wide."):
+            for asr in ("It was 5 angstrom wide.", "It was 5 angstroms wide."):
+                self.assertTrue(self._match(canon, asr).should_pass, (canon, asr))
+
+    def test_standalone_angstrom_symbol_matches_word(self):
+        r = self._match("The unit is the Å here, costing $5.", "The unit is the angstrom here, costing $5.")
+        self.assertTrue(r.should_pass)
+
+    def test_real_jwst_std_sentence(self):
+        # 実runの比較対象textは引用符を除いた形(tts_generation_results.json segments[].text)
+        canon = ("The authors used the line's absence from images to estimate its equivalent width, "
+                 "a measure of the line's features. They found it was at least 7,620 Å. "
+                 "This did not mean it was exactly 7,620 Å. It meant it was at least that much.")
+        asr = ("The authors used the line's absence from images to estimate its equivalent width, "
+               "a measure of the line's features. They found it was at least 7,620 angstroms. "
+               "This did not mean it was exactly 7,620 angstroms. It meant it was at least that much.")
+        self.assertTrue(self._match(canon, asr).should_pass)
+
+    def test_different_number_with_angstrom_not_absorbed(self):
+        r = self._match("They found it was at least 7,620 Å.", "They found it was at least 7,260 angstroms.")
+        self.assertFalse(r.should_pass)
+
+    def test_angstrom_vs_other_unit_not_absorbed(self):
+        for other in ("nanometers", "meters", "miles", "kilometers"):
+            r = self._match("They found it was at least 7,620 Å.", "They found it was at least 7,620 %s." % other)
+            self.assertFalse(r.should_pass, other)
+
+    def test_other_unit_symbol_not_generalized(self):
+        r = self._match("It was at least 7,620 µm.", "It was at least 7,620 angstroms.")
+        self.assertFalse(r.should_pass)
+
+
 if __name__ == "__main__":
     unittest.main()

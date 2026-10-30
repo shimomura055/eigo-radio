@@ -1,0 +1,26 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[FAMILY-X-AUDIO-SCAFFOLD] a2: KP review再開(support生成・KP選定はskip。確定のみ実行)
+[FAMILY-X-AUDIO-SCAFFOLD] a2: key phrase status=CANONICALIZATION_PASS
+[FAMILY-X-AUDIO-RUNNER][cost] so far=50.31 JPY by_provider={'openai': 31.02, 'gemini_batch': 7.26, 'openai_asr': 3.59, 'azure': 8.43} (before kp_part1)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 4147, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3860, in main
+    scaffold_result = run_theme_scaffold(
+        client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
+        budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 1057, in run_theme_scaffold
+    _p1r = generate_part1_all(client, source_dir, out_dir, level=level, call_fn=part1_call_fn, ja_call_fn=part1_ja_call_fn, budget_check=budget_check)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 697, in generate_part1_all
+    r1 = generate_part1(client, source_dir, out_dir, level=level, call_fn=call_fn, budget_check=budget_check)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 676, in generate_part1
+    budget_check("before kp_part1")
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3862, in <lambda>
+    budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+                              ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3085, in assert_budget_ok
+    raise RuntimeError(
+        f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
+RuntimeError: [BUDGET_GUARD] cost so far 50.31 JPY > cap 25.0 JPY. Stopping (before kp_part1).

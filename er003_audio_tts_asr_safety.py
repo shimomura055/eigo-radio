@@ -698,6 +698,10 @@ DEFAULT_JA_READING_DICTIONARY = {
     # と同型)。企業名「Meta」の日本語読み「メタ」を登録(Meta a2記事の
     # comment_1/2/3がHUMAN_REVIEW判定でGATE_BLOCKEDとなっていたものを解消)。
     "meta": "メタ",
+    # FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_04(H3、2026-10-30、Fable判定B=既存辞書へのエントリ追加のみ、
+    # Gateロジック不変、前例=Meta/AI等)。JWST(ジェイムズ・ウェッブ宇宙望遠鏡)の日本語読み「ジェイダブリューエスティー」
+    # (resolver調査: 国立天文台の表記は『ジェー・ダブリュ・エス・ティー』、日本語報道では「ジェイダブリューエスティー」も通用)。
+    "jwst": "ジェイダブリューエスティー",
 }
 
 

@@ -255,3 +255,28 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 ## 7. 費用(本委任、JST。`compute_cost_jpy_so_far`を2026-10-30T00:59Z以降のraw_usage_logに適用、gemini_batch込み)
 - ②¥14.48 / ④¥12.33 / ⑨¥21.50 / ⑭¥43.76(openai 24.47=LR・KP解説・Part1/2・requalify等) = **合計¥92.07**。案件累計 ≒ ¥340.3 + ¥92.1 = **¥432.4 / Cap¥500**(¥450未達)。本日JST累計概算 ≒ ¥330 + gemini_batch(188 call、tool上0円扱い。実費は上記に含む分のみ把握)。
 - 残見込み: H1〜H3解消後のTTS再生成+LR+JA title等≒¥10〜20、End User再生成はAPI 0 → 累計≒¥445〜455(¥450付近。到達時は再報告)。
+
+# 委任_04(H1〜H3のHR Lock解消。2026-10-30 12:30〜13:40 JST。Cap ¥30固定)
+## 0. 結論(記事別)
+| 記事 | 結果 |
+|---|---|
+| ⑭Std | H3(JWST読み)=**解消**(japanese_title OK[2回TRUE_CONTENT_MISMATCH→fallback PHONETIC_MATCH]・preview OK[EXACT_MATCH])。H2(Å)=semantic classificationは**解消**(全attempt NUMERIC_EQUIVALENCE_MATCH)、しかし`full_story_part2_k3`は**別のGate(Repetition QA)で再びHR Lock**(下記§3) |
+| ⑭Adv | `full_story_part2_k3`再生成3回とも**別のGate(ASR長さ上限)でNG_BOTH**→HR Lock(§3)。classification自体は第3attemptでNUMERIC_EQUIVALENCE_MATCH |
+| ⑨Std | H1の事実確定+HR page公開(§2)。ユーザー試聴判断待ち(Gate維持、assemble/page未実行) |
+| ②④ | 無変更 |
+## 1. 実施(是正)
+- H2(a): `er021_en_asr_semantic_equivalence_production_01.py` `_tier1_atoms` literal分岐に、長さ単位記号Å(U+00C5/U+212B)<->`angstrom`/`angstroms`の閉じた1対応(`_ANGSTROM_UNIT_FORMS`)を追加。他単位に一般化なし。`AngstromUnitSymbolEquivalenceTest`7件追加(Å=angstroms PASS・単数/複数/空白なし/U+212B/単独・実Std文PASS、別数値・別単位[nanometers/meters/miles/kilometers]・別単位記号[µm]=NG)。`.venv/Scripts/python.exe -m pytest er021_*wiring_01_test_01.py`=69 passed、`er021_*trial_01_test_01.py`+`er021_time_numeral_test_01.py`=56 passed。実attempt(Std 5件・Adv第3attempt)を現行`classify_asr_match`で再判定=NUMERIC_EQUIVALENCE_MATCH(Adv attempt1/2は『Then,』の余分なカンマ+ダッシュ有でTRUE_CONTENT_MISMATCH=従来どおり)。er006側に独立の記号<->語比較は無い(Grep `angstrom`=0)。
+- H2(b): 偽NG由来のHR Lock(Std/Adv)は`tools/fx4d_approve_regenerate_jwst_k3.py --apply`(既存`er011_human_review_lock_01.approve_regenerate`、前例=er019_family_x_stage3e_human_review_lock_approve_01.py。sha一致assert済み、API 0)で解除→runner `--stage all`の1起動(`run04/launch_times.txt`)で標準cascadeにより再生成。
+- H3: `er003_audio_tts_asr_safety.py` `DEFAULT_JA_READING_DICTIONARY`に`"jwst": "ジェイダブリューエスティー"`(Meta先例と同型のエントリ追加のみ。読みは`ja_pronunciation_resolver`の調査結果[astro-dic.jp]。中黒なしは辞書の既存形式に揃えた)。`er009_ja_foreign_token_gate_01_test_01.py` `JwstReadingDictionaryEntryTests`3件追加(29 passed)。
+- run: 1回目起動は`--budget-jpy 25`がrunの累計(50.31)を下回ったため**API呼出前に**BUDGET_GUARDで即停止(`run04/audio_jwst_aborted_budget_guard.log`)→`--budget-jpy 80`で2回目(ログ・起動時刻は`run04/`)。
+## 2. H1(⑨Std `full_story_part3_k2`)事実確定
+- 期待文(TTS入力)の`an adult's smartphone`に対し、試行1の**減速前**音声はASR(primary)が`adult's`と転写=NORMALIZED_MATCH。**6%減速後**の同音声の再ASRは`adult smartphone`(`'s`のみ脱落、他の全単語一致、文末`?`->`.`は句読点差)=`classify_asr_match`→TRUE_CONTENT_MISMATCH(`delete 's`)。差分語は`'s`の1語のみ=人の試聴で判定すべき差。試行2・3は音声(転写)自体に`'s`が無い(判断対象外)。
+- 判断対象=`a2/narration/attempts/full_story_part3_k2_attempt2_postslowdown.wav`(sha 529a7aa0…。減速後=実際に採用される形)。残る自動救済=なし(標準2+fallback1・LR候補0=`HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA`)。
+- HR page(30節7項目はRESULT_PACKET_FX4_04):`user_test/family_x_meta_waddle_world_hr_01/`。判断対象1音声のみ掲載(`er_hr_listing_policy_01`経由。試行2・3は非掲載、内部記録=`hr_page_listing_policy_record_04.json`)。
+## 3. 新規知見: Å記号は後段Gateの2箇所でも問題を起こす(同根・Fable判断待ち)
+同一根因(canonicalの`Å`と、発話・ASRの`angstroms`の表記差)が、semantic classification以外の**2つのGate**でも偽NGを起こす。いずれも音声は正しい。
+1. **ASR長さ上限(Adv)**: `asr_judgement.length` max_len=396(=canonical surface 322文字に基づく)に対し、ASR転写は`Å`3箇所が`angstroms`(各9文字)となり primary_len=405〜406 > 396 → `secondary_length_ng`/`secondary_not_accepted`でNG_BOTH(Adv attempt1〜3。attempt3はclassification=NUMERIC_EQUIVALENCE_MATCHだが長さでNG)。Stdは同2箇所でmax_len=461>418のため非該当。
+2. **Repetition QA method A(Std)**: Std attempt4〜6(=再生成3回)すべて `flagged_matches=[' 7 ,620  angstroms.' canonical_repeat_count=0 intentional=false]`。canonicalの`7,620 Å`は2回(意図的反復)だが、(a) canonicalは`Å`・ASR(faster-whisper)は`angstroms`、(b) ASRは`7,620`を`7`+`,620`の2語に分割するがcanonicalは1語、の**2つが重なり**count=0となる。API 0の実測(`/tmp`相当のscratch、local whisperのみ): canonical `Å->angstroms`のみ置換=なお flagged、`Å->angstroms`+`7,620->7 ,620`=flagged=False(count=2)。
+- 影響: Å単独の等価追加(本委任)だけではHR Lockは解消しない。解消には(i)Å<->angstrom(s)と千位区切り数値(`N,NNN`)のtoken分割を**ASR長さ上限とRepetition QAのcanonical照合**にも揃える、または(ii)TTS入力段(`tts_safe_news_en`)で`Å`を`angstroms`へ展開して発話形=canonicalに揃える(Repetition QAの`7,620`分割は別途要)。いずれもProduction QA Gate側のコード変更(過去の同モジュール正規化はユーザー承認[REPETITION-QA-...-RECONCILE-02/03]の履歴あり)であり、**本委任の承認範囲(Fable判定H2=er021の等価追加)を超えるため実装せず停止**。
+## 4. 費用
+本委任のrun追加分=¥62.92-¥50.31=¥12.61(run.log末尾`累計費用`、台帳=`er019_output/family_x_audio_production_wiring_01/jwst_mystery_emission_line__run_fx4_01/raw_usage_log.jsonl`、`compute_cost_jpy_so_far`)。案件累計≒¥432.4+¥12.6=¥445.0/Cap¥500。

@@ -268,6 +268,26 @@ class MetaReadingDictionaryEntryTests(unittest.TestCase):
         self.assertEqual(safety.DEFAULT_JA_READING_DICTIONARY.get("meta"), "メタ")
 
 
+class JwstReadingDictionaryEntryTests(unittest.TestCase):
+    """FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_04(H3): 「jwst」の読み辞書登録(Meta先例と同型、Gateロジック不変)。"""
+
+    def test_17_jwst_token_classified_as_reading_dictionary(self):
+        for text in ("写真にはいない。でも光は届く！ JWSTの「宇宙捜査ファイル」",
+                     "JWSTが捉えた宇宙の光の線には、知られている現象だけでは説明しきれない特徴があります。"):
+            findings = safety.classify_foreign_tokens_in_japanese_text(text)
+            categories = [f["category"] for f in findings]
+            self.assertIn(READING_DICT, categories)
+            self.assertNotIn(HUMAN_REVIEW, categories)
+            self.assertFalse(safety.foreign_token_gate_requires_stop(findings))
+
+    def test_18_jwst_dictionary_reading_value(self):
+        self.assertEqual(safety.DEFAULT_JA_READING_DICTIONARY.get("jwst"), "ジェイダブリューエスティー")
+
+    def test_19_unregistered_acronym_still_human_review(self):
+        findings = safety.classify_foreign_tokens_in_japanese_text("XYZQの話です。")
+        self.assertTrue(safety.foreign_token_gate_requires_stop(findings))
+
+
 class ExpectedReadingsExtractionAndWiringTests(unittest.TestCase):
     """NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: findings(READING_
     DICTIONARY分類)からexpected_readingsを算出し、TTS呼び出し(voice01.

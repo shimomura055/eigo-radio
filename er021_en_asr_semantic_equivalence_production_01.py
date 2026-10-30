@@ -115,6 +115,9 @@ _ORDINAL_WORD_VALUES = {w: int(re.match(r"\d+", s).group()) for w, s in _ORDINAL
 _ORDINAL_DIGIT_RE = re.compile(r"(\d[\d,]*)(st|nd|rd|th)")
 
 _CURRENCY_SYMBOLS = {"$": "USD", "£": "GBP", "€": "EUR"}
+# 長さ単位オングストローム: 記号Å(ASR側は読み"angstrom(s)"になる)。lower()後の形で照合する。
+_ANGSTROM_UNIT_FORMS = {"å", "Å".lower(), "angstrom", "angstroms"}
+_ANGSTROM_UNIT_CANON = "angstrom"
 _CURRENCY_WORDS = {"dollar": "USD", "dollars": "USD", "pound": "GBP", "pounds": "GBP",
                     "euro": "EUR", "euros": "EUR"}
 
@@ -586,7 +589,11 @@ def _tier1_atoms(text: str) -> list[dict]:
                 i = next_i
                 i = _apply_suffixes(atoms[-1], words, i)
                 continue
-        atoms.append({"kind": "literal", "word": lw.strip("'")})
+        # FAMILY-X-SELECTED-4 委任_04(OPEN-612、不具合是正11-8): 長さの単位記号Å(U+00C5/U+212B)
+        # <->読み「angstrom(s)」の閉じた1対応(記号<->語の既存等価[$<->dollars、%<->percent]と同型)。
+        # 他の単位への一般化はしない。単数/複数は同一単位として揃える。
+        lw_key = lw.strip("'")
+        atoms.append({"kind": "literal", "word": _ANGSTROM_UNIT_CANON if lw_key in _ANGSTROM_UNIT_FORMS else lw_key})
         i += 1
     return atoms
 
