@@ -1313,6 +1313,11 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     return generate_fn()
 
 
+# SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02C: KP英語phraseと同一契約(KP3V・Whisper事前確認・再利用ゲート)を受ける役割。
+# `vocab_extra_english`(②追加解説の英語音声、er137)はKP英語と同じ生成関数・同じ安全装置を通す(独自の緩和・回避はしない)。
+_KP_ENGLISH_ROLES = ("english", "vocab_extra_english")
+
+
 def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: str, generate_fn,
                            expected_text: str | None = None, require_style_version: bool = False):
     """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-1
@@ -1333,7 +1338,7 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     require_style_version=Falseのまま(この引数を渡さない呼び出し元は
     従来どおりの挙動)。"""
     generate_fn = secondary_run_scope.guard_generate(generate_fn, f"kp{rank}_{role}")  # 委任_06c: circuit open中は技術STOP
-    if role == "english":
+    if role in _KP_ENGLISH_ROLES:
         generate_fn = kp_vote.guard_whisper(generate_fn, f"kp{rank}_{role}")   # KP3V(P-08): Whisper事前確認/circuit open中はTTSを回さず技術STOP
     _skip = _only_segments_skip(f"kp{rank}_{role}")
     if _skip is not None:
@@ -1345,9 +1350,9 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
             cached.get("style_version") if cached else None, FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
             {"kind": "same_out_dir_previous_results", "label": f"kp{rank}_{role}"},
             # KP3V(再利用点2): KP英語phraseの引継ぎは両Provider PASSの保存証跡を要する(API 0・fail-closed)。
-            kp_vote_canonical=(n3_tts.tts_safe_kp_en(expected_text) if (role == "english" and kp_vote.vote_enabled() and expected_text)
+            kp_vote_canonical=(n3_tts.tts_safe_kp_en(expected_text) if (role in _KP_ENGLISH_ROLES and kp_vote.vote_enabled() and expected_text)
                                else None),
-            kp_vote_required=bool(role == "english" and kp_vote.vote_enabled()))
+            kp_vote_required=bool(role in _KP_ENGLISH_ROLES and kp_vote.vote_enabled()))
         return _inh if _inh is not None else _skip
     if require_style_version and cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
         return generate_fn()
@@ -1357,11 +1362,11 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
         if expected_text is not None and cached_result.get("canonical_text") != expected_text:
             return generate_fn()
         _blk = _reuse_guard_blocks(cached_result, f"kp{rank}_{role}",
-                                   kp_vote_gate_follows=bool(role == "english" and kp_vote.vote_enabled()))   # OF-KPQ-P-01: 直後にkp_vote_reuse_okが続く
+                                   kp_vote_gate_follows=bool(role in _KP_ENGLISH_ROLES and kp_vote.vote_enabled()))   # OF-KPQ-P-01: 直後にkp_vote_reuse_okが続く
         if _blk is not None:
             return _regenerate_after_reuse_block(generate_fn, _blk)
         _kd = None
-        if role == "english" and kp_vote.vote_enabled():
+        if role in _KP_ENGLISH_ROLES and kp_vote.vote_enabled():
             # KP3V(OF-KPD-P-03、再利用点1): 前回results再利用は両Provider PASSの証跡を要する(fail-closed)。
             # 証跡が無ければS1(Azure 1回)、NGなら再生成(Store gate経由)、Azure障害は技術STOP(再利用も再生成もしない)。
             _kd = kp_vote.kp_vote_reuse_ok(
@@ -1818,6 +1823,7 @@ def generate_family_x_b1_segments(
     else:
         kp_results, kp_explanation_text_bundle = {}, None
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
+    vocab_extra_results = _generate_vocab_extra_segments(kp, narration_dir, _cached, level="b1b", tts_backend=tts_backend, style_profile=style_profile)
 
     all_status = {k: v.get("status") for k, v in results.items()}
     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced(b1b)の中間
@@ -1834,6 +1840,7 @@ def generate_family_x_b1_segments(
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
                "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
+               **({"vocab_extra": vocab_extra_results} if vocab_extra_results else {}),   # 委任_02C: ②追加解説の英語音声(無ければキー自体を書かない=従来とバイト同一)
                # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): run単位の
                # 英語解説text cache(_resolve_kp_explanations_textが次回
                # runで参照する)。
@@ -2251,6 +2258,7 @@ def generate_family_x_a2_segments(
     kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
                                                    tts_backend=tts_backend,
                                                    style_profile=style_profile) if kp is not None else {}
+    vocab_extra_results = _generate_vocab_extra_segments(kp, narration_dir, _cached, level="a2", tts_backend=tts_backend, style_profile=style_profile)
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -2265,6 +2273,7 @@ def generate_family_x_a2_segments(
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
                "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
+               **({"vocab_extra": vocab_extra_results} if vocab_extra_results else {}),   # 委任_02C: ②追加解説の英語音声(無ければキー自体を書かない)
                # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
@@ -2351,6 +2360,39 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
     return kp_results
 
 
+def _vx_gate_hook(out_dir: str, level: str) -> None:
+    """X/Y共通(Yはxr.経由): level dir(`<theme>/<level>`)のGate通過直後に呼ぶ。詳細はer137.gate_hook。"""
+    import er137_vocab_extra_audio_01 as vx
+    vx.gate_hook(out_dir, None, level)
+
+
+def _generate_vocab_extra_segments(kp: dict | None, narration_dir: str, cached: dict | None, *, level: str,
+                                   tts_backend: str = "structured_separation", style_profile: str = "default") -> dict:
+    """SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02C: Vocabulary & Expressionsの掲載項目のうちKeyPhraseでない(②追加解説)項目の
+    英語音声を、KP英語と同一の`_generate_or_reuse_kp`+`_kp_english_generate_fn`(役割`vocab_extra_english`)で生成/再利用する。
+    X(generate_family_x_*)とY(er121_family_y_audio_01がxr.経由で呼ぶ)の共通経路。新stageなし(kp系音声段の直後に1呼出)。
+    KPと重複する項目はここでは何もしない(既存kp<rank>_en.wavを後段export[er137.export_level]が単体mp3化=再利用)。
+    vocab_confirmed.jsonが無い旧run・②が無い記事は{}(=tts_generation_results.jsonへ`vocab_extra`キーを書かない=従来とバイト同一)。
+    戻り値: {"v<n>": {"vocab_extra_english": entry}}"""
+    import er137_vocab_extra_audio_01 as vx
+    if kp is None:
+        return {}
+    kp_dir = vx.find_kp_dir(os.path.dirname(narration_dir), level)   # X=<level>/key_phrases、Y=<run>/key_phrases/<level>
+    if kp_dir is None:   # vocab_confirmed.json無し(Part 1対象外・旧run)=②追加音声なし
+        return {}
+    split = vx.split_vocab(vx.load_level_vocab(kp_dir), kp["items"])
+    extras = vx.extras_of(split)
+    if not extras:
+        return {}
+    _gloss_hr = _gloss_alignment_hr_unresolved(kp)
+    blocked = (f"KP gloss Human Review待ち(rank={[x.get('rank') for x in _gloss_hr]})のためVocabulary追加音声TTSを実行しません(0 API call)"
+               if _gloss_hr else None)
+    return vx.generate_extras(
+        extras, narration_dir, cached, reuse_fn=_generate_or_reuse_kp,
+        gen_factory=lambda text, wav: _kp_english_generate_fn(style_profile, level, tts_backend, text, wav)[0],
+        seg_context=cl.segment_context, blocked_reason=blocked)
+
+
 # ============================================================
 # Stage: assemble(既存asm.verify_episode_audio_validation_gate/
 # assemble_with_timeline/apply_headroom_safety_valve/build_b1_key_
@@ -2395,6 +2437,7 @@ def load_family_x_b1_sources(theme_out_dir: str, source_dir: str | None = None) 
         if os.path.exists(article_path):
             article_text = load_text(article_path)
     asm.verify_episode_audio_validation_gate(out_dir, "B1", article_text=article_text)
+    _vx_gate_hook(out_dir, "b1b")   # 委任_02C: Vocabulary追加音声の欠落STOP+単体mp3 export
 
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
@@ -2762,6 +2805,7 @@ def load_family_x_a2_sources(theme_out_dir: str, source_dir: str | None = None) 
         if os.path.exists(article_path):
             article_text = load_text(article_path)
     asm.verify_episode_audio_validation_gate(out_dir, "A2", article_text=article_text)
+    _vx_gate_hook(out_dir, "a2")   # 委任_02C: Vocabulary追加音声の欠落STOP+単体mp3 export
 
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)

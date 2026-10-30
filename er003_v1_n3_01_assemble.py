@@ -504,6 +504,19 @@ def verify_episode_audio_validation_gate(out_dir: str, level: str, required_stru
                 blocked.append(f"{seg_key}={final}(MISSING_MANDATORY_DISFLUENCY_QA)")
             if _segment_asset_hash_stale(sub_entry, narration_dir):
                 blocked.append(f"{seg_key}={final}(ASSET_HASH_MISMATCH)")
+    # SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02C: Vocabulary追加解説(②)の英語音声(top-level `vocab_extra`、er137)を、KP音声と同じ規則で検査する。
+    # キーが無い結果(A/B/C・旧run・②無し)は何も追加されない=従来と同一。OK/HUMAN_APPROVED以外(STOPPED等)はEPISODE_BLOCKEDで、音声欠落項目を掲載したまま通さない。
+    for rank, vx in (data.get("vocab_extra") or {}).items():
+        for sub_key, sub_entry in vx.items():
+            seg_key = f"kp{rank}_{sub_key}"
+            final = _segment_gate_status(sub_entry, seg_key, approvals)
+            if final not in AUDIO_GATE_ALLOWED_STATUSES:
+                blocked.append(f"{seg_key}={final}")
+                continue
+            if _segment_missing_mandatory_disfluency_qa(seg_key, sub_entry, level):
+                blocked.append(f"{seg_key}={final}(MISSING_MANDATORY_DISFLUENCY_QA)")
+            if _segment_asset_hash_stale(sub_entry, narration_dir):
+                blocked.append(f"{seg_key}={final}(ASSET_HASH_MISMATCH)")
 
     if required_structure is not None:
         blocked.extend(_check_structural_completeness(data, required_structure))

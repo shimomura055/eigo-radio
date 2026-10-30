@@ -633,7 +633,8 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
     else:
         kp_results, kp_bundle = {}, None
     kp_status_str = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING"
-    return _finish_results(out_dir, results, kp_results, kp_bundle, shared_status, kp_status_str, level="b1b", tts_backend=tts_backend)
+    vocab_extra = xr._generate_vocab_extra_segments(kp, narration_dir, cached, level="b1b", tts_backend=tts_backend, style_profile=style_profile)   # 委任_02C: ②追加解説の英語音声(X共通経路)
+    return _finish_results(out_dir, results, kp_results, kp_bundle, shared_status, kp_status_str, level="b1b", tts_backend=tts_backend, vocab_extra=vocab_extra)
 
 
 # ============================================================
@@ -748,10 +749,11 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
 
     kp_results = xr._generate_key_phrase_segments_a2(kp, narration_dir, cached, tts_backend=tts_backend, style_profile=style_profile) if kp is not None else {}
     kp_status_str = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING"
-    return _finish_results(out_dir, results, kp_results, None, shared_status, kp_status_str, level="a2", tts_backend=tts_backend)
+    vocab_extra = xr._generate_vocab_extra_segments(kp, narration_dir, cached, level="a2", tts_backend=tts_backend, style_profile=style_profile)   # 委任_02C: ②追加解説の英語音声(X共通経路)
+    return _finish_results(out_dir, results, kp_results, None, shared_status, kp_status_str, level="a2", tts_backend=tts_backend, vocab_extra=vocab_extra)
 
 
-def _finish_results(out_dir, results, kp_results, kp_bundle, shared_status, kp_status_str, *, level, tts_backend):
+def _finish_results(out_dir, results, kp_results, kp_bundle, shared_status, kp_status_str, *, level, tts_backend, vocab_extra=None):
     all_status = {k: v.get("status") for k, v in results.items()}
     if level == "b1b":
         kp_status = {r: {"en": v["english"].get("status"), "explanation": v["explanation"].get("status")} for r, v in kp_results.items()}
@@ -763,6 +765,8 @@ def _finish_results(out_dir, results, kp_results, kp_bundle, shared_status, kp_s
            **({"only_segments": sorted(xr._ONLY_SEGMENTS)} if xr._ONLY_SEGMENTS is not None else {})}
     if level == "b1b":
         doc["key_phrase_explanations_text"] = kp_bundle
+    if vocab_extra:
+        doc["vocab_extra"] = vocab_extra      # 委任_02C: ②追加解説の英語音声(無ければキー自体を書かない=従来とバイト同一)
     save_json(f"{out_dir}/audit/tts_generation_results.json", doc)
     # JA-ASR-V2-BETA 委任_02A: a2(日本語音声あり)は最終制作報告ブロックを標準出力へも出す(例外を投げない・非ブロッキング)。b1bに日本語音声は無い。
     pww_registry.write_listening_list_safe(out_dir, completion_label=(f"Family Y {level}(Standard)" if level == "a2" else None))
@@ -1060,6 +1064,7 @@ def load_y_sources(theme_out_dir: str, level: str, article_text: str | None = No
     nd = f"{out_dir}/narration"
     p9a = xr.p9a
     asm.verify_episode_audio_validation_gate(out_dir, "B1" if level == "b1b" else "A2", article_text=article_text)
+    xr._vx_gate_hook(out_dir, level)   # 委任_02C: Vocabulary追加音声の欠落STOP+単体mp3 export(X共通)
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
     items = sorted(kp["items"], key=lambda it: it["rank"])
     common_in = {"intro": p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH),

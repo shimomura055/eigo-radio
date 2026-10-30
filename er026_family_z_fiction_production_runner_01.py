@@ -2580,7 +2580,12 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
         level, story_clips, support["preview"], comments, kp_items, cfg["topic_title"],
         cfg.get("japanese_title_tts") if level == "a2" else None, kp_explanations=expl, story_key=ctx.story_key,
         chunk_plans=chunk_plans)
-    return {"plan": spec_plan, "story_clips": story_clips, "kp_items": kp_items, "kp_explanations": expl,
+    # 委任_02C: Part 1対象levelの②追加解説(KPでない確定項目)の英語音声spec(planには入れない)。Part 1対象外=[]。
+    vocab_specs = []
+    if _part1_on(ctx, level):
+        import er137_vocab_extra_audio_01 as _vx
+        vocab_specs = a63.vocab_extra_specs(level, _vx.extras_of(_vx.split_vocab(_p1_items, items)))
+    return {"plan": spec_plan, "vocab_specs": vocab_specs, "story_clips": story_clips, "kp_items": kp_items, "kp_explanations": expl,
             "article_text": canonical_article_text(text), "chunk_plans": a63.chunk_plans_from_specs(spec_plan),
             "shell_names": list(a63.SHELL_ASSET_SOURCES) + [f"kp{it['rank']}_number" for it in kp_items]}
 
@@ -2616,7 +2621,7 @@ def stage_tts(ctx, level: str) -> dict:
     state = {}
     gens = wrap_generators_with_budget(gens, ctx.budget, state=state, sentinel_dir=ctx.out_dir)
     out = m.a63.run_tts_stage(ctx.out_dir, level, inp["plan"], generators=gens, only_clips=ctx.only_clips,
-                              article_text=inp["article_text"], story_key=ctx.slug)
+                              article_text=inp["article_text"], story_key=ctx.slug, vocab_specs=inp.get("vocab_specs"))
     if state.get("stopped"):
         raise FamilyZBudgetStop(state["stopped"])
     failed = {k: v for k, v in out["statuses"].items() if v != "OK"}
@@ -2645,8 +2650,10 @@ def stage_gate(ctx) -> dict:
     res = {}
     for lv in LEVELS:
         inp = load_level_inputs(ctx, lv)
-        r = m.a63.run_audio_gate(ctx.out_dir, lv, inp["plan"], inp["shell_names"], article_text=inp["article_text"])
+        r = m.a63.run_audio_gate(ctx.out_dir, lv, inp["plan"], inp["shell_names"], article_text=inp["article_text"], vocab_specs=inp.get("vocab_specs"))
         res[lv] = {"shared_gate": r["shared_gate"], "audio_text_deviation_clips": r["audio_text_deviation_clips"]}
+        import er137_vocab_extra_audio_01 as _vx   # 委任_02C: Vocabulary追加音声の欠落STOP+単体mp3 export(Gate通過後)
+        _vx.gate_hook(f"{ctx.out_dir}/{lv}", _kp_src_dir(ctx, lv), lv)
     return res
 
 

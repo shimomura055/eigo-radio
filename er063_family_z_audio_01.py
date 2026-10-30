@@ -1472,12 +1472,12 @@ def load_checkpoint(level_dir: str) -> dict | None:
         return None
 
 
-def save_checkpoint(level_dir: str, segments: dict, key_phrases: dict) -> None:
+def save_checkpoint(level_dir: str, segments: dict, key_phrases: dict, vocab_extra: dict | None = None) -> None:
     p = _checkpoint_path(level_dir)
     os.makedirs(os.path.dirname(p), exist_ok=True)
     tmp = p + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump({"segments": segments, "key_phrases": key_phrases}, f, ensure_ascii=False)
+        json.dump({"segments": segments, "key_phrases": key_phrases, **({"vocab_extra": vocab_extra} if vocab_extra else {})}, f, ensure_ascii=False)
     os.replace(tmp, p)
 
 
@@ -1606,6 +1606,11 @@ def _merge_checkpoint(cached: dict | None, ck: dict | None) -> dict | None:
     out["segments"].update(ck.get("segments") or {})
     for rank, subs in (ck.get("key_phrases") or {}).items():
         out["key_phrases"].setdefault(rank, {}).update(subs)
+    _vx = {k: dict(v) for k, v in (((cached or {}).get("vocab_extra")) or {}).items()}   # 委任_02C: ②追加解説の英語音声(top-level)も統合する
+    for k, subs in (ck.get("vocab_extra") or {}).items():
+        _vx.setdefault(k, {}).update(subs)
+    if _vx:
+        out["vocab_extra"] = _vx
     return out
 
 
@@ -1625,23 +1630,23 @@ def _cached_entry(cached: dict | None, spec: ClipSpec):
 @er109_scope.family_scope("Z")  # ASR-HOMOPHONE 委任_04: er109 run scope(Z)。PNAP hookとは独立(PNAP flag OFFでも有効)。例外・STOP時もfinallyで復元
 def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
                   only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
-                  story_key: str = DEFAULT_SLUG) -> dict:
+                  story_key: str = DEFAULT_SLUG, vocab_specs: list | None = None) -> dict:
     """PNAP 委任_02(5-3/5-6/5-7): 固有名詞アラーム方針のrun scope(Z)とfinallyの完成報告hookで`_run_tts_stage_impl`を包む。
     flag(PROPER_NOUN_ALARM_POLICY_ENABLED)がOFF・dry_runのときは従来どおり(scope/hook無し)。"""
     if dry_run:
         return _run_tts_stage_impl(run_dir, level, plan, generators=generators, dry_run=dry_run, only_clips=only_clips,
-                                   revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key)
+                                   revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key, vocab_specs=vocab_specs)
     import er103_pnap_runner_hooks_01 as _pnap_hooks
     import er103_run_entity_table_01 as _ret   # ASR-QUALITY PN 委任_04(OPEN-472): Run Entity Table構築provider(構築点はhook 1か所。dry_runはここへ来ない=API 0)
     return _pnap_hooks.run_with_alarm_hook(
         "Z", f"{run_dir}/{level}", _run_tts_stage_impl, run_dir, level, plan, generators=generators, dry_run=dry_run,
-        only_clips=only_clips, revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key,
+        only_clips=only_clips, revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key, vocab_specs=vocab_specs,
         _ret_provider=(lambda: _ret.ZProvider(run_dir, level, plan)))
 
 
 def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
                         only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
-                        story_key: str = DEFAULT_SLUG) -> dict:
+                        story_key: str = DEFAULT_SLUG, vocab_specs: list | None = None) -> dict:
     """plan(ClipSpec列)をTTS生成し audit/tts_generation_results.json(+Z拡張)を書く。
     dry_run=Trueはファイル・Master Store・telemetry・queueへ一切書かず、計画のみ返す。
     Local Rewrite発火clipは audio_text_deviation をprovenanceへ監査記録する(2026-10-12ユーザー決定: er061再検証フックは撤去。
@@ -1718,6 +1723,11 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
         save_checkpoint(level_dir, segments, key_phrases)
         if deferred_stop is not None:
             break
+    # SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_02C: ②追加解説の英語音声(kind=kp_en=KP英語と同一のgenerator・reuse_key・KP3V・Whisper事前確認・
+    # retry/fallback・STOP確認)。結果はtop-level`vocab_extra`へ(planのKP/本文・assemblyには混ぜない)。新stageなし=この段の末尾で1ループ。
+    vocab_extra = _run_vocab_extra_specs(run_dir, level_dir, narr, vocab_specs, cached, gens, only_clips, evidence, deferred_stop is not None)
+    if vocab_extra:
+        save_checkpoint(level_dir, segments, key_phrases, vocab_extra)
     import er011_human_review_lock_01 as review_lock
     results_path = f"{level_dir}/audit/tts_generation_results.json"
     if _chunk_plans:
@@ -1728,7 +1738,8 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
             "parents": {pid: chunk_tts.evidence_record(pl, segments) for pid, pl in _chunk_plans.items()}})
     review_lock.archive_prior_tts_results(results_path)
     doc = {"segments": segments, "key_phrases": key_phrases, "tts_backend": TTS_BACKEND,
-           "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level}
+           "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level,
+           **({"vocab_extra": vocab_extra} if vocab_extra else {})}
     with open(results_path, "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2)
     # AUW 委任_03: 生成完了hook。results確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
@@ -1744,6 +1755,44 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
         raise deferred_stop
     return {"dry_run": False, "planned": planned, "results_path": results_path, "evidence_path": ev_path,
             "statuses": {r["clip_id"]: r["status"] for r in evidence}}
+
+
+def vocab_extra_specs(level: str, split_extras: list) -> list:
+    """er137.extras_of(...)の各②追加項目をZのClipSpec(kind=kp_en・role_key=KP_EN=KP英語と同一契約)にする。clip_id=vocab_extra_<n>_en。
+    planには入れない(assembly対象外)。呼出元(er026 load_level_inputs)が`vocab_specs`としてrun_tts_stage/run_audio_gateへ渡す。"""
+    return [ClipSpec(f"vocab_extra_{ex['vocab_index']}_en", level, "kp_en", ex["term"], voice="Aoede", role_key="KP_EN", rank=None,
+                     language="en", extra={"vocab_extra": ex["vocab_index"], "candidate_id": ex.get("candidate_id")}) for ex in split_extras]
+
+
+def _run_vocab_extra_specs(run_dir, level_dir, narr, vocab_specs, cached, gens, only_clips, evidence, already_stopping) -> dict:
+    if not vocab_specs:
+        return {}
+    import er137_vocab_extra_audio_01 as vx
+    import er005_cost_logger as cl
+    out = {}
+    prev_all = (cached or {}).get(vx.RESULTS_KEY) or {}
+    for spec in vocab_specs:
+        n = spec.extra["vocab_extra"]
+        out_path = f"{narr}/{spec.wav_name()}"
+        if not layout_is_valid(out_path):
+            raise FamilyZAudioStop(f"narration配置が不正です(.../<run>/<level>/narration/<segment>.wav): {out_path}")
+        prev = (prev_all.get(f"v{n}") or {}).get(vx.ROLE)
+        if already_stopping or (only_clips and spec.clip_id not in only_clips):
+            if prev is not None and prev.get("reuse_key") in (None, build_reuse_key(spec)):
+                out[f"v{n}"] = {vx.ROLE: prev}
+            continue
+        gen_fn = gens[spec.kind]
+        _check_stop_sentinel(run_dir, f"tts:{spec.clip_id}")
+        with cl.segment_context(spec.clip_id):
+            entry = generate_or_reuse_z(
+                prev, spec, out_path,
+                lambda spec=spec, out_path=out_path, gen_fn=gen_fn: build_entry(spec, out_path, gen_fn(spec, out_path)))
+        entry = normalize_technical_stop_entry(spec, out_path, entry)
+        entry["vocab_index"] = n
+        entry["candidate_id"] = spec.extra.get("candidate_id")
+        out[f"v{n}"] = {vx.ROLE: entry}
+        evidence.append(_evidence_row(spec, out_path, entry))
+    return out
 
 
 def normalize_technical_stop_entry(spec: ClipSpec, out_path: str, entry: dict) -> dict:
@@ -1831,6 +1880,9 @@ def _lookup_entry(data: dict, clip_id: str):
     seg = (data.get("segments") or {}).get(clip_id)
     if seg is not None:
         return seg
+    mv = re.fullmatch(r"vocab_extra_([0-9]+)_en", clip_id)
+    if mv:   # 委任_02C: ②追加解説の英語音声(top-level vocab_extra)
+        return ((data.get("vocab_extra") or {}).get(f"v{mv.group(1)}") or {}).get("vocab_extra_english")
     m = re.fullmatch(r"kp([0-9]+)_(en|ja|explanation_en)", clip_id)
     if m:
         sub = {"en": "english", "ja": "japanese_meaning", "explanation_en": "explanation"}[m.group(2)]
@@ -2027,7 +2079,7 @@ def check_clip_audio_quality(narration_dir: str, entries: dict, *, peak_max: flo
 
 
 def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, article_text: str,
-                   skip_shared_gate: bool = False) -> dict:
+                   skip_shared_gate: bool = False, vocab_specs: list | None = None) -> dict:
     """Gate呼出の前に M2(存在assert) -> M1(Std減速) -> 品質確認 を実行し、既存
     asm.verify_episode_audio_validation_gate(KP source gate含む)を呼ぶ。article_textは原稿(canonical)のまま渡す
     (Local Rewriteの音声書換テキストは渡さない)。"""
@@ -2040,7 +2092,7 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
             _doc = _read_json(_rp)
             refresh_chunk_parents(level_dir, plan, _doc.setdefault("segments", {}))
             _write_json(_rp, _doc)
-    ids = required_clip_ids(plan, shell_names)
+    ids = required_clip_ids(plan, shell_names) + [s.clip_id for s in (vocab_specs or [])]   # 委任_02C: ②追加音声の欠落も存在assertでSTOP(fail-closed)
     m2 = assert_tts_results_complete(level_dir, ids)
     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
     entries = {cid: _lookup_entry(data, cid) for cid in ids}
