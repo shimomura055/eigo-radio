@@ -34,7 +34,7 @@ class PublicStudyHtmlLevelTest(unittest.TestCase):
         with mock.patch.object(p2w, "_cc", return_value=cc), \
              mock.patch.object(p2w, "require_final", side_effect=lambda *a, **k: order.append("p2") or {"r": 1}), \
              mock.patch.object(p1, "study_html_for_audio_dir", side_effect=lambda ad, items=None, level=None: order.append(("p1", level)) or "<P1/>"), \
-             mock.patch.object(p2w, "compose_page_html", side_effect=lambda a, b, *, nuance: a + "|P2"), \
+             mock.patch.object(p2w, "compose_page_html", side_effect=lambda a, b: a + "|P2"), \
              mock.patch.object(p2w, "part1_ref_ja_pool", return_value={}), \
              mock.patch.object(p2w.g, "paragraphs_from_article_md", return_value=["Hello world."]), \
              mock.patch.object(p2w, "label_for", return_value="L"), \

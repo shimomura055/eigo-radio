@@ -264,6 +264,8 @@ def _parse_row(tr: Node, lv: str, idx: int, family: str) -> dict:
 def _parse_study_section(sec: Node) -> tuple:
     h3 = sec.find("h3")
     head = h3.text().strip() if h3 is not None else ""
+    if head == R.NUANCE_ABOLISHED_HEADING:   # 廃止済みコーナー(見出しh3の構造一致)。旧devページからの再deriveを防ぐ
+        stop("ENDUSER_NUANCE_CORNER_ABOLISHED", "devページに廃止済みの『ニュアンス解説』ブロックがあります(2026-10-30廃止)。devページを再生成してから実行してください")
     if head not in R.STUDY_HEADINGS:
         stop("ENDUSER_UNKNOWN_STUDY_HEADING", f"未知の学習ブロック見出し: {head!r}")
     items = []
@@ -288,7 +290,7 @@ def _parse_study_section(sec: Node) -> tuple:
 
 
 def parse_dev_page(dev_html: str, family: str) -> dict:
-    """最終dev index.html -> {'levels': {lv: {'main', 'rows': [...], 'study': {vocab/grammar/nuance: items}}}, 'notice', 'h1'}。"""
+    """最終dev index.html -> {'levels': {lv: {'main', 'rows': [...], 'study': {vocab/grammar: items}}}, 'notice', 'h1'}。"""
     family = family.lower()
     if family not in _STORY_PATTERN:
         stop("ENDUSER_FAMILY_UNSUPPORTED", f"family={family}")
@@ -838,9 +840,9 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
             p["idx"] = i
         trans_cov[lv] = attach_translations(lv, parts, family, ja)
         study = study_by_level.get(lv, {})
-        vocab, grammar, nuance = study.get("vocab", []), study.get("grammar", []), study.get("nuance", [])
+        vocab, grammar = study.get("vocab", []), study.get("grammar", [])
         gloss_info[lv] = build_glossary(lv, parts, vocab, (meta.get("level_meanings") or {}).get(lv))
-        levels[lv] = {"level": lv, "main": main, "parts": parts, "vocab": vocab, "grammar": grammar, "nuance": nuance,
+        levels[lv] = {"level": lv, "main": main, "parts": parts, "vocab": vocab, "grammar": grammar,
                       "total_sec": pm["duration"], "sentence_count": sent_n}
         sync_public[lv] = {"schema": R.SCHEMA_SYNC_PUBLIC, "level": lv,
                            "sentences": sorted(({"sid": sid, "start": a, "end": b} for sid, (a, b) in si["times"].items()), key=lambda x: x["start"])}
@@ -900,8 +902,9 @@ _S_PART = _obj({
     "kp_header": _arr(S_STR),
     "kp": _arr(_obj({"en": S_STR, "text": S_STR, "text2": S_STR, "en_audio": _obj({"start": S_NUM, "end": S_NUM, "method": S_STR, "blocks": S_INT, "asr_text": S_STR, "token_match": S_NUM}, required=["start", "end", "method", "blocks"])}, required=["en", "text", "en_audio"])),
 }, required=["idx", "key", "label", "kind", "start", "dur", "seg"])
+# `nuance`は廃止(2026-10-30)=新規出力にキー無し。公開済みスナップショットの`nuance: []`は読取互換(任意キー)。中身ありはvalidate_outputがENDUSER_NUANCE_CORNER_ABOLISHEDでSTOP
 _S_LEVEL = _obj({"level": {"type": "string", "enum": ["std", "adv"]}, "main": S_STR, "parts": _arr(_S_PART), "vocab": _arr(_S_ITEM), "grammar": _arr(_S_ITEM),
-                 "nuance": _arr(_S_ITEM), "total_sec": S_NUM, "sentence_count": S_INT})
+                 "nuance": _arr(_S_ITEM), "total_sec": S_NUM, "sentence_count": S_INT}, required=["level", "main", "parts", "vocab", "grammar", "total_sec", "sentence_count"])
 SCHEMA_ARTICLE_SPEC = _obj({
     "schema": {"type": "string", "enum": [R.SCHEMA_ARTICLE]}, "id": S_STR, "family": {"type": "string", "enum": ["X", "Y", "Z"]},
     "title_ja": S_STR, "topic_en": S_STR, "notice": S_STR_OR_NULL, "audio_base": {"type": "string", "enum": ["../"]},
@@ -1032,15 +1035,15 @@ def validate_output(article: dict, sync_public: dict, build_info: dict, rows_by_
         sids = {s["sid"] for p in L["parts"] for pa in p.get("paragraphs", []) for s in pa}
         if sids != {s["sid"] for s in sync_public[lv]["sentences"]}:
             stop("ENDUSER_SYNC_COVERAGE", f"{lv}: 本文のsid集合と同期のsid集合が不一致")
-        # 学習ブロック: devのsection.study数・項目と一致。ニュアンスは最大1
+        # 学習ブロック: devのsection.study数・項目と一致。ニュアンス解説は廃止=キー無しまたは空配列のみ許容(中身ありはSTOP)
         st = study_by_level.get(lv, {})
-        for kind in ("vocab", "grammar", "nuance"):
+        if L.get("nuance"):
+            stop("ENDUSER_NUANCE_CORNER_ABOLISHED", f"{lv}: article.jsonのnuanceに中身があります(ニュアンス解説は廃止)")
+        for kind in ("vocab", "grammar"):
             if [(i["heading"], [f["label"] for f in i["fields"]]) for i in L[kind]] != [(i["heading"], [f["label"] for f in i["fields"]]) for i in st.get(kind, [])]:
                 stop("ENDUSER_STUDY_MISMATCH", f"{lv}: {kind}がdevの学習ブロックと不一致")
             if any(not i["fields"] for i in L[kind]):
                 stop("ENDUSER_STUDY_MISMATCH", f"{lv}: {kind}に空の項目")
-        if len(L["nuance"]) > 1:
-            stop("ENDUSER_STUDY_MISMATCH", f"{lv}: ニュアンス解説が2件以上")
     # 音声一致(参照音声が実在しshaがbuild_infoと一致)
     if probe is not None:
         for rel, sha in build_info["audio_sha256"].items():
@@ -1253,7 +1256,9 @@ def verify_consistency(public_dir, assets_dir=ASSET_DIR) -> dict:
                         bad("ENDUSER_TEXT_MISMATCH", f"{lv} {r['label']}: 本文がdevと不一致")
                 if r["kind"] == "kp" and [_kp_key(k) for k in p["kp"]] != [_kp_key(k) for k in r["kp_table"]]:
                     bad("ENDUSER_TEXT_MISMATCH", f"{lv} {r['label']}: KP表が不一致")
-            for kind in ("vocab", "grammar", "nuance"):
+            if art["levels"][lv].get("nuance"):
+                bad("ENDUSER_NUANCE_CORNER_ABOLISHED", f"{lv}: article.jsonのnuanceに中身があります(ニュアンス解説は廃止)")
+            for kind in ("vocab", "grammar"):
                 if [(i["heading"], [(f["label"], f["html"]) for f in i["fields"]]) for i in art["levels"][lv][kind]] != \
                         [(i["heading"], [(f["label"], f["html"]) for f in i["fields"]]) for i in study_by_level[lv].get(kind, [])]:
                     bad("ENDUSER_STUDY_MISMATCH", f"{lv}: {kind}がdevと不一致")

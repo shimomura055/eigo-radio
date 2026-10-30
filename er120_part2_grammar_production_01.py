@@ -161,9 +161,7 @@ STEPB_PROMPT_SHA256 = hashlib.sha256(STEPB_PROMPT.encode("utf-8")).hexdigest()
 # 文法0件はコーナー全体を非表示にする(ユーザー正式決定2026-10-29 §2C。固定文面・見出し・空枠を出さない)。旧固定文面は『既存0件runの旧mdの退避判定(M-6)』専用の
 # 読取定数としてのみ残す(描画・出力には使わない)。
 _LEGACY_ZERO_GRAMMAR_BODY = "今回の本文には、このPartで特に取り上げる難所となる構文はありませんでした。"
-NUANCE_HEADING = "ニュアンス解説"                  # 独立コーナー名(ユーザー原文§2A-5。『Deeper Understanding』は不使用=Fable判断R-12)
-NUANCE_RESULT_FILENAME = "nuance_result.json"       # finalize(委任_02C/er134)が書く表示用の確定結果。無い=ニュアンス解説なし(LEGACY/未実施を含む)
-NUANCE_ADOPTED = "ADOPTED"                          # 表示するのはこのstatusのときだけ(REJECTED/NONE/LEGACY/FAILED_TECHNICAL等は空文字)
+NUANCE_HEADING = "ニュアンス解説"                  # 廃止済みコーナーの見出し。**逆流防止ガード専用**(NUANCE-CORNER-ABOLITION-01、2026-10-30ユーザー決定): ページにこの見出しのブロックが1個でもあればSTOP
 LEGACY_ZERO_GRAMMAR_MD_SUFFIX = ".legacy_zero_p2.md"        # 旧0件md(固定文面入り)の退避先(削除しない)
 PAGE_FORBIDDEN_RE = re.compile(r"\(A2\)|\(B1\)|B1B|English:|英語:|EN:|日本語:|JA:")   # Part 1と同じ(ページ非表示語)
 EXPLANATION_HEADINGS = ["日本語訳", "文法・構文の仕組み", "通常の表現・語順との比較", "意味・ニュアンス・表現効果"]
@@ -1488,71 +1486,22 @@ def render_html_block(result: dict, *, include_css: bool = True) -> str:
     return (p1.STUDY_CSS if include_css else "") + "".join(parts)
 
 
-# ------------------------------------------------------------
-# ニュアンス解説(独立コーナー。ユーザー正式決定2026-10-29 APPROVED_FOR_PRODUCTION)。表示は採用(ADOPTED)のときだけ。
-# nuance = 確定結果dict(`nuance_result.json`。finalizeはer134/委任_02C)。契約(表示側が読む最小キー):
-#   {"status": "ADOPTED"|"REJECTED"|"NONE"|..., "candidate": {"expression","focus","explanation_ja","quote_en","quote_ja"}}
-#   ADOPTED以外=空文字(見出し・空枠・プレースホルダーなし)。ADOPTEDなのに必須キー欠落=Part2Stale(黙って非表示にしない)。
-# ------------------------------------------------------------
-NUANCE_REQUIRED_FIELDS = ("expression", "focus", "explanation_ja", "quote_en", "quote_ja")
-
-
-def nuance_is_adopted(nuance) -> bool:
-    return isinstance(nuance, dict) and nuance.get("status") == NUANCE_ADOPTED
-
-
 def expected_grammar_blocks(result) -> int:
     """節に出るべき文法ブロック数(SELECTED=1 / 0件=0)。検査側(verify_selection_matches_outputs・各runnerのpage_verify)はこの関数だけを期待値にする。"""
     return 1 if (isinstance(result, dict) and result.get("status") == "SELECTED") else 0
 
 
-def expected_nuance_blocks(nuance) -> int:
-    return 1 if nuance_is_adopted(nuance) else 0
-
-
-def nuance_candidate_of(nuance: dict) -> dict:
-    """ADOPTED結果の候補本文(必須キーが無い/空はPart2Stale。fail-closed)。"""
-    cand = nuance.get("candidate")
-    miss = [k for k in NUANCE_REQUIRED_FIELDS if not isinstance(cand, dict) or not str(cand.get(k) or "").strip()]
-    if miss:
-        raise Part2Stale(f"ニュアンス解説の確定結果(status=ADOPTED)に必須項目がありません: {miss}。黙って非表示にはしません(nuance_result.jsonを確認してください)")
-    return cand
-
-
-def nuance_text_fields(nuance: dict) -> list:
-    """ページ非表示語の検査(M-7)対象=表示される全文字列。"""
-    cand = nuance_candidate_of(nuance)
-    return [str(cand[k]) for k in NUANCE_REQUIRED_FIELDS]
-
-
-def render_nuance_html_block(nuance, *, include_css: bool = True) -> str:
-    """独立コーナー『ニュアンス解説』(採用時のみ。他は空文字)。Part 1/文法と同じ規約(`<section class='study'>`・<h3>・<div class='study-item'>・<dl>、<table>/<h2>不使用)。
-    LLM出力はHTMLエスケープ後に**→<b>(`er003._paragraphs_html`)。LLM関数を取らない決定論の描画。"""
-    import er003_kp_general_explanation_01 as p1
-    if not nuance_is_adopted(nuance):
-        return ""
-    c = nuance_candidate_of(nuance)
-    # 表示順(ユーザー正式決定2026-10-29 NUANCE-DISPLAY-ORDER-AND-HR-PRECHECK-01 ①): 見出し(h3) -> 学習表現(h4) -> 本文の英文 -> 日本語訳 -> ポイント -> 解説。dev/End User(adapterはdt順を保持)の共通builder
-    dl = [f"<dt>本文の英文</dt><dd>{html.escape(c['quote_en'], quote=False)}</dd>",
-          f"<dt>日本語訳</dt><dd>{html.escape(c['quote_ja'], quote=False)}</dd>",
-          f"<dt>ポイント</dt><dd>{html.escape(c['focus'], quote=False)}</dd>",
-          f"<dt>解説</dt><dd>{p1._paragraphs_html(c['explanation_ja'])}</dd>"]
-    body = f"<div class='study-item'><h4>{html.escape(c['expression'], quote=False)}</h4><dl>{''.join(dl)}</dl></div>"
-    return (p1.STUDY_CSS if include_css else "") + f"<section class='study'><h3>{NUANCE_HEADING}</h3>{body}</section>"
-
-
-def compose_study_html(part1_html: str, result: dict, nuance=None) -> str:
-    """R-1: Part 1 -> 文法(Part 2) -> ニュアンス解説 の順に連結する唯一の合成関数。各ブロックは該当しなければ空文字(文法0件・不採用・候補なしはコーナー全体を出さない)。
-    CSS(STUDY_CSS)は『最初の非空ブロック』が持つ(Part 1はSTUDY_CSS込みで返る)。3ブロックとも空なら空文字(CSSも出さない)。
-    nuance=None(既定)は従来呼出との互換用(ニュアンス解説なし)。Production呼出元は`er120_part2_wiring_01.compose_page_html`が必須keywordで渡す(R-6)。"""
+def compose_study_html(part1_html: str, result: dict) -> str:
+    """R-1: Part 1 -> 文法(Part 2) の順に連結する唯一の合成関数。各ブロックは該当しなければ空文字(文法0件はコーナー全体を出さない)。
+    CSS(STUDY_CSS)は『最初の非空ブロック』が持つ(Part 1はSTUDY_CSS込みで返る)。両ブロックとも空なら空文字(CSSも出さない)。
+    ニュアンス解説コーナーは廃止(2026-10-30ユーザー決定)=引数・描画とも無い。"""
     part1_html = part1_html or ""
     gram_html = render_html_block(result, include_css=not part1_html)
-    nuance_html = render_nuance_html_block(nuance, include_css=not (part1_html or gram_html))
-    return part1_html + gram_html + nuance_html
+    return part1_html + gram_html
 
 
 def count_nuance_blocks(html_text: str) -> int:
-    """HTML(または節)内のニュアンス解説ブロック(`<h3>ニュアンス解説</h3>`)の数。"""
+    """逆流防止ガード(廃止コーナーが静かに復活していないかの構造判定)。HTML(または節)内の`<h3>ニュアンス解説</h3>`ブロックの数。常に0であること。文字列の部分一致ではなく見出しタグの構造一致。"""
     return html_text.count(f"<h3>{NUANCE_HEADING}</h3>")
 
 
@@ -1563,7 +1512,7 @@ def count_empty_study_sections(html_text: str) -> int:
     """見出しだけ・本文なしの`<section class='study'>`(空枠)の数。0件コーナーの固定文面撤去後は常に0であること(否定検査)。"""
     n = 0
     for m in _STUDY_SECTION_RE.finditer(html_text):
-        if not m.group(1).startswith("<h3>"):   # 見出し付きの学習ブロック(Part 1/文法/ニュアンス解説)だけが対象
+        if not m.group(1).startswith("<h3>"):   # 見出し付きの学習ブロック(Part 1/文法)だけが対象
             continue
         inner = re.sub(r"<h3>.*?</h3>", "", m.group(1), flags=re.S)
         if "<div class='study-item'>" not in inner or not re.sub(r"<[^>]+>", "", inner).strip():
@@ -1571,19 +1520,12 @@ def count_empty_study_sections(html_text: str) -> int:
     return n
 
 
-def verify_nuance_in_section(nuance, html_text: str, *, next_command: str, where: str = "") -> None:
-    """M-7: 当該levelの節(html_text)のニュアンス解説を節単位で検証する(文法のO-6と同型)。(1)ブロック数=期待(ADOPTED=1 / 他=0) (2)ADOPTEDなら決定論の描画が節に含まれる
-    (Std/Advの取り違え・改変を検出) (3)表示される全文字列にページ非表示語(PAGE_FORBIDDEN_RE)がない (4)空の`<section class='study'>`がない。不一致=Part2Stale。"""
+def verify_no_nuance_in_section(html_text: str, *, next_command: str, where: str = "") -> None:
+    """当該levelの節(html_text)の検査。(1)廃止済み『ニュアンス解説』ブロックが0個(逆流防止。1個でもあればPart2Stale) (2)空の`<section class='study'>`(見出しだけ)がない。"""
     w = f"[{where}] " if where else ""
-    exp, got = expected_nuance_blocks(nuance), count_nuance_blocks(html_text)
-    if got != exp:
-        raise Part2Stale(f"{w}公開HTMLの当該levelの節のニュアンス解説ブロック数が期待と一致しません(件数={got} / 期待={exp}。採用以外は非表示)。次の一手: {next_command}")
-    if exp:
-        for t in nuance_text_fields(nuance):
-            if PAGE_FORBIDDEN_RE.search(t):
-                raise Part2Stale(f"{w}ニュアンス解説の表示文にページ非表示語が含まれます。次の一手: {next_command}")
-        if render_nuance_html_block(nuance, include_css=False) not in html_text:
-            raise Part2Stale(f"{w}公開HTMLのニュアンス解説ブロックが確定結果(nuance_result.json)と一致しません(levelの取り違え・改変の疑い)。次の一手: {next_command}")
+    got = count_nuance_blocks(html_text)
+    if got != 0:
+        raise Part2Stale(f"{w}NUANCE_CORNER_ABOLISHED: 公開HTMLの当該levelの節に廃止済みの『ニュアンス解説』ブロックが{got}個あります(ニュアンス解説コーナーは2026-10-30に廃止。旧ページ・旧成果物の混入の疑い)。次の一手: {next_command}")
     if count_empty_study_sections(html_text):
         raise Part2Stale(f"{w}公開HTMLの当該levelの節に空の学習ブロック(見出しだけ)があります。次の一手: {next_command}")
 

@@ -24,7 +24,6 @@ import er119_kp_candidates_01 as kcand
 import er119_kp_human_review_01 as rv
 import er119_kp_wiring_01 as kw
 import er128_kp_confirmed_content_01 as cc
-import er134_nuance_explanation_01 as n134
 from er119_test_support_01 import CALL1, CALL2, Env, KpTestCase, jl, legacy_unmarked_flow, make_legacy_flagged
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -180,14 +179,11 @@ class TestSinglePresentableDefinitionAcrossSurfaces(KpTestCase):
             n_req = spy.call_count
             EXPORTER.convert(doc, slug="s", level="b1b", name="n", family="Y", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
             n_exp = spy.call_count
-            n134.presented_pool(doc)
-            n_pool = spy.call_count
             rv.auto_select(doc, level="b1b")
             n_auto = spy.call_count
         self.assertGreaterEqual(n_req, 1)
         self.assertGreater(n_exp, n_req)
-        self.assertGreater(n_pool, n_exp)
-        self.assertGreater(n_auto, n_pool)
+        self.assertGreater(n_auto, n_exp)                                                 # ニュアンス解説の提示pool(旧er134.presented_pool)は2026-10-30に廃止
 
     def test_u4_exporter_excludes_legacy_flagged_records_warning_and_new_doc_has_no_warning_key(self):
         doc = self._legacy_doc()
@@ -207,20 +203,6 @@ class TestSinglePresentableDefinitionAcrossSurfaces(KpTestCase):
         out2 = EXPORTER.convert(clean, slug="s", level="b1b", name="n", family="Y", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
         self.assertNotIn("presentation_excluded", [x["code"] for x in out2.get("data_warnings", [])])      # 既存のreason警告は別。除外が無ければ除外警告は出さない
         self.assertEqual({e["candidate_id"] for e in out2["phrases"] + out2["words"]}, ids)
-
-    def test_m2_er134_presented_pool_parity_with_exporter_after_filter_and_cap(self):
-        doc = self._legacy_doc()
-        out = EXPORTER.convert(doc, slug="s", level="b1b", name="n", family="Y", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
-        exp_ids = [e["candidate_id"] for e in sorted(out["phrases"] + out["words"], key=lambda e: e["ai_rank"])]
-        self.assertEqual(n134.presented_ids_of(doc), exp_ids)
-        # capはフィルタの後に適用される(除外された候補が枠を消費しない)
-        small = copy.deepcopy(doc)
-        small["shortfall_detail"] = {"cap": 2, "cap_by_kind": {"phrase": 2, "word": 0}}
-        small.pop("candidates_sha256", None)
-        out3 = EXPORTER.convert(small, slug="s", level="b1b", name="n", family="Y", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
-        self.assertEqual(n134.presented_ids_of(small), [e["candidate_id"] for e in out3["phrases"]])
-        # 除外された候補(rank2)が枠を消費しない: phrase枠2 = 提示可能な先頭2件(rank1, rank3)
-        self.assertEqual([e["ai_rank"] for e in out3["phrases"]], [1, 3])
 
     def test_u3_request_md_lists_only_presentable_and_shows_excluded_section(self):
         doc = self._legacy_doc()
@@ -522,7 +504,7 @@ class TestFinalizeBehavior(KpTestCase):
 
 # ============================================================ Dangling Reference(撤去した旧停止機構)・X/Y/Z共通経路
 class TestNoDanglingAndCommonPath(unittest.TestCase):
-    PROD = [p for p in os.listdir(HERE) if p.startswith(("er019_", "er026_", "er119_", "er120_", "er121_", "er125_", "er128_", "er134_")) and p.endswith(".py")
+    PROD = [p for p in os.listdir(HERE) if p.startswith(("er019_", "er026_", "er119_", "er120_", "er121_", "er125_", "er128_")) and p.endswith(".py")
             and "test" not in p and "golden" not in p]
 
     def _grep(self, pat):

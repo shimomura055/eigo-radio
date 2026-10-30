@@ -572,8 +572,7 @@ def test_P3_only_wiring_and_review_modules_import_the_module():
     me = os.path.basename(__file__)
     allowed = {"er119_grammar_review_01.py", "er119_kp_human_review_01.py", "er119_kp_human_review_cli_01.py",
                "er120_part2_wiring_01.py", "er120_part2_mock_01.py",
-               "er128_kp_confirmed_content_01.py",
-               "er134_nuance_explanation_01.py"}   # ニュアンス解説(2026-10-29): Part 2の定数(ページ非表示語・level名等)を読む共通module   # KCP(確定内容保護)M6がfreeze_from_sidecarでPart 2の構造検査(split_sections)を遅延importする。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02で許可リストへ追加(KCP 02B導入時から失敗していた既存の取りこぼし)
+               "er128_kp_confirmed_content_01.py"}   # KCP(確定内容保護)M6がfreeze_from_sidecarでPart 2の構造検査(split_sections)を遅延importする。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02で許可リストへ追加(KCP 02B導入時から失敗していた既存の取りこぼし)
     offenders = []
     for f in glob.glob(os.path.join(HERE, "*.py")):
         b = os.path.basename(f)
@@ -927,7 +926,11 @@ def test_R1_compose_includes_css_when_part1_is_empty(routed):
     import er003_kp_general_explanation_01 as p1
     r, *_ = _run(routed)
     assert m.compose_study_html("", r["result"]).count(p1.STUDY_CSS) == 1 and m.compose_study_html(None, r["result"]).startswith(p1.STUDY_CSS)
-    assert m.compose_study_html("", r["result"], None) == m.compose_study_html("", r["result"])             # nuance未指定=従来呼出と同一(ニュアンス解説なし)
+    try:
+        m.compose_study_html("", r["result"], None)                                                          # ニュアンス解説は廃止(2026-10-30): 第3引数は存在しない
+        assert False, "compose_study_htmlがnuance引数を受け付けている"
+    except TypeError:
+        pass
     part1 = p1.STUDY_CSS + "<section class='study'><h3>Vocabulary &amp; Expressions</h3></section>"
     out = m.compose_study_html(part1, r["result"])
     assert out.startswith(part1) and out.count(p1.STUDY_CSS) == 1                                           # CSSは1回だけ・Part 1の直後

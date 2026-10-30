@@ -758,7 +758,7 @@ class StudyTextWiring(unittest.TestCase):
         self.assertEqual(std_part.count(r.PART2_MARKER), 1, "Standardの節にPart 2(文法)が1個ない")      # 全level化: Standardにも同じテンプレートで載る
         for mk in (r.PART1_MARKER, r.PART2_MARKER):
             self.assertEqual(adv_part.count(mk), 1, mk)
-        self.assertTrue(r._blocks_in_page_order(adv_part, "<h3>ニュアンス解説</h3>"))      # Part 1→文法→ニュアンス解説(存在するブロック同士の相対順。文法0件でも成立。M-5)
+        self.assertTrue(r._blocks_in_page_order(adv_part))      # Part 1→文法(存在するブロック同士の相対順。文法0件でも成立。M-5)
         p1 = json.load(open(f"{ctx.out_dir}/study_text/part1_vocabulary_expressions.json", encoding="utf-8"))
         rows = p1 if isinstance(p1, list) else (p1.get("rows") or p1.get("items") or [])
         self.assertLessEqual(len(rows), 5)

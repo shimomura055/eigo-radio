@@ -40,7 +40,6 @@ class TestSharedFunctionsUnchanged(unittest.TestCase):
 class TestImportersAreOnlyXZRunners(unittest.TestCase):
     ALLOWED = {"er019_family_x_audio_production_runner_01.py", "er026_family_z_fiction_production_runner_01.py",
                "er120_part2_wiring_01.py",
-               "er134_nuance_explanation_01.py",   # NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02A: ニュアンス解説の共通核(X/Y/Z共通。A/B/C非接触。rv.auto_selectとrv.candidates_sha256のみ参照)
                # HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01 委任_04(OPEN-588): 以下は承認済みの正当なimport。いずれもA/B/C・共有関数sc.run_key_phrasesは未接触。
                "er121_family_y_runner_01.py",    # Family Y Production runner(FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B、ユーザー承認。KP Human Review共通経路 er119_kp_wiring/candidates/human_review)
                "er121_family_y_audio_01.py",     # Family Y Production audio(SLOT-23 委任_04D: 確定KPのハイライト消費。khrの確定物読取)

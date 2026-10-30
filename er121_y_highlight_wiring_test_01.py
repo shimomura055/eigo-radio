@@ -104,7 +104,7 @@ class MarkedPipeline(unittest.TestCase):
             sec = _sec(page, lv)
             self.assertEqual(sec.count(r.PART1_MARKER), 1, lv)
             self.assertEqual(sec.count(r.PART2_MARKER), 1, lv)                              # この記事は文法採用(0件記事は文法ブロック0個=別test)
-            self.assertTrue(r._blocks_in_page_order(sec, "<h3>ニュアンス解説</h3>"), lv)       # Part 1 → 文法 → ニュアンス解説(存在するブロック同士の相対順。M-5)
+            self.assertTrue(r._blocks_in_page_order(sec), lv)       # Part 1 → 文法(存在するブロック同士の相対順。M-5)
         v = json.load(open(f"{self.out}/page_verify_local.json", encoding="utf-8"))
         self.assertTrue(v["ok"])
         self.assertEqual(v["part2_verified"]["a2"]["part1_blocks"], 1)
@@ -204,52 +204,39 @@ class MarkedPipeline(unittest.TestCase):
             open(idx, "w", encoding="utf-8").write(orig)
         r._verify_part2_outputs(self.ctx)
 
-    def test_adopted_nuance_is_verified_per_section_by_the_real_validator(self):
-        """委任_02B: 実validator(r._verify_part2_outputs)が、ニュアンス解説の採用結果とページの節を節単位で照合する(採用=1個/取違え・欠落・重複・順序違いはSTOP)。"""
-        import er120_part2_grammar_production_01 as g
+    def test_abolished_nuance_block_in_page_is_stop_and_legacy_spec_files_are_ignored(self):
+        """NUANCE-CORNER-ABOLITION-01(2026-10-30): ニュアンス解説は廃止。(a)旧run由来のnuance_spec.json/nuance_result.json(ADOPTED)があってもページ検証は影響を受けない(読まない)
+        (b)ページにニュアンス解説ブロック(`<h3>ニュアンス解説</h3>`)があれば、どの節でも/何個でもSTOP(逆流防止ガード。構造判定)。"""
         idx = f"{self.out}/pages/index.html"
         orig = open(idx, encoding="utf-8").read()
-        res_path = {lv: f"{r._part2_dir(self.ctx, lv)}/{g.NUANCE_RESULT_FILENAME}" for lv in r.LEVELS}
-        cand = {"expression": "at least", "focus": "at least が示す『最低限』の語感", "explanation_ja": "**at least** は『少なくとも』を示します。", "quote_en": "At least she was safe.", "quote_ja": "少なくとも彼女は無事だった。"}
-        block = g.render_nuance_html_block({"status": "ADOPTED", "candidate": cand}, include_css=False)
-
-        def put(lv, status):
-            with open(res_path[lv], "w", encoding="utf-8") as f:
-                json.dump({"schema": "nuance_result_v1", "level_key": lv, "status": status, "candidate": cand if status in ("ADOPTED", "REJECTED") else None}, f, ensure_ascii=False)
-
-        def with_block(lv, html_in=None):
-            page = html_in or orig
-            sec = _sec(page, lv)
-            return page.replace(sec, sec + block)
+        sd = {lv: r._part2_dir(self.ctx, lv) for lv in r.LEVELS}
+        block = "<section class='study'><h3>ニュアンス解説</h3><div class='study-item'><h4>at least</h4><dl><dt>ポイント</dt><dd>x</dd></dl></div></section>"
+        leftovers = []
         try:
-            for lv in r.LEVELS:
-                self.assertFalse(os.path.exists(res_path[lv]))
-                self.assertEqual(r._verify_part2_outputs(self.ctx)[lv]["nuance_blocks"], 0)          # 結果ファイル無し=従来どおり(ニュアンスなし)
-            put("a2", "ADOPTED")
-            open(idx, "w", encoding="utf-8").write(with_block("a2"))
+            for lv in r.LEVELS:      # (a) 旧ファイルを置いても検証結果は同じ
+                for name, doc in (("nuance_spec.json", {"version": "nuance_v1"}), ("nuance_result.json", {"schema": "nuance_result_v1", "level_key": lv, "status": "ADOPTED",
+                                                                                                          "candidate": {"expression": "x"}})):
+                    pth = f"{sd[lv]}/{name}"
+                    self.assertFalse(os.path.exists(pth))
+                    with open(pth, "w", encoding="utf-8") as f:
+                        json.dump(doc, f)
+                    leftovers.append(pth)
             out = r._verify_part2_outputs(self.ctx)
-            self.assertEqual((out["a2"]["nuance_blocks"], out["b1b"]["nuance_blocks"]), (1, 0))      # 節単位: Standardに載り、Advancedには載らない
-            open(idx, "w", encoding="utf-8").write(with_block("b1b"))                                # 取違え(Advancedの節に載せた)
-            with self.assertRaises(r.YE2EStop) as e:
-                r._verify_part2_outputs(self.ctx)
-            self.assertRegex(str(e.exception), r"FAMILY_Y_(NUANCE|PART2)_OUTPUT_MISMATCH.*ニュアンス")      # 節単位の検査(verify_outputsまたはrunnerの件数検査のどちらで止まってもよい)
-            open(idx, "w", encoding="utf-8").write(orig)                                             # 欠落(採用済みなのに載っていない)
-            with self.assertRaises(r.YE2EStop) as e:
-                r._verify_part2_outputs(self.ctx)
-            self.assertRegex(str(e.exception), r"FAMILY_Y_(NUANCE|PART2)_OUTPUT_MISMATCH.*ニュアンス")      # 節単位の検査(verify_outputsまたはrunnerの件数検査のどちらで止まってもよい)
-            open(idx, "w", encoding="utf-8").write(with_block("a2", with_block("a2")))               # 重複
-            with self.assertRaises(r.YE2EStop):
-                r._verify_part2_outputs(self.ctx)
-            put("a2", "REJECTED")                                                                    # 不採用なのに載っている
-            open(idx, "w", encoding="utf-8").write(with_block("a2"))
-            with self.assertRaises(r.YE2EStop) as e:
-                r._verify_part2_outputs(self.ctx)
-            self.assertRegex(str(e.exception), r"FAMILY_Y_(NUANCE|PART2)_OUTPUT_MISMATCH.*ニュアンス")      # 節単位の検査(verify_outputsまたはrunnerの件数検査のどちらで止まってもよい)
-            open(idx, "w", encoding="utf-8").write(orig)                                             # 不採用でページに無い=PASS
-            self.assertEqual(r._verify_part2_outputs(self.ctx)["a2"]["nuance_blocks"], 0)
+            for lv in r.LEVELS:
+                self.assertNotIn("nuance_blocks", out[lv])
+            # (b) ページにブロックが載っていればSTOP(Std/Advどちらの節でも・重複でも)
+            for lv in r.LEVELS:
+                sec = _sec(orig, lv)
+                open(idx, "w", encoding="utf-8").write(orig.replace(sec, sec + block))
+                with self.assertRaises(r.YE2EStop) as e:
+                    r._verify_part2_outputs(self.ctx)
+                self.assertIn("NUANCE_CORNER_ABOLISHED", str(e.exception))
+                open(idx, "w", encoding="utf-8").write(orig.replace(sec, sec + block + block))
+                with self.assertRaises(r.YE2EStop):
+                    r._verify_part2_outputs(self.ctx)
         finally:
             open(idx, "w", encoding="utf-8").write(orig)
-            for pth in res_path.values():
+            for pth in leftovers:
                 if os.path.exists(pth):
                     os.remove(pth)
         r._verify_part2_outputs(self.ctx)

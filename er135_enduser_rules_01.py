@@ -36,9 +36,9 @@ FORBIDDEN_MODULE_REFERENCES = ("dev_enduser_page_01", "PROTOTYPE-01", "END-USER-
 LEVEL_IDS = {"std": "std", "standard": "std", "adv": "adv", "advanced": "adv"}
 TEXT_KINDS = ("topic", "jtitle", "preview", "comment", "story", "oneline")
 
-# 学習コーナー見出し(厳密判定。未知はSTOP)
+# 学習コーナー見出し(厳密判定。未知はSTOP)。『ニュアンス解説』は廃止(2026-10-30)=ここに無い。devページに見出しがあればadapterがENDUSER_NUANCE_CORNER_ABOLISHEDでSTOP
+NUANCE_ABOLISHED_HEADING = "ニュアンス解説"
 STUDY_HEADINGS = {
     "Vocabulary & Expressions": "vocab",
     "Grammar & Sentence Structure": "grammar",
-    "ニュアンス解説": "nuance",
 }

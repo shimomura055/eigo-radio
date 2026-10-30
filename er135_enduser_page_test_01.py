@@ -461,7 +461,7 @@ class T6_Translation(unittest.TestCase):
 
 
 class T7_LearningCorners(unittest.TestCase):
-    """T-LEARN: 文法/ニュアンスの採用・0件。0件はキーが空=見出し・空枠なし(UI側はverify CLIで確認)。ニュアンスは最大1。"""
+    """T-LEARN: 文法の採用・0件。0件はキーが空=見出し・空枠なし(UI側はverify CLIで確認)。ニュアンス解説は廃止(2026-10-30)=devページに見出しがあればSTOP。"""
 
     NUANCE = ("<section class='study'><h3>ニュアンス解説</h3><div class='study-item'><h4>keep heat in</h4><dl><dt>ポイント</dt><dd>熱を逃がさない</dd>"
               "<dt>解説</dt><dd><p>説明<b>keep</b>です。</p></dd><dt>本文の英文</dt><dd>It keeps heat in.</dd><dt>日本語訳</dt><dd>熱を保つ。</dd></dl></div></section>")
@@ -474,22 +474,17 @@ class T7_LearningCorners(unittest.TestCase):
     def test_no_nuance_or_grammar_means_empty_keys(self):
         art, _, _ = Built("y_fee03").data()
         std = art["levels"]["std"]
-        self.assertEqual((std["vocab"], std["grammar"], std["nuance"]), ([], [], []))
+        self.assertEqual((std["vocab"], std["grammar"]), ([], []))
+        self.assertNotIn("nuance", std)                       # 廃止: 新規出力にnuanceキーなし
         art, _, _ = Built("z_melos02").data()
-        self.assertEqual(art["levels"]["adv"]["nuance"], [])
+        self.assertNotIn("nuance", art["levels"]["adv"])
 
-    def test_adopted_nuance_appears_only_for_that_level(self):
+    def test_nuance_section_in_dev_html_is_stop(self):
+        """廃止ガード: 旧devページ(ニュアンス解説ブロックあり)からの再deriveは明示STOP(黙って捨てない・表示しない)。"""
         h = self.with_nuance(fx_html("x_moon"), "adv")
-        b = Built("x_moon", html=h)
-        art, _, _ = b.data()
-        self.assertEqual(len(art["levels"]["adv"]["nuance"]), 1)
-        self.assertEqual(art["levels"]["adv"]["nuance"][0]["heading"], "keep heat in")
-        self.assertEqual(art["levels"]["std"]["nuance"], [])
-        self.assertEqual([f["label"] for f in art["levels"]["adv"]["nuance"][0]["fields"]], ["ポイント", "解説", "本文の英文", "日本語訳"])
-
-    def test_two_nuance_sections_is_stop(self):
-        h = self.with_nuance(self.with_nuance(fx_html("x_moon"), "adv"), "adv")
-        self.assertEqual(stop_code(E.build_rows_from_dev_html, h, {"family": "x", "dev_dir": None}), "ENDUSER_DEV_HTML_STRUCTURE")
+        self.assertEqual(stop_code(E.build_rows_from_dev_html, h, {"family": "x", "dev_dir": None}), "ENDUSER_NUANCE_CORNER_ABOLISHED")
+        h2 = self.with_nuance(self.with_nuance(fx_html("x_moon"), "adv"), "adv")
+        self.assertEqual(stop_code(E.build_rows_from_dev_html, h2, {"family": "x", "dev_dir": None}), "ENDUSER_NUANCE_CORNER_ABOLISHED")
 
     def test_grammar_selected_vs_zero(self):
         art, _, _ = Built("x_moon").data()
@@ -501,7 +496,7 @@ class T7_LearningCorners(unittest.TestCase):
 
     def test_app_hides_empty_corners_statically(self):
         js = (ASSETS / R.ASSET_BUILD_ID / "app.js").read_text(encoding="utf-8")
-        for key in ("L.vocab && L.vocab.length", "L.grammar && L.grammar.length", "L.nuance && L.nuance.length"):
+        for key in ("L.vocab && L.vocab.length", "L.grammar && L.grammar.length"):   # rev01-eのnuance分岐は公開済みスナップショットとの同一性のため残置(キー無しは不活性)
             self.assertIn(key, js)
 
     def test_dd_markup_preserved_and_quote_dd_exists(self):
@@ -686,6 +681,14 @@ class T10_ValidatorNegatives(unittest.TestCase):
             a = copy.deepcopy(self.art)
             a["levels"]["adv"]["vocab"][0]["fields"][0]["html"] += w
             self.assertEqual(self.v(art=a), "ENDUSER_FORBIDDEN_WORD", w)
+
+    def test_legacy_empty_nuance_key_tolerated_but_content_is_stop(self):
+        """公開済みスナップショットの`nuance: []`は読取互換(PASS)。中身ありは廃止ガードでSTOP。"""
+        a = copy.deepcopy(self.art)
+        a["levels"]["adv"]["nuance"] = []
+        self.assertIsNone(self.v(art=a))
+        a["levels"]["adv"]["nuance"] = copy.deepcopy(a["levels"]["adv"]["vocab"][:1])
+        self.assertEqual(self.v(art=a), "ENDUSER_NUANCE_CORNER_ABOLISHED")
 
     def test_absolute_paths_rejected(self):
         for w in ("C:\\Users\\tensh\\x", "C:/Users/tensh/x", "/Users/tensh/er019_output", "er019_output/a"):

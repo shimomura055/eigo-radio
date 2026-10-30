@@ -36,11 +36,22 @@ class TestRender(unittest.TestCase):
             _w(f"{d}/key_phrases/b1b/redundancy_alarm.json", {"candidate_qa_alarms": [PAIR, other], "final_set_alarms": [fin]})     # Y/Z配置
             _w(f"{d}/study_text/nuance_redundancy_alarm.json", {"alarms": [{"kind": "nuance_vs_kp_word", "item": "never stir", "note": "焦点が重複"}]})
             t, h = rv.render_redundancy_alarms(d, "b1b")
-            self.assertIn("Advanced: 重複アラーム 3件", t)
+            self.assertIn("Advanced: 重複アラーム 2件", t)         # KP/Word/本文意味のペアのみ(旧ニュアンス行は廃止=nuance_redundancy_alarm.jsonを置いても読まない)
             self.assertIn("give &lt;up&gt;", h)
             self.assertNotIn("give <up>", h)
-            self.assertIn("ニュアンス解説", t)
+            self.assertNotIn("ニュアンス解説", t)
+            self.assertNotIn("ニュアンス解説", h)
             self.assertEqual(rv.render_redundancy_alarms(d, "a2"), ("", ""))     # 別levelの記録なし
+
+    def test_legacy_nuance_alarm_file_alone_is_ignored(self):
+        """ニュアンス解説廃止(2026-10-30): 旧nuance_redundancy_alarm.jsonだけがあっても読まない(記録なし=従来ページとバイト同一)。導入文もニュアンス解説に言及しない。"""
+        with tempfile.TemporaryDirectory() as d:
+            _w(f"{d}/study_text/nuance_redundancy_alarm.json", {"alarms": [{"kind": "nuance_vs_kp_word", "item": "never stir", "note": "焦点が重複"}]})
+            self.assertEqual(rv.render_redundancy_alarms(d, "b1b"), ("", ""))
+            _w(f"{d}/a2/key_phrases/redundancy_alarm.json", {"candidate_qa_alarms": [PAIR], "final_set_alarms": []})
+            t, h = rv.render_redundancy_alarms_all(d)
+            self.assertNotIn("ニュアンス", h)
+            self.assertNotIn("ニュアンス", t)
 
     def test_missing_or_broken_file_is_empty_and_nonblocking(self):
         with tempfile.TemporaryDirectory() as d:

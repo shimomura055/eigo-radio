@@ -212,26 +212,29 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
         rec("C", pre + "blocks_without_approved_translation_show_none", not leaked, leaked)
         # ---- D 学習コーナー(0件は見出し・枠ごと非表示/順序) ----
         h2 = page.evaluate("() => [...document.querySelectorAll('.card h2')].map(h => h.textContent)")
-        expect = [("vocab", "Vocabulary & Expressions", "vocab"), ("grammar", "Grammar & Sentence Structure", "grammar"), ("nuance", "ニュアンス解説", "nuance")]
+        expect = [("vocab", "Vocabulary & Expressions", "vocab"), ("grammar", "Grammar & Sentence Structure", "grammar")]
+        # ニュアンス解説は廃止(2026-10-30): article.jsonのnuanceはキー無し/空のみ許容、ページにコーナー(#nuance・見出しh2)が無いこと(構造判定)
+        rec("D", pre + "nuance_corner_abolished", not L.get("nuance") and not page.evaluate("() => !!document.getElementById('nuance')") and ("ニュアンス解説" not in h2),
+            dict(nuance_items=len(L.get("nuance") or []), h2=h2))
         for key, head, elid in expect:
             n = len(L[key])
             present = page.evaluate("(i) => !!document.getElementById(i)", elid)
             rec("D", pre + f"{key}_corner_{'shown' if n else 'hidden'}", present == bool(n) and ((head in h2) == bool(n)), dict(items=n, present=present))
-        order = [h for h in h2 if h in ("Full Story", "Vocabulary & Expressions", "Grammar & Sentence Structure", "ニュアンス解説")]
+        order = [h for h in h2 if h in ("Full Story", "Vocabulary & Expressions", "Grammar & Sentence Structure")]
         want_order = ["Full Story"] + [h for k, h, _ in expect if L[k]]
         rec("D", pre + "corner_order", order == want_order, order)
         empty = page.evaluate("() => [...document.querySelectorAll('.card')].filter(c => !c.querySelector('p,dl,ul,div.kp,details,.partblock,.comment,.subblk,.kpitem')).length")
         rec("D", pre + "no_empty_cards", empty == 0, empty)
-        cnt = page.evaluate("() => ({vocab: document.querySelectorAll('#vocab details.vi').length, grammar: document.querySelectorAll('#grammar .gr').length, nuance: document.querySelectorAll('#nuance .gr').length})")
-        rec("D", pre + "corner_item_counts_equal_data", cnt == {"vocab": len(L["vocab"]), "grammar": len(L["grammar"]), "nuance": len(L["nuance"])}, cnt)
+        cnt = page.evaluate("() => ({vocab: document.querySelectorAll('#vocab details.vi').length, grammar: document.querySelectorAll('#grammar .gr').length})")
+        rec("D", pre + "corner_item_counts_equal_data", cnt == {"vocab": len(L["vocab"]), "grammar": len(L["grammar"])}, cnt)
         # ---- E 引用英文の太字 ----
         emph = page.evaluate("() => window.__EMPH")
-        zero = [x["heading"] for k in ("vocab", "nuance") for x in emph[k] if not x["bold"]]
-        rec("E", pre + "vocab_nuance_quotes_have_bold", not zero, dict(zero=zero[:5]))
+        zero = [x["heading"] for k in ("vocab",) for x in emph[k] if not x["bold"]]
+        rec("E", pre + "vocab_quotes_have_bold", not zero, dict(zero=zero[:5]))
         rec("E", pre + "no_bold_in_transcript_or_gloss", page.evaluate("() => document.querySelectorAll('.sent .target-term, .gloss .target-term, .tr .target-term, .kpitem .target-term').length") == 0, None)
         rec("E", pre + "bold_only_in_quote_dd", page.evaluate("() => [...document.querySelectorAll('strong.target-term')].every(s => { const dd=s.closest('dd'); const dt=dd&&dd.previousElementSibling; return !!dt && ['本文の英文','対象となる本文英文'].includes(dt.textContent); })"), None)
         bad_q = []
-        for kind, sel, lab in (("vocab", "#vocab details.vi", "本文の英文"), ("nuance", "#nuance .gr", "本文の英文"), ("grammar", "#grammar .gr", "対象となる本文英文")):
+        for kind, sel, lab in (("vocab", "#vocab details.vi", "本文の英文"), ("grammar", "#grammar .gr", "対象となる本文英文")):
             for it, bx in zip(L[kind], page.query_selector_all(sel)):
                 want = re.sub(r"<[^>]+>", "", [f for f in it["fields"] if f["label"] == lab][0]["html"]).replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
                 gotq = bx.evaluate("(el, l) => { const dt=[...el.querySelectorAll('dt')].filter(x => x.textContent === l)[0]; return dt.nextElementSibling.textContent; }", lab)
@@ -347,7 +350,7 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
         open_lv(lv)
         shot(f"{lv}_top")
         shot(f"{lv}_fullstory", "#fullstory")
-        for corner in ("vocab", "grammar", "nuance"):
+        for corner in ("vocab", "grammar"):
             if L[corner]:
                 shot(f"{lv}_{corner}", "#" + corner)
     # 太字化の汎用単体確認(記事非依存): 語形変化・プレースホルダ・不規則動詞の3単現/ing形・曖昧時は太字にしない

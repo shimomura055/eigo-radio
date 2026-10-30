@@ -512,8 +512,8 @@ class XPart2Integration(unittest.TestCase):
         self._both_to_confirmed_after_pending()
         html_adv = p2w.public_study_html(self.out, art_adv, level="b1b")
         self.assertEqual(html_adv.count("<section class='study'>"), 2)
-        _pos = [html_adv.index(m) for m in ("Vocabulary &amp; Expressions", "Grammar &amp; Sentence Structure", "<h3>ニュアンス解説</h3>") if m in html_adv]
-        self.assertEqual(_pos, sorted(_pos))   # Part 1 → 文法 → ニュアンス解説(存在するブロック同士の相対順。M-5)
+        _pos = [html_adv.index(m) for m in ("Vocabulary &amp; Expressions", "Grammar &amp; Sentence Structure") if m in html_adv]
+        self.assertEqual(_pos, sorted(_pos))   # Part 1 → 文法(存在するブロック同士の相対順。M-5)
         html_std = p2w.public_study_html(self.out, art_std, level="a2")
         self.assertEqual(html_std.count("<section class='study'>"), 1)           # Standardは Part 2だけ
         self.assertNotIn("Vocabulary", html_std)

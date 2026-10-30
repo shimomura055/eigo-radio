@@ -509,7 +509,7 @@ def _pairs(cands: dict) -> set:
 
 # ---- 仕様① 候補は人間への提示前に品質検査(HR-SELECTION-FLOW-QA-FIRST-AND-REDUNDANCY-NONBLOCKING-01、ユーザー正式採用2026-10-29)
 # 提示集合の唯一の定義: 「提示された候補は、単独で選んでも確定時の候補単位検査(validate_selection / cmd_from_form の ja_gloss_status)を必ず通る」。
-# 候補生成(_gate_chain)・HR依頼書(render_request_md)・フォームdata(exporter)・auto_select・ニュアンスpool(er134.presented_pool)はすべてここを通る(二重定義しない)。
+# 候補生成(_gate_chain)・HR依頼書(render_request_md)・フォームdata(exporter)・auto_selectはすべてここを通る(二重定義しない)。
 # 品質基準(11 QAフィールド・閾値)は変更しない。変えるのは『不合格候補を旗付きで提示→除外して提示しない』だけ。
 PRESENTABLE_FILTER_VERSION = "presentable_v1_2026-10-29"
 GLOSS_OFFICIAL_GATES = ("ALIGNED", "HUMAN_RESOLVED")          # exporter.gloss_status の official 条件(Production正式経路)と同一
@@ -1163,18 +1163,12 @@ def write_alarm_file_safe(kp_dir: str, review: dict, level: str, *, reached: Opt
 
 
 
-# ---- D8(ユーザー原文§3「アラームを表示・記録」): 重複アラームの表示。正本=redundancy_alarm.json / nuance_redundancy_alarm.json(読取のみ・API 0・非停止)
+# ---- D8(ユーザー原文§3「アラームを表示・記録」): 重複アラームの表示。正本=redundancy_alarm.json(読取のみ・API 0・非停止。旧nuance_redundancy_alarm.jsonはニュアンス解説廃止[2026-10-30]により読まない)
 ALARM_LEVEL_LABEL = {"a2": "Standard", "b1b": "Advanced"}
-NUANCE_ALARM_FILENAME = "nuance_redundancy_alarm.json"
 
 
 def _alarm_kp_candidates(run_dir: str, level: str) -> list:
     return [f"{run_dir}/{level}/key_phrases/redundancy_alarm.json", f"{run_dir}/key_phrases/{level}/redundancy_alarm.json"]     # X / Y,Z の配置
-
-
-def _alarm_nuance_candidates(run_dir: str, level: str) -> list:
-    sds = [f"{run_dir}/{level}/study_text"] + ([f"{run_dir}/study_text"] if level == "b1b" else [])     # X / Y,Z(Advは<run>/study_text)
-    return [f"{d}/{NUANCE_ALARM_FILENAME}" for d in sds]
 
 
 def _alarm_read(paths_: list) -> Optional[dict]:
@@ -1194,10 +1188,9 @@ def _alarm_pair_key(a: dict) -> tuple:
 
 
 def collect_redundancy_alarms(run_dir: str, level: str) -> Optional[dict]:
-    """level単位の重複アラーム一覧。記録ファイルが1つも無い(旧run・未確定)=None。pairs=KP/Word/追加解説/本文意味(候補QA+確定集合QA、同一ペアは1件)、nuance=ニュアンス解説。"""
+    """level単位の重複アラーム一覧。記録ファイルが1つも無い(旧run・未確定)=None。pairs=KP/Word/追加解説/本文意味(候補QA+確定集合QA、同一ペアは1件)。"""
     kp = _alarm_read(_alarm_kp_candidates(run_dir, level))
-    nz = _alarm_read(_alarm_nuance_candidates(run_dir, level))
-    if kp is None and nz is None:
+    if kp is None:
         return None
     pairs, seen = [], set()
     for a in list((kp or {}).get("candidate_qa_alarms") or []) + list((kp or {}).get("final_set_alarms") or []):
@@ -1206,8 +1199,7 @@ def collect_redundancy_alarms(run_dir: str, level: str) -> Optional[dict]:
             continue
         seen.add(k)
         pairs.append(a)
-    return {"level": level, "kp_recorded": kp is not None, "pairs": pairs, "nuance_recorded": nz is not None,
-            "nuance": list((nz or {}).get("alarms") or [])}
+    return {"level": level, "kp_recorded": kp is not None, "pairs": pairs}
 
 
 def render_redundancy_alarms(run_dir: str, level: str) -> tuple:
@@ -1219,7 +1211,7 @@ def render_redundancy_alarms(run_dir: str, level: str) -> tuple:
     if c is None:
         return "", ""
     label = ALARM_LEVEL_LABEL.get(level, level)
-    n = len(c["pairs"]) + len(c["nuance"])
+    n = len(c["pairs"])
     lines, items = [f"{label}: 重複アラーム {n}件"], []
     for a in c["pairs"]:
         sa, sb = a.get("slot_label_a") or "", a.get("slot_label_b") or ""
@@ -1229,11 +1221,6 @@ def render_redundancy_alarms(run_dir: str, level: str) -> tuple:
         lines.append(f"  - {a.get('used_form_a')}({sa}) x {a.get('used_form_b')}({sb}) 理由: {why}" + (f" [観点: {asp_s}]" if asp_s else ""))
         items.append(f"<li><b>{_html.escape(str(a.get('used_form_a')))}</b>({_html.escape(sa)}) × <b>{_html.escape(str(a.get('used_form_b')))}</b>({_html.escape(sb)})"
                      f"<br>理由: {_html.escape(str(why))}" + (f"<br>観点: {_html.escape(asp_s)}" if asp_s else "") + "</li>")
-    for a in c["nuance"]:
-        it = a.get("item") or a.get("item_id")
-        note = a.get("note") or ""
-        lines.append(f"  - ニュアンス解説 x {it} 理由: {note}")
-        items.append(f"<li>ニュアンス解説 × <b>{_html.escape(str(it))}</b><br>理由: {_html.escape(str(note))}</li>")
     html_ = f"<h3>{_html.escape(label)}: {n}件</h3>" + (f"<ul>{''.join(items)}</ul>" if items else "<p>重複アラーム 0件</p>")
     return "\n".join(lines), html_
 
@@ -1246,7 +1233,7 @@ def render_redundancy_alarms_all(run_dir: str, levels: tuple = ("a2", "b1b")) ->
         return "", ""
     text = "[重複アラーム(選定後の重複。表示・記録のみ。確定/音声/組立は止めません)]\n" + "\n".join(t for _lv, t, _h in parts)
     html_ = ("<section id='post-check'><h2>事後確認(重複アラーム)</h2>"
-             "<p>選定したKey Phrase等とニュアンス解説の間に、意味・用法の重なりがある可能性をAIが検知しました。"
+             "<p>選定したKey Phrase・Key Word等の間に、意味・用法の重なりがある可能性をAIが検知しました。"
              "表示と記録のみで、選定は維持されます(重複の可否は事後に判断してください)。</p>" + "".join(h for _lv, _t, h in parts) + "</section>")
     return text, html_
 

@@ -7,7 +7,6 @@
 </style></head><body><main class="panel"><h1>eigo-radio｜学習項目選定</h1><div class="muted">承認フォームv3｜9記事枠｜選定テスト用（Production未連携）</div>
 <p><select id="article" aria-label="記事・レベルを選択"></select></p><div id="srcnote" class="notice" hidden></div><div class="stats" id="stats"></div><div class="hint" id="khint">各候補の日本語訳は、エンドユーザーへ提供予定の日本語意味（既存の生成結果を再利用。AI再生成なし）です。「正式訳」以外は仮訳・未生成で、確定内容として扱われません。「AI理由・確認用」はAIの選定理由で、確認用の参考情報です。<br>各候補は①②③のいずれか1つだけ。①単独で3件、①＋②で5件、①＋②＋③で12件まで。</div><div id="candidates"></div>
 <h2>文法解説（Top 1・Top 2から1件、または適切な候補なし） <span class="muted" id="grammarCount"></span></h2><div class="notice" id="grammarNotice" hidden></div><div id="grammars"></div>
-<h2 id="nuanceH" hidden>ニュアンス解説（採用・不採用） <span class="muted" id="nuanceCount"></span></h2><div class="notice" id="nuanceNotice" hidden></div><div id="nuances"></div>
 <h2>自由コメント・追加指示</h2><textarea id="comment" placeholder="例：snatch の説明を修正。別の上級単語を2件追加探索してください。"></textarea><div class="actions"><button class="primary" id="send">ChatGPTへ送信</button><button id="copy">選定結果をコピー</button></div><div class="sendhelp"><strong>ChatGPTへ送信</strong>：選定結果をコピーし、ChatGPTを開きます（入力欄に内容が入っていればそのまま送信、空ならCtrl+V / ⌘V で貼り付けて送信）。<br><strong>選定結果をコピー</strong>：コピーだけ行います。ChatGPTから返ってきたコードブロックは、そのままClaudeへ貼り付けてください（JSONの編集は不要です）。<br>Claude・Productionへの自動反映はありません。</div><div id="status" class="warning" role="status"></div><textarea id="fallback" readonly hidden aria-label="コピー用テキスト（手動コピー）"></textarea><details class="techbox"><summary>技術情報付きでコピー（通常は不要）</summary><div>従来形式（人間可読の要約＋JSON・全候補付き）をコピーします。通常の送信には使いません。</div><button id="copyTech">技術情報付きでコピー</button></details></main>
 <script src="form_logic.js"></script>
 <script>
@@ -30,7 +29,7 @@ function render(){
   if(d&&((d.source&&d.source.note_ja)||dw)){src.hidden=false;src.textContent=((d.source&&d.source.note_ja)||'')+(d.shortfall_note_ja?'　［候補数: '+d.shortfall_note_ja+'］':'')+(dw?'　'+dw:'')}else{src.hidden=true}
   if(!d){
     $('stats').innerHTML='';$('candidates').innerHTML='<p class="muted">この記事枠の候補は未登録です。</p>';
-    $('grammarCount').textContent='';$('grammars').innerHTML='';$('grammarNotice').hidden=true;$('nuanceH').hidden=true;$('nuanceNotice').hidden=true;$('nuances').innerHTML='';$('comment').value=st.comment||'';return;
+    $('grammarCount').textContent='';$('grammars').innerHTML='';$('grammarNotice').hidden=true;$('comment').value=st.comment||'';return;
   }
   var tl=FL.terms(d),ch=FL.choicesOf(d,st),c=FL.counts(ch,tl),tot=c[0]+c[1]+c[2],conf=!!d.kp_confirmed;
   var gids=FL.grammarIds(d);
@@ -78,30 +77,7 @@ function render(){
     if(e.target.checked){FL.chooseGrammar(st,gids,e.target.dataset.grammar);save();render()}})});
   document.querySelectorAll('input[data-grammar-none]').forEach(function(el){el.addEventListener('change',function(e){
     if(e.target.checked){FL.chooseGrammarNone(st,gids);save();render()}})});
-  renderNuance(d,st);
   $('comment').value=st.comment||'';
-}
-// ニュアンス解説(2026-10-29正式採用): 仕様マーク(nuance_spec)があるデータだけ表示。候補は最大1件。ラジオ「採用」「不採用」。候補があるのに未回答なら送信・コピーを止める。
-// 重複注意(pool_conflicts=①②で選ぶと採用不可 / grammar_conflicts・shared_terms=警告のみ)。技術失敗は本物の0件と区別して表示(nuance_note_ja)。
-function renderNuance(d,st){
-  var H=$('nuanceH'),N=$('nuanceNotice'),B=$('nuances');
-  if(!FL.hasNuanceSpec(d)){H.hidden=true;N.hidden=true;N.textContent='';B.innerHTML='';return}
-  H.hidden=false;
-  var n=FL.nuanceOf(d),dec=FL.nuanceDecision(d,st);
-  if(!n){$('nuanceCount').textContent='候補なし';N.hidden=false;N.textContent=d.nuance_note_ja||'ニュアンス解説の候補はありません';B.innerHTML='';return}
-  $('nuanceCount').textContent=dec==='adopt'?'採用':dec==='reject'?'不採用':'未決定';
-  N.hidden=false;
-  N.textContent='ニュアンス解説の候補は1件です。ページに「ニュアンス解説」コーナーとして載せるか、載せないかを選んでください（採用した解説は文法とは別に表示されます）。'+(dec==='undecided'?'　※未決定のままでは送信・コピーできません。':'')+(n.previous_decision&&!(st.nuance&&(!st.nuance_sha||st.nuance_sha===n.candidate_sha256))?'　※前回の確定は「'+(n.previous_decision==='adopt'?'採用':'不採用')+'」でした（既定表示。送信には選択の確認が必要です）。':'');
-  var warn='',conf=FL.nuanceConflicts(d,st);
-  if(conf.length)warn+='<div class="notice" style="background:#fff4e0;color:#7a4a00">重複アラーム（確認用・送信は止まりません）: この解説は、選択中の「'+conf.map(esc).join('」「')+'」と同じ焦点の可能性があります。そのまま送信でき、確定時にアラームとして記録されます。</div>';
-  else if((n.pool_conflicts||[]).length)warn+='<div class="notice">この解説は、他の提示候補と同じ焦点のものがあります。それらを①②で選んでも止まりませんが、重複アラームとして記録されます。</div>';
-  if((n.grammar_conflicts||[]).length)warn+='<div class="notice">参考: 文法候補と焦点が近い可能性があります（警告のみ。採用はできます）。</div>';
-  if((n.shared_terms||[]).length)warn+='<div class="notice">参考: 他の選定項目と共通する語があります（警告のみ）。'+n.shared_terms.map(function(t){return esc(t.item||'')+'：'+esc(t.term||'')}).join('、')+'</div>';
-  B.innerHTML=warn+'<div class="grammar '+(dec==='adopt'?'selected':'')+'"><label><input type="radio" name="nuance" data-nuance="adopt" '+(dec==='adopt'?'checked':'')+'> <span class="rank">候補</span><strong>'+esc(n.expression)+'</strong></label>'+
-    '<p class="muted">対象レベル：'+esc(d.level_label||d.level||'')+'</p><div class="sample"><b>本文の英文：</b>'+esc(n.quote_en)+'<br><b>日本語訳：</b>'+esc(n.quote_ja)+'</div><p><b>ポイント：</b>'+esc(n.focus)+'</p><p><b>解説：</b>'+esc(n.explanation_ja)+'</p>'+(n.overlap_summary_ja?'<p class="muted">重複確認: '+esc(n.overlap_summary_ja)+'</p>':'')+'<p class="muted">この解説をページに載せる場合は左の「採用」を選びます。</p></div>'+
-    '<div class="grammar gnone '+(dec==='reject'?'selected':'')+'"><label><input type="radio" name="nuance" data-nuance="reject" '+(dec==='reject'?'checked':'')+'> <strong>不採用（載せない）</strong></label><p class="muted">この解説は載せません。次点の候補は出しません。</p></div>';
-  document.querySelectorAll('input[data-nuance]').forEach(function(el){el.addEventListener('change',function(e){
-    if(e.target.checked){FL.chooseNuance(st,e.target.dataset.nuance,d);save();render()}})});
 }
 async function activate(i){
   entry=IDX.articles[i];D=null;status('');
@@ -131,7 +107,6 @@ var COPY_FAIL='自動コピーできませんでした。下の枠のテキス�
 function guard(){
   if(!D){status('この記事枠には選定結果がありません。');return false}
   if(FL.grammarBlocked(D,get())){status('文法が未決定です。Top 1・Top 2のどちらかを1件選ぶか、「適切な候補なし（0件）」を選んでから送信・コピーしてください。');return false}
-  if(FL.nuanceDecision(D,get())==='undecided'){status('ニュアンス解説が未決定です。「採用」か「不採用」を選んでから送信・コピーしてください。');return false}
   return true;
 }
 $('copy').addEventListener('click',function(){

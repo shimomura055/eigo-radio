@@ -344,14 +344,14 @@ class TestSignatureAndConsumers(GrammarCase):
         out = self.final()
         res = out["result"]
         md = os.path.join(self.sd, f"{g.PART2_FILE_STEM}.md")
-        html_ok = p2w.compose_page_html("<section class='study'>P1</section>", res, nuance=None)
+        html_ok = p2w.compose_page_html("<section class='study'>P1</section>", res)
         p2w.verify_outputs(self.sd, PARAS, LABEL, level="b1b", next_command="x", md_path=md, html_text=html_ok)
         with self.assertRaises(g.Part2Stale):
             p2w.verify_outputs(self.sd, PARAS, LABEL, level="b1b", next_command="x", md_path=md, html_text="<html>none</html>")
-        self.assertIn("<style>", p2w.compose_page_html("", res, nuance=None))                   # Part 1が空ならCSSを含める(R-1)
-        self.assertNotIn("<style>", p2w.compose_page_html("<section>x</section>", res, nuance=None))
-        with self.assertRaises(TypeError):                                                      # R-6: nuanceは既定値なしの必須keyword(渡し漏れを構造で防ぐ)
-            p2w.compose_page_html("", res)
+        self.assertIn("<style>", p2w.compose_page_html("", res))                   # Part 1が空ならCSSを含める(R-1)
+        self.assertNotIn("<style>", p2w.compose_page_html("<section>x</section>", res))
+        with self.assertRaises(TypeError):                                                      # ニュアンス解説は廃止(2026-10-30): nuance引数は存在しない(旧呼出は黙って通さず明示エラー)
+            p2w.compose_page_html("", res, nuance=None)
 
 
 class TestUnifiedPending(GrammarCase):

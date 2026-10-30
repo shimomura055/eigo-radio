@@ -1234,8 +1234,7 @@ LEVELS = ("b1b", "a2")                  # b1b=Advanced, a2=Standard(出力dir名
 E2E_STAGES = ("seed_check", "writer", "std_adjust", "plan", "support", "kp",
               "tts_b1b", "tts_a2", "provision_shell", "gate", "assemble", "pages", "page_verify")
 E2E_STAGE_EST_JPY = {"writer": 22.0, "std_adjust": 8.0, "plan": 2.0,
-                     "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0,
-                     "nuance": 1.0}   # nuance=ニュアンス解説(1level 最大生成1+判定1+各retry1。実測0.11-0.21円/level)の上限見積り(NUANCE-EXPLANATION-PRODUCTION-WIRING-01 R-10)
+                     "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0}
 E2E_TTS_CLIP_EST_JPY = 2.0              # clip単位guard見積り。TTS統一委任_02(Opus R-6): 最悪clip=6TTS+ASR+LR LLM≒2円へ更新(旧1.0=最大4TTS想定)。事後は次clipのguardで検知
 ADV_LEVEL = "b1b"                       # Advanced(Part 1[Vocabulary & Expressions]は常に載る)。Part 1系関数の既定level引数以外では使わない(SLOT-23 委任_04E)
 ADV_EXPL_STAGE = f"kp_expl_{ADV_LEVEL}"   # Advanced専用のKP英語解説stage(Standardには無い)
@@ -1894,8 +1893,8 @@ def _assert_part2_final(ctx, where: str, *, level: str) -> dict:
 
 def _verify_part2_outputs(ctx) -> dict:
     """R-3: 両levelについて 確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html)の**当該levelの節** を照合(節単位の4者一致、kind="grammar")。
-    各節の文法ブロックは期待数(採用=1 / 0件=0。0件はコーナー全体が非表示)・ニュアンス解説は採用=1 / 他=0(取り違え・欠落・重複はfail-closed)。開発確認用の個別ページ(standard.html/advanced.html)には
-    出ていないこと(文法・ニュアンス解説はindex.htmlの各節にだけ)も確認する。"""
+    各節の文法ブロックは期待数(採用=1 / 0件=0。0件はコーナー全体が非表示)。廃止済みニュアンス解説ブロックが節に0個であること(逆流防止ガード。verify_outputs内)。開発確認用の個別ページ(standard.html/advanced.html)には
+    出ていないこと(文法はindex.htmlの各節にだけ。廃止済みニュアンス解説ブロックも出ていないこと)も確認する。"""
     import er_user_listening_page_common_01 as cp
     p2w = _p2w()
     g = p2w.g
@@ -1914,10 +1913,7 @@ def _verify_part2_outputs(ctx) -> dict:
         n2 = g.count_grammar_blocks(section)
         if n2 != expect["grammar_blocks"]:   # 文法0件はコーナー全体が非表示=期待0個(固定文面なし)
             raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のPart 2ブロックが{n2}個です(期待{expect['grammar_blocks']}個)")
-        nn = g.count_nuance_blocks(section)
-        if nn != expect["nuance_blocks"]:    # ニュアンス解説は採用時のみ1個
-            raise FamilyZE2EStop(f"FAMILY_Z_NUANCE_OUTPUT_MISMATCH({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のニュアンス解説ブロックが{nn}個です(期待{expect['nuance_blocks']}個)")
-        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part2_blocks": n2, "nuance_blocks": nn}
+        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part2_blocks": n2}
     marker = "Grammar &amp; Sentence Structure"
     nuance_marker = f"<h3>{g.NUANCE_HEADING}</h3>"
     for fn in ("standard.html", "advanced.html"):
@@ -2230,34 +2226,6 @@ def _kp_review_step(ctx, lv: str, text: str) -> dict:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_REVIEW_STOP({lv}): {e}") from e
 
 
-def _nuance_cand_step(ctx, lv: str, review_existed: bool) -> dict:
-    """ニュアンス解説(NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02C)のN0(spec発行)+N1(候補生成・重複判定)。KP review作成/再利用の**後**・HR提示前(Opus M-1)。
-    X/Y/Zの契約は共通関数 er134.n1_stage。nuance_spec.jsonが無い(既存run=LEGACY)なら生成0・待機0。確定済みの採否があれば再生成しない。技術失敗は非ブロッキング。
-    mock/dry-runでhooks(nuance_call_fn/nuance_judge_fn)が無い場合は実APIへ出さず実行しない(specも発行しない=LEGACY扱い)。"""
-    import er134_nuance_explanation_01 as nx
-    call_fn, judge_fn = ctx.hooks.get("nuance_call_fn"), ctx.hooks.get("nuance_judge_fn")
-    if ctx.mode != "real" and (call_fn is None or judge_fn is None):
-        return {"state": "SKIPPED_NO_HOOK", "status": None, "api_calls": 0, "cost_jpy": 0.0, "pending": None, "reused": False}
-    paragraphs, label = _part2_inputs(ctx, lv)
-    with ctx.stage_context(f"nuance_cand_{lv}"):
-        return nx.n1_stage(family="z", run_dir=ctx.out_dir, kp_dir=_kp_src_dir(ctx, lv), study_dir=_part2_dir(ctx, lv), level=lv, article_id=f"family_z_{ctx.slug}_{_m().w62.LEVEL_DIR[lv]}",
-                           title=label, paragraphs=paragraphs, review_existed=review_existed, client=ctx.llm_client, call_fn=call_fn, judge_fn=judge_fn,
-                           budget_guard=lambda process, prompt, attempt: _guard(ctx, f"nuance_{lv}_{process}_a{attempt}", E2E_STAGE_EST_JPY["nuance"] / 4))
-
-
-def _assert_nuance_final(ctx, where: str, level: str):
-    """ページ生成入口でのニュアンス解説の確定(R-3。LLM 0・冪等)。None=LEGACY(従来出力と同一)。未確定=FamilyZKpReviewPending(rc=4)、不整合=FamilyZE2EStop。"""
-    p2w = _p2w()
-    g = p2w.g
-    paragraphs, _label = _part2_inputs(ctx, level)
-    try:
-        return p2w.finalize_nuance(_part2_dir(ctx, level), paragraphs, level=level, kp_dir=_kp_src_dir(ctx, level), run_hint=ctx.out_dir, next_command=_part2_resume_next(ctx, level))
-    except p2w.Part2NotConfirmed as e:
-        raise FamilyZKpReviewPending(str(e), e.pending) from e
-    except (g.Part2Error, g.Part2InputError) as e:
-        raise FamilyZE2EStop(f"FAMILY_Z_NUANCE_NOT_READY({where}, {level}): {e}") from e
-
-
 def _rebind_kp_on_confirmation(ctx, prov, lv: str, text: str, kr: dict, input_sha: str):
     """KCP3所見D1: 自動採用runへ後からユーザー確定(フォーム/HR)を入れて KP review署名が変わっても、`kp_<lv>` 来歴の親sha不一致STOPにしない(API 0で再バインド)。
     条件(すべて満たすときだけ): 明示 --regenerate-stage kp_<lv> ではない / 確定レコードがユーザー確定(live) / 旧署名で再計算した入力shaが記録済みentryと一致(=本文は不変) /
@@ -2301,15 +2269,10 @@ def stage_kp(ctx) -> dict:
         review_res = None
         input_sha = _sha(text)
         if not _kp_legacy_run(ctx, lv, prov):
-            _review_existed = os.path.exists(_khr().paths(_kp_src_dir(ctx, lv))["review"])   # N0は『この呼出でKP reviewが新規作成された』ときだけ(M-2。既存runはLEGACY)
             review_res = _kp_review_step(ctx, lv, text)
             kr = review_res.get("kp_review") or {}
-            nz = _nuance_cand_step(ctx, lv, _review_existed)   # N1: KP候補生成後・HR提示前(M-1)。KP候補docが無い/LEGACY/確定済み/AUTO採用は生成0
-            summary[f"nuance_cand_{lv}"] = {k: nz[k] for k in ("state", "status", "api_calls", "cost_jpy")}
             if kr.get("state") == "PENDING":
                 pending.append(kr["pending"])
-                if nz["pending"] is not None:   # ニュアンス解説の候補もKP/文法と同じ待機点・同じ統合依頼書に載せる(rc=4は1回)
-                    pending.append(nz["pending"])
                 summary[lv] = {"status": "KP_REVIEW_PENDING", "pending": kr["pending"]}
                 continue
             if kr.get("state") == "FAILED":
@@ -2726,9 +2689,8 @@ def stage_pages(ctx) -> dict:
                                  f"(訳欄の判断記録 {_p1().TRANSLATION_DECISION_RECORD} が無い)。黙って欠落させない")
     _p2res = _assert_part2_final(ctx, "stage_pages", level=ADV_LEVEL)   # Part 2(文法)の存在・最新性・確定との一致(Advanced)
     _p2res_std = _assert_part2_final(ctx, "stage_pages", level="a2")   # Standard(文法はページ専用=pages/page_verifyだけで確認する)
-    _nz = {lv_: _assert_nuance_final(ctx, "stage_pages", lv_) for lv_ in (ADV_LEVEL, "a2")}   # R-3: ページ入口でニュアンス解説を確定(未確定=rc=4/不整合=STOP。LLM 0・冪等)
-    study_html = _p2w().compose_page_html(p1_html.get(ADV_LEVEL, ""), _p2res, nuance=_nz[ADV_LEVEL])   # R-1/R-2: Part 1→Part 2→ニュアンス解説(共通builder1つ)
-    study_html_std = _p2w().compose_page_html(p1_html.get("a2", ""), _p2res_std, nuance=_nz["a2"])   # 同じ共通builder。Standardは display_spec付きのときだけPart 1が先(Part 1→Part 2)
+    study_html = _p2w().compose_page_html(p1_html.get(ADV_LEVEL, ""), _p2res)   # R-1/R-2: Part 1→Part 2(共通builder1つ)
+    study_html_std = _p2w().compose_page_html(p1_html.get("a2", ""), _p2res_std)   # 同じ共通builder。Standardは display_spec付きのときだけPart 1が先(Part 1→Part 2)
     extra = {"study_html_by_level": {ADV_LEVEL: study_html, "a2": study_html_std}}
     _al_text, _al_html = _khr().render_redundancy_alarms_all(ctx.out_dir)     # D8: 重複アラーム(表示・記録のみ・非停止)。記録なし=空=従来とバイト同一
     if _al_text:
