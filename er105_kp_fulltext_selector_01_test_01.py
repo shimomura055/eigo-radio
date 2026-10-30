@@ -294,7 +294,8 @@ class TestIsolation(unittest.TestCase):
     ALLOWED = {"er003_key_words_canonicalization.py", "er003_v1_n3_01_scaffold_generate.py",
                "er119_kp_candidates_01.py", "er119_kp_prompt_2v_01.py", "er119_kp_p7w5_prompts_01.py",   # KP-PHRASE7-WORD5-PRODUCTION-01(2026-10-27 APPROVED_FOR_PRODUCTION): P7/W5'のPrompt・message定義(er105の定数・区切りを再利用)
                
-               "er125_kp_rescue_production_01.py"}   # KPRW1 委任_01(2026-10-26 APPROVED_FOR_PRODUCTION): 救済module(委任_02でProduction配線。er105のvalidatorを再利用)。KP Human Review(2026-10-25 APPROVED_FOR_PRODUCTION): 候補生成がer105の選定関数を再利用する
+               "er125_kp_rescue_production_01.py",
+               "er138_kp_n5_generalization_01.py"}   # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01(2026-10-30 APPROVED_FOR_PRODUCTION): N5汎化がer105のvalidator/選定関数(ft)を再利用   # KPRW1 委任_01(2026-10-26 APPROVED_FOR_PRODUCTION): 救済module(委任_02でProduction配線。er105のvalidatorを再利用)。KP Human Review(2026-10-25 APPROVED_FOR_PRODUCTION): 候補生成がer105の選定関数を再利用する
 
     def test_no_production_file_references_er105(self):
         offenders = []

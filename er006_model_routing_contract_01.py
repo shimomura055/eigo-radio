@@ -207,6 +207,11 @@ PROCESS_MODEL_MAP = {
     "FAMILY_Y_VOICE_STRUCTURE_TAG": "gpt-6-luna",
     "FAMILY_Y_TRANSLATE_ADV": WRITER_MODEL,
     "FAMILY_Y_TRANSLATE_STD": WRITER_MODEL,
+    # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 委任_02(2026-10-30、ユーザー正式決定 Trial 03 方式B[N5] APPROVED_FOR_PRODUCTION)で追加(追加のみ、既存キー不変、
+    # リテラル固定、環境変数上書きなし)。Key Phrase一般化N5の別系列2段: VER5(別系列検証=gemini-3.8-flash、think_budget=0)・CHK5(別系列独立検査=gpt-6.1-sol、effort=low)。
+    # B1過剰生成/SEL/GEN5(luna)は既存のB1_SUPPORT/A2_SUPPORT(=SUPPORT_MODEL)を使う(er138が`require_model(process, SUPPORT_MODEL)`で解決)。Trial確定版と同一model。
+    "KP_N5_VERIFY": "gemini-3.8-flash",
+    "KP_N5_CHECK": "gpt-6.1-sol",
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

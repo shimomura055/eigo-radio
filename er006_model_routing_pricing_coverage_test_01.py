@@ -120,7 +120,9 @@ class PricingCoverageTest(unittest.TestCase):
         self.assertEqual(sol_keys, {"FAMILY_X_STORYLINE_B3", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE",
                                     "FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST",
                                     # FAMILY-Y-PRODUCTION-LAUNCH-01 02B: Y Production本文生成系6キー(承認済み許可集合)
-                                    "FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE", "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO"})
+                                    "FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE", "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO",
+                                    # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01(2026-10-30): N5 CHK5
+                                    "KP_N5_CHECK"})
         self.assertNotIn("deepseek-v4-pro", set(routing.PROCESS_MODEL_MAP.values()))
 
     def test_deepseek_flash_prices_registered(self):

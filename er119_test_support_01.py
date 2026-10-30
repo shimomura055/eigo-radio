@@ -23,6 +23,20 @@ import er119_kp_human_review_01 as rv
 import er119_kp_difficulty_01 as dg
 import er119_kp_prompt_2v_01 as p2v
 import er119_kp_p7w5_prompts_01 as p7w5
+import er138_kp_n5_generalization_01 as n5
+
+
+def _n5_identity_pool(text, p7_items, ctx, *, include_b1, units=None, screen_fn=None, seen_keys=None, cap=7, origin_label="P7"):
+    """既存のer119 test用fixture(KP-GENERALIZATION-N5-PRODUCTION-WIRING-01): N5のL1を素通し(P7候補をそのまま採用・API 0)。N5自体はer138_kp_n5_generalization_01_test_01 / er138_wiring_test_01が
+    実コードで検証する。このstubは**test専用**(Production経路は必ずn5.pool_and_selectを通る)。"""
+    picked = [{"item": it, "n5_origin": origin_label, "reason_ja": it.get("reason_ja", ""), "difficulty": None, "cls": "C", "chunk_type": "none"} for it in p7_items]
+    return {"picked": picked, "dropped": [], "record": {"stub": "identity"}, "log": {}, "seen_keys": set(seen_keys or set())}
+
+
+def _n5_identity_l3(text, targets, ctx):
+    """L3素通し(test専用)。kept空=Production itemを変更しない。"""
+    return {"kept": {}, "dropped": [], "log": {}}
+
 
 ARTICLE = (
     "# Coffee prices\n\n"
@@ -79,8 +93,9 @@ class Env:
     """with Env(tmp, ...) as env: ... 。env.n[...]で各LLM由来関数の呼出回数。"""
 
     def __init__(self, tmp, *, call1=None, call2=None, bad_phrases=(), qa_fail_phrases=(), red_ng_pairs=None, final_red_seq=None,
-                 gloss_fail_phrases=(), call1_seq=None, call2_seq=None, rescue_env="1", canon_keys=None, qa_mismatch=()):
+                 gloss_fail_phrases=(), call1_seq=None, call2_seq=None, rescue_env="1", canon_keys=None, qa_mismatch=(), n5_stub=True):
         self.tmp = tmp
+        self.n5_stub = n5_stub                    # True(既定)=N5をidentity stub(legacy testのfixture)。False=実のer138を通す(その場合は呼出側がer138._sendを差し替える)
         self.rescue_env = rescue_env              # EIGO_KP_RESCUE を明示固定(委任_02 Opus M2: シェルの値に結果が依存しない)。"0"=救済kill switch OFF(救済前の挙動を検証するtest用)
         self.qa_mismatch = set(qa_mismatch)      # QA再判定call(display_phraseに救済後keyが渡される)で、これらの句には別のkeyを返す(=NOT_REJUDGEDを再現)
         self.canon_keys = dict(canon_keys or {})  # display_phrase -> LLMが返すkey_phrase(救済の発火テスト用。normalization_reasonはlemma_normalization)
@@ -236,6 +251,8 @@ class Env:
             mock.patch("time.sleep", lambda s: None),
             mock.patch.dict(os.environ, {"EIGO_KP_RESCUE": self.rescue_env}),
         ]
+        if self.n5_stub:
+            self._patches += [mock.patch.object(n5, "pool_and_select", _n5_identity_pool), mock.patch.object(n5, "run_l3", _n5_identity_l3)]
         for p in self._patches:
             p.start()
         return self

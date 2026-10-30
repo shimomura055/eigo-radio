@@ -430,7 +430,8 @@ class TestKindQuotaAndInvariantsM1M4(BfCase):
         env, doc = self.run_gen("0", call1=words6 + CALL1, call2=CALL2)
         self.assertEqual(env.n["call1"], 1)                                      # EIGO_KP_BACKFILL=0でも上限超過の切捨てで外側retryしない
         self.assertEqual(doc["outer_attempts"], 1)
-        self.assertEqual(bf.GATE_DROP_EXEMPT_STAGES[:2], bf.NOT_COUNTED_STAGES)
+        self.assertEqual(bf.GATE_DROP_EXEMPT_STAGES[:len(bf.NOT_COUNTED_STAGES)], bf.NOT_COUNTED_STAGES)
+        self.assertEqual(bf.NOT_COUNTED_STAGES[:2], ("overflow", "overflow_kind"))     # 既存2段は不変。N5のn5_pool/n5_select/n5_pickはその後ろに追加(KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 Opus M3)
 
 
 class TestMetadataCall1Exclusions(BfCase):

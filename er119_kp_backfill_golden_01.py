@@ -129,14 +129,14 @@ def strip_additive(doc: dict) -> dict:
     for e in d.get("outer_retry_log", []):
         for k in ADDITIVE_LOG_KEYS:
             e.pop(k, None)
-        for k in [k for k in (e.get("stages") or {}) if k.endswith("presentable_filter")]:     # 品質検査telemetry(追記専用。HR-SELECTION-FLOW 2026-10-29)
+        for k in [k for k in (e.get("stages") or {}) if k.endswith("presentable_filter") or "n5_" in k]:     # 品質検査telemetry(追記専用。HR-SELECTION-FLOW 2026-10-29)・N5 telemetry(KP-GENERALIZATION-N5-PRODUCTION-WIRING-01、追記専用)
             e["stages"].pop(k, None)
     return d
 
 
-ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail", "presentable_filter", "difficulty_grading")     # presentable_filter=HR-SELECTION-FLOW(2026-10-29)追記専用telemetry
+ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail", "presentable_filter", "difficulty_grading", "generalization")     # presentable_filter=HR-SELECTION-FLOW(2026-10-29)追記専用telemetry
 ADDITIVE_CAND_KEYS = ("kind", "difficulty")      # difficulty/difficulty_grading=KP-DIFFICULTY-4LEVEL-DISPLAY-01(2026-10-30)追記専用の参考情報
-ADDITIVE_LOG_KEYS = ("backfill",)
+ADDITIVE_LOG_KEYS = ("backfill", "n5_l1")
 # 補完ON(既定)でも抽出前goldenと完全一致するscenario(E=0かつ外側retry脚の撤去に影響されないもの)
 ON_EQUAL_SCENARIOS = ("s01_default_8", "s05_shortfall_no_drop", "s08_redundancy_pair", "s11_rescue_selection_stage")     # s06/s07は仕様①(2026-10-29)で除外=E>0になったため対象外
 

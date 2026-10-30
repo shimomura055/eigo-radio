@@ -1234,7 +1234,7 @@ LEVELS = ("b1b", "a2")                  # b1b=Advanced, a2=Standard(出力dir名
 E2E_STAGES = ("seed_check", "writer", "std_adjust", "plan", "support", "kp",
               "tts_b1b", "tts_a2", "provision_shell", "gate", "assemble", "pages", "page_verify")
 E2E_STAGE_EST_JPY = {"writer": 22.0, "std_adjust": 8.0, "plan": 2.0,
-                     "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0}
+                     "support": 8.0, "kp": 20.0, "tts_b1b": 40.0, "tts_a2": 40.0}
 E2E_TTS_CLIP_EST_JPY = 2.0              # clip単位guard見積り。TTS統一委任_02(Opus R-6): 最悪clip=6TTS+ASR+LR LLM≒2円へ更新(旧1.0=最大4TTS想定)。事後は次clipのguardで検知
 ADV_LEVEL = "b1b"                       # Advanced(Part 1[Vocabulary & Expressions]は常に載る)。Part 1系関数の既定level引数以外では使わない(SLOT-23 委任_04E)
 ADV_EXPL_STAGE = f"kp_expl_{ADV_LEVEL}"   # Advanced専用のKP英語解説stage(Standardには無い)

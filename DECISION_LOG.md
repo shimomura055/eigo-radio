@@ -22943,3 +22943,12 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 実施: (1)E1/E2是正(固有名詞のみWhisper prompt、In One Lineのmeanings取込)で⑭ End Userを公開可能に。(2)訳生成を公式hookへ配線(既定AUTO、承認済み訳の再生成0)。(3)M8 judge配線(gold A: 追加23群すべて正・誤対応0、coverage 83.0->94.3%等。B敵対対照3.1%は開示)。(4)asset rev01-g(Preview訳描画+Vocabulary再生UI)。(5)Vocab音声: 本番run自体に追加解説の生成関数だけを実行(tts stage全体は再実行しない=確定record・HR承認済み音声を保護)、End Userへ組込み(欠落はfail-closed)。(6)8dir再produce+Playwright PC/mobile全NG0、diff Gate OK。
 - 技術判断: 数値決定論照合の偽NG(they->二人/never again->二度と)は閾値を緩めず、retry時のPromptに不合格の指摘を付ける方式で是正(Z雪女の不成立段落5->1)。残る不成立(Zメロスadv_14・Z雪女std_11)は対訳照合が『英文にない情報の追加』を検出したfail-closed(英語のみ+warning)で、正常動作。
 - 残: 可視性UI(D、PC 47.8%/mobile 16.2%)、⑨Meta Adv Vocabulary『latter』音声(TTS Gate STOPPED、既存HR経路)。費用: 約¥25/Cap¥45。OPEN-612/618/620。分類: 承認済み仕様の実装であり新規判断なし(残の2件のみ判断候補)。
+
+## KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 委任_02: N5をProduction配線(X/Y/Z×Std/Adv)・runtime evidence取得(2026-10-30)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_KP-GENERALIZATION-N5-PRODUCTION-WIRING-01_USER.md`:7-9,21,59,120): 方式B(N5)のProduction配線。flag/新Gate/Prompt改善の追加なし。
+- 実施(承認済み仕様の実装であり新規判断なし): 単一統合点`er119_kp_candidates_01`(L1=call1/call2間、L3=merged直後)へ`er138_kp_n5_generalization_01`を配線。Opus条件M1〜M13を採用。Trial cache key再計算一致+19ケースexact再現、全6経路でruntime evidence(actual model_id/Gemini model_version/Prompt sha/FLAGS hash/N5記録/英日本文一致/Gate・n5 drop/補完/語数/gloss再決定/再選定round/resume API 0)。
+- 技術判断(Fable確認事項、いずれも承認済み仕様内): (1)解釈β′=canon(QA12・gloss整合・救済)無変更で先に走り、L3が(表示形,gloss)対を上書き、`used_form==key_phrase==N5形`、旧canon値は`n5.canon_pre`。QA12は選定単位canon形の品質、提示形の意味はVER5/CHK5。実測でQA12再判定をN5形に当てるとkey不一致でNOT_REJUDGEDとなる例があり、QA12を提示形に再適用しない設計と整合。(2)M9=CHK5欠落verdictは欠落分のみ1回再要求→`n5_check`でdrop(旧方式へ戻らない)。(3)人称整合はX/Y/ZともN5形に再実行(Zのみ既存`person_repair_fn`、X/Yは既定関数)。N5 glossを書き換えた件数は記録(実run0件)。(4)補完のE計数は`n5_pool/select/pick`非計上・`n5_generalize/verify/check`計上。
+- 発見・修正した不具合: 実runでdict key=Noneが署名(sort_keys)で落ちる不具合(CHK5対象外item)。mock/replayは署名を通さず未検出→全wiring testに`json.dumps(sort_keys=True)`検査を追加。
+- 残(判断候補): J2=M10統合replayで§4A③keep one's eye on(未再現=LLM非決定性)・④set a lower limit(N5のpool包含dedupeとP7候補`a lower limit`[SELがF]の相互作用で喪失)。既存Gate喪失は3.6%(基準15%以下)。是正せず報告。未観測=実run技術失敗injection・Y/Z再選定round実run・Z人称書換え実例。
+- 運用上の記録: M10枠¥20に対し¥21.80(並列起動で事前合算guard未適用)、Y runの起動間隔規則違反(課金前STOPのみ、RESTART_STORM保護が複製runにSTOPを作成、解除せず新規複製dirで実施)。分類: 実害なし(総額¥73.38/Cap¥80内、API重複課金なし)。
+- 費用: ¥73.38(M10 ¥21.80+runtime evidence ¥51.58)。N5段の量産単価実測=X ¥6.92・Y ¥8.90・Z ¥5.58/記事セット(Trial見積¥6.28)。

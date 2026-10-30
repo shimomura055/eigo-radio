@@ -49,7 +49,9 @@ class RoutingConstantsTest(unittest.TestCase):
                             "FAMILY_Y_VOICE_GENERATE": "gpt-6.1-sol",
                             "FAMILY_Y_VOICE_REWRITE": "gpt-6.1-sol",
                             "FAMILY_Y_LEAD_GENERATE": "gpt-6.1-sol",
-                            "FAMILY_Y_PERSONA_INTRO": "gpt-6.1-sol"}
+                            "FAMILY_Y_PERSONA_INTRO": "gpt-6.1-sol",
+                            # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01(2026-10-30、ユーザー承認APPROVED_FOR_PRODUCTION): N5 CHK5=gpt-6.1-sol(1キーのみ追加)。VER5(KP_N5_VERIFY)はgemini-3.8-flash。
+                            "KP_N5_CHECK": "gpt-6.1-sol"}
         for k, v in routing.PROCESS_MODEL_MAP.items():
             if k in allowed_non_luna:
                 self.assertEqual(v, allowed_non_luna[k], k)

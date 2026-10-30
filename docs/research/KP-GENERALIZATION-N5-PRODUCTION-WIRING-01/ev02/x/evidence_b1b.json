@@ -1,0 +1,635 @@
+{
+ "route": "X_b1b",
+ "level": "b1b",
+ "method": "N5@T3-2026-10-30",
+ "models_requested": {
+  "b1": "gpt-6-luna",
+  "sel": "gpt-6-luna",
+  "gen5": "gpt-6-luna",
+  "ver5": "gemini-3.8-flash",
+  "chk5": "gpt-6.1-sol"
+ },
+ "prompt_sha16": {
+  "B1": "97dd3c281a2858f3",
+  "SEL": "c9f7e85459fbbedd",
+  "GEN5": "f284d2d87eedbe7e",
+  "VER5": "e25540ebac7b86bc",
+  "CHK5": "5e643f0fc98c8944",
+  "CHUNK_DEFS_V3+EXTRA_RULES_V3": "325cf65ef1dc84f7",
+  "GEN5_EXTRA": "a4252120a6254001",
+  "GEN2_RULES": "32f51f3552ab3497",
+  "VER5_HEAD+VER5_ADD": "1483f97b92a40be9",
+  "CHK5_RULES": "b10a6edca5ed9737",
+  "schema": {
+   "B1": "e52f403cf3b4760f",
+   "SEL": "36612de032fba6b4",
+   "GEN5": "e158613928975289",
+   "VER5": "1164d51aa0682719",
+   "CHK5": "c5a05fed55bf59ea"
+  },
+  "FLAGS_V1_HASH": "3bba7ad2cc6a"
+ },
+ "wordnet_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+ "n_candidates": 10,
+ "n_n5": 5,
+ "word_count_dist_n5": {
+  "2": 2,
+  "3": 3
+ },
+ "actual_model_ids_by_stage": {
+  "b1": [
+   "gpt-6-luna"
+  ],
+  "sel": [
+   "gpt-6-luna"
+  ],
+  "gen5": [
+   "gpt-6-luna"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "gpt-6.1-sol"
+  ]
+ },
+ "model_versions_by_stage": {
+  "b1": [
+   "None"
+  ],
+  "sel": [
+   "None"
+  ],
+  "gen5": [
+   "None"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "None"
+  ]
+ },
+ "dropped_by_stage": {
+  "n5_select": 4,
+  "canonicalization_qa": 1
+ },
+ "pool_rejected_by_stage": {
+  "n5_pool": 5
+ },
+ "pool_rejected_by_reason": {
+  "既存候補とspanが包含関係(重複)": 4,
+  "節の断片(関係詞・疑問詞始まり)は塊でない": 1
+ },
+ "l1": [
+  {
+   "include_b1": true,
+   "n_p7_in": 7,
+   "n_b1_returned": 12,
+   "pool_size": 15,
+   "n_judged": 15,
+   "n_keep": 6,
+   "n_picked": 6,
+   "picked_origin": {
+    "P7": 3,
+    "B1": 3
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 4
+   }
+  },
+  {
+   "include_b1": false,
+   "n_p7_in": 1,
+   "n_b1_returned": 0,
+   "pool_size": 0,
+   "n_judged": 0,
+   "n_keep": 0,
+   "n_picked": 0,
+   "picked_origin": {
+    "P7": 0,
+    "B1": 0
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 1
+   }
+  }
+ ],
+ "l3_summaries": [
+  {
+   "targets": 6,
+   "kept": 6,
+   "dropped_by_stage": {},
+   "reverted": 1,
+   "check_relation": {
+    "SAME": 4,
+    "NONE": 1,
+    "MODIFIER_DROPPED_OK": 1
+   },
+   "flags": {
+    "PERSONIFIED_THING": 1,
+    "PERSON_OVERRIDE": 1,
+    "PRONOUN_SLOT": 1,
+    "FIX_REJECTED": 1,
+    "VER_FLAG": 1,
+    "CONTENT_DROPPED": 1
+   },
+   "reconcile": {
+    "SAME": 6
+   },
+   "form_changed_vs_span": 6,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  }
+ ],
+ "person_repair": [
+  {
+   "prefix": "initial",
+   "n5_gloss_rewritten": 0
+  }
+ ],
+ "backfill": {
+  "status": "OK",
+  "n_added": null,
+  "n_requested": null,
+  "rounds": null,
+  "triggered": true
+ },
+ "backfill_raw_keys": [
+  "enabled",
+  "triggered",
+  "status",
+  "failure",
+  "E",
+  "N",
+  "prompt_id",
+  "prompt_sha256",
+  "prompts",
+  "model_id",
+  "response_id",
+  "attempts",
+  "added",
+  "surplus",
+  "dropped_by_stage"
+ ],
+ "presentable_filter": {
+  "version": "presentable_v1_2026-10-29",
+  "checked": 11,
+  "canonicalization_qa_dropped": 1,
+  "gloss_unresolved_dropped": 0,
+  "dropped_by_code": {
+   "rescue_unverified": 1
+  },
+  "presentable": 10,
+  "n_candidates": 10
+ },
+ "shortfall": true,
+ "n_llm_calls": 5,
+ "n_truncation_retries": 0,
+ "cost": {
+  "by_stage_jpy": {
+   "scaffold": 4.658,
+   "kp_n5_b1": 0.513,
+   "kp_n5_sel": 1.126,
+   "kp_gloss_alignment": 1.792,
+   "kp_rescue_gloss_realign": 0.156,
+   "kp_rescue_qa_rejudge": 0.403,
+   "kp_n5_gen5": 1.306,
+   "kp_n5_ver5": 2.7,
+   "kp_n5_chk5": 5.512
+  },
+  "total_jpy": 18.166,
+  "by_provider_jpy": {
+   "openai": 15.466,
+   "gemini": 2.7
+  }
+ },
+ "rows": [
+  {
+   "candidate_id": "p_8de00fd0a1",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "turn into an interrogation",
+   "display_phrase": "turn into an interrogation",
+   "used_form": "turn into",
+   "key_phrase": "turn into",
+   "japanese_gloss": "別の状態やものへ変化する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "turn into an interrogation",
+    "used_form": "turn into an interrogation",
+    "japanese_gloss": "尋問になる",
+    "japanese_gloss_tts": "尋問になる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "reasoning": "「turn into an interrogation」は自然で意味の通る表現で、動詞turnも基本形なのでそのまま維持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "会話が尋問のようなやり取りへ変わる比喩的な意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "A conversation becomes a forceful exchange of questions, like an interrogation.",
+     "naive_ja": "尋問に変わる",
+     "naive_ja_conveys": "yes",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_9252f11bef",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "hear it out",
+   "display_phrase": "hear it out",
+   "used_form": "hear someone out",
+   "key_phrase": "hear someone out",
+   "japanese_gloss": "人の話を最後まで聞く",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "PERSONIFIED_THING",
+    "PERSON_OVERRIDE",
+    "PRONOUN_SLOT"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "hear it out",
+    "used_form": "hear it out",
+    "japanese_gloss": "最後まで話を聞く",
+    "japanese_gloss_tts": "最後まで話を聞く",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "reasoning": "「hear it out」は「最後まで話を聞く」という自然な表現です。itは表現に必要な目的語で、一般化対象でもないため維持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "hear it outは、相手の話を最後まで聞くという慣用表現です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Listen to what someone has to say until they have finished.",
+     "naive_ja": "それを外まで聞く",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_1e059ed53a",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "taking points away",
+   "display_phrase": "taking points away",
+   "used_form": "take points away",
+   "key_phrase": "take points away",
+   "japanese_gloss": "点を差し引く",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": true,
+   "flags": [
+    "FIX_REJECTED",
+    "VER_FLAG"
+   ],
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "take points away",
+    "used_form": "take points away",
+    "japanese_gloss": "点を差し引く",
+    "japanese_gloss_tts": "点を差し引く",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "lemma_normalization",
+    "reasoning": "動詞takingを見出し語に近い基本形takeにしました。「points away」は点数を差し引く意味を保つため残します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "評価を点数に見立て、点を減らすという意味です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Subtract credit from something in a scoring system.",
+     "naive_ja": "点を取り去る",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_8bfbf07c5f",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "still on the job",
+   "display_phrase": "still on the job",
+   "used_form": "on the job",
+   "key_phrase": "on the job",
+   "japanese_gloss": "仕事や役割を果たしている状態で",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "CONTENT_DROPPED"
+   ],
+   "check_relation": "MODIFIER_DROPPED_OK",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "still on the job",
+    "used_form": "still on the job",
+    "japanese_gloss": "まだ役目を果たしている",
+    "japanese_gloss_tts": "まだ役目を果たしている",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「still on the job」は「まだ仕事をしている」という自然な表現です。theは慣用的な表現の一部なので削りません。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "物を人に見立て、まだ役割を担っているという意味で使われています。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Continue to perform a function or role.",
+     "naive_ja": "まだ仕事中",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_73a41b3e5b",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "relied on",
+   "display_phrase": "relied on",
+   "used_form": "rely on",
+   "key_phrase": "rely on",
+   "japanese_gloss": "人や物を頼りにする",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "rely on",
+    "used_form": "rely on",
+    "japanese_gloss": "頼りにする",
+    "japanese_gloss_tts": "頼りにする",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "lemma_normalization",
+    "reasoning": "動詞reliedを基本形relyにしました。「rely on」は目的語を後続させられる自然な学習単位で、依存・信頼するという意味を保ちます。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "思い出すための支えとして当てにすることを表します。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "Depend on someone or something for support.",
+     "naive_ja": "上に頼る",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_2f029c7f77",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "dismiss",
+   "display_phrase": "dismiss",
+   "used_form": "dismiss",
+   "key_phrase": "dismiss",
+   "japanese_gloss": "退ける",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_860360acc7",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "verdict",
+   "display_phrase": "verdict",
+   "used_form": "verdict",
+   "key_phrase": "verdict",
+   "japanese_gloss": "結論",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_321f0d969d",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "prosecutor",
+   "display_phrase": "prosecutor",
+   "used_form": "prosecutor",
+   "key_phrase": "prosecutor",
+   "japanese_gloss": "検察官",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_d3f0d26b7b",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "clutter",
+   "display_phrase": "clutter",
+   "used_form": "clutter",
+   "key_phrase": "clutter",
+   "japanese_gloss": "散らかった物",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_2a89f5d8ed",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "removal",
+   "display_phrase": "removal",
+   "used_form": "removal",
+   "key_phrase": "removal",
+   "japanese_gloss": "取り除くこと",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  }
+ ]
+}

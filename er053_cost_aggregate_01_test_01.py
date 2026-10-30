@@ -73,20 +73,21 @@ class PricingRoutingAdditionTests(unittest.TestCase):
     # 閉集合更新(委任_06 C-2、2026-10-22): FAMILY_X_B3_CORE_NUMBER_ROUNDING(gpt-6-luna、追加のみ)を追加
     NEW_KEYS = {"FAMILY_X_RF_LUNA", "FAMILY_X_RF_GEMINI", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE", "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
                 "STUDY_TEXT_GRAMMAR_EXTRACT", "STUDY_TEXT_GRAMMAR_EXPLAIN",   # 委任_03(2026-10-25): Part 2文法の2 process(SUPPORT_MODEL)
-                "NUANCE_EXPLANATION", "NUANCE_OVERLAP_JUDGE"}   # NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02A(2026-10-29): ニュアンス解説の2 process(SUPPORT_MODEL)
+                "NUANCE_EXPLANATION", "NUANCE_OVERLAP_JUDGE",
+                "KP_N5_VERIFY", "KP_N5_CHECK"}   # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01(2026-10-30): N5 VER5(gemini-3.8-flash)/CHK5(gpt-6.1-sol)   # NUANCE-EXPLANATION-PRODUCTION-WIRING-01 委任_02A(2026-10-29): ニュアンス解説の2 process(SUPPORT_MODEL)
 
     def test_pricing_addition_only_and_existing_entries_untouched(self):
         """git HEAD(C1適用前でもC1 commit後でも成立する形): gemini-3.5-flash-lite以外のエントリはHEADと完全一致、
         gemini-3.5-flash-lite は 3 meter(0.30/0.03/2.50)だけ追加されている。"""
         old = subprocess.run(["git", "show", "HEAD:er005_output/cost_baseline_01/pricing_snapshot.json"], cwd=HERE,
                              capture_output=True).stdout.decode("utf-8")
-        old_prices = [p for p in json.loads(old)["prices"] if p["model"] != self.NEW_MODEL]
+        old_prices = [p for p in json.loads(old)["prices"] if p["model"] not in (self.NEW_MODEL, "gemini-3.8-flash")]   # gemini-3.8-flash: N5 VER5単価追加(2026-10-30)
         new_all = json.load(open(os.path.join(HERE, "er005_output/cost_baseline_01/pricing_snapshot.json"), encoding="utf-8"))["prices"]
 
         def _strip_astra_note(ps):
             # C3-4(2026-10-10): gpt-6-astraのnote文言のみ更新(価格値・他キーは不変)。noteだけ比較から除く。
             return [{k: v for k, v in p.items() if not (p["model"] == "gpt-6-astra" and k == "note")} for p in ps]
-        self.assertEqual(_strip_astra_note([p for p in new_all if p["model"] != self.NEW_MODEL]), _strip_astra_note(old_prices))
+        self.assertEqual(_strip_astra_note([p for p in new_all if p["model"] not in (self.NEW_MODEL, "gemini-3.8-flash")]), _strip_astra_note(old_prices))
         added = [p for p in new_all if p["model"] == self.NEW_MODEL]
         self.assertEqual([(p["meter"], p["price"]) for p in added],
                          [("input_tokens", 0.3), ("cached_input_tokens", 0.03), ("output_tokens", 2.5)])

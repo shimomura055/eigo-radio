@@ -1645,6 +1645,11 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
                 _log.warning("kp_rescue provenance drift (resume keeps saved candidates): %s", d)
         except Exception as e:   # noqa: BLE001  log専用
             _log.warning("kp_rescue provenance check skipped: %s", type(e).__name__)
+        # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 (Opus M11): N5導入前に生成された候補doc(generalization marker無し)をresumeしても再生成はしない(API 0・HR確定済みは保護)。
+        # 旧方式で作られたdocであることだけlogに残す(停止しない。provenance driftと同型)。未確定docの扱い(再生成するか)はFable判断(OPEN_ITEMS記載)。
+        _gm = ((cands.get("generalization") or {}).get("method") or "")
+        if not str(_gm).startswith("N5@"):
+            _log.warning("kp_generalization N5 marker missing in saved candidates (pre-N5 doc; resume keeps saved candidates, not regenerated): kp_dir=%s", kp_dir)
     # 候補/reviewの整合(片方だけ・本文変更)
     if cands is not None and review is None:
         raise KpReviewInconsistent("候補ファイルだけがあり、reviewがありません(手動削除の疑い)。fail-closed。状況をFableへ報告してください")

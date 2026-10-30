@@ -13,6 +13,9 @@ call1=P7、call2=W5'(KP含有語は除外・1語のみ=not_single_word Gate)。�
 - 外側retry(M-7c): 補完ON(既定)では候補0件と技術失敗のretryだけ。補完OFF(EIGO_KP_BACKFILL=0)では従来どおり『AUTO採用できる有効件数が3未満かつGate除外または救済済みauto不可が発生』
   の場合も候補list全体を置き換える(roundに内mergeしない)。
 - 共有関数 sc.run_key_phrases は呼ばない。sc.run_key_phrase_selection / canonicalization / redundancy_qa は既存のまま再利用する。
+- KP一般化N5方式(KP-GENERALIZATION-N5-PRODUCTION-WIRING-01、2026-10-30ユーザー正式決定 APPROVED_FOR_PRODUCTION、er138): 既定ON・flagなし。
+  L1=call1(P7)直後に『P7∪B1過剰生成 -> 既存Gate -> SEL(塊価値判定) -> pick(cap7)』(`_generate_candidates_impl`、補完は`_run_backfill`内でSEL+pick)。
+  L3=`_gate_chain`内でcanonicalization直後・CMU post-canonの前に GEN5->VER5->CHK5(N5形=used_form=key_phrase、本文根拠=source_span)。除外はstage=n5_*(Opus M1/M3)。
 """
 from __future__ import annotations
 
@@ -34,6 +37,7 @@ import er119_kp_difficulty_01 as dg
 import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
 import er119_kp_p7w5_prompts_01 as p7w5
+import er138_kp_n5_generalization_01 as n5      # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01: Key Phrase一般化N5方式(既定ON・flagなし・X/Y/Z共通の1配線点)
 
 # R-5: 補完の人称整合(Z)の出力先を初回と分ける。person_repair_fnを返す側(er026のrunner等)は触らず、make_person_repair_fnが実行時にこの値を読む
 # (補完のGate連鎖の実行中だけ_run_backfillがセットし、終了時に必ず戻す)。既定None=従来のdir。
@@ -136,6 +140,51 @@ def run_vocab_selection(text: str, units: list, already_items: list, excluded: l
     return {"status": "FAILED", "kept": [], "dropped": [], "model_id": None, "response_id": None, "attempts": attempts, "messages": messages}
 
 
+def _make_pool_screen(ng_entries: list, excluded: list) -> Callable:
+    """N5 L1のB1過剰生成候補に課すHuman NG/累積除外の照合(Opus M2)。screen(phrase)-> 理由 or None。選定済みP7候補に課す`_screen_human_ng`・excluded照合と同じ基準。"""
+    ex_keys = {ft.phrase_key(e["phrase"]) for e in (excluded or [])}
+
+    def screen(phrase: str):
+        if ft.phrase_key(phrase) in ex_keys:
+            return "除外指定の語句(Human NG/累積除外)"
+        if rv.match_ng({"candidate_id": rv.candidate_id_for(phrase), "selection_phrase": phrase, "used_form": ""}, ng_entries) == "exact":
+            return "Humanが不適切(NG)と指定済み"
+        return None
+    return screen
+
+
+def _n5_person_factory(process: Optional[str]) -> Callable:
+    """N5後の(表示形, 訳)への既存人称整合の修復で使うLLM factory(X/Y用。Zはrunnerが渡すperson_repair_fnを使う)。Zの`_person_repair_factory`と同じrouting
+    (process=A2_SUPPORT/B1_SUPPORT -> SUPPORT_MODEL)。modelはcall時に確定する(不整合が無ければ呼ばれない=API 0)。"""
+    import er006_model_routing_contract_01 as routing
+
+    def factory(msg: str):
+        return ga.make_alignment_fn(msg, model=routing.require_model(process, routing.SUPPORT_MODEL))
+    return factory
+
+
+def _n5_l3_summary(res: dict, applied: list) -> dict:
+    """L3(GEN5->VER5->CHK5)の1回分の監査要約(doc.generalization / stages telemetry用)。"""
+    lg = res.get("log") or {}
+    rel, flags, rec = {}, {}, {}
+    for c in (res.get("kept") or {}).values():
+        r = (c.get("check") or {}).get("relation") or "NONE"   # NONE=CHK5対象外(revert済み等)。keyをstrに統一(doc保存はsort_keys=Trueでありkey=Noneは保存不可)
+        rel[r] = rel.get(r, 0) + 1
+        rc = c.get("reconcile") or "NONE"
+        rec[rc] = rec.get(rc, 0) + 1
+        for f in c.get("flags") or []:
+            flags[f] = flags.get(f, 0) + 1
+    by_stage = {}
+    for d in res.get("dropped") or []:
+        by_stage[d["stage"]] = by_stage.get(d["stage"], 0) + 1
+    kept = list((res.get("kept") or {}).values())
+    return {"targets": len(applied) + len(res.get("dropped") or []), "kept": len(kept), "dropped_by_stage": by_stage,
+            "reverted": sum(1 for c in kept if c.get("reverted")), "check_relation": rel, "flags": flags, "reconcile": rec,
+            "form_changed_vs_span": sum(1 for c in kept if " ".join((c["display_form"] or "").lower().split()) != " ".join((c["span"] or "").lower().split())),
+            "verify_missing": lg.get("verify_missing", 0), "check_missing_retry": lg.get("check_missing_retry"),
+            "check_missing_dropped": len(lg.get("check_missing_dropped") or []), "max_words_dropped": len(lg.get("max_words_dropped") or [])}
+
+
 def _canon_item_failures(work_dir: str) -> dict:
     """canonicalization INVALIDの項目別理由 {rank: [reasons]}。最終attemptのitem_reasonsのうちrankが特定できるものだけ(特定できない=構造不正はgate retryに任せる)。"""
     attempts = sc._kp_canon_reasons(work_dir) or []
@@ -198,7 +247,8 @@ def _screen_human_ng(originals: list, meta: list, ng_entries: list, dropped: lis
 
 def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], originals: list, meta: list, live: list, dropped: list, *,
                 ng_entries: list, canon_fn: Callable, src_fn: Optional[Callable], person_repair_fn: Optional[Callable],
-                stages: dict, stage_prefix: str = "") -> dict:
+                stages: dict, stage_prefix: str = "", n5_ctx: Optional["n5.N5Ctx"] = None, n5_l3_fn: Optional[Callable] = None,
+                n5_state: Optional[dict] = None) -> dict:
     """canonicalization(+gloss再整合)以降のGate連鎖(初回・補完で共通。R-6の純抽出)。外側ループの制御(continue/return)は持たず、statusを返す(M-6)。
     droppedは呼出側のlistへ破壊的に追記する(順序・内容は抽出前と同一)。
     returns {"status": "OK", "cands": [ai_rank未付与の候補]} | {"status": "CANON_FAILED", "canon_fail": canonicalization status}。"""
@@ -236,6 +286,35 @@ def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], o
         dropped.append({"raw_rank": meta[i]["raw_rank"], "phrase": meta[i]["selection_phrase"], "stage": stage,
                         "reasons": list(reasons), "origin": meta[i]["origin"]})
         items = [x for x in items if x["rank"] != rank]
+    # ---- N5 L3(KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 Opus M1): canonicalization直後・CMU post-canonの前に GEN5->VER5->CHK5(初回・補完とも同じこの1か所)。
+    # 対象=L1を通ったフレーズ(meta.n5_target)。単語(W5')は対象外。N5形=used_form=key_phrase、本文根拠(source_span)は無変更。除外はstage=n5_*(drop_rank)。
+    # n5_ctx=None(=N5段を呼ばない)は内部関数の直接呼出し(test)専用。正式経路(generate_candidates/_run_backfill)は必ずn5_ctxを渡す(静的testで固定)。
+    n5_applied = []
+    if n5_ctx is not None and items:
+        tg = []
+        for it in items:
+            m = meta[idx_of[it["rank"]]]
+            if not m.get("n5_target"):
+                continue
+            tg.append({"key": it["rank"], "span": m["selection_phrase"], "sentence": it.get("source_sentence") or "",
+                       "prod_gloss": (it.get("japanese_gloss") if m.get("n5_origin") != "B1" else None), "n5_origin": m.get("n5_origin") or "P7"})
+        if tg:
+            try:
+                res = (n5_l3_fn or n5.run_l3)(text, tg, n5_ctx)
+            except n5.N5TechnicalFailure as e:
+                return {"status": "CANON_FAILED", "canon_fail": f"N5_TECHNICAL_FAILURE: {str(e)[:300]}"}
+            for d in res["dropped"]:
+                if any(x["rank"] == d["key"] for x in items):
+                    drop_rank(d["key"], d["stage"], d["reasons"])
+            by_rank = {x["rank"]: x for x in items}
+            for rank, c in res["kept"].items():
+                if rank in by_rank:
+                    n5.apply_to_item(by_rank[rank], c, display_phrase=by_rank[rank].get("display_phrase"))
+                    n5_applied.append(rank)
+            summ = _n5_l3_summary(res, n5_applied)
+            stages[f"{stage_prefix}n5_l3"] = summ
+            if n5_state is not None:
+                n5_state.setdefault("l3", []).append({"prefix": stage_prefix or "initial", "summary": summ, "log": {k: v for k, v in (res.get("log") or {}).items() if k != "stages"}})
     # CMU post-canon
     chk = cmu.canonicalized_check(items)
     for b in chk["bad"]:
@@ -244,11 +323,26 @@ def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], o
     findings = sc.detect_key_phrase_symbol_findings(items)
     for rank in sorted({f["rank"] for f in findings if sc.safety.symbol_gate_requires_stop([f])}):
         drop_rank(rank, "symbol", [f"音声化禁止記号: {f.get('token')}" for f in findings if f["rank"] == rank])
-    # 人称整合(Z)
-    if person_repair_fn is not None and items:
-        mdoc = person_repair_fn({"items": items})
+    # 人称整合(Z=runnerのperson_repair_fn。X/Yは N5後の(表示形, 訳)の組に同じ既存人称整合[決定論check+必要時のみ既存align_glosses修復]を共通適用=Opus M5。
+    # gloss kill switch[EIGO_KP_GLOSS_ALIGNMENT=0]のときはX/Yの追加修復は行わない=従来のZと同じ扱い)
+    pr_fn = person_repair_fn
+    if pr_fn is None and n5_ctx is not None and n5_applied and ga.flag_enabled():
+        pr_fn = make_person_repair_fn(text, _n5_person_factory(process), work, article_id, subdir="n5_person_repair")
+    if pr_fn is not None and items:
+        before_gloss = {x["rank"]: x.get("japanese_gloss") for x in items}
+        mdoc = pr_fn({"items": items})
         by = {x["rank"]: x for x in mdoc["items"]}
         items = [by.get(x["rank"], x) for x in items]
+        n_rw = 0
+        for x in items:       # Opus M5: 人称整合の修復がN5(VER5/CHK5)確認済みglossを書き換えた件数を記録
+            if x.get("n5") and x.get("japanese_gloss") != before_gloss.get(x["rank"]):
+                x["n5"]["person_repair"] = {"gloss_before": before_gloss.get(x["rank"]), "gloss_after": x.get("japanese_gloss"),
+                                            "gloss_alignment_status": x.get("gloss_alignment_status")}
+                n_rw += 1
+        if n5_ctx is not None:
+            stages[f"{stage_prefix}n5_person_repair"] = {"n5_items": len(n5_applied), "n5_gloss_rewritten": n_rw}
+            if n5_state is not None:
+                n5_state.setdefault("person", []).append({"prefix": stage_prefix or "initial", "n5_gloss_rewritten": n_rw})
     # SRC D1(Z)
     if src_fn is not None and items:
         new_by, drop_by = src_fn(items)
@@ -358,7 +452,8 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                         person_repair_fn: Optional[Callable] = None, select_fn: Optional[Callable] = None,
                         canon_fn: Optional[Callable] = None, redundancy_fn: Optional[Callable] = None,
                         vocab_call_fn: Optional[Callable] = None, sleep_fn: Optional[Callable] = None,
-                        phrase_call_fn: Optional[Callable] = None, difficulty_fn: Optional[Callable] = None) -> dict:
+                        phrase_call_fn: Optional[Callable] = None, difficulty_fn: Optional[Callable] = None,
+                        n5_pool_fn: Optional[Callable] = None, n5_l3_fn: Optional[Callable] = None) -> dict:
     """returns {"ok": True, "doc": 候補doc(candidates_sha256未付与)} | {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": [...]}。
     作業はすべて <kp_dir>/kp_candidates/round_<n>/work/ 配下。<kp_dir>/keywords_canonicalized.json には触れない(M-1)。"""
     import er030_key_phrase_db_hybrid_core_01 as core
@@ -375,6 +470,7 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
     log, dropped_all = [], []
     cands_final = None
     outer = 0
+    n5_attempts = []        # N5の監査(attemptごとのL1/L3/人称整合/呼出meta[actual model・model_version・費用])。最終attemptをdoc.generalizationへ
     backfill_on = bf.backfill_enabled()      # 単一読取。生成1回につき1回だけ読み、docへ記録する(途中で変わっても同一生成内は不変)
     while True:
         outer += 1
@@ -399,6 +495,27 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
         call1 = list(sel["original_items"])
         # M-1: call1(P7)の最終attemptでitem単位に除外された句(CMU未登録・除外指定の再選択)もEに数える。er105は無変更でmetadataから読む
         call1_dropped = bf.read_call1_dropped(work, excluded) if backfill_on else []
+        # ---- N5 L1(KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 Opus M2): P7候補∪B1過剰生成 -> 既存Gate(本文一致/語数/CMU/NG) -> SEL -> pick(cap7)。
+        # 選ばれたフレーズ集合が以降のW5'(already_items)・補完(call1引数)・canonicalization・L3の入力になる。N5選別による除外はEに数えない(n5_pool/n5_select/n5_pick)。
+        n5_state = {"attempt": outer, "ctx": n5.N5Ctx(process, tag=f"round{round_no}:attempt{outer}:initial", stop_check_fn=stop_check_fn, sleep_fn=sleep_fn,
+                                                      article_id=article_id), "seen": set(), "l1": [], "l3": [], "person": []}
+        n5_attempts.append(n5_state)
+        try:
+            l1 = (n5_pool_fn or n5.pool_and_select)(text, call1, n5_state["ctx"], include_b1=True, units=units,
+                                                    screen_fn=_make_pool_screen(ng_entries, excluded), seen_keys=n5_state["seen"])
+        except n5.N5TechnicalFailure as e:
+            entry["failure"] = "n5_select_failed"
+            entry["n5_error"] = str(e)[:300]
+            log.append(entry)
+            if last:
+                return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
+            continue
+        n5_state["seen"] = set(l1.get("seen_keys") or set())
+        n5_state["l1"].append(l1["record"])
+        call1_p7 = call1
+        call1 = [p["item"] for p in l1["picked"]]
+        call1_dropped = list(call1_dropped) + list(l1["dropped"])
+        entry["n5_l1"] = {"p7_in": len(call1_p7), "picked": len(call1), "picked_origin": (l1["record"] or {}).get("picked_origin")}
         # ---- call 2: W5'(Key Word最大5件+理由。KP含有語は除外・1語のみ=not_single_word Gate)
         v2 = run_vocab_selection(text, units, call1, excluded, process=process, make_call_fn=vocab_call_fn, sleep_fn=sleep_fn,
                                  spec=p7w5.SPEC_W5P)
@@ -410,10 +527,11 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                 return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
             continue
         originals, meta, dropped = [], [], list(call1_dropped) + list(v2["dropped"])
-        for n, it in enumerate(call1, start=1):
+        for n, (it, pk) in enumerate(zip(call1, l1["picked"]), start=1):
             o = dict(it)
             originals.append(o)
-            meta.append({"origin": "call1", "raw_rank": n, "reason_ja": it.get("reason_ja", ""), "selection_phrase": it["display_phrase"]})
+            meta.append({"origin": "call1", "raw_rank": n, "reason_ja": pk.get("reason_ja") or it.get("reason_ja", ""), "selection_phrase": it["display_phrase"],
+                         "n5_target": True, "n5_origin": pk.get("n5_origin") or "P7"})
         extra = ft.build_original_items([k["resolved"] for k in v2["kept"]])
         for k, it in zip(v2["kept"], extra):
             originals.append(dict(it))
@@ -427,8 +545,10 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                 return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
             continue
         # ---- canonicalization(+gloss再整合)以降のGate連鎖(初回・補完で共通の_gate_chain)
+        n5_state["ctx"].tag = f"round{round_no}:attempt{outer}:initial"
         chain = _gate_chain(text, work, article_id, process, originals, meta, live, dropped, ng_entries=ng_entries, canon_fn=canon_fn,
-                            src_fn=src_fn, person_repair_fn=person_repair_fn, stages=entry["stages"])
+                            src_fn=src_fn, person_repair_fn=person_repair_fn, stages=entry["stages"], n5_ctx=n5_state["ctx"],
+                            n5_l3_fn=n5_l3_fn, n5_state=n5_state)
         if chain["status"] != "OK":
             entry["failure"] = f"canonicalization_{chain['canon_fail']}"
             log.append(entry)
@@ -448,7 +568,7 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                 text=text, units=units, work=work, article_id=article_id, process=process, round_no=round_no, outer=outer, cands=cands,
                 dropped=dropped, call1=call1, excluded=excluded, ng_entries=ng_entries, canon_fn=canon_fn, src_fn=src_fn,
                 person_repair_fn=person_repair_fn, stop_check_fn=stop_check_fn, vocab_call_fn=vocab_call_fn, phrase_call_fn=phrase_call_fn,
-                sleep_fn=sleep_fn, stages=entry["stages"])
+                sleep_fn=sleep_fn, stages=entry["stages"], n5_state=n5_state, n5_pool_fn=n5_pool_fn, n5_l3_fn=n5_l3_fn)
             cands = cands + new_cands
             dropped = dropped + bdropped
         else:
@@ -512,10 +632,26 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
            "backfill": backfill_rec,                     # F-2: 補完の記録(enabled/triggered/status/E[種類別]/N/added/surplus/dropped/sha/model_id)
            "presentable_filter": _presentable_telemetry(cands, dropped, log[-1] if log else {}),   # 仕様①telemetry(0件でも記録)
            "shortfall_detail": _shortfall_detail(cands, backfill_rec),
-           "difficulty_grading": difficulty_rec}      # KP-DIFFICULTY-4LEVEL-DISPLAY-01: 難易度判定の監査record(version/prompt sha/model_id/件数/fail-open)
+           "difficulty_grading": difficulty_rec,      # KP-DIFFICULTY-4LEVEL-DISPLAY-01: 難易度判定の監査record(version/prompt sha/model_id/件数/fail-open)
+           "generalization": _generalization_record(n5_attempts)}      # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01: N5方式marker・model/Prompt/設定・L1/L3記録(resume時のmarker検査に使う)
     with open(f"{work}/outer_retry_log.json", "w", encoding="utf-8") as f:
         json.dump({"attempts": log, "excluded_phrases": excluded}, f, ensure_ascii=False, indent=2)
     return {"ok": True, "doc": doc}
+
+
+def _generalization_record(attempts: list) -> dict:
+    """doc.generalization: 方式id・要求model・Prompt/schema sha・FLAGS_V1 hash(audit_record)+ 全attemptのL1/L3/人称整合/LLM呼出meta(actual model_id・Gemini model_version・
+    stage別token/費用・JSON途切れ再試行)。最終attempt=採用された候補の元。旧方式(N5前)で作られた候補docにはこのkeyが無い=resume時に検出できる。"""
+    rec = n5.audit_record()
+    rec["attempts"] = [{"outer_attempt": a.get("attempt"), "l1": a.get("l1"), "l3": a.get("l3"), "person_repair": a.get("person"),
+                        "llm_calls": a["ctx"].metas} for a in attempts]
+    rec["n_llm_calls"] = sum(len(a["ctx"].metas) for a in attempts)
+    rec["cost_jpy_by_stage"] = {}
+    for a in attempts:
+        for m in a["ctx"].metas:
+            k = m.get("stage")
+            rec["cost_jpy_by_stage"][k] = round(rec["cost_jpy_by_stage"].get(k, 0.0) + (m.get("cost_jpy") or 0.0), 4)
+    return rec
 
 
 def _presentable_telemetry(cands: list, dropped: list, last_entry: dict) -> dict:
@@ -566,7 +702,8 @@ def _contains_any(a: dict, b: dict) -> bool:
 def _run_backfill(*, text: str, units: list, work: str, article_id: str, process: Optional[str], round_no: int, outer: int, cands: list,
                   dropped: list, call1: list, excluded: list, ng_entries: list, canon_fn: Callable, src_fn: Optional[Callable],
                   person_repair_fn: Optional[Callable], stop_check_fn: Optional[Callable], vocab_call_fn: Optional[Callable],
-                  sleep_fn: Optional[Callable], stages: dict, phrase_call_fn: Optional[Callable] = None) -> tuple:
+                  sleep_fn: Optional[Callable], stages: dict, phrase_call_fn: Optional[Callable] = None, n5_state: Optional[dict] = None,
+                  n5_pool_fn: Optional[Callable] = None, n5_l3_fn: Optional[Callable] = None) -> tuple:
     """Gate除外候補の補完(ユーザー正式採用 §3-1〜3-3、DESIGN_02 + KP-PHRASE7-WORD5-PRODUCTION-01 DESIGN_02)。
     returns (backfill記録, 追加候補[ai_rank付き], 補完側のdropped)。初回の cands / dropped は変更しない(初回合格候補の保持)。
     補完は**種類別・直列・各1回**: フレーズ=P7(quota_phrase>0のとき)→単語=W5'(quota_word>0のとき)。各callは`run_vocab_selection`の一般化経路で
@@ -617,13 +754,33 @@ def _run_backfill(*, text: str, units: list, work: str, article_id: str, process
             if vb["status"] != "OK":
                 pr.update(status=bf.ST_FAILED, failure="selection_failed")
                 continue
+            extra = ft.build_original_items([k["resolved"] for k in vb["kept"]])
+            picks = None
+            if kd == bf.KIND_PHRASE and n5_state is not None:
+                # N5 L1(補完): P7補完が返したフレーズにSEL+pickのみ(B1過剰生成は初回のみ)。初回にjudge済み/採用済みの句は再判定しない(seen)。単語(W5')は対象外。
+                n5_state["ctx"].tag = f"round{round_no}:attempt{outer}:backfill"
+                try:
+                    l1b = (n5_pool_fn or n5.pool_and_select)(text, extra, n5_state["ctx"], include_b1=False, units=units,
+                                                             screen_fn=_make_pool_screen(ng_entries, excluded), seen_keys=n5_state["seen"], origin_label="P7")
+                except n5.N5TechnicalFailure as e:
+                    pr.update(status=bf.ST_FAILED, failure=f"technical:n5_select: {str(e)[:200]}")
+                    continue
+                n5_state["seen"] = set(l1b.get("seen_keys") or set())
+                n5_state["l1"].append(l1b["record"])
+                picks = l1b["picked"]
+                bdropped += [dict(d, origin="backfill") for d in l1b["dropped"]]
             pr.update(status=bf.ST_OK, n_kept=len(vb["kept"]), n_dropped=len(vb["dropped"]))
             n_ok += 1
             bdropped += [dict(d, origin="backfill") for d in vb["dropped"]]
-            extra = ft.build_original_items([k["resolved"] for k in vb["kept"]])
-            for k, it in zip(vb["kept"], extra):
-                originals.append(dict(it))
-                meta.append({"origin": "backfill", "raw_rank": k["raw_rank"], "reason_ja": k["reason_ja"], "selection_phrase": it["display_phrase"]})
+            if picks is None:
+                for k, it in zip(vb["kept"], extra):
+                    originals.append(dict(it))
+                    meta.append({"origin": "backfill", "raw_rank": k["raw_rank"], "reason_ja": k["reason_ja"], "selection_phrase": it["display_phrase"]})
+            else:
+                for n, pk in enumerate(picks, start=1):
+                    originals.append(dict(pk["item"]))
+                    meta.append({"origin": "backfill", "raw_rank": n, "reason_ja": pk.get("reason_ja") or "", "selection_phrase": pk["item"]["display_phrase"],
+                                 "n5_target": True, "n5_origin": pk.get("n5_origin") or "P7"})
         if n_ok == 0:                           # 呼んだ種類が全て失敗
             rec["failure"] = "call_selection_failed"
             return rec, [], []
@@ -638,8 +795,11 @@ def _run_backfill(*, text: str, units: list, work: str, article_id: str, process
         os.makedirs(bwork, exist_ok=True)
         token = _person_repair_subdir.set("backfill")        # R-5: 補完の人称整合は別dirへ(初回の監査用成果物を上書きしない)
         try:
+            if n5_state is not None:
+                n5_state["ctx"].tag = f"round{round_no}:attempt{outer}:backfill"
             chain = _gate_chain(text, bwork, article_id, process, originals, meta, live, bdropped, ng_entries=ng_entries, canon_fn=canon_fn,
-                                src_fn=src_fn, person_repair_fn=person_repair_fn, stages=stages, stage_prefix="backfill_")
+                                src_fn=src_fn, person_repair_fn=person_repair_fn, stages=stages, stage_prefix="backfill_",
+                                n5_ctx=(n5_state["ctx"] if n5_state is not None else None), n5_l3_fn=n5_l3_fn, n5_state=n5_state)
         finally:
             _person_repair_subdir.reset(token)
         if chain["status"] != "OK":

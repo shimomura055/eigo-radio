@@ -1,0 +1,12 @@
+# 公式runner CLI起動の記録(JST、手動記録)。規則: 300秒窓で最大2回・起動間隔150秒以上
+22:29:27 X run1 (scaffold-only kp) 有料。自コードのjson key=None不具合で終了(rc!=0)
+22:46:02 X run2 (同)
+22:48:58 Y run1 (--stage kp) style profile STOP(課金前、API 0)
+22:52:34 Y run2 (--stage kp) provenance seed_sha STOP(課金前、API 0)
+22:53:40 Y run3 (--stage kp + theme-package) ※run2から66秒後=間隔規則(>=150秒)違反。API 0のSTOP後の再起動であり有料呼出の重複は無い
+22:57:49 Y run4 (run_n5ev2; run_n5evのRESTART_STORM STOPは解除せず別名の新規dup dirで実施。API有料)
+23:00:29 Z run1 (after_twenty_years/run_n5ev --stages kp)
+23:00:29 Z run1 (after_twenty_years/run_n5ev) seed_sha provenance不一致でSTOP(課金前、API 0。複製元run_sf_prod_01のprovenanceが現行seedより古い)
+23:05:40 Z run2 (the_tell_tale_heart/run_n5ev --stages kp) 有料
+23:16:48 X run3 (resume確認。API 0想定)
+23:19:41 X run4 (reselect後の再生成 a2のみ。有料)

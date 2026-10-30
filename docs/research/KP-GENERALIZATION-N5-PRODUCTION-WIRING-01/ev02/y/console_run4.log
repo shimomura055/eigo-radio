@@ -1,0 +1,10 @@
+[Y-E2E] stage=kp mode=real ...
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+[KP_REVIEW_PENDING] Human Review待ちです: 文法(Part 2) + KP(失敗ではありません。有料の後続工程には進みません)。
+  - 文法(Part 2): 依頼書 er121_output/family_y_production_01/redelivery_fee/run_n5ev2/a2/study_text/grammar_human_review_request.md
+  - level=b1b: 依頼書 er121_output/family_y_production_01/redelivery_fee/run_n5ev2/key_phrases/b1b/kp_human_review_request.md
+  - level=a2: 依頼書 er121_output/family_y_production_01/redelivery_fee/run_n5ev2/key_phrases/a2/kp_human_review_request.md
+  まとめ(統合依頼書): er121_output/family_y_production_01/redelivery_fee/run_n5ev2/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er121_family_y_runner_01.py --slug redelivery_fee --run run_n5ev2 --stage kp --mode real --theme-package docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/THEME_DATA_02.json --reuse-manifest docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/theme_packages/redelivery_fee_reuse_01.json --approved-budget-jpy 20
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。

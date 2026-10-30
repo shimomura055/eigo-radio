@@ -1,0 +1,727 @@
+{
+ "route": "Y_a2",
+ "level": "a2",
+ "method": "N5@T3-2026-10-30",
+ "models_requested": {
+  "b1": "gpt-6-luna",
+  "sel": "gpt-6-luna",
+  "gen5": "gpt-6-luna",
+  "ver5": "gemini-3.8-flash",
+  "chk5": "gpt-6.1-sol"
+ },
+ "prompt_sha16": {
+  "B1": "97dd3c281a2858f3",
+  "SEL": "c9f7e85459fbbedd",
+  "GEN5": "f284d2d87eedbe7e",
+  "VER5": "e25540ebac7b86bc",
+  "CHK5": "5e643f0fc98c8944",
+  "CHUNK_DEFS_V3+EXTRA_RULES_V3": "325cf65ef1dc84f7",
+  "GEN5_EXTRA": "a4252120a6254001",
+  "GEN2_RULES": "32f51f3552ab3497",
+  "VER5_HEAD+VER5_ADD": "1483f97b92a40be9",
+  "CHK5_RULES": "b10a6edca5ed9737",
+  "schema": {
+   "B1": "e52f403cf3b4760f",
+   "SEL": "36612de032fba6b4",
+   "GEN5": "e158613928975289",
+   "VER5": "1164d51aa0682719",
+   "CHK5": "c5a05fed55bf59ea"
+  },
+  "FLAGS_V1_HASH": "3bba7ad2cc6a"
+ },
+ "wordnet_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+ "n_candidates": 11,
+ "n_n5": 6,
+ "word_count_dist_n5": {
+  "4": 1,
+  "2": 3,
+  "5": 1,
+  "3": 1
+ },
+ "actual_model_ids_by_stage": {
+  "b1": [
+   "gpt-6-luna"
+  ],
+  "sel": [
+   "gpt-6-luna"
+  ],
+  "gen5": [
+   "gpt-6-luna"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "gpt-6.1-sol"
+  ]
+ },
+ "model_versions_by_stage": {
+  "b1": [
+   "None"
+  ],
+  "sel": [
+   "None"
+  ],
+  "gen5": [
+   "None"
+  ],
+  "ver5": [
+   "gemini-3.8-flash"
+  ],
+  "chk5": [
+   "None"
+  ]
+ },
+ "dropped_by_stage": {
+  "n5_select": 1,
+  "cmu": 1,
+  "n5_generalize": 2,
+  "canonicalization_qa": 2,
+  "validate": 1
+ },
+ "pool_rejected_by_stage": {
+  "n5_pool": 7
+ },
+ "pool_rejected_by_reason": {
+  "既存Gate(CMU): CMU発音辞書に登録されていない語を含む(未登録語: ": 1,
+  "既存候補とspanが包含関係(重複)": 5,
+  "節の断片(関係詞・疑問詞始まり)は塊でない": 1
+ },
+ "l1": [
+  {
+   "include_b1": true,
+   "n_p7_in": 6,
+   "n_b1_returned": 12,
+   "pool_size": 11,
+   "n_judged": 11,
+   "n_keep": 6,
+   "n_picked": 6,
+   "picked_origin": {
+    "P7": 4,
+    "B1": 2
+   },
+   "pool_rejected_by_reason": {
+    "n5_pool": 7
+   }
+  },
+  {
+   "include_b1": false,
+   "n_p7_in": 4,
+   "n_b1_returned": 0,
+   "pool_size": 4,
+   "n_judged": 4,
+   "n_keep": 4,
+   "n_picked": 4,
+   "picked_origin": {
+    "P7": 4,
+    "B1": 0
+   },
+   "pool_rejected_by_reason": {}
+  }
+ ],
+ "l3_summaries": [
+  {
+   "targets": 6,
+   "kept": 4,
+   "dropped_by_stage": {
+    "n5_generalize": 2
+   },
+   "reverted": 0,
+   "check_relation": {
+    "MODIFIER_DROPPED_OK": 1,
+    "SAME": 3
+   },
+   "flags": {
+    "FRAME_MISMATCH": 1,
+    "PRONOUN_SLOT": 1,
+    "VER_FIXED_FORM": 1,
+    "FIX_REJECTED": 1
+   },
+   "reconcile": {
+    "FRAME_MISMATCH": 1,
+    "SAME": 3
+   },
+   "form_changed_vs_span": 2,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  },
+  {
+   "targets": 4,
+   "kept": 4,
+   "dropped_by_stage": {},
+   "reverted": 0,
+   "check_relation": {
+    "SAME": 3,
+    "MODIFIER_DROPPED_OK": 1
+   },
+   "flags": {
+    "CONTENT_DROPPED": 2
+   },
+   "reconcile": {
+    "SAME": 4
+   },
+   "form_changed_vs_span": 2,
+   "verify_missing": 0,
+   "check_missing_retry": null,
+   "check_missing_dropped": 0,
+   "max_words_dropped": 0
+  }
+ ],
+ "person_repair": [
+  {
+   "prefix": "initial",
+   "n5_gloss_rewritten": 0
+  },
+  {
+   "prefix": "backfill_",
+   "n5_gloss_rewritten": 0
+  }
+ ],
+ "backfill": {
+  "status": "OK",
+  "n_added": null,
+  "n_requested": null,
+  "rounds": null,
+  "triggered": true
+ },
+ "backfill_raw_keys": [
+  "enabled",
+  "triggered",
+  "status",
+  "failure",
+  "E",
+  "N",
+  "prompt_id",
+  "prompt_sha256",
+  "prompts",
+  "model_id",
+  "response_id",
+  "attempts",
+  "added",
+  "surplus",
+  "dropped_by_stage"
+ ],
+ "presentable_filter": {
+  "version": "presentable_v1_2026-10-29",
+  "checked": 15,
+  "canonicalization_qa_dropped": 2,
+  "gloss_unresolved_dropped": 0,
+  "dropped_by_code": {
+   "qa_fail": 1,
+   "rescue_unverified": 2
+  },
+  "presentable": 11,
+  "n_candidates": 11
+ },
+ "shortfall": true,
+ "n_llm_calls": 9,
+ "n_truncation_retries": 0,
+ "cost": {
+  "by_stage_jpy": {
+   "part2_expl_b1b": 0.112,
+   "part2_cand_a2": 0.385,
+   "part2_expl_a2": 0.169,
+   "kp": 3.894,
+   "kp_n5_b1": 0.32,
+   "kp_n5_sel": 0.554,
+   "kp_gloss_alignment": 1.718,
+   "kp_n5_gen5": 1.307,
+   "kp_n5_ver5": 2.276,
+   "kp_n5_chk5": 4.444,
+   "kp_rescue_gloss_realign": 0.101,
+   "kp_rescue_qa_rejudge": 0.373
+  },
+  "total_jpy": 15.653,
+  "by_provider_jpy": {
+   "openai": 13.378,
+   "gemini": 2.276
+  }
+ },
+ "rows": [
+  {
+   "candidate_id": "p_cae22ed992",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "end up getting it",
+   "display_phrase": "end up getting it",
+   "used_form": "end up getting something",
+   "key_phrase": "end up getting something",
+   "japanese_gloss": "結局、何かを手に入れることになる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "FRAME_MISMATCH",
+    "PRONOUN_SLOT",
+    "VER_FIXED_FORM"
+   ],
+   "check_relation": "MODIFIER_DROPPED_OK",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 4,
+   "canon_pre": {
+    "key_phrase": "end up getting it",
+    "used_form": "end up getting it",
+    "japanese_gloss": "結局受け取ることになる",
+    "japanese_gloss_tts": "結局受け取ることになる",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「end up + 動名詞」は自然な表現で、getting は構文上必要な形です。it は規則上一般化しないため、候補のまま保持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "end up は「結局そうなる」、get it は「それを受け取る」を表す。日本語では目的語を省いても意味が通じる。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To eventually receive something, despite what happened before.",
+     "naive_ja": "終わる、上に、それを得る",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_49a03b6ebd",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "takes up",
+   "display_phrase": "takes up",
+   "used_form": "take up",
+   "key_phrase": "take up",
+   "japanese_gloss": "時間や場所などを占める、費やす",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "take up",
+    "used_form": "take up",
+    "japanese_gloss": "時間を取る",
+    "japanese_gloss_tts": "時間を取る",
+    "changed_from_display_phrase": true,
+    "normalization_reason": "lemma_normalization",
+    "reasoning": "動詞 takes を見出し語形の take にし、句動詞の粒子 up は意味に必要なので残します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "ここでの take up は、時間を使わせたり占めたりする意味。日本語では「時間を取る」が自然。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To consume or occupy a portion of someone's time.",
+     "naive_ja": "取る、上へ",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_2805e747fb",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "take the time to think",
+   "display_phrase": "take the time to think",
+   "used_form": "take the time to think",
+   "key_phrase": "take the time to think",
+   "japanese_gloss": "時間をかけて考える",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "FIX_REJECTED"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 5,
+   "canon_pre": {
+    "key_phrase": "take the time to think",
+    "used_form": "take the time to think",
+    "japanese_gloss": "時間をかけて考える",
+    "japanese_gloss_tts": "時間をかけて考える",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「take the time to think」は不定詞句まで含めて自然で、考えるために時間を取るという意味を保つ単位です。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "考えることに時間を割く意味。直訳でも伝わるが、より自然な言い方にした。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To spend time deliberately considering something.",
+     "naive_ja": "考えるために時間を取る",
+     "naive_ja_conveys": "yes",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_9f42c71603",
+   "kind": "phrase",
+   "origin": "call1",
+   "source_span": "make an effort",
+   "display_phrase": "make an effort",
+   "used_form": "make an effort",
+   "key_phrase": "make an effort",
+   "japanese_gloss": "目標達成のために努力する",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 3,
+   "canon_pre": {
+    "key_phrase": "make an effort",
+    "used_form": "make an effort",
+    "japanese_gloss": "努力する",
+    "japanese_gloss_tts": "努力する",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「make an effort」は冠詞を含めて自然な定型表現であり、努力するという意味を過不足なく表します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "make an effort は、何かに力を入れて取り組むことを表す定型表現。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "To try seriously and put energy into doing something.",
+     "naive_ja": "努力を作る",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_fe25452dd8",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "encourages",
+   "display_phrase": "encourages",
+   "used_form": "encourage",
+   "key_phrase": "encourage",
+   "japanese_gloss": "やる気にさせる",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_df78d3c5d0",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "suits",
+   "display_phrase": "suits",
+   "used_form": "suit",
+   "key_phrase": "suit",
+   "japanese_gloss": "都合がいい",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "lemma_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_00cceb7181",
+   "kind": "word",
+   "origin": "call2",
+   "source_span": "errand",
+   "display_phrase": "errand",
+   "used_form": "errand",
+   "key_phrase": "errand",
+   "japanese_gloss": "ちょっとした用足し",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_93d6e3a74d",
+   "kind": "phrase",
+   "origin": "backfill",
+   "source_span": "after all",
+   "display_phrase": "after all",
+   "used_form": "after all",
+   "key_phrase": "after all",
+   "japanese_gloss": "結局は、予想に反してそうなる",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "none",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "after all",
+    "used_form": "after all",
+    "japanese_gloss": "結局",
+    "japanese_gloss_tts": "結局",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「after all」は自然な慣用表現として単独で成立しており、文脈限定語も含まないため、そのままにします。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "以前は別の方法を試していても、最後にはそうなるという意味なので、「結局」が自然です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "It indicates that something happens in the end despite earlier efforts or alternatives.",
+     "naive_ja": "すべての後で",
+     "naive_ja_conveys": "no",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_eeabd9e12b",
+   "kind": "phrase",
+   "origin": "backfill",
+   "source_span": "part of the general fee",
+   "display_phrase": "part of the general fee",
+   "used_form": "part of",
+   "key_phrase": "part of",
+   "japanese_gloss": "あるものの一部分を成す",
+   "n5": true,
+   "used_eq_key_eq_n5": true,
+   "gloss_eq_n5": true,
+   "reverted": false,
+   "flags": [
+    "CONTENT_DROPPED"
+   ],
+   "check_relation": "SAME",
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "n5_generalization",
+   "source_span_in_text": true,
+   "words_used_form": 2,
+   "canon_pre": {
+    "key_phrase": "part of the general fee",
+    "used_form": "part of the general fee",
+    "japanese_gloss": "通常料金の一部",
+    "japanese_gloss_tts": "通常料金の一部",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "reasoning": "「part of the general fee」は5語で自然な意味単位であり、theを除くと自然さが損なわれるため維持します。",
+    "kp_extends_beyond_candidate": false,
+    "gloss_alignment_status": "ALIGNED",
+    "gloss_alignment": {
+     "version": "ER-003-KP-GLOSS-ALIGN-02",
+     "status": "GLOSS_REALIGNED",
+     "original_japanese_gloss": null,
+     "current_gloss_consistent_verdict": false,
+     "reasoning": "全体の通常料金を構成する一部という意味です。「一般的な料金」より「通常料金」が自然です。",
+     "adopted_attempt": 1,
+     "added_word_mappings": [],
+     "machine_check_record_only": {
+      "required_words": [],
+      "covered": {},
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true,
+      "note": "必須内容語なし(機械検査対象外)"
+     },
+     "attempts_count": 1,
+     "meaning_stage": "applied",
+     "meaning_stage_path": "newgen_meaning_v1",
+     "meaning_in_text_en": "It means being included as one component of the ordinary overall charge.",
+     "naive_ja": "一般的な料金の一部",
+     "naive_ja_conveys": "partly",
+     "import_flags": [],
+     "gloss_equals_naive_ja": false
+    }
+   },
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_5ea9c348e5",
+   "kind": "word",
+   "origin": "backfill",
+   "source_span": "charge",
+   "display_phrase": "charge",
+   "used_form": "charge",
+   "key_phrase": "charge",
+   "japanese_gloss": "請求する",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  },
+  {
+   "candidate_id": "p_5fb801f2f3",
+   "kind": "word",
+   "origin": "backfill",
+   "source_span": "accept",
+   "display_phrase": "accept",
+   "used_form": "accept",
+   "key_phrase": "accept",
+   "japanese_gloss": "受け入れる",
+   "n5": false,
+   "used_eq_key_eq_n5": null,
+   "gloss_eq_n5": null,
+   "reverted": null,
+   "flags": null,
+   "check_relation": null,
+   "gloss_alignment_status": "ALIGNED",
+   "qa_overall_status": "PASS",
+   "normalization_reason": "inherit_selection_normalization",
+   "source_span_in_text": true,
+   "words_used_form": 1,
+   "canon_pre": null,
+   "person_repair_gloss": null
+  }
+ ]
+}

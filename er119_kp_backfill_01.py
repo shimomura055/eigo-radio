@@ -20,7 +20,11 @@ KILL_SWITCH_ENV = "EIGO_KP_BACKFILL"
 PHRASE_CAP = 7                       # 種類別上限(P7の最大件数)。er119_kp_p7w5_prompts_01.KP_PHRASE_MAXと一致(testで固定。本moduleはer105系をimportしない)
 WORD_CAP = 5                         # 種類別上限(W5'の最大件数)。er119_kp_p7w5_prompts_01.KP_WORD_MAXと一致
 # Prompt上限・種類別上限の切捨て=Gate除外ではない(現行も外側retry判定から除外、DESIGN_01 §2)。overflow_kindはM-2: 候補組立後の種類別cap強制
-NOT_COUNTED_STAGES = ("overflow", "overflow_kind")
+NOT_COUNTED_STAGES = ("overflow", "overflow_kind",
+                      # KP-GENERALIZATION-N5-PRODUCTION-WIRING-01(Opus M3): N5のL1(B1プールのGate除外・FRAG/包含dedupe=n5_pool、SEL非keep=n5_select、pick cap/重複=n5_pick)は
+                      # 「AIが選んだitemがGate除外された」ではなく選別なのでEに数えない(候補数を満たすための補充をしない)。Eに数えるのはpick後に失われた候補(n5_generalize/n5_verify/n5_check)のみ。
+                      # (er138.NOT_COUNTED_N5_STAGESと一致することをtestで固定。本moduleはer138をimportしない)
+                      "n5_pool", "n5_select", "n5_pick")
 # 外側retry条件のgate_dropped(M-2: NOT_COUNTED_STAGESを参照する単一の定義に統一。candidatesはこれを使う)
 GATE_DROP_EXEMPT_STAGES = NOT_COUNTED_STAGES + ("human_ng", "duplicate_of_top3", "excluded")
 STAGE_NOT_SINGLE_WORD = "not_single_word"     # W5'(call2)が返した複数語。Eには単語(kind=word)として数える
@@ -43,7 +47,7 @@ def is_propagating_exception(e: BaseException) -> bool:
     if isinstance(e, (KeyboardInterrupt, SystemExit)) or any(c.__name__ == "FulltextSelectionError" for c in type(e).__mro__):
         return True
     n = type(e).__name__
-    return "Stop" in n or "Sentinel" in n
+    return "Stop" in n or "Sentinel" in n or n == "ModelContractViolation"     # routing違反(er006)も握らず伝播(N5の別系列段を含む。KP-GENERALIZATION-N5-PRODUCTION-WIRING-01 Opus M7/M13)
 
 
 # ---- M-1: call1(Prompt 2)の最終attemptでitem単位に除外された句 -------------------------------------------------------------
