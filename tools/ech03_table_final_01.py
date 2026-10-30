@@ -22,8 +22,9 @@ def rows(pub):
             if p["kind"] not in KINDS:
                 continue
             paras = p.get("paragraphs") or []
-            n = len(paras)
-            txt = " ".join(x.get("text", "") if isinstance(x, dict) else str(x) for x in paras)
+            sents = [s for par in paras for s in (par if isinstance(par, list) else [par])]   # paragraphs = 段落のlist、各段落 = 文dictのlist
+            n = len(sents)
+            txt = " ".join(s.get("text", "") if isinstance(s, dict) else str(s) for s in sents)
             linked = sum(len(g["sids"]) for g in (p.get("ja_align") or []) if g.get("ja") is not None)
             if CJK.search(txt):
                 src = "日本語パートのため対象外"
