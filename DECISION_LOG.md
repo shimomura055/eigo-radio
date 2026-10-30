@@ -22920,3 +22920,5 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 2026-10-30 FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_07: ユーザー最終承認(雪女Std/Adv完成版を正式承認、追加Trial・再生成不要)→OPEN-616 CLOSED(USER_APPROVED)・作品台帳COMPLETED・Closeout(API 0)。原文=docs/pm/delegation_log/2026-10-30_FAMILY-Z-YUKI-ONNA-PRODUCTION-01_USER_FINAL.md。分類: ユーザー指示に基づく記録更新(新規判断なし)。
 
 - 2026-10-30 FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_07: ユーザーHR判断(⑨Std part3_k2の's発音を試聴確認→採用APPROVED_FOR_PRODUCTION、案件予算上限1,500円への引上げ承認[当該案件限り・流用不可])を反映し、⑨のdev試聴ページ+End Userを公開(実費¥0)。原文=docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_02.md。分類: ユーザー指示に基づく記録更新(新規判断なし)。OPEN-612。
+
+- 2026-10-30 KP-GENERALIZATION-CHUNK-VALUE-TRIAL-02 委任_03: Fable評価=Trial Closeout VALIDATED(Offline Trial、Production未配線)。推奨=E1L(塊判定Prompt強化のみ、費用中立)、E4は97%だが単価+10%。D維持/E1L/E4の採用はユーザー判断(UDR #228)。実費¥93.17/Cap¥120、API 0(記録のみ)。OPEN-621。
