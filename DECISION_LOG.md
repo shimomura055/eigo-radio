@@ -22876,3 +22876,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 理由: 音声・Voice割当・ASR・ページ組立の制作品質は問題なし。物語自体が日本語でも理解しづらく、矛盾する複数証言とセリフが入り混じる構成は英語学習用音声に不適(コンテンツ適性の問題)。
 - 対応: (1)正式リリースせず追加修正・再生成なし (2)成果物・検証記録は保存、不採用をSSOT/DECISION_LOGへ反映 (3)今後のZ作品選定は文学的評価・Voice多様性に加え「英語学習者が音声だけで理解できるか」を重視(OPEN-615) (4)不採用を理由にFamily Z全体の品質基準・Production仕様は無断変更しない(OPEN-596/602/607/608の配線・是正は有効)。
 - 分類: 制作技術上の失敗ではなく、作品選定段階での適性判断の失敗。OPEN-592=CLOSED/USER_REJECTED_CONTENT。UDR #218/#220系列の最終判断。コード・ページ・成果物は無変更、API 0。本案件最終累計API費用≒¥136.6。
+
+### 2026-10-30 ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_01: 英日連動ハイライト正式採用の原文保存・現状調査・設計(API 0)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ENDUSER-EN-JA-LINKED-HIGHLIGHT-01_USER.md`): End User視聴ページで英語文クリック再生時に対応する日本語訳も同時ハイライトする仕様をAPPROVED_FOR_PRODUCTION(目標PRODUCTION_WIRED、X/Y/Z・Std/Adv、既存+新規記事、追加Trial不要)。
+- 実施(コード変更0・API 0): 現状調査と設計(`docs/research/ENDUSER-EN-JA-LINKED-HIGHLIGHT-01/`)。結論: 文単位のEN-JA対応データは存在せず(訳は段落単位)、順序対応の成立はStd約15%/Adv約75%、長さのみのDPは誤対応を実測。設計=単調DP+埋め込み意味検証(誤ハイライトより非ハイライト)、`ja_align`オフセット方式(訳本文不変)、`highlight()`1点追加、新asset rev01-f+既公開5dirのAPI 0再produce。Zと非story部は日本語訳が無く連動対象外(別仕様)。
+- 分類: 承認済み新機能の配線(OPEN-618)。未配線。実装は設計のFable確認(+Opus条件A)後の委任_02。
