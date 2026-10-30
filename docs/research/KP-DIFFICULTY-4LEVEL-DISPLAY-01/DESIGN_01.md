@@ -40,3 +40,9 @@
 ## 5. 委任_02以降の計画
 
 1. 表示側(form_logic.js/index.html、02A完了後): バッジ+test(JS)+一括/単体/コピー整合。2. 精度検証(上記)。3. 正式runtime evidence(実run 1〜2レベルの`kp_candidates.json`の難易度付与・actual model_id・Prompt sha・cost logger)。4. X/Y/Z・Std/Advの適用確認(共通経路のためwiring testで3family確認+実run)。5. Fable受入、PRODUCTION_WIRED判定(§7 12項目)。
+
+## 6. Prompt較正記録(委任_04、2026-10-30): v1 -> v2(kp_difficulty_prompt_v2、sha 402d3b1aabd9...)
+
+- 変更=Prompt文言のみ(難/激難の定義具体化、易/中の再定義、規則5を「迷っても段階を下げない」へ)。方式・schema・fail-open・Gateでない性格は不変。
+- 根拠: held-out 68件(委任_02/03と記事重複なし)で (i)2段階乖離0 (ii)Sonnet難17件のうち10件(59%)を難と判定(v1は2件) (iii)ユーザー例は全て隣接以内(narrow down=中、難の一致は未達で記録) (iv)Std/Adv差<=1 (v)易の過剰流出0。gemini比較はX 29件のみ(Cap)で100%=v1と同率。詳細=EVIDENCE_04.md。
+- 経緯: v2案(委任_03、易/中境界のレバー)は(ii)=21%で不採用。本採用は別レバー(中/難・難/激難の定義具体化)。

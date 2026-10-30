@@ -334,6 +334,14 @@ class PromptIntactTest(unittest.TestCase):
         for w in ("rely on", "make room for", "narrow down"):
             self.assertNotIn(w, dg.PROMPT_TEXT)
 
+    def test_prompt_v2_calibration_pinned(self):
+        """委任_04: 較正案v3(難/激難の定義具体化)を採用。held-out 68件評価と同一Prompt(sha固定)。意図せぬ文言変更を検出する。"""
+        self.assertEqual(dg.PROMPT_SHA256, "402d3b1aabd9442e0ad95eef373172c85a803df54ab7782e6ada2405c3527265")
+        self.assertEqual((dg.DIFFICULTY_VERSION, dg.PROMPT_ID), ("kp_difficulty_v2", "kp_difficulty_prompt_v2"))
+        for w in ("比喩的・慣用的な句動詞/イディオム", "文語・文学語", "抽象語・概念語", "C1相当", "ネイティブでも日常ではまず使わない", "bear out", "obsequious"):
+            self.assertIn(w, dg.PROMPT_TEXT)
+        self.assertNotIn("迷ったときは極端な段階を避け", dg.PROMPT_TEXT)   # 旧v1規則5の撤去
+
 
 if __name__ == "__main__":
     unittest.main()

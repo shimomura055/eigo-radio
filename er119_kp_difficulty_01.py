@@ -19,8 +19,8 @@ import hashlib
 import json
 from typing import Any, Callable, Optional
 
-DIFFICULTY_VERSION = "kp_difficulty_v1"
-PROMPT_ID = "kp_difficulty_prompt_v1"
+DIFFICULTY_VERSION = "kp_difficulty_v2"
+PROMPT_ID = "kp_difficulty_prompt_v2"
 LEVELS = ("easy", "medium", "hard", "rare")
 UNKNOWN = "unknown"
 LABEL_JA = {"easy": "易", "medium": "中", "hard": "難", "rare": "激難(レア)", UNKNOWN: "未判定"}
@@ -28,21 +28,20 @@ MAX_ATTEMPTS = 2
 LEVEL_CONTEXT = {"a2": "Standard", "b1b": "Advanced"}
 
 PROMPT_TEXT = (
-    "あなたは日本人の英語学習者向けの教材編集者です。以下に示す学習項目(英語の単語・フレーズ)それぞれについて、"
-    "学習者にとっての**難易度を4段階**で判定してください。難易度は選定の合否を決めるものではなく、利用者が選ぶときの目安として表示されます。\n"
+    "あなたは日本人の英語学習者向けの教材編集者です。以下に示す学習項目(英語の単語・フレーズ)それぞれについて、学習者にとっての**難易度を4段階**で判定してください。難易度は選定の合否を決めるものではなく、利用者が選ぶときの目安として表示されます。\n"
     "\n"
     "4段階の定義:\n"
-    "- easy(易): 比較的基本的で習得しやすい表現。中学〜高校初級で習う語・熟語、日常会話で頻出する表現。\n"
-    "- medium(中): 一般的な英語学習で一定の習熟が必要な表現。ニュースや読み物に普通に出てくるが、意味・用法の理解に練習が要るもの。\n"
-    "- hard(難): 高度な語彙・熟語・用法の理解が必要な表現。抽象的・文語的・比喩的な用法、複数の意味を使い分ける句動詞・イディオムなど。\n"
-    "- rare(激難・レア): 特に高度、または使用頻度が低く特殊性の強い表現。専門的・文学的・古風・地域限定の語、ほとんど辞書でしか見ない表現。\n"
+    "- easy(易): 比較的基本的で習得しやすい表現。中学〜高校初級で習う基本語・基本句動詞(例: look for, get up, weather)。\n"
+    "- medium(中): 上のeasy・hard・rareのどれにも当たらない一般語・一般的な句動詞(例: come up with, reliable, take over)。ニュースや読み物に普通に出てくるもの。\n"
+    "- hard(難): 高度な語彙・熟語・用法の理解が必要な表現。次のいずれかに当たるものは原則hard: (a)比喩的・慣用的な句動詞/イディオムで、文字どおりの意味では全体の意味が取れないもの(例: bear out, brush off, throw in the towel) (b)文語・文学語、書き言葉で使われる語(例: hideous, linger, gaze) (c)抽象語・概念語(例: disparity, leverage, resilience) (d)辞書で上級(C1相当)の語義・用法として載るもの。\n"
+    "- rare(激難・レア): 特に高度、または使用頻度が低く特殊性の強い表現。稀な文学語・専門語・古風な表現で、ネイティブでも日常ではまず使わないもの(例: doff, perspicacious, obsequious)。\n"
     "\n"
     "判定の方針:\n"
     "1. 単語数や文字数だけで判定しない。短くても難しい語(例: 多義の句動詞)や、長くても易しい表現がある。\n"
     "2. 次を総合して直感的に判定する: 表現の使用頻度 / 語彙・熟語としての難しさ / 意味・用法の習得難易度 / 特殊性・希少性。\n"
     "3. 「この記事の学習レベル」(Standard/Advanced)は境界例の参考にとどめ、表現そのものの難しさを基準にする。\n"
     "4. 基準の目安(例): easy=look for, weather / medium=come up with, reliable / hard=stave off, disparity / rare=doff, perspicacious。\n"
-    "5. 迷ったときは極端な段階を避け、より近い段階を選ぶ。全項目に必ず1つの段階を付ける。\n"
+    "5. 上の定義に当てはまる項目は、迷っても段階を下げず該当する段階を付ける(hardの条件(a)〜(d)に当たるものをmediumにしない)。全項目に必ず1つの段階を付ける。\n"
     "6. 各項目に、判定理由を日本語で1文(30字以内)添える。\n"
     "\n"
     "出力: 入力された全項目のidを1回ずつ、入力と同じ順で返す。"
