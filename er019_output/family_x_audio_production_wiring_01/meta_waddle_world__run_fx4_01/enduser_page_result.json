@@ -1,7 +1,7 @@
 {
  "ok": true,
  "family": "X",
- "enduser_dir": "C:\\Users\\tensh\\wt_fx4_07\\user_test\\family_x_meta_waddle_world_01\\enduser",
+ "enduser_dir": "C:\\Users\\tensh\\fx10wt\\user_test\\family_x_meta_waddle_world_01\\enduser",
  "files": [
   "app.js",
   "build_info.json",
@@ -18,12 +18,12 @@
    "min_row_ratio": 0.913,
    "cost": {
     "api_calls": 0,
-    "wall_s": 0.8,
+    "wall_s": 0.7,
     "asr_transcribed": 0,
     "cached_segments": 14,
     "model": "medium"
    },
-   "wall_s": 0.8
+   "wall_s": 0.7
   },
   "adv": {
    "gate": "PASS",
@@ -74,8 +74,8 @@
    },
    "oneline": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    }
   },
   "adv": {
@@ -86,13 +86,13 @@
    },
    "preview": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    },
    "comment": {
     "blocks": 4,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 4,
+    "source": "generated"
    },
    "story": {
     "blocks": 3,
@@ -101,44 +101,74 @@
    },
    "oneline": {
     "blocks": 1,
-    "translated": 0,
-    "source": "none_approved_translation_hidden"
+    "translated": 1,
+    "source": "generated"
    }
   }
  },
  "dev_index_sha256": "7e455e2da4defde092f24d1ec1b20f6a6e87d285a88ed188358a8a67c1103ebe",
- "enduser_index_sha256": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
- "total_wall_s": 5.7,
+ "enduser_index_sha256": "d2c3c5495889bea1b539d46bc68f6af6dd02c01ecbde4f108eef741028e75c2a",
+ "total_wall_s": 57.5,
  "api_calls": 0,
  "browser_verify": {
   "rc": 0,
-  "result": "C:\\Users\\tensh\\eigo-radio\\er019_output\\family_x_audio_production_wiring_01\\meta_waddle_world__run_fx4_01\\enduser_page_result_browser.json"
+  "result": "er019_output\\family_x_audio_production_wiring_01\\meta_waddle_world__run_fx4_01\\enduser_page_result_browser.json"
+ },
+ "generated_translation": {
+  "enabled": true,
+  "parts": 7,
+  "failures": [],
+  "api_calls": {
+   "translate": 7,
+   "verify": 7
+  },
+  "cost_jpy": 0.9431,
+  "cache_hits": 0
+ },
+ "judge": {
+  "model": "gpt-6-luna",
+  "prompt_sha256": "75dd28ec852a8951aedd28118f796c4005908ab8be835455b7f417c0ffab3f77",
+  "calls": 0,
+  "pairs": 0,
+  "ok": 0,
+  "cache_hits": 0,
+  "failures": []
  },
  "ja_align": {
   "coverage": {
    "std": {
-    "story_parts": 3,
-    "sentences_total": 38,
-    "sentences_linked": 31,
-    "groups_total": 33,
-    "groups_null": 6,
+    "story_parts": 4,
+    "sentences_total": 40,
+    "sentences_linked": 34,
+    "groups_total": 35,
+    "groups_null": 5,
     "reasons": {
      "paragraph_floor_cos": 4,
-     "cos_low": 1,
-     "group_shift_margin": 1
+     "cos_low": 1
     },
-    "coverage": 0.8158
+    "linked_by_how": {
+     "order": 13,
+     "dp": 18,
+     "soft": 1,
+     "gen": 2
+    },
+    "coverage": 0.85
    },
    "adv": {
-    "story_parts": 3,
-    "sentences_total": 35,
-    "sentences_linked": 33,
-    "groups_total": 33,
+    "story_parts": 9,
+    "sentences_total": 47,
+    "sentences_linked": 45,
+    "groups_total": 45,
     "groups_null": 1,
     "reasons": {
      "number_mismatch": 1
     },
-    "coverage": 0.9429
+    "linked_by_how": {
+     "gen": 12,
+     "order": 23,
+     "dp": 10
+    },
+    "coverage": 0.9574
    }
   },
   "degraded": [],

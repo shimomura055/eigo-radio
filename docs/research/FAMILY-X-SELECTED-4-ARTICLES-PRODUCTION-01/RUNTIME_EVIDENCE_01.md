@@ -338,3 +338,8 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 - End User: origin/main最新のer135(asset rev01-f)をworktreeから`hook_run`(cache再利用、api_calls 0): consistency ok、verify 226項目 NG 0(PC+mobile模擬)。`run07/enduser_produce.log`。
 - 費用: 本委任 ¥0(raw_usage_log無変化)。案件累計≒¥452.7/Cap¥500。本日JST累計(`daily_cost.py 2026-10-29T15:00:00`)=¥346.0(集計対象: 全cost/usage log)。
 - live(公開後): dev index.html 200・mp3 47/47が200(`run07/live_mp3_status.txt`)・Playwright live 47/47再生/console error 0/http>=400 0/`=====` 0(`run07/page_verify_dev_live.json`)。End User live: `enduser/index.html` 200、`er135 verify-only --base-url`(PC+mobile模擬)226項目 NG 0(`run07/enduser_verify_live.json`)。
+
+## 委任_10(2026-10-30): ⑨ latter HR承認反映・End User rev01-g再produce
+- stop_scope_check rc=0(開始時・有料前)。作業基点=origin/main 89343d65e、一時worktree(C:/Users/tensh/fx10wt)。run dir実データ(wav等ignored)は作業木からコピー。
+- HR反映: fx4h_hr_adopt_meta_vocab3.py dry-run OK(sha 1c033d17一致)→--apply(承認原文=docs/pm/delegation_log/2026-10-30_FX4-LATTER-APPROVAL_STATEMENT.txt)→ vocab_audio.json complete=true・vocab_b1b_1〜4.mp3・review_lock RESOLVED/HUMAN_APPROVED。API 0。
+- End User: 1回目(.env無しでtranslate失敗7part)→2回目(.envコピー、生成訳14 call ¥0.94、7part生成)。起動時刻=run10/launch_times.txt。Playwright PC+mobile TOTAL 246 NG 0(run10/enduser_produce2.log)。ejh03b_diff_gate OK(build_info.ja_manuscript.sha256はworktreeのCRLF checkoutでの見かけ差分[LF正規化sha 4d8496fe…が従来値と同一]のため従来値に戻した)。dev index.html sha 7e455e2d…不変(LF正規化)。
