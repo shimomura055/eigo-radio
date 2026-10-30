@@ -33,7 +33,20 @@ def attempt(msg, ssot, files):
             shutil.copy2(os.path.join(ROOT, f), dst)
         targets = []
         if ssot.get("open"):
-            upsert_line(os.path.join(wt, "OPEN_ITEMS.md"), "| OPEN-618 |", ssot["open"], after_key="| OPEN-6"); targets.append("OPEN_ITEMS.md")
+            op = os.path.join(wt, "OPEN_ITEMS.md")
+            no = ssot.get("open_no", "618")
+            if ssot.get("restore_from"):   # 他Workerの行を誤って上書きした場合の復元: 指定commitの同番号行を戻す
+                rk, rc = ssot["restore_key"], ssot["restore_from"]
+                orig = [l for l in sh("git", "show", rc + ":OPEN_ITEMS.md", cwd=ROOT).split("\n") if l.startswith(rk)][0]
+                Lr = open(op, encoding="utf-8").read().split("\n")
+                ix = [i for i, l in enumerate(Lr) if l.startswith(rk)]
+                assert ix and "KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01" in Lr[ix[0]][:200], "復元対象行が想定と異なる"
+                Lr[ix[0]] = orig
+                open(op, "w", encoding="utf-8", newline="\n").write("\n".join(Lr))
+            key = "| OPEN-%s |" % no
+            ex = [l for l in open(op, encoding="utf-8").read().split("\n") if l.startswith(key)]
+            assert not ex or "KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01" in ex[0][:200], "他Workerの行を上書きしようとしている: " + key
+            upsert_line(op, key, ssot["open"], after_key="| OPEN-6"); targets.append("OPEN_ITEMS.md")
         if ssot.get("dl"):
             upsert_line(os.path.join(wt, "DECISION_LOG.md"), "- 2026-10-30 | KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01-DECISION-01", ssot["dl"], after_first_line=True); targets.append("DECISION_LOG.md")
         if ssot.get("at"):

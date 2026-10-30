@@ -42,7 +42,7 @@ li.ok{border-color:#2a8a3a}li.ng{border-color:#c33;background:#fff2f2}.g{color:#
 .ok-t{color:#1a7a2a;font-weight:bold}.ng-t{color:#c22;font-weight:bold}details{margin:8px 0}summary{cursor:pointer;font-weight:bold}code{background:#eee;padding:0 3px}"""
     h = [f'<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Key Phrase 一般化・塊価値 品質改善Trial 比較</title><style>{css}</style></head><body>']
     h.append("<h1>Key Phrase候補の一般化・塊としての学習価値 品質改善Trial(比較ページ)</h1>")
-    h.append('<p class="note"><b>これはTrial(検証)の比較ページです。Production(本番)は変更していません。</b>結果が良好でも自動採用はされません(採用はユーザー判断)。管理ID=KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01 / OPEN-618。</p>')
+    h.append('<p class="note"><b>これはTrial(検証)の比較ページです。Production(本番)は変更していません。</b>結果が良好でも自動採用はされません(採用はユーザー判断)。管理ID=KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01 / OPEN-619。</p>')
     # summary
     tot = {m: [0, 0] for m in MN}
     agg = {}

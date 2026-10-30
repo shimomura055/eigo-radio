@@ -1,6 +1,6 @@
 # RESULT_01: Key Phrase選定・一般化 品質改善Trial(KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01 委任_01)
 
-原文=`docs/pm/delegation_log/2026-10-30_KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01_USER.md` / OPEN-618 / Trial専用・Production変更0 / 比較ページ=https://shimomura055.github.io/eigo-radio/user_test/kp_generalization_trial_01/ (公開確認は報告参照)
+原文=`docs/pm/delegation_log/2026-10-30_KP-GENERALIZATION-CHUNK-VALUE-TRIAL-01_USER.md` / OPEN-619 / Trial専用・Production変更0 / 比較ページ=https://shimomura055.github.io/eigo-radio/user_test/kp_generalization_trial_01/ (公開確認は報告参照)
 
 ## 1. 結論・Trial Closeout Status(案)
 
