@@ -22922,3 +22922,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 2026-10-30 FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01 委任_07: ユーザーHR判断(⑨Std part3_k2の's発音を試聴確認→採用APPROVED_FOR_PRODUCTION、案件予算上限1,500円への引上げ承認[当該案件限り・流用不可])を反映し、⑨のdev試聴ページ+End Userを公開(実費¥0)。原文=docs/pm/delegation_log/2026-10-30_FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01_USER_HR_02.md。分類: ユーザー指示に基づく記録更新(新規判断なし)。OPEN-612。
 
 - 2026-10-30 KP-GENERALIZATION-CHUNK-VALUE-TRIAL-02 委任_03: Fable評価=Trial Closeout VALIDATED(Offline Trial、Production未配線)。推奨=E1L(塊判定Prompt強化のみ、費用中立)、E4は97%だが単価+10%。D維持/E1L/E4の採用はユーザー判断(UDR #228)。実費¥93.17/Cap¥120、API 0(記録のみ)。OPEN-621。
+
+### 2026-10-30 ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03A: 英日連動ハイライトの全パート適用(整列改善・対象一覧・訳生成の統合[既定OFF]・公開7dir再produce)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ENDUSER-EN-JA-LINKED-HIGHLIGHT-01_USER_02.md`): 適用範囲をX/Y/Z x Story/Comment/Preview/In One Line(Std/Adv、存在するパート)へ拡大、既存データで対応が分かる場合は埋め込みAPIを無条件に実行しない、Familyごとにパートを省略しない。
+- 判断(Fable方針に従い実施): (1)対応が構造から確定する段落(片側1文)は決定論(埋め込み0)、文数一致は順序対応+矛盾検出、残りはDP+埋め込み(+周辺確率)。(2)訳が既にあるのはX/Y storyのみ。他パートは`missing`/`na_ja_only`として連動N/Aを明示(build_info.link_targets)。(3)訳が無い部分の生成は「無い部分だけ生成する」設計をコード+mock試験まで統合し、既定では生成しない(llm未受渡し)。実生成・実LLM確認・Previewの訳表示asset(rev01-g)は委任_03B。
+- 結果: gold誤対応0・合成ずらし0。coverage 71.3->83.0%(gold調整3記事)/85.2->91.9%(未見)/88.2->93.4%(ig)。公開7dir再produce(API 0)、diff Gate OK、Playwright全件NG0。不具合是正: 埋め込みメモリ上ベクトルと保存値の丸め差(verify不一致)。ユーザー判断: 可視性UI(D、継続)のみ。

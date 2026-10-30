@@ -136,7 +136,8 @@ def evaluate(params: dict | None = None, unseen: bool = False, arts: tuple | Non
                         continue
                     syn_total += 1
                     why, _f = px.screen(i0, i1, a, b)
-                    if why is None:
+                    # 本流と同じ採否: 通常の採用 または DP周辺確率による追加採用(soft。委任_03A)
+                    if why is None or (why in AL.SOFT_ELIGIBLE and px.marg(i0, i1, a, b) >= P["soft_p"]):
                         syn_acc += 1
         # 文数一致の段落: 隣接する誤ったペア(E_i, J_(i+1))を1:1経路の採否(screen_equal)に通して棄却率を見る
         eq_total, eq_acc = 0, 0
@@ -150,21 +151,23 @@ def evaluate(params: dict | None = None, unseen: bool = False, arts: tuple | Non
                 why, _f = px.screen_equal(i, None, i + 1)
                 eq_acc += 1 if why is None else 0
         # 段落取り違え(同記事・同level内の別段落JAと組合せ)
-        cross_emitted, cross_total = 0, 0
+        cross_emitted, cross_total, cross_det = 0, 0, 0
         for a in G:
             for b in G:
                 if a == b or a[0] != b[0] or a[1] != b[1]:
                     continue
                 res = AL.align_paragraph(T[a][0], T[b][1], st, P)
                 cross_total += 1
-                cross_emitted += sum(1 for g in res if g["ja"] is not None)
+                # how=det(片側1文の構造確定)は意味検査をしない設計(段落対応は上流が保証)なので、段落取り違えの検査対象は埋め込み経路(det以外)のみ。detは別計上
+                cross_emitted += sum(1 for g in res if g["ja"] is not None and g.get("how") != "det")
+                cross_det += sum(1 for g in res if g["ja"] is not None and g.get("how") == "det")
         tt = sum(v["total"] for v in per_lv.values())
         ll = sum(v["linked"] for v in per_lv.values())
         cov = lambda v: round(v["linked"] / v["total"], 4) if v["total"] else None   # noqa: E731
         return {"params": P, "paragraphs": len(G), "en_sentences": tt, "gold_groups": sum(len(g) for g in G.values()), "emitted_groups": ngroups,
                 "wrong_groups": wrong, "synthetic_total": syn_total, "synthetic_accepted": syn_acc, "equal_mode_wrong_pairs_total": eq_total, "equal_mode_wrong_pairs_accepted": eq_acc,
                 "coverage": round(ll / tt, 4), "coverage_by_level": {k: cov(v) for k, v in per_lv.items()}, "coverage_by_article": {k: cov(v) for k, v in per_art.items()},
-                "counts_by_article": per_art, "counts_by_level": per_lv, "cross_pairs": cross_total, "cross_emitted": cross_emitted}
+                "counts_by_article": per_art, "counts_by_level": per_lv, "cross_pairs": cross_total, "cross_emitted": cross_emitted, "cross_emitted_det_by_design": cross_det}
     finally:
         shutil.rmtree(td, ignore_errors=True)
 

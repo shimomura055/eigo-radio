@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02 (M6): 既公開dirの再produce前後の差分Gate(API 0)。
 
-許可する差分 = ja_align / build_info(asset_build・files・assets・ja_align・cost・warnings) / asset(app.js・style.css。index.htmlは同一)。
+許可する差分 = ja_align / build_info(asset_build・files・assets・ja_align・link_targets・generated_translation・cost・warnings) / asset(app.js・style.css。index.htmlは同一)。
 それ以外(dev index.html・音声・sync_*.json・article.jsonのja_align以外・build_infoの上記以外のkey)に差分があればNG。
 旧(基準)はgit HEAD。使い方: .venv\\Scripts\\python.exe tools\\ejh02_diff_gate_01.py <公開dir> [<公開dir> ...]
 """
@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BI_ALLOWED = {"asset_build", "files", "assets", "ja_align", "cost", "warnings", "episode_check"}
+BI_ALLOWED = {"asset_build", "files", "assets", "ja_align", "cost", "warnings", "episode_check", "link_targets", "generated_translation"}
 NL = lambda b: b.replace(b"\r\n", b"\n")   # noqa: E731  (git autocrlfの改行差は無視)
 
 

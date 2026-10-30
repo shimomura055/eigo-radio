@@ -477,6 +477,23 @@ def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, 
             bad3.append((sid, st["eup"].get("active"), st["onJhl"], st["onSent"]))
     page.evaluate("document.getElementById('aud').pause()")
     rec("J", pre + f"J3_click_lights_only_mapped_group_{len(pick)}", not bad3, bad3[:3])
+    # ---- J3b story以外(Preview/Comment/In One Line。訳が生成された部分)も、各partの先頭の対応済みの文をクリックして同じ規則で点灯する(委任_03A: 全パート適用) ----
+    other = [pt for pt in L["parts"] if pt["kind"] != "story" and pt.get("ja_align") and pt.get("paragraphs")]
+    bad3b, picked_b = [], 0
+    for pt in other:
+        mapped = [s_["sid"] for pa in pt["paragraphs"] for s_ in pa if s_["sid"] in sid2key]
+        if not mapped:
+            continue
+        picked_b += 1
+        page.evaluate("document.getElementById('aud').pause()")
+        page.click(f'[data-sid="{mapped[0]}"]')
+        page.wait_for_timeout(450)
+        st = page.evaluate(_STATE_JS)
+        if not _consistent(st, sid2key):
+            bad3b.append((pt["key"], mapped[0], st["eup"].get("active"), st["onJhl"], st["onSent"]))
+    page.evaluate("document.getElementById('aud').pause()")
+    if other:
+        rec("J", pre + f"J3b_click_lights_mapped_group_in_non_story_parts_{picked_b}", not bad3b, bad3b[:3])
     # ---- J4 全文走査: 全sidを再生位置に置いて点灯が常にデータ通り(null群は一度も点灯しない) ----
     bad4, nlit, n = [], 0, 0
     for r in sync:

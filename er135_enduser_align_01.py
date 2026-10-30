@@ -24,7 +24,7 @@ from pathlib import Path
 
 import numpy as np
 
-ALIGN_METHOD = "mono_dp_embed_v1"
+ALIGN_METHOD = "tiered_dp_embed_v2"
 EMBED_MODEL = "text-embedding-3-large"
 EMBED_DIMS = 1024
 EMBED_CACHE_NAME = "ja_align_embed_v1.jsonl"
@@ -44,11 +44,26 @@ PARAMS = {
     "delta_sent": 0.0,     # 同: EN各文のcos余裕(own - max alt)。ゴールドの合成ずらし336件を全棄却する主条件
     "delta_group_en": -0.10,  # EN範囲を1文ずらした案(shift/伸縮)の方が群cosで0.10以上上回るなら棄却(緩い拒否。ホールドアウトig合成ずらし1/94の取りこぼしを受けて追加)
     "delta_sent_en": -0.10,   # 同: JA各文について
-    "eq_delta_ja": 0.0,    # 文数一致の段落(1:1経路)のJA側: 隣のJA文より自分の対応文がcosで上回る余裕
-    "eq_delta_en": 0.0,    # 同: EN側(JA文から見て隣のEN文より自分の対応文が上回る余裕)
     "tau_para": 0.55,      # 段落平均cos下限
     "tau_floor": 0.40,     # 段落内の群cos最小値の下限(下回ると段落全体null)
+    # --- 委任_03A(2026-10-30)追加 ---
+    # 構造確定(how=det): 片側が1文の段落(EN1文xJA n文 / EN n文xJA1文)は、段落対応が既に確定している(attach_translationsが段落数一致を保証)ため
+    # 埋め込みを呼ばず段落全体を1群にする。安全検査=数字集合・固有名・EN/JA文字数比が帯内(公開済み12段落は比1.7-3.3)。不通過は埋め込み経路(dp)へ。
+    "det_len_lo": 1.2,     # EN総文字数/JA総文字数 の下限
+    "det_len_hi": 6.0,     # 同 上限
+    # 文数一致の段落(how=order): 順序対応を既定とし、埋め込みは『明確な矛盾の検出』にのみ使う(DP経路が全て1:1のとき)。
+    "eq_tau": 0.30,        # 対応ペアcosの下限(公開済み203ペアの最小0.351)
+    "eq_margin": 0.03,     # 隣の文との比較: 自分の対応cosが、同行/同列の他候補cosを0.03以上下回るときだけ矛盾として棄却
+    "tau_para_eq": 0.45,   # 文数一致の段落: 段落平均cosの下限
+    # DP周辺確率(how=soft): 既存の境界ずらし検査で棄却された群のうち、全経路の周辺確率が高いものを追加採用(cos・数字・固有名・段落整合は従来どおり必須)
+    "soft_T": 0.20,        # 周辺確率の温度(コストをTで割る)
+    "soft_p": 0.95,        # 周辺確率の下限
+    "judge_tau": 0.30,     # LLM確認(既定OFF)に回すDP候補のcos下限
 }
+GENERATED = "generated"
+HOWS = ("det", "order", "dp", "soft", "judge", "gen", "none")      # gen=訳を文ID単位で生成した部分(構成上1:1。ja_align生成時に確定)
+JUDGE_ELIGIBLE = ("cos_low", "group_shift_margin", "sent_shift_margin", "group_shift_margin_en", "sent_shift_margin_en", "path_margin")
+SOFT_ELIGIBLE = ("group_shift_margin", "sent_shift_margin", "group_shift_margin_en", "sent_shift_margin_en", "path_margin")
 MOVES = ((1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (3, 1))
 
 
@@ -249,9 +264,12 @@ class EmbedStore:
             lines = []
             for t, v in zip(batch, vecs):
                 a = np.asarray(v, dtype=np.float64)
-                a = (a / (np.linalg.norm(a) or 1.0)).astype(np.float32)
-                self.mem[_key(t)] = a
-                lines.append(json.dumps({"k": _key(t), "v": [round(float(x), 6) for x in a]}))
+                a = a / (np.linalg.norm(a) or 1.0)
+                rv = [round(float(x), 6) for x in a]
+                # メモリ上のベクトルも『保存値(6桁丸め)->float32』と同一にする。丸め前のfloat32を使うと、同じ生成直後のalignとキャッシュ再読込後のverifyで
+                # 境界値(cos差がちょうど閾値付近)の採否が1回だけ食い違う(委任_03A: ②std_19/adv_18のverify_consistency不一致の原因)。
+                self.mem[_key(t)] = np.asarray(rv, dtype=np.float32)
+                lines.append(json.dumps({"k": _key(t), "v": rv}))
             if self.dir:
                 self.dir.mkdir(parents=True, exist_ok=True)
                 with open(self.dir / EMBED_CACHE_NAME, "a", encoding="utf-8", newline="\n") as f:
@@ -338,6 +356,48 @@ class _Para:
         self.lj = [len(t) for t in ja_texts]
         self.r = sum(self.le) / max(1, sum(self.lj))
         self._g: dict = {}
+        self._sm = None
+
+    def marg(self, i0, i1, j0, j1) -> float:
+        """単調DPの全経路(各moveの重み exp(-cost/soft_T))のうち、群(i0,i1,j0,j1)を通る経路の確率(前向き・後向き)。"""
+        if (i1 - i0, j1 - j0) not in MOVES:
+            return 0.0                                  # DPのmoveに無い形(例: EN5文xJA1文)の群は経路に現れない
+        if self._sm is None:
+            P, n, m = self.P, self.n, self.m
+            moves = MOVES + ((1, 0), (0, 1))
+            T = P["soft_T"]
+
+            def w(i, j, di, dj):
+                return -(self.cost(i, i + di, j, j + dj) if di and dj else P["skip"]) / T
+
+            def lse(v):
+                mx = max(v)
+                return mx + math.log(sum(math.exp(x - mx) for x in v))
+            NEG = float("-inf")
+            al = [[NEG] * (m + 1) for _ in range(n + 1)]
+            be = [[NEG] * (m + 1) for _ in range(n + 1)]
+            al[0][0] = 0.0
+            for i in range(n + 1):
+                for j in range(m + 1):
+                    if (i, j) == (0, 0):
+                        continue
+                    v = [al[i - di][j - dj] + w(i - di, j - dj, di, dj) for di, dj in moves if i - di >= 0 and j - dj >= 0 and al[i - di][j - dj] > NEG]
+                    if v:
+                        al[i][j] = lse(v)
+            be[n][m] = 0.0
+            for i in range(n, -1, -1):
+                for j in range(m, -1, -1):
+                    if (i, j) == (n, m):
+                        continue
+                    v = [be[i + di][j + dj] + w(i, j, di, dj) for di, dj in moves if i + di <= n and j + dj <= m and be[i + di][j + dj] > NEG]
+                    if v:
+                        be[i][j] = lse(v)
+            self._sm = (al, be, w)
+        al, be, w = self._sm
+        z = al[self.n][self.m]
+        if z == float("-inf") or al[i0][j0] == float("-inf") or be[i1][j1] == float("-inf"):
+            return 0.0
+        return math.exp(al[i0][j0] + w(i0, j0, i1 - i0, j1 - j0) + be[i1][j1] - z)
 
     def gv(self, kind, a, b):
         k = (kind, a, b)
@@ -369,25 +429,25 @@ class _Para:
         return f
 
     def screen_equal(self, i, name_map=None, j=None) -> tuple:
-        """文数一致の段落(EN n文==JA n文)でDP経路が全て1:1のとき、i番目のペアの採否。
-        1:1が事前に強い(ゴールド41段落・154ペアで全て恒等)ため、境界ずらし案は同サイズの隣接ずらし(JA側 j+-1 / EN側 i+-1)に限る。
-        JA側: E_iはJ_iを隣のJ_(i+-1)より上回る / EN側: J_iはE_iを隣のE_(i+-1)より上回る(相互最良)。"""
+        """文数一致の段落(EN n文==JA n文)でDP経路が全て1:1のとき、i番目のペアの採否(how=order)。
+        順序対応が既定。埋め込みは明確な矛盾の検出にだけ使う: (a)cos>=eq_tau (b)数字・固有名 (c)自分の対応cosが、同じEN文の他のJA文との比較・
+        同じJA文の他のEN文との比較で eq_margin 以上は下回らない(相互最良に近い)。公開済み203ペアは全て恒等(順序対応が正解)。"""
         P = self.P
         j = i if j is None else j                      # j!=iは検証用(誤った隣接ペアの棄却確認)
         own = self.cos(i, i + 1, j, j + 1)
-        aj = [self.cos(i, i + 1, x, x + 1) for x in (j - 1, j + 1) if 0 <= x < self.m]
-        ae = [self.cos(k, k + 1, j, j + 1) for k in (i - 1, i + 1) if 0 <= k < self.n]
+        aj = [self.cos(i, i + 1, x, x + 1) for x in range(self.m) if x != j]
+        ae = [self.cos(k, k + 1, j, j + 1) for k in range(self.n) if k != i]
         f = {"own": own, "gm_ja": own - max(aj) if aj else 9.0, "sm_ja": own - max(aj) if aj else 9.0,
              "gm_en": own - max(ae) if ae else 9.0, "sm_en": own - max(ae) if ae else 9.0}
-        if own < P["tau"]:
+        if own < P["eq_tau"]:
             return "cos_low", f
         if not numbers_ok(self.en[i], self.ja[j]):
             return "number_mismatch", f
         if not names_ok(self.en[i], self.ja[j], name_map):
             return "name_mismatch", f
-        if f["gm_ja"] < P["eq_delta_ja"]:
+        if f["gm_ja"] < -P["eq_margin"]:
             return "equal_shift_margin_ja", f
-        if f["gm_en"] < P["eq_delta_en"]:
+        if f["gm_en"] < -P["eq_margin"]:
             return "equal_shift_margin_en", f
         return None, f
 
@@ -414,46 +474,78 @@ class _Para:
         return None, f
 
 
-def align_paragraph(en_texts: list, ja_texts: list, store: EmbedStore, params: dict = PARAMS, name_map=None, with_diag: bool = False):
-    """1段落(EN文list, JA文list)を対応づける。返り値=groups=[{'en':[i..],'ja':(j0,j1)|None,'conf':float,'why':str}] (ENの全文を順に含む)。
+def structural_groups(en_texts: list, ja_texts: list, params: dict = PARAMS, name_map=None):
+    """構造確定(how=det): EN1文 または JA1文 の段落は段落全体が1群。埋め込み不要。安全検査(数字・固有名・文字数比)不通過は None(=埋め込み経路へ)。
+    (attach_translationsが『EN段落i<->JA段落i』を保証するため、片側1文なら文の対応は構造から一意に決まる)"""
+    P = params
+    n, m = len(en_texts), len(ja_texts)
+    if n == 0 or m == 0 or min(n, m) != 1:
+        return None
+    t_en, t_ja = " ".join(en_texts), "".join(ja_texts)
+    if not t_ja.strip():
+        return None
+    r = len(t_en) / max(1, len(t_ja))
+    if not (P["det_len_lo"] <= r <= P["det_len_hi"]):
+        return None
+    if not numbers_ok(t_en, t_ja) or not names_ok(t_en, t_ja, name_map):
+        return None
+    return [{"en": list(range(n)), "ja": (0, m), "conf": 1.0, "why": "ok", "how": "det"}]
+
+
+def paragraph_embed_texts(en_texts: list, ja_texts: list, params: dict = PARAMS, name_map=None) -> list:
+    """この段落の対応づけに埋め込みが要るテキスト(構造確定の段落は空=API 0)。"""
+    if not en_texts or not ja_texts or structural_groups(en_texts, ja_texts, params, name_map) is not None:
+        return []
+    return list(en_texts) + list(ja_texts)
+
+
+def align_paragraph(en_texts: list, ja_texts: list, store: EmbedStore, params: dict = PARAMS, name_map=None, with_diag: bool = False, judge=None):
+    """1段落(EN文list, JA文list)を対応づける。返り値=groups=[{'en':[i..],'ja':(j0,j1)|None,'conf':float,'why':str,'how':str}] (ENの全文を順に含む)。
+    how: det=構造確定(片側1文。埋め込み0) / order=文数一致の順序対応(埋め込みは矛盾検出のみ) / dp=単調DP+埋め込み / soft=DP周辺確率で追加採用 /
+         judge=DP候補をLLMが確認して追加採用(judge=None[既定]では呼ばれない。委任_03Bまで未使用) / none=不成立。
     JA文は[j0,j1)の連続区間。ja=Noneは非ハイライト。with_diag=Trueは(groups, diag)。"""
     P = params
     n, m = len(en_texts), len(ja_texts)
     if n == 0:
         return ([], {}) if with_diag else []
     if m == 0:
-        g = [{"en": [i], "ja": None, "conf": 0.0, "why": "no_ja"} for i in range(n)]
+        g = [{"en": [i], "ja": None, "conf": 0.0, "why": "no_ja", "how": "none"} for i in range(n)]
         return (g, {}) if with_diag else g
+    det = structural_groups(en_texts, ja_texts, P, name_map)
+    if det is not None:
+        return (det, {"total": 0.0, "para_fail": None, "tier": "det"}) if with_diag else det
     px = _Para(en_texts, ja_texts, store, P)
     total, edges = _dp(n, m, px.cost, P["skip"])
     if edges is None:
-        g = [{"en": [i], "ja": None, "conf": 0.0, "why": "no_path"} for i in range(n)]
+        g = [{"en": [i], "ja": None, "conf": 0.0, "why": "no_path", "how": "none"} for i in range(n)]
         return (g, {}) if with_diag else g
     groups = []
     equal_mode = n == m and edges == [(i, i + 1, i, i + 1) for i in range(n)]
+    how = "order" if equal_mode else "dp"
     for (i0, i1, j0, j1) in edges:
         if i1 == i0:
             continue                                    # JAのみ未対応
         if j1 == j0:
-            groups.append({"en": list(range(i0, i1)), "ja": None, "conf": 0.0, "why": "unpaired_en"})
+            groups.append({"en": list(range(i0, i1)), "ja": None, "conf": 0.0, "why": "unpaired_en", "how": how})
             continue
         why, f = px.screen_equal(i0, name_map) if equal_mode else px.screen(i0, i1, j0, j1, name_map)
         pm = None
-        if why is None:
+        if why is None and not equal_mode:
             alt_total, _ = _dp(n, m, px.cost, P["skip"], excl={(i0, i1, j0, j1)})
             pm = alt_total - total
             if pm < P["delta_path"]:
                 why = "path_margin"
-        groups.append({"en": list(range(i0, i1)), "ja": (j0, j1) if why is None else None, "conf": round(f["own"], 4), "why": why or "ok",
+        groups.append({"en": list(range(i0, i1)), "ja": (j0, j1) if why is None else None, "conf": round(f["own"], 4), "why": why or "ok", "how": how,
                        "_cand": (j0, j1), "_pm": pm, "_f": f})
     # 段落全体の整合: 候補群の平均cosと最小cos。不成立なら全群null
     cands = [g for g in groups if g.get("_cand")]
     para_fail = None
     if cands:
         cs = [g["conf"] for g in cands]
-        if sum(cs) / len(cs) < P["tau_para"]:
+        tp, tf = (P["tau_para_eq"], 0.0) if equal_mode else (P["tau_para"], P["tau_floor"])
+        if sum(cs) / len(cs) < tp:
             para_fail = "paragraph_mean_cos"
-        elif min(cs) < P["tau_floor"]:
+        elif min(cs) < tf:
             para_fail = "paragraph_floor_cos"
     else:
         para_fail = "no_candidate"
@@ -461,8 +553,26 @@ def align_paragraph(en_texts: list, ja_texts: list, store: EmbedStore, params: d
         for g in groups:
             if g["ja"] is not None:
                 g["ja"], g["why"] = None, para_fail
+    elif not equal_mode:
+        # DP周辺確率(soft): 境界ずらし検査/経路余裕で棄却された群のうち、全経路の周辺確率が soft_p 以上のものを追加採用(cos・数字・固有名は screen 済み)
+        for g in groups:
+            if g["ja"] is None and g.get("_cand") and g["why"] in SOFT_ELIGIBLE:
+                j0, j1 = g["_cand"]
+                if px.marg(g["en"][0], g["en"][-1] + 1, j0, j1) >= P["soft_p"]:
+                    g["ja"], g["why"], g["how"] = (j0, j1), "soft", "soft"
+    # LLM確認(M8、既定OFF): 棄却された群のうち cos>=judge_tau のDP候補だけを(段落ごとに1 call)LLMに確認し、okだけ採用(新しい対応は作らない)
+    if judge is not None and not para_fail and not equal_mode:
+        pend = [g for g in groups if g["ja"] is None and g.get("_cand") and g["why"] in JUDGE_ELIGIBLE and g["conf"] >= P["judge_tau"]
+                and numbers_ok(" ".join(en_texts[i] for i in g["en"]), "".join(ja_texts[g["_cand"][0]:g["_cand"][1]]))
+                and names_ok(" ".join(en_texts[i] for i in g["en"]), "".join(ja_texts[g["_cand"][0]:g["_cand"][1]]), name_map)]
+        if pend:
+            oks = judge(en_texts, ja_texts, [(g["en"], g["_cand"]) for g in pend])
+            if len(oks) == len(pend):
+                for g, ok in zip(pend, oks):
+                    if ok is True:
+                        g["ja"], g["why"], g["how"] = g["_cand"], "judge", "judge"
     out = groups if with_diag else [{k: v for k, v in g.items() if not k.startswith("_")} for g in groups]
-    return (out, {"total": total, "para_fail": para_fail}) if with_diag else out
+    return (out, {"total": total, "para_fail": para_fail, "tier": how}) if with_diag else out
 
 
 # ------------------------------------------------------------
@@ -475,25 +585,26 @@ def part_input_sha(part: dict) -> str:
     return hashlib.sha256(json.dumps(obj, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
 
 
-def part_texts(part: dict) -> list:
-    """このpartの埋め込み対象テキスト(EN文+JA文)。"""
+def part_texts(part: dict, name_map=None) -> list:
+    """このpartの対応づけで埋め込みが必要なテキスト(EN文+JA文)。構造確定(片側1文)の段落は含めない=埋め込みAPIを呼ばない。"""
     out = []
-    for pa in part.get("paragraphs", []):
-        out += [s["text"] for s in pa]
-    for t in part.get("ja") or []:
-        out += [t[a:b].strip() for a, b in split_ja(t)]
+    paras, jas = part.get("paragraphs", []), part.get("ja") or []
+    if len(paras) != len(jas):
+        return out
+    for pa, t in zip(paras, jas):
+        out += paragraph_embed_texts([s["text"] for s in pa], [t[a:b].strip() for a, b in split_ja(t)], PARAMS, name_map)
     return out
 
 
-def align_part(part: dict, store: EmbedStore, params: dict = PARAMS, name_map=None) -> tuple:
+def align_part(part: dict, store: EmbedStore, params: dict = PARAMS, name_map=None, judge=None) -> tuple:
     """(ja_align list, stats)。part['ja']とparagraphs必須。段落数不一致は全null(stats.para_mismatch)。"""
     paras, jas = part["paragraphs"], part["ja"]
     try:
-        store.ensure(part_texts(part))                  # 未キャッシュ分だけ埋め込み。失敗した段落は下で個別にdegraded(全null)
+        store.ensure(part_texts(part, name_map))        # 未キャッシュ分だけ埋め込み(構造確定の段落は不要)。失敗した段落は下で個別にdegraded(全null)
     except AlignEmbedError:
         pass
     groups_out, g = [], 0
-    stats = {"sentences": 0, "linked": 0, "groups": 0, "groups_null": 0, "reasons": {}, "para_mismatch": len(paras) != len(jas), "degraded": []}
+    stats = {"sentences": 0, "linked": 0, "groups": 0, "groups_null": 0, "reasons": {}, "by_how": {}, "para_mismatch": len(paras) != len(jas), "degraded": []}
     for pi, pa in enumerate(paras):
         en_texts = [s["text"] for s in pa]
         stats["sentences"] += len(pa)
@@ -503,12 +614,12 @@ def align_part(part: dict, store: EmbedStore, params: dict = PARAMS, name_map=No
             ja_texts = [jas[pi][a:b].strip() for a, b in segs]
             map_u16 = cp_to_u16(jas[pi])
             try:
-                res = align_paragraph(en_texts, ja_texts, store, params, name_map)
+                res = align_paragraph(en_texts, ja_texts, store, params, name_map, judge=judge)
             except AlignEmbedError as e:
-                res = [{"en": [i], "ja": None, "conf": 0.0, "why": "degraded_embed"} for i in range(len(pa))]
+                res = [{"en": [i], "ja": None, "conf": 0.0, "why": "degraded_embed", "how": "none"} for i in range(len(pa))]
                 stats["degraded"].append(f"{part['key']}#p{pi}: {e}")
         else:
-            res = [{"en": [i], "ja": None, "conf": 0.0, "why": "para_mismatch"} for i in range(len(pa))]
+            res = [{"en": [i], "ja": None, "conf": 0.0, "why": "para_mismatch", "how": "none"} for i in range(len(pa))]
         for grp in res:
             sids = [pa[i]["sid"] for i in grp["en"]]
             ja = None
@@ -520,7 +631,7 @@ def align_part(part: dict, store: EmbedStore, params: dict = PARAMS, name_map=No
                 while b_cp > a_cp and txt[b_cp - 1].isspace():
                     b_cp -= 1
                 ja = [pi, map_u16[a_cp], map_u16[b_cp]]
-            groups_out.append({"g": g, "sids": sids, "ja": ja, "conf": float(grp["conf"])})
+            groups_out.append({"g": g, "sids": sids, "ja": ja, "conf": float(grp["conf"]), "how": grp.get("how", "dp") if ja is not None else grp.get("how", "none")})
             g += 1
             stats["groups"] += 1
             if ja is None:
@@ -528,18 +639,19 @@ def align_part(part: dict, store: EmbedStore, params: dict = PARAMS, name_map=No
                 stats["reasons"][grp["why"]] = stats["reasons"].get(grp["why"], 0) + 1
             else:
                 stats["linked"] += len(sids)
+                stats["by_how"][grp.get("how", "dp")] = stats["by_how"].get(grp.get("how", "dp"), 0) + len(sids)
     return groups_out, stats
 
 
-def build_article_align(article: dict, store: EmbedStore, name_map=None) -> dict:
+def build_article_align(article: dict, store: EmbedStore, name_map=None, judge=None) -> dict:
     """article['levels'][lv]['parts'][*]['ja_align'] を付与する(in place)。
     返り値=build_info.ja_align: {method,model,dims,params,applicable,coverage{lv:{...}},input_sha256{lv:{key:sha}},degraded[],embedding{...}}"""
     cov, shas, degraded = {}, {}, []
     texts = []
     for L in article["levels"].values():
         for p in L["parts"]:
-            if p.get("ja") and p.get("paragraphs"):
-                texts += part_texts(p)
+            if p.get("ja") and p.get("paragraphs") and p.get("ja_source") != GENERATED:
+                texts += part_texts(p, name_map)
     emb_err = None
     if texts:
         try:
@@ -547,12 +659,18 @@ def build_article_align(article: dict, store: EmbedStore, name_map=None) -> dict
         except AlignEmbedError as e:
             emb_err = str(e)
     for lv, L in article["levels"].items():
-        c = {"story_parts": 0, "sentences_total": 0, "sentences_linked": 0, "groups_total": 0, "groups_null": 0, "reasons": {}}
+        c = {"story_parts": 0, "sentences_total": 0, "sentences_linked": 0, "groups_total": 0, "groups_null": 0, "reasons": {}, "linked_by_how": {}}
         shas[lv] = {}
         for p in L["parts"]:
             if not (p.get("ja") and p.get("paragraphs")):
                 continue
-            al, st = align_part(p, store, PARAMS, name_map)       # 欠けた埋め込みの段落は個別にdegraded(全null)
+            if p.get("ja_source") == GENERATED:                      # 生成訳: 文ID単位で生成されjaを確定済み(構成上1:1・埋め込み0)。再整列しない
+                al = p.get("ja_align") or []
+                st = {"sentences": sum(len(pa) for pa in p["paragraphs"]), "linked": sum(len(g["sids"]) for g in al if g.get("ja")),
+                      "groups": len(al), "groups_null": sum(1 for g in al if not g.get("ja")), "reasons": {}, "by_how": {"gen": sum(len(g["sids"]) for g in al if g.get("ja"))},
+                      "para_mismatch": False, "degraded": []}
+            else:
+                al, st = align_part(p, store, PARAMS, name_map, judge=judge)       # 欠けた埋め込みの段落は個別にdegraded(全null)
             p["ja_align"] = al
             shas[lv][p["key"]] = part_input_sha(p)
             c["story_parts"] += 1
@@ -562,6 +680,8 @@ def build_article_align(article: dict, store: EmbedStore, name_map=None) -> dict
             c["groups_null"] += st["groups_null"]
             for k, v in st["reasons"].items():
                 c["reasons"][k] = c["reasons"].get(k, 0) + v
+            for k, v in st["by_how"].items():
+                c["linked_by_how"][k] = c["linked_by_how"].get(k, 0) + v
             degraded += st["degraded"]
             if st["para_mismatch"]:
                 degraded.append(f"{lv} {p['key']}: EN段落数とJA段落数が不一致(全null)")
@@ -640,9 +760,60 @@ def check_part_align(part: dict, label: str) -> list:
         if (pi, a) < last_ja:
             V.append(f"{label} g{k}: JA範囲が単調でない/重なる")
         last_ja = (pi, b)
-        if not isinstance(conf, (int, float)) or conf < PARAMS["tau"]:
-            V.append(f"{label} g{k}: confが閾値({PARAMS['tau']})未満なのにjaあり")
+        how = g.get("how")
+        if how is not None and how not in HOWS:
+            V.append(f"{label} g{k}: howが不正({how})")
+        lim = {"det": 1.0, "gen": 1.0, "order": PARAMS["eq_tau"], "judge": PARAMS["judge_tau"]}.get(how, PARAMS["tau"])
+        if not isinstance(conf, (int, float)) or conf < lim:
+            V.append(f"{label} g{k}: confが閾値({lim})未満なのにjaあり(how={how})")
     return V
+
+
+def check_generated_part(part: dict, label: str) -> list:
+    """生成訳partの構造不変条件: ENの全文が1文=1群(how=gen)で、群のJA範囲が各段落を隙間なく連続して覆う(=訳文を後から書き換えるとズレる)。"""
+    V = []
+    al = part.get("ja_align") or []
+    sids = [s["sid"] for pa in part["paragraphs"] for s in pa]
+    if [s for g in al for s in g.get("sids", [])] != sids:
+        V.append(f"{label}: 生成訳のja_alignがENの全文を1文ずつ順に含まない")
+    pos = {}
+    for g in al:
+        if g.get("how") != "gen" or len(g.get("sids", [])) != 1 or not g.get("ja"):
+            V.append(f"{label} g{g.get('g')}: 生成訳は1文=1群(how=gen)で、jaが必須")
+            continue
+        pos.setdefault(g["ja"][0], []).append((g["ja"][1], g["ja"][2]))
+    for pi, t in enumerate(part.get("ja") or []):
+        spans = pos.get(pi, [])
+        cur = 0
+        for a, b in spans:
+            if a != cur:
+                V.append(f"{label}: 段落{pi}の訳に群で覆われない隙間/重なり({cur}->{a})")
+            cur = b
+        if cur != u16_len(t):
+            V.append(f"{label}: 段落{pi}の訳の末尾までを群が覆っていない({cur}!={u16_len(t)})")
+    return V
+
+
+def _accept_all_judge(en_texts, ja_texts, pairs):
+    return [True] * len(pairs)
+
+
+def _equal_except_judge(stored: list, plain: list, part: dict, store: EmbedStore) -> bool:
+    """LLM確認(how=judge)で追加採用された群は埋め込みだけでは再現できない(LLM依存)。検証は『判定がokなら採用されうる候補』との一致で行う:
+    judge群以外は埋め込みのみの再計算(plain)と完全一致し、judge群はplainでは非採用(null)で、全候補をLLMが認めた場合(accept-all)の再計算とja範囲が一致すること
+    (=LLMが新しい対応を作っていない・保存値の改竄がない)。judge群が無ければFalse(通常の不一致)。"""
+    if len(stored) != len(plain) or not any(g.get("how") == "judge" for g in stored):
+        return False
+    maxres, _ = align_part(part, store, PARAMS, judge=_accept_all_judge)
+    if len(maxres) != len(stored):
+        return False
+    for g, r, m in zip(stored, plain, maxres):
+        if g.get("how") == "judge":
+            if r["ja"] is not None or g["sids"] != r["sids"] or g["ja"] != m["ja"] or m.get("how") != "judge":
+                return False
+        elif g != r:
+            return False
+    return True
 
 
 def verify_article_align(article: dict, ja_info: dict | None, store: EmbedStore | None) -> tuple:
@@ -662,6 +833,8 @@ def verify_article_align(article: dict, ja_info: dict | None, store: EmbedStore 
                     continue
                 checked["parts"] += 1
                 V += check_part_align(p, f"{lv} {p['key']}")
+                if p.get("ja_source") == GENERATED:
+                    V += check_generated_part(p, f"{lv} {p['key']}")
                 want = (ja_info.get("input_sha256") or {}).get(lv, {}).get(p["key"])
                 if want != part_input_sha(p):
                     V.append(f"{lv} {p['key']}: ja_alignの入力sha不一致(EN文またはJAが変わったのに対応が古い=陳腐化)")
@@ -672,10 +845,10 @@ def verify_article_align(article: dict, ja_info: dict | None, store: EmbedStore 
         try:
             for lv, L in article["levels"].items():
                 for p in L["parts"]:
-                    if p.get("ja_align") is not None:
+                    if p.get("ja_align") is not None and p.get("ja_source") != GENERATED:
                         store.ensure(part_texts(p))
                         al, _ = align_part(p, store, PARAMS)
-                        if al != p["ja_align"]:
+                        if al != p["ja_align"] and not _equal_except_judge(p["ja_align"], al, p, store):
                             V.append(f"{lv} {p['key']}: 保存ベクトルからの再計算がja_alignと一致しない")
         except AlignEmbedError as e:
             V.append(f"ja_align再計算不能(埋め込みキャッシュ欠落。verifyはAPIを呼ばない): {e}")

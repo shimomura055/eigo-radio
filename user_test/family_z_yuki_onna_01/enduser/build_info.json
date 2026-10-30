@@ -71,7 +71,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "6d8ca06cf027881cc813dbf86f99e5ba3d04a30bac8b61b35b25fbd8da5b45f6",
+   "source_sha256": "4e7cb9cd937bec9f9d083f229fdb96bddbc9f333d0c0af1e05afbb3ec1b6d029",
    "rows": 9,
    "sentences": 57,
    "min_row_ratio": 0.92,
@@ -150,15 +150,189 @@
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 2.0,
-  "build_wall_s": 1.38,
+  "asr_wall_s": 2.2,
+  "build_wall_s": 1.06,
   "cached_segments": 23,
   "embedding_api_calls": 0,
   "embedding_tokens": 0,
   "embedding_cost_jpy": 0.0
  },
+ "link_targets": {
+  "parts": {
+   "std": [
+    {
+     "key": "std_04",
+     "kind": "preview",
+     "status": "na_ja_only",
+     "sentences": 3,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "std_10",
+     "kind": "comment",
+     "status": "na_ja_only",
+     "sentences": 1,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "std_11",
+     "kind": "story",
+     "status": "missing",
+     "sentences": 18,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "std_12",
+     "kind": "comment",
+     "status": "na_ja_only",
+     "sentences": 2,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "std_13",
+     "kind": "story",
+     "status": "missing",
+     "sentences": 12,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "std_14",
+     "kind": "comment",
+     "status": "na_ja_only",
+     "sentences": 2,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "std_15",
+     "kind": "story",
+     "status": "missing",
+     "sentences": 17,
+     "linked": 0,
+     "how": []
+    }
+   ],
+   "adv": [
+    {
+     "key": "adv_03",
+     "kind": "preview",
+     "status": "missing",
+     "sentences": 2,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "adv_09",
+     "kind": "comment",
+     "status": "missing",
+     "sentences": 1,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "adv_10",
+     "kind": "story",
+     "status": "missing",
+     "sentences": 18,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "adv_11",
+     "kind": "comment",
+     "status": "missing",
+     "sentences": 2,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "adv_12",
+     "kind": "story",
+     "status": "missing",
+     "sentences": 14,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "adv_13",
+     "kind": "comment",
+     "status": "missing",
+     "sentences": 3,
+     "linked": 0,
+     "how": []
+    },
+    {
+     "key": "adv_14",
+     "kind": "story",
+     "status": "missing",
+     "sentences": 16,
+     "linked": 0,
+     "how": []
+    }
+   ]
+  },
+  "summary": {
+   "std": {
+    "preview": {
+     "parts": 1,
+     "sentences": 3,
+     "linked": 0,
+     "status": {
+      "na_ja_only": 1
+     }
+    },
+    "comment": {
+     "parts": 3,
+     "sentences": 5,
+     "linked": 0,
+     "status": {
+      "na_ja_only": 3
+     }
+    },
+    "story": {
+     "parts": 3,
+     "sentences": 47,
+     "linked": 0,
+     "status": {
+      "missing": 3
+     }
+    }
+   },
+   "adv": {
+    "preview": {
+     "parts": 1,
+     "sentences": 2,
+     "linked": 0,
+     "status": {
+      "missing": 1
+     }
+    },
+    "comment": {
+     "parts": 3,
+     "sentences": 6,
+     "linked": 0,
+     "status": {
+      "missing": 3
+     }
+    },
+    "story": {
+     "parts": 3,
+     "sentences": 48,
+     "linked": 0,
+     "status": {
+      "missing": 3
+     }
+    }
+   }
+  }
+ },
  "ja_align": {
-  "method": "mono_dp_embed_v1",
+  "method": "tiered_dp_embed_v2",
   "model": "text-embedding-3-large",
   "dims": 1024,
   "params": {
@@ -174,10 +348,16 @@
    "delta_sent": 0.0,
    "delta_group_en": -0.1,
    "delta_sent_en": -0.1,
-   "eq_delta_ja": 0.0,
-   "eq_delta_en": 0.0,
    "tau_para": 0.55,
-   "tau_floor": 0.4
+   "tau_floor": 0.4,
+   "det_len_lo": 1.2,
+   "det_len_hi": 6.0,
+   "eq_tau": 0.3,
+   "eq_margin": 0.03,
+   "tau_para_eq": 0.45,
+   "soft_T": 0.2,
+   "soft_p": 0.95,
+   "judge_tau": 0.3
   },
   "applicable": false,
   "coverage": {
@@ -188,6 +368,7 @@
     "groups_total": 0,
     "groups_null": 0,
     "reasons": {},
+    "linked_by_how": {},
     "coverage": null
    },
    "adv": {
@@ -197,6 +378,7 @@
     "groups_total": 0,
     "groups_null": 0,
     "reasons": {},
+    "linked_by_how": {},
     "coverage": null
    }
   },

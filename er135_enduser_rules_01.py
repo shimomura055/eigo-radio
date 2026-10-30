@@ -13,6 +13,13 @@ ASSET_BUILD_ID = "rev01-f"
 
 # 承認済みの日本語訳の出所は2値のみ(それ以外はSTOP)
 JA_SOURCES = ("approved_ja_manuscript", "approved_ja_original_in_dev_page")
+# 訳が無い部分だけをEnd User build内で文ID単位に新規生成した訳(委任_03A: コード・mock試験まで。実生成は委任_03B)。承認済み原稿の出所とは別に扱う
+JA_SOURCE_GENERATED = "generated"
+JA_SOURCES_ALL = JA_SOURCES + (JA_SOURCE_GENERATED,)
+# 現行asset(app.js)が日本語訳ブロックを描画するpart種別。生成はこの種別だけに行う(描画できない種別に訳を生成してもAPI費用が無駄になり、page_verifyのJ2で不合格になる)。
+# rev01-fのPreviewカードは`trHtml`を呼ばない。Adv Previewの訳表示には asset rev01-g(DEV rev01-e + derive EDIT J26: Previewカードに trHtml(p) を追加。
+# docs/research/ENDUSER-EN-JA-LINKED-HIGHLIGHT-01/INTEGRATION_03_02.md)が必要で、assetの更新は全End Userページの再produceを伴うため委任_03Bで行う。
+ASSET_TRANSLATION_KINDS = {"rev01-f": ("story", "comment", "oneline"), "rev01-e": ("story", "comment", "oneline")}
 
 # 出力(JSON値・HTML/JS/CSS)に現れてはならない語。開発者向け専用要素・DEV仮データ・内部情報。
 FORBIDDEN_OUTPUT = (

@@ -135,6 +135,8 @@ PROCESS_MODEL_MAP = {
     # (ENDUSER_JA_TRANSLATE=文脈付き翻訳、ENDUSER_JA_VERIFY=対訳照合)。SUPPORT_MODELを参照(新規モデルなし)。未配線(standalone)。
     "ENDUSER_JA_TRANSLATE": SUPPORT_MODEL,
     "ENDUSER_JA_VERIFY": SUPPORT_MODEL,
+    # ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_03A(2026-10-30)で追加(追加のみ)。英日連動の対応づけのLLM確認(M8)。既定では呼ばれない(実呼出は委任_03B)。SUPPORT_MODELを参照(新規モデルなし)。
+    "ENDUSER_JA_ALIGN_JUDGE": SUPPORT_MODEL,
     # PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03(2026-10-25、Part 2 Grammar & Sentence Structure、ユーザーAPPROVED_FOR_PRODUCTION)で追加(追加のみ、既存キー不変)。
     # 候補抽出(Step A'')と解説生成(Step B)。SUPPORT_MODEL=gpt-6-luna(Trial-07/08と同一、新規モデルなし)。
     "STUDY_TEXT_GRAMMAR_EXTRACT": SUPPORT_MODEL,

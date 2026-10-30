@@ -326,8 +326,9 @@ class A3_StructureAndVerify(unittest.TestCase):
 
     def test_params_are_frozen(self):
         self.assertEqual(AL.PARAMS, {"lam": 2.0, "len_w": 1.0, "pen_12": 0.9, "pen_22": 4.0, "pen_13": 1.5, "skip": 3.0, "tau": 0.5, "delta_path": 0.1,
-                                     "delta_group": 0.0, "delta_sent": 0.0, "delta_group_en": -0.10, "delta_sent_en": -0.10, "eq_delta_ja": 0.0, "eq_delta_en": 0.0,
-                                     "tau_para": 0.55, "tau_floor": 0.4})
+                                     "delta_group": 0.0, "delta_sent": 0.0, "delta_group_en": -0.10, "delta_sent_en": -0.10,
+                                     "tau_para": 0.55, "tau_floor": 0.4,
+                                     "det_len_lo": 1.2, "det_len_hi": 6.0, "eq_tau": 0.30, "eq_margin": 0.03, "tau_para_eq": 0.45, "soft_T": 0.20, "soft_p": 0.95, "judge_tau": 0.30})
         self.assertEqual((AL.EMBED_MODEL, AL.EMBED_DIMS), ("text-embedding-3-large", 1024))
 
 
@@ -509,9 +510,10 @@ class A6_GoldRegression(unittest.TestCase):
         self.assertEqual(self.res["synthetic_accepted"], 0)
 
     def test_coverage_floor_and_recorded_values(self):
-        self.assertGreaterEqual(self.res["coverage"], 0.70)
-        self.assertGreaterEqual(self.res["coverage_by_level"]["adv"], 0.82)
-        self.assertGreaterEqual(self.res["coverage_by_level"]["std"], 0.60)
+        # 委任_03A(構造確定det/順序対応order/周辺確率soft)後の実測: 83.0%(Std 72.9 / Adv 96.5)。委任_02時点は71.3%(Std 61.6 / Adv 84.2)
+        self.assertGreaterEqual(self.res["coverage"], 0.80)
+        self.assertGreaterEqual(self.res["coverage_by_level"]["adv"], 0.93)
+        self.assertGreaterEqual(self.res["coverage_by_level"]["std"], 0.70)
 
     def test_equal_count_mode_rejects_all_adjacent_wrong_pairs(self):
         self.assertGreater(self.res["equal_mode_wrong_pairs_total"], 60)
@@ -523,7 +525,7 @@ class A6_GoldRegression(unittest.TestCase):
         self.assertEqual(r["wrong_groups"], [])
         self.assertEqual(r["synthetic_accepted"], 0)
         self.assertEqual(r["equal_mode_wrong_pairs_accepted"], 0)
-        self.assertGreaterEqual(r["coverage"], 0.85)
+        self.assertGreaterEqual(r["coverage"], 0.90)                     # 委任_03A後93.4%(委任_02時点88.2%)
 
     def test_cross_paragraph_mispairing_rarely_emits(self):
         self.assertLessEqual(self.res["cross_emitted"], 3)
@@ -534,7 +536,7 @@ class A6_GoldRegression(unittest.TestCase):
         self.assertEqual(r["wrong_groups"], [], r["wrong_groups"])
         self.assertGreater(r["synthetic_total"], 250)
         self.assertEqual(r["synthetic_accepted"], 0)
-        self.assertGreaterEqual(r["coverage"], 0.82)
+        self.assertGreaterEqual(r["coverage"], 0.88)                     # 委任_03A後91.9%(委任_02時点85.2%)
         self.assertEqual(r["equal_mode_wrong_pairs_accepted"], 0)
 
 

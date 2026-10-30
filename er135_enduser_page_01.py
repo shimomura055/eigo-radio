@@ -654,22 +654,7 @@ def attach_translations(lv: str, parts: list, family: str, ja: dict | None) -> d
                 if sid is None or sid not in ysegs or _ws(ysegs[sid]) != _ws("".join(paras)):
                     stop("ENDUSER_JA_MISMATCH", f"{p['label']}: dev ページの日本語の元原稿が承認済み原稿(split_y_article)と不一致")
             p["ja"], p["ja_source"] = paras, "approved_ja_original_in_dev_page"
-    cov = {}
-    for p in parts:
-        if p["kind"] not in ("story", "comment", "oneline", "preview", "topic"):
-            continue
-        en = not _has_ja("".join(s["text"] for pa in p["paragraphs"] for s in pa))
-        if not en:
-            continue                                    # 日本語本文=訳不要
-        c = cov.setdefault(p["kind"], {"blocks": 0, "translated": 0, "source": None})
-        c["blocks"] += 1
-        if p.get("ja"):
-            c["translated"] += 1
-            c["source"] = p["ja_source"]
-    for c in cov.values():
-        if c["source"] is None:
-            c["source"] = "none_approved_translation_hidden"
-    return cov
+    return translation_coverage_of(parts)
 
 
 # ------------------------------------------------------------
@@ -828,8 +813,109 @@ def build_glossary(lv: str, parts: list, vocab: list, level_meanings: list | Non
 # ------------------------------------------------------------
 # End Userデータの組立
 # ------------------------------------------------------------
+# ------------------------------------------------------------
+# 英日連動の対象パート(story/preview/comment/oneline)の訳の有無(link_targets)と、訳が無い部分だけの新規生成(委任_03A: コード+mock試験。実生成は委任_03B)
+# ------------------------------------------------------------
+LINK_KINDS = ("story", "preview", "comment", "oneline")
+GENERATE_KINDS = R.ASSET_TRANSLATION_KINDS[R.ASSET_BUILD_ID]       # 現行assetが訳を描画できる種別だけ生成する(Previewはasset更新=委任_03Bまで対象外)
+
+
+def _part_en_only(p: dict) -> bool:
+    """英語本文のpart(日本語本文のpart=Stdの Preview/Comment は英語対が無く『日本語のみ』)。"""
+    return bool(p.get("paragraphs")) and not _has_ja("".join(s["text"] for pa in p["paragraphs"] for s in pa))
+
+
+def make_translator(cache_dir, llm):
+    """translate_fn(part_id, sentences, *, level, family) -> translate_part の結果。llm(kind, prompt)->str は必須(既定の実APIへ黙って落ちない)。"""
+    if llm is None:
+        raise ValueError("translate llm が無い(実API既定へフォールバックしない)")
+    import er135_enduser_translate_01 as TR
+
+    def _fn(part_id, sentences, *, level, family):
+        return TR.translate_part(part_id, sentences, level=level, family=family, cache_dir=cache_dir, llm=llm)
+    return _fn
+
+
+def generate_missing_translations(levels: dict, family: str, translate_fn) -> dict:
+    """訳が無い英語part(story/preview/comment/oneline)だけを translate_fn で文ID単位に訳し、`ja`・`ja_source=generated`・`ja_align`(1文=1群)を付ける(in place)。
+    承認済みの訳があるpart・日本語本文のpartは対象外(再生成0)。1段落でも訳せなければそのpartは付与しない(部分jaなし。英語のみ表示)。
+    返り値=build_info.generated_translation: {parts{lv:{key:{en_sha256,ja_sha256,sentences}}}, failures[], api_calls, cost_jpy, model, prompt_sha256}"""
+    import er135_enduser_translate_01 as TR
+    info = {"model": TR.MODEL, "prompt_sha256": TR.PROMPT_TEMPLATE_SHA256, "parts": {}, "failures": [], "api_calls": {"translate": 0, "verify": 0},
+            "cost_jpy": 0.0, "cache_hits": 0}
+    for lv, L in levels.items():
+        for p in L["parts"]:
+            if p["kind"] not in GENERATE_KINDS or p.get("ja") or not _part_en_only(p):
+                continue
+            sents = [{"sid": s["sid"], "en": s["text"], "para": pi} for pi, pa in enumerate(p["paragraphs"]) for s in pa]
+            res = translate_fn(f"{lv}:{p['key']}", sents, level=lv, family=family)
+            meta = res["meta"]
+            for k in ("translate", "verify"):
+                info["api_calls"][k] += int(meta["api_calls"].get(k, 0))
+            info["cost_jpy"] += float(meta.get("cost_jpy") or 0.0)
+            info["cache_hits"] += int(meta.get("cache_hits", 0))
+            fields = TR.build_ja_fields(p["paragraphs"], res["ja"]) if res["coverage"]["complete"] else None
+            if fields is None:
+                info["failures"].append({"level": lv, "key": p["key"], "reasons": [f["reason"] for f in meta["failures"]][:3] or ["incomplete"]})
+                continue
+            p["ja"], p["ja_source"], p["ja_align"] = fields[0], R.JA_SOURCE_GENERATED, fields[1]
+            info["parts"].setdefault(lv, {})[p["key"]] = {
+                "en_sha256": canon_sha([[s["sid"], s["text"]] for pa in p["paragraphs"] for s in pa]),
+                "ja_sha256": canon_sha(fields[0]), "sentences": len(sents)}
+    info["cost_jpy"] = round(info["cost_jpy"], 4)
+    return info
+
+
+def translation_coverage_of(parts: list) -> dict:
+    """種別ごと {blocks, translated, source}。日本語本文のpart(訳不要)は数えない。"""
+    cov = {}
+    for p in parts:
+        if p["kind"] not in ("story", "comment", "oneline", "preview", "topic") or not _part_en_only(p):
+            continue
+        c = cov.setdefault(p["kind"], {"blocks": 0, "translated": 0, "source": None})
+        c["blocks"] += 1
+        if p.get("ja"):
+            c["translated"] += 1
+            c["source"] = p["ja_source"]
+    for c in cov.values():
+        if c["source"] is None:
+            c["source"] = "none_approved_translation_hidden"
+    return cov
+
+
+def build_link_targets(article: dict) -> dict:
+    """連動ハイライトの対象一覧(level x part)。status: 承認済み訳の出所 / generated / missing(訳が無く連動N/A=英語のみ) / na_ja_only(日本語本文で英語対なし)。
+    linked=ja_alignで日本語に結びついた英語文数(日本語本文のpartは0)。how=対応づけ方式(det/order/dp/soft/gen)。"""
+    parts, summary = {}, {}
+    for lv, L in article["levels"].items():
+        rows = []
+        for p in L["parts"]:
+            if p["kind"] not in LINK_KINDS or not p.get("paragraphs"):
+                continue
+            n = sum(len(pa) for pa in p["paragraphs"])
+            if not _part_en_only(p):
+                status, linked = "na_ja_only", 0
+            elif p.get("ja"):
+                status = p["ja_source"]
+                linked = sum(len(g["sids"]) for g in (p.get("ja_align") or []) if g.get("ja"))
+            else:
+                status, linked = "missing", 0
+            rows.append({"key": p["key"], "kind": p["kind"], "status": status, "sentences": n, "linked": linked,
+                         "how": sorted({g.get("how") for g in (p.get("ja_align") or []) if g.get("ja") and g.get("how")})})
+        parts[lv] = rows
+        sm = {}
+        for r in rows:
+            c = sm.setdefault(r["kind"], {"parts": 0, "sentences": 0, "linked": 0, "status": {}})
+            c["parts"] += 1
+            c["sentences"] += r["sentences"]
+            c["linked"] += r["linked"]
+            c["status"][r["status"]] = c["status"].get(r["status"], 0) + 1
+        summary[lv] = sm
+    return {"parts": parts, "summary": summary}
+
+
 def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level: dict, ja: dict | None, meta: dict, *,
-                       kp_audio: dict | None = None, probe=None, extra_build_info: dict | None = None, align_store=None) -> tuple:
+                       kp_audio: dict | None = None, probe=None, extra_build_info: dict | None = None, align_store=None, translate_fn=None) -> tuple:
     """(article, sync_public_by_level, build_info)を返す。検査(sync受入・glossary assert・validate_output)をすべて通ったときだけ返る。"""
     if probe is None:
         stop("ENDUSER_PROBE_MISSING", "probe(音声sha/長さ)が必要")
@@ -883,7 +969,12 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
         sync_cost[lv] = si["cost"]
     article = {"schema": R.SCHEMA_ARTICLE, "id": meta["id"], "family": meta["family"], "title_ja": meta["title_ja"], "topic_en": meta["topic_en"],
                "notice": meta["notice"], "audio_base": "../", "levels": levels}
-    # 英語文 -> 日本語訳の連動(ja_align)。訳が表示されるstory部のみ。align_store無し(testの直接呼出)は未適用。埋め込み失敗は全null+degraded(M5。生成は止めない)
+    # 訳が無い英語part(story/preview/comment/oneline)だけを新規生成(translate_fnが渡されたときのみ。既定None=生成しない。委任_03B前はhookも渡さない)
+    gen_info = generate_missing_translations(levels, family.upper(), translate_fn) if translate_fn is not None else None
+    if gen_info is not None:
+        for lv in levels:
+            trans_cov[lv] = translation_coverage_of(levels[lv]["parts"])
+    # 英語文 -> 日本語訳の連動(ja_align)。訳が表示されるpart。align_store無し(testの直接呼出)は未適用。埋め込み失敗は全null+degraded(M5。生成は止めない)
     ja_info = AL.build_article_align(article, align_store, name_map=None) if align_store is not None else None
     build_info = {
         "schema": R.SCHEMA_BUILD_INFO, "id": meta["id"], "family": meta["family"], "asset_build": R.ASSET_BUILD_ID,
@@ -896,6 +987,13 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
                  "asr_wall_s": round(sum(float(c.get("wall_s", 0) or 0) for c in sync_cost.values()), 1), "build_wall_s": 0.0,
                  "cached_segments": int(sum(int(c.get("cached_segments", 0) or 0) for c in sync_cost.values()))},
     }
+    build_info["link_targets"] = build_link_targets(article)
+    if gen_info is not None:
+        build_info["generated_translation"] = gen_info
+        build_info["cost"]["translate_api_calls"] = gen_info["api_calls"]["translate"] + gen_info["api_calls"]["verify"]
+        build_info["cost"]["translate_cost_jpy"] = gen_info["cost_jpy"]
+        if gen_info["failures"]:
+            build_info["warnings"].append("日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): " + "; ".join(f"{f['level']} {f['key']}" for f in gen_info["failures"])[:300])
     if ja_info is not None:
         build_info["ja_align"] = ja_info
         build_info["cost"].update({"embedding_api_calls": ja_info["embedding"]["api_calls"], "embedding_tokens": ja_info["embedding"]["tokens"],
@@ -936,13 +1034,14 @@ def _arr(items):
 _S_SENT = _obj({"sid": S_STR, "html": S_STR, "text": S_STR})
 _S_FIELD = _obj({"label": S_STR, "html": S_STR})
 # 英語文群 -> 日本語訳の範囲(UTF-16 code unitのオフセット [段落index,開始,終了])。ja=nullは非ハイライト
-_S_JA_GROUP = _obj({"g": S_INT, "sids": _arr(S_STR), "ja": {"type": ["array", "null"], "items": S_INT}, "conf": S_NUM})
+_S_JA_GROUP = _obj({"g": S_INT, "sids": _arr(S_STR), "ja": {"type": ["array", "null"], "items": S_INT}, "conf": S_NUM,
+                    "how": {"type": "string", "enum": list(AL.HOWS)}})
 _S_ITEM = _obj({"heading": S_STR_OR_NULL, "fields": _arr(_S_FIELD)})
 _S_PART = _obj({
     "idx": S_INT, "key": S_STR, "label": S_STR, "kind": {"type": "string", "enum": ["sfx", "fixed", "topic", "jtitle", "preview", "kp", "comment", "story", "oneline"]},
     "start": S_NUM, "dur": S_NUM, "seg": S_STR,
     "paragraphs": _arr(_arr(_S_SENT)), "meanings": _arr(S_STR), "glossary": _arr(_obj({"en": S_STR, "ja": S_STR, "vi": _t(type=["integer", "null"])})),
-    "ja": _arr(S_STR), "ja_source": {"type": "string", "enum": list(R.JA_SOURCES)},
+    "ja": _arr(S_STR), "ja_source": {"type": "string", "enum": list(R.JA_SOURCES_ALL)},
     "ja_align": _arr(_S_JA_GROUP),
     "kp_header": _arr(S_STR),
     "kp": _arr(_obj({"en": S_STR, "text": S_STR, "text2": S_STR, "en_audio": _obj({"start": S_NUM, "end": S_NUM, "method": S_STR, "blocks": S_INT, "asr_text": S_STR, "token_match": S_NUM}, required=["start", "end", "method", "blocks"])}, required=["en", "text", "en_audio"])),
@@ -969,9 +1068,12 @@ SCHEMA_BUILD_INFO_SPEC = _obj({
     "ja_manuscript": _t(type=["object", "null"], properties={"name": S_STR, "sha256": S_STR}, required=["name", "sha256"], additionalProperties=False),
     "warnings": _arr(S_STR),
     "cost": _obj({"api_calls": S_INT, "model": S_STR, "asr_wall_s": S_NUM, "build_wall_s": S_NUM, "cached_segments": S_INT,
-                  "embedding_api_calls": S_INT, "embedding_tokens": S_INT, "embedding_cost_jpy": S_NUM},
+                  "embedding_api_calls": S_INT, "embedding_tokens": S_INT, "embedding_cost_jpy": S_NUM,
+                  "translate_api_calls": S_INT, "translate_cost_jpy": S_NUM},
                  required=["api_calls", "model", "asr_wall_s", "build_wall_s", "cached_segments"]),
     "ja_align": {"type": "object"},
+    "link_targets": {"type": "object"},
+    "generated_translation": {"type": "object"},
     "timeline_check": {"type": "object"},
     "episode_check": {"type": "object"},
 }, required=["schema", "id", "family", "asset_build", "dev_index_sha256", "audio_sha256", "assets", "files", "sync", "translation_coverage", "glossary", "ja_manuscript", "warnings", "cost"])
@@ -1057,7 +1159,7 @@ def validate_output(article: dict, sync_public: dict, build_info: dict, rows_by_
         for p in L["parts"]:
             if ("ja" in p) != ("ja_source" in p):
                 stop("ENDUSER_JA_SOURCE_INVALID", f"{p['key']}: jaとja_sourceが対になっていない")
-            if p.get("ja_source") not in (None, *R.JA_SOURCES):
+            if p.get("ja_source") not in (None, *R.JA_SOURCES_ALL):
                 stop("ENDUSER_JA_SOURCE_INVALID", f"{p['key']}: ja_source={p.get('ja_source')}")
     # 英語文と日本語訳の連動(ja_align): 構造不変条件・Yは『EN段落<->JAブロック1対1』(M-Y)
     for lv, L in article["levels"].items():
@@ -1202,7 +1304,9 @@ def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR) -> dict:
 # 一括(build)
 # ------------------------------------------------------------
 def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja_manuscript=None, kp_audio=None, asr=None, probe=None,
-                  assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None, align_cache_dir=None, align_store=None) -> dict:
+                  assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None, align_cache_dir=None, align_store=None, translate_llm=None, translate_cache_dir=None) -> dict:
+    """translate_llm: 訳が無い英語part(story/preview/comment/oneline)を新規生成するときだけ渡す llm(kind, prompt)->str。
+    既定None=生成しない(その部分は ja_source=missing=連動N/A・英語のみ)。実生成を有効にするのは委任_03B(hook_runからの受け渡し)。"""
     t0 = time.time()
     dev_dir = Path(dev_dir).resolve()    # 相対pathだと音声pathが二重結合になる(runnerのctx.pages_dirは相対)
     idx = dev_dir / "index.html"
@@ -1226,8 +1330,14 @@ def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja
         extra["timeline_check"] = tl
     # 英語文<->日本語訳の対応づけ用の埋め込み(sha256キャッシュ。page_verify/resume/再実行はAPI 0)。訳を持つpartが無い記事(Z)ではAPIを呼ばない
     store = align_store if align_store is not None else AL.EmbedStore(align_cache_dir)
+    translate_fn = None
+    if translate_llm is not None:
+        tcd = translate_cache_dir or align_cache_dir
+        if not tcd:
+            raise ValueError("translate_llmを渡すときは translate_cache_dir(または align_cache_dir)が必要")
+        translate_fn = make_translator(tcd, translate_llm)
     article, sync_public, build_info = build_enduser_data(rows_by_level, sync_by_level, study_by_level, ja, meta, kp_audio=kp_audio, probe=probe, extra_build_info=extra,
-                                                          align_store=store)
+                                                          align_store=store, translate_fn=translate_fn)
     build_info["cost"]["build_wall_s"] = round(time.time() - t0, 2)
     res = write_enduser_page(out_dir or (dev_dir / ENDUSER_DIRNAME), (article, sync_public, build_info), assets_dir)
     res["article"] = article
@@ -1289,6 +1399,25 @@ def verify_consistency(public_dir, assets_dir=None, cache_dir=None) -> dict:
         checked["ja_align"] = {**ac, "degraded": list((bi.get("ja_align") or {}).get("degraded") or []), "coverage": (bi.get("ja_align") or {}).get("coverage")}
     except Exception as e:                              # noqa: BLE001
         bad("ENDUSER_JA_ALIGN", f"ja_align検査で例外: {type(e).__name__}: {e}")
+    # 連動の対象一覧(link_targets)と生成訳(generated_translation)の整合: 一覧は記事から再計算して一致 / 生成訳はEN・JAのshaが現行記事と一致(陳腐化=NG)
+    try:
+        if "link_targets" in bi and bi["link_targets"] != build_link_targets(art):
+            bad("ENDUSER_LINK_TARGETS", "build_info.link_targetsが記事(article.json)から再計算した対象一覧と一致しない")
+        gen = bi.get("generated_translation")
+        gen_parts = {(lv, p["key"]): p for lv, L in art["levels"].items() for p in L["parts"] if p.get("ja_source") == R.JA_SOURCE_GENERATED}
+        if gen_parts and not gen:
+            bad("ENDUSER_GENERATED_TRANSLATION", "ja_source=generatedのpartがあるのにbuild_info.generated_translationが無い")
+        if gen:
+            rec = {(lv, k): v for lv, d in (gen.get("parts") or {}).items() for k, v in d.items()}
+            if set(rec) != set(gen_parts):
+                bad("ENDUSER_GENERATED_TRANSLATION", f"生成訳の記録とarticleのgenerated partが不一致: {sorted(set(rec) ^ set(gen_parts))[:3]}")
+            for key, p in gen_parts.items():
+                r = rec.get(key)
+                if r and (r["en_sha256"] != canon_sha([[s["sid"], s["text"]] for pa in p["paragraphs"] for s in pa]) or r["ja_sha256"] != canon_sha(p["ja"])):
+                    bad("ENDUSER_GENERATED_TRANSLATION", f"{key[0]} {key[1]}: 生成訳が陳腐化(英文または訳が生成時と異なる)")
+        checked["link_targets"] = bi.get("link_targets", {}).get("summary")
+    except Exception as e:                              # noqa: BLE001
+        bad("ENDUSER_LINK_TARGETS", f"link_targets/生成訳の検査で例外: {type(e).__name__}: {e}")
     # ファイルsha
     for rel, sha in bi["files"].items():
         p = ed / rel
@@ -1352,7 +1481,7 @@ def verify_consistency(public_dir, assets_dir=None, cache_dir=None) -> dict:
         scan_forbidden_text(art, "article")
         for L in art["levels"].values():
             for p in L["parts"]:
-                if p.get("ja_source") not in (None, *R.JA_SOURCES):
+                if p.get("ja_source") not in (None, *R.JA_SOURCES_ALL):
                     bad("ENDUSER_JA_SOURCE_INVALID", f"{p['key']}: ja_source={p.get('ja_source')}")
     except EnduserPageStop as e:
         bad(e.code, e.message)

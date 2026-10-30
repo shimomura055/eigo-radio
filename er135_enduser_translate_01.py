@@ -453,6 +453,26 @@ def _cos(a, b) -> float:
     return 0.0 if not na or not nb else sum(x * y for x, y in zip(a, b)) / (na * nb)
 
 
+def build_ja_fields(paragraphs: list, ja_by_sid: dict):
+    """翻訳結果({sid: 訳|None})から article の `ja`(ENと同数の段落配列。各段落=文の訳を連結)と `ja_align`(1文=1群・how=gen)を作る。
+    ja_alignのオフセット(UTF-16 code unit)は連結時に確定する=位置ずれなし・埋め込み0。1文でも訳が無ければ None(部分jaは作らない=全部または無し)。"""
+    import er135_enduser_align_01 as AL
+    ja_paras, groups, g = [], [], 0
+    for pi, pa in enumerate(paragraphs):
+        text = ""
+        for s in pa:
+            t = ja_by_sid.get(s["sid"])
+            if not isinstance(t, str) or not t.strip():
+                return None
+            t = t.strip()
+            a = AL.u16_len(text)
+            text += t
+            groups.append({"g": g, "sids": [s["sid"]], "ja": [pi, a, AL.u16_len(text)], "conf": 1.0, "how": "gen"})
+            g += 1
+        ja_paras.append(text)
+    return ja_paras, groups
+
+
 # ------------------------------------------------------------
 # 公開API
 # ------------------------------------------------------------
