@@ -22891,3 +22891,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## 2026-10-30 FAMILY-Z-YUKI-ONNA-PRODUCTION-01 委任_05: Style Gate BLOCK解消(comment_3再生成)・End User検証で停止
 - 実施(API 0.37円): 読み辞書登録は offline実測で無効かつ逆効果(ASR「実基」は登録後も不一致、A7除外)のため行わず。comment_3のみ再生成→標準phase PHONETIC_MATCH採用、Style Gate a2/b1b PASS。組立〜local page_verify完了。End User Playwright検証が日本語タイトル(1.27秒)の短尺境界でNG 2/182(検証harness側)、公開は未実施。
 - 分類: 承認済み仕様の範囲内の不具合是正(新仕様判断なし)。次=検証ツールの短尺パート是正(Fable判断)。累計46.08円/Cap150。
+
+## ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02: 英語文<->日本語訳の連動ハイライト実装・X/Y story部PRODUCTION_WIRED_PENDING_FABLE(2026-10-30)
+- ユーザー指示(原文=`docs/pm/delegation_log/2026-10-30_ENDUSER-EN-JA-LINKED-HIGHLIGHT-01_USER.md`): 英語再生に合わせ対応する日本語訳を点灯。
+- 実施: `er135_enduser_align_01`(DP+embedding+安全側null)、article.json `ja_align`、asset rev01-f(DEV app.js不変、J19-J25/C5)、page_verify連動検査。M1-M10(Opus review)を採用。既公開X月/Y再配達/Y姓/Zを再produce(diff Gate OK)、live検証。Std 56-70%/Adv 78-93%、誤点灯0。
+- 分類: ユーザー指示に基づく実装(新規ユーザー判断なし)。UI可視性・M8 LLM判定・USER_02拡張は判断候補/次委任としてFableへ報告。OPEN-618。

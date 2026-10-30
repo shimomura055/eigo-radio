@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: End Userページのブラウザ検証CLI(Playwright。API 0)。
 
-記事非依存(公開dirの`enduser/data/article.json`・`sync_<lv>.json`から期待値を作る)。検査内容はDEV rev01-eの検証(ハイライト追従・文クリック再生・シーク・
+記事非依存(公開dirの`enduser/data/article.json`・`sync_<lv>.json`から期待値を作る)。検査内容はDEV rev01-eの検証(ハイライト追従・英語文と日本語訳の連動[J]・文クリック再生・シーク・
 パート間連続再生・停止/再開・KP英語のみ・引用英文の太字・学習コーナー0件非表示・console error 0・HTTP 4xx 0)を継承し、End User固有
 (DEV表示なし・仮データ注記なし・Voice説明文・訳の出所・音声参照200/206)を追加。PC(1280x900)とモバイル模擬(390x844 iPhone UA)。
 実機iOS Safari/Androidではない(模擬)。結果に`device=emulation`を明記する。
@@ -346,6 +346,8 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
             rec("I", pre + "glossary_links_open_the_expression", not badl, badl[:2])
         else:
             rec("I", pre + "no_glossary_when_not_applicable", page.evaluate("() => document.querySelectorAll('.gloss').length") == 0, None)
+        # ---- J 英語文と日本語訳の連動(J1-J8 + M7) ----
+        linked_checks(page, view, lv, L, sync, rec, shot, open_lv, lvs=list(art["levels"]), art=art)
         # ---- J 画面の目視用shots ----
         open_lv(lv)
         shot(f"{lv}_top")
@@ -372,6 +374,196 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
     rec("Z", "console_errors_0", not errs, errs[:5])
     rec("Z", "http_4xx_5xx_0", not bad, bad[:5])
     browser.close()
+
+
+# ------------------------------------------------------------
+# J: 英語文と日本語訳の連動ハイライト(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01。J1-J8 + M7)
+# ------------------------------------------------------------
+def expect_maps(L: dict) -> tuple:
+    """(groups{key:text}, sid2key{sid:key}, null_sids[...])。keyはapp.jsのdata-jgと同じ '<part.idx>:<g>'。テキストはPythonのUTF-16切り出し(M4)。"""
+    import er135_enduser_align_01 as AL
+    groups, sid2key, null_sids = {}, {}, []
+    for pt in L["parts"]:
+        aligned = {s for g in (pt.get("ja_align") or []) if g.get("ja") for s in g["sids"]}
+        for g in pt.get("ja_align") or []:
+            if g.get("ja"):
+                pi, a, b = g["ja"]
+                key = f'{pt["idx"]}:{g["g"]}'
+                groups[key] = AL.slice_u16(pt["ja"][pi], a, b)
+                for s in g["sids"]:
+                    sid2key[s] = key
+        for pa in pt.get("paragraphs") or []:
+            for s in pa:
+                if pt.get("ja") and s["sid"] not in aligned:
+                    null_sids.append(s["sid"])
+    return groups, sid2key, null_sids
+
+
+_STATE_JS = """() => ({ eup: window.__EUP || {}, onSent: [...document.querySelectorAll('.sent.on')].map(e => e.dataset.sid),
+                         onJhl: [...document.querySelectorAll('.jhl.on')].map(e => e.dataset.jg) })"""
+_SEEK_STATE_JS = """(t) => new Promise(res => { const a=document.getElementById('aud'); const fin=()=>requestAnimationFrame(()=>requestAnimationFrame(()=>res({
+    eup: window.__EUP || {}, onSent: [...document.querySelectorAll('.sent.on')].map(e => e.dataset.sid),
+    onJhl: [...document.querySelectorAll('.jhl.on')].map(e => e.dataset.jg) })));
+  a.addEventListener('seeked', fin, {once:true}); a.currentTime=t; setTimeout(fin, 2500); })"""
+
+
+def _consistent(st: dict, sid2key: dict, gap_ok: set | None = None) -> bool:
+    """点灯状態がデータ通りか: EN点灯==active、JA点灯==active文の群(群なし=0個)。文と文の間(active無し)はgap_okの群のみ許容。"""
+    act = st["eup"].get("active")
+    if act is None:
+        return st["onSent"] == [] and (st["onJhl"] == [] or (gap_ok is not None and st["onJhl"] and set(st["onJhl"]) <= gap_ok and len(set(st["onJhl"])) == 1))
+    want = sid2key.get(act)
+    return st["onSent"] == [act] and ((st["onJhl"] == []) if want is None else (set(st["onJhl"]) == {want} and len(st["onJhl"]) == len(set(st["onJhl"])) and st["eup"].get("jg") == want))
+
+
+def linked_checks(page, view, lv, L, sync, rec, shot, open_lv, tabs_other=None, lvs=None, art=None):
+    groups, sid2key, null_sids = expect_maps(L)
+    pre = lv + "_"
+    has = bool(groups)
+    # ---- J1 span数・data-jg・テキスト(Python側UTF-16切り出し==ブラウザ側textContent) ----
+    dom = page.evaluate("() => [...document.querySelectorAll('.jhl')].map(e => [e.dataset.jg, e.textContent])")
+    got = {}
+    dup = False
+    for k, t in dom:
+        dup = dup or (k in got)
+        got[k] = t
+    rec("J", pre + "J1_span_count_keys_text_equal_python_slice", (not dup) and got == groups, dict(want=len(groups), got=len(got), dup=dup,
+        diff=[k for k in groups if got.get(k) != groups[k]][:3]))
+    # ---- J2 訳本文は不変(.tr内のp==data.ja) ----
+    bad2 = []
+    for pt in L["parts"]:
+        if not pt.get("ja"):
+            continue
+        txt = page.evaluate("(i) => [...document.querySelectorAll('[data-part=\"'+i+'\"] .tr p')].map(e => e.textContent)", pt["idx"])
+        if txt != pt["ja"]:
+            bad2.append(pt["label"])
+    rec("J", pre + "J2_translation_text_unchanged", not bad2, bad2[:3])
+    if not has:
+        rec("J", pre + "J0_no_align_no_spans_old_display", len(dom) == 0, len(dom))
+        return
+    # ---- J3 文クリック: その文の群だけ点灯・他JA非点灯 / null群の文は無点灯 ----
+    story = [pt for pt in L["parts"] if pt["kind"] == "story" and pt.get("paragraphs")]
+    sids_all = [s["sid"] for pt in story for pa in pt["paragraphs"] for s in pa]
+    pick = [sid for sid in sids_all if sid in sid2key][:1] + [sid for sid in sids_all if sid in sid2key][-1:] + ([sid for sid in sids_all if sid not in sid2key][:1])
+    bad3 = []
+    for sid in pick:
+        page.evaluate("document.getElementById('aud').pause()")
+        page.click(f'[data-sid="{sid}"]')
+        page.wait_for_timeout(450)
+        st = page.evaluate(_STATE_JS)
+        if not _consistent(st, sid2key):
+            bad3.append((sid, st["eup"].get("active"), st["onJhl"], st["onSent"]))
+    page.evaluate("document.getElementById('aud').pause()")
+    rec("J", pre + f"J3_click_lights_only_mapped_group_{len(pick)}", not bad3, bad3[:3])
+    # ---- J4 全文走査: 全sidを再生位置に置いて点灯が常にデータ通り(null群は一度も点灯しない) ----
+    bad4, nlit, n = [], 0, 0
+    for r in sync:
+        tt = r["start"] + 0.3 if r["end"] - r["start"] > 0.7 else (r["start"] + r["end"]) / 2
+        st = page.evaluate(_SEEK_STATE_JS, tt)
+        n += 1
+        act = st["eup"].get("active")
+        if act is not None and act not in sid2key and st["onJhl"]:
+            nlit += 1
+        if not _consistent(st, sid2key):
+            bad4.append((r["sid"], act, st["onJhl"], st["onSent"]))
+    rec("J", pre + f"J4_all_{n}_sentences_state_matches_data", not bad4, bad4[:4])
+    rec("J", pre + "M7_null_group_sentences_never_light_ja", nlit == 0 and len(null_sids) >= 0, dict(null_sentences=len(null_sids), lit=nlit))
+    # ---- 文と文の間: 同一群の前後なら保持・別群なら消灯 ----
+    keep_t = drop_t = None
+    for a, b in zip(sync, sync[1:]):
+        if b["start"] - a["end"] > 0.2 and keep_t is None and sid2key.get(a["sid"]) and sid2key.get(a["sid"]) == sid2key.get(b["sid"]):
+            keep_t = (a["end"] + b["start"]) / 2
+        if b["start"] - a["end"] > 0.2 and drop_t is None and sid2key.get(a["sid"]) != sid2key.get(b["sid"]):
+            drop_t = (a["end"] + b["start"]) / 2
+    if keep_t is not None:
+        st = page.evaluate(_SEEK_STATE_JS, keep_t)
+        rec("J", pre + "M9_gap_inside_same_group_keeps_ja", st["eup"].get("active") is None and st["onSent"] == [] and len(st["onJhl"]) == 1, dict(t=round(keep_t, 2), onJhl=st["onJhl"]))
+    if drop_t is not None:
+        st = page.evaluate(_SEEK_STATE_JS, drop_t)
+        rec("J", pre + "gap_between_groups_clears_ja", st["eup"].get("active") is None and st["onSent"] == [] and st["onJhl"] == [], dict(t=round(drop_t, 2), onJhl=st["onJhl"]))
+    # ---- J5 シーク(#seek 50% / +-10秒)後の同期 ----
+    bad5 = []
+    page.evaluate("() => { const s=document.getElementById('seek'); s.value=500; s.dispatchEvent(new Event('input',{bubbles:true})); }")
+    page.wait_for_timeout(500)
+    st = page.evaluate(_STATE_JS)
+    if not _consistent(st, sid2key, set(groups)):
+        bad5.append(("seekbar50", st["eup"].get("active"), st["onJhl"]))
+    for btn in ("fwd10", "back10"):
+        page.click("#" + btn)
+        page.wait_for_timeout(500)
+        st = page.evaluate(_STATE_JS)
+        if not _consistent(st, sid2key, set(groups)):
+            bad5.append((btn, st["eup"].get("active"), st["onJhl"]))
+    rec("J", pre + "J5_seek_and_skip_buttons_sync", not bad5, bad5)
+    # ---- 一時停止・再開の状態一致 ----
+    first_sid = next(s for s in sids_all if s in sid2key)
+    page.click(f'[data-sid="{first_sid}"]')
+    page.wait_for_timeout(500)
+    page.click("#pp")                                  # 一時停止
+    page.wait_for_timeout(300)
+    s1 = page.evaluate(_STATE_JS)
+    page.wait_for_timeout(700)
+    s2 = page.evaluate(_STATE_JS)
+    page.click("#pp")                                  # 再開
+    page.wait_for_timeout(500)
+    s3 = page.evaluate(_STATE_JS)
+    page.evaluate("document.getElementById('aud').pause()")
+    rec("J", pre + "M7_pause_resume_state_consistent",
+        s1["onJhl"] == s2["onJhl"] and s1["onSent"] == s2["onSent"] and _consistent(s1, sid2key, set(groups)) and _consistent(s3, sid2key, set(groups)),
+        dict(paused=[s1["onSent"], s1["onJhl"]], later=[s2["onSent"], s2["onJhl"]], resumed=[s3["onSent"], s3["onJhl"]]))
+    # ---- KPモード(英語音声のみ再生)で誤点灯なし ----
+    kb = page.query_selector_all(".kpitem button[data-act=kp]")
+    if kb:
+        kb[0].scroll_into_view_if_needed()
+        kb[0].click()
+        page.wait_for_timeout(900)
+        st = page.evaluate(_STATE_JS)
+        page.evaluate("document.getElementById('aud').pause()")
+        rec("J", pre + "M7_kp_mode_no_ja_lit", st["eup"].get("mode") == "kp" and st["onJhl"] == [] and st["onSent"] == [], dict(mode=st["eup"].get("mode"), onJhl=st["onJhl"]))
+    # ---- 色・見た目が.sent.onと同一 ----
+    same = page.evaluate("""() => { const j=document.querySelector('.jhl'), s=document.querySelector('.sent'); if(!j||!s) return null;
+        const f=(e)=>{ e.classList.add('on'); const c=getComputedStyle(e); const r=[c.backgroundColor,c.boxShadow]; e.classList.remove('on'); return r; };
+        return [f(j), f(s)]; }""")
+    rec("J", pre + "J8_jhl_on_style_equals_sent_on", bool(same) and same[0] == same[1], same)
+    # ---- 実再生中の可視性(情報): 再生しながらEN点灯文とJA点灯群が画面内(固定バーより上)にある割合 ----
+    n_vis = {"samples": 0, "en_visible": 0, "ja_lit": 0, "ja_lit_and_visible": 0, "en_and_ja_both_visible": 0}
+    mid = story[min(1, len(story) - 1)]
+    shot_done = False
+    page.click(f'[data-part="{mid["idx"]}"] .btns .seek.from')
+    for _ in range(18):
+        page.wait_for_timeout(600)
+        v = page.evaluate("""() => { const bar=document.getElementById('bar').getBoundingClientRect().top;
+            const vis=(e)=>{ if(!e) return null; const r=e.getBoundingClientRect(); return r.bottom>0 && r.top<bar; };
+            return [vis(document.querySelector('.sent.on')), vis(document.querySelector('.jhl.on'))]; }""")
+        if v[0] is None:
+            continue
+        n_vis["samples"] += 1
+        n_vis["en_visible"] += 1 if v[0] else 0
+        if v[1] is not None:
+            if not shot_done:
+                shot(f"{lv}_jhl_lit")             # 日本語群が点灯している瞬間の画面(PC/モバイルでの見え方の確認用)
+                shot_done = True
+            n_vis["ja_lit"] += 1
+            n_vis["ja_lit_and_visible"] += 1 if v[1] else 0
+            n_vis["en_and_ja_both_visible"] += 1 if (v[0] and v[1]) else 0
+    page.evaluate("document.getElementById('aud').pause()")
+    rec("J", pre + "info_visibility_during_playback", True, n_vis)
+    # ---- J6 レベル切替で全消灯 + 切替直後のクリック ----
+    other = [k for k in (lvs or []) if k != lv]
+    if other:
+        o = other[0]
+        page.click(f"#tabs button[data-lv={o}]")
+        page.wait_for_function("(l) => window.__EUP && window.__EUP.level === l && window.__EUP.syncKind === 'real'", arg=o, timeout=15000)
+        st = page.evaluate(_STATE_JS)
+        rec("J", pre + "J6_level_switch_clears_all", st["onJhl"] == [] and st["onSent"] == [], dict(onJhl=st["onJhl"], onSent=st["onSent"]))
+        g2, s2k, _ = expect_maps(art["levels"][o])
+        sid2 = next((s["sid"] for pt in art["levels"][o]["parts"] if pt["kind"] == "story" for pa in pt.get("paragraphs", []) for s in pa if s["sid"] in s2k), None)
+        if sid2:
+            page.click(f'[data-sid="{sid2}"]')
+            page.wait_for_timeout(450)
+            st = page.evaluate(_STATE_JS)
+            page.evaluate("document.getElementById('aud').pause()")
+            rec("J", pre + "M7_click_right_after_level_switch", _consistent(st, s2k), dict(sid=sid2, active=st["eup"].get("active"), onJhl=st["onJhl"]))
 
 
 if __name__ == "__main__":

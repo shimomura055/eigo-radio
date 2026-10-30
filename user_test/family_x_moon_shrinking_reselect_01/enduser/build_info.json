@@ -2,7 +2,7 @@
  "schema": "enduser_build_info_v1",
  "id": "family_x_moon_shrinking_reselect_01",
  "family": "X",
- "asset_build": "rev01-e",
+ "asset_build": "rev01-f",
  "dev_index_sha256": "c4bc9cfb00534a83531f0a308868b6b2977cff22748cdcc69892eeae77d4129d",
  "audio_sha256": {
   "audio/adv_00.mp3": "4d21cc919b2d065ff88919ba506d9281f3d33a419ba0cd97ebf7188fd1e41a52",
@@ -54,16 +54,16 @@
  },
  "assets": {
   "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "7ae1ebfd45d4b89a29091d3e2de515f55378599fcadb3343a3c28e1a3a10d7ac",
-  "style.css": "b292eb97418b84c944ed3dfaab28f678ad96c5c263e98933d5606932561eaed9"
+  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
+  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
  },
  "files": {
-  "data/article.json": "db531eb27196fd2fc8b05ac303a812694eb3c3795a79f3481372ef203eae547a",
+  "data/article.json": "d41d35275be316355554b2c9bd109ab3700dfe28b3ebe5db65e051ac36f3ca64",
   "data/sync_std.json": "77b977a14decb355ad3f7901a44d417b6867036073cac369efebb5bc57e5bda6",
   "data/sync_adv.json": "775c47a918886a44993f46652a94b37277ecbdb830a97fbe172c6c1d1dc10334",
   "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "7ae1ebfd45d4b89a29091d3e2de515f55378599fcadb3343a3c28e1a3a10d7ac",
-  "style.css": "b292eb97418b84c944ed3dfaab28f678ad96c5c263e98933d5606932561eaed9"
+  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
+  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
  },
  "sync": {
   "std": {
@@ -84,7 +84,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "e0ad405b083c48787e15b84d54977ecae4b7c57bb74697105217e68dc93be8cf",
+   "source_sha256": "51fa20186405980e67b388f989ae2213db7a7df07bd3b7311911757d26ee5c27",
    "rows": 11,
    "sentences": 63,
    "min_row_ratio": 0.913,
@@ -176,9 +176,84 @@
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 4.3,
-  "build_wall_s": 1.14,
-  "cached_segments": 26
+  "asr_wall_s": 1.6,
+  "build_wall_s": 1.69,
+  "cached_segments": 26,
+  "embedding_api_calls": 0,
+  "embedding_tokens": 0,
+  "embedding_cost_jpy": 0.0
+ },
+ "ja_align": {
+  "method": "mono_dp_embed_v1",
+  "model": "text-embedding-3-large",
+  "dims": 1024,
+  "params": {
+   "lam": 2.0,
+   "len_w": 1.0,
+   "pen_12": 0.9,
+   "pen_22": 4.0,
+   "pen_13": 1.5,
+   "skip": 3.0,
+   "tau": 0.5,
+   "delta_path": 0.1,
+   "delta_group": 0.0,
+   "delta_sent": 0.0,
+   "delta_group_en": -0.1,
+   "delta_sent_en": -0.1,
+   "eq_delta_ja": 0.0,
+   "eq_delta_en": 0.0,
+   "tau_para": 0.55,
+   "tau_floor": 0.4
+  },
+  "applicable": true,
+  "coverage": {
+   "std": {
+    "story_parts": 3,
+    "sentences_total": 46,
+    "sentences_linked": 26,
+    "groups_total": 35,
+    "groups_null": 15,
+    "reasons": {
+     "group_shift_margin": 6,
+     "cos_low": 5,
+     "path_margin": 1,
+     "sent_shift_margin": 1,
+     "paragraph_mean_cos": 2
+    },
+    "coverage": 0.5652
+   },
+   "adv": {
+    "story_parts": 3,
+    "sentences_total": 35,
+    "sentences_linked": 28,
+    "groups_total": 35,
+    "groups_null": 7,
+    "reasons": {
+     "cos_low": 3,
+     "paragraph_floor_cos": 4
+    },
+    "coverage": 0.8
+   }
+  },
+  "input_sha256": {
+   "std": {
+    "std_14": "c3b63d4fcfb7b5287bf4db99f644ad82d02056d61ad5164b4ab57981c5921ded",
+    "std_16": "6832d134255beb12aa59db86c25bbbb21c26b88b4fab28d0f0c20c6eff55d1d1",
+    "std_18": "84ab2b3bddbf6305ec2b531919db458fc7ae7464ab43329918303ca8738c0b6c"
+   },
+   "adv": {
+    "adv_14": "ab02aa6efe990077b53c4eeaab23c03f2959d1d1f81f87ed9281eaf05fd1a0a4",
+    "adv_16": "10e876ce5e6f2fb94a2692e2353f1b0b0ca249358000af640aa23277e36bb88e",
+    "adv_18": "98ff3f065113a050991dbc0457ac7b2a736f7ccf32d7575fb69875fcf66fbff6"
+   }
+  },
+  "degraded": [],
+  "embedding": {
+   "api_calls": 0,
+   "tokens": 0,
+   "cached_hits": 263,
+   "cost_jpy": 0.0
+  }
  },
  "episode_check": {
   "std": {

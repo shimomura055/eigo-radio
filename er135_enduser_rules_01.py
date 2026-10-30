@@ -9,7 +9,7 @@ SCHEMA_ARTICLE = "enduser_article_v1"
 SCHEMA_SYNC_IN = "enduser_sync_v1"            # 02A(同期module)の出力契約
 SCHEMA_SYNC_PUBLIC = "enduser_sync_public_v1"  # enduser/data/sync_<lv>.json
 SCHEMA_BUILD_INFO = "enduser_build_info_v1"
-ASSET_BUILD_ID = "rev01-e"
+ASSET_BUILD_ID = "rev01-f"
 
 # 承認済みの日本語訳の出所は2値のみ(それ以外はSTOP)
 JA_SOURCES = ("approved_ja_manuscript", "approved_ja_original_in_dev_page")

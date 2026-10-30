@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(rev01-e)をDEV rev01-eの『機械的派生』として作る。
+"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(現行rev01-f。旧rev01-eは凍結・残置)をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
 
  - 入力 : DEV rev01-e(`user_test/dev_enduser_page_01/{index.html,app.js,style.css}`。**読み取りのみ・DEVは不変**)
  - 出力 : `enduser_page_assets/rev01-e/{index.html,app.js,style.css,ASSET_SHA256.json}` と `ASSET_DIFF_01.md`(許可リスト=EDITSの一覧)
@@ -18,7 +18,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 DEV_DIR = ROOT / "user_test" / "dev_enduser_page_01"
-OUT_DIR = HERE / "rev01-e"
+OUT_DIR = HERE / "rev01-f"
 FILES = ("index.html", "app.js", "style.css")
 
 
@@ -112,6 +112,63 @@ EDITS = [
               ".notice{margin:0 0 12px;padding:10px 14px;background:#f2f4f7;border:1px solid var(--line);border-radius:10px;color:#344054;font-size:13.5px;line-height:1.7}\n"
               ".notice[hidden]{display:none}\n"
               ".kpitem .th2{margin-top:6px}\n")),
+    # ---------------- rev01-f: 英語文と日本語訳の連動ハイライト(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01。DEV rev01-eは不変、本番assetのみ) ----------------
+    dict(id="J19", file="app.js", kind="ADD", why="rev01-f: 連動用の状態変数(jgEls=群id->JA要素, sidToG=文sid->群id, activeG=点灯中の群, jaHold=文と文の間も保持する群)",
+         old="  var LEVEL_NAME = { std: 'Standard', adv: 'Advanced' };\n",
+         new="  var LEVEL_NAME = { std: 'Standard', adv: 'Advanced' };\n  var jgEls = {}, sidToG = {}, activeG = null, jaHold = null;   // rev01-f: 英語文と日本語訳の連動(ja_align)\n"),
+    dict(id="J20", file="app.js", kind="ADD", why="rev01-f: jaHtml()=日本語訳の群範囲(UTF-16 code unitオフセット)を<span class=jhl>で包む。訳本文は不変・ja_align無し/不正は従来表示。escは切り出し後",
+         old="  function glossHtml(p) {",
+         new=("  /* rev01-f: 英語文と日本語訳の連動。ja_align=[{g,sids,ja:[段落,開始,終了]|null}]。オフセットはJSのsubstringと同じUTF-16 code unit(正規化しない)。\n"
+              "     訳本文は書き換えず、群の範囲を<span class=\"jhl\" data-jg>で包むだけ。ja_align無し/不正(範囲外・重なり)は従来どおりの素のテキスト。 */\n"
+              "  function jaHtml(p, k, t) {\n"
+              "    var al = p.ja_align;\n"
+              "    if (!al || !al.length) return esc(t);\n"
+              "    var gs = al.filter(function (g) { return g.ja && g.ja[0] === k && g.ja[1] >= 0 && g.ja[1] < g.ja[2] && g.ja[2] <= t.length; })\n"
+              "      .sort(function (x, y) { return x.ja[1] - y.ja[1]; });\n"
+              "    var out = '', pos = 0;\n"
+              "    for (var i = 0; i < gs.length; i++) {\n"
+              "      var a = gs[i].ja[1], b = gs[i].ja[2];\n"
+              "      if (a < pos) return esc(t);\n"
+              "      out += esc(t.substring(pos, a)) + '<span class=\"jhl\" data-jg=\"' + p.idx + ':' + gs[i].g + '\">' + esc(t.substring(a, b)) + '</span>';\n"
+              "      pos = b;\n"
+              "    }\n"
+              "    return out + esc(t.substring(pos));\n"
+              "  }\n"
+              "  function glossHtml(p) {")),
+    dict(id="J21", file="app.js", kind="ADD", why="rev01-f: 日本語訳の各段落をjaHtml()経由で出力(ja_align無しは従来出力と同一)",
+         old="p.ja.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('')",
+         new="p.ja.map(function (t, k) { return '<p>' + jaHtml(p, k, t) + '</p>'; }).join('')"),
+    dict(id="J22", file="app.js", kind="ADD", why="rev01-f: render()末尾でjgEls/sidToGを構築(sentElsと同じ場所)。再構築時は点灯状態も初期化",
+         old="    Array.prototype.forEach.call(document.querySelectorAll('[data-sid]'), function (e) { sentEls[e.dataset.sid] = e; });\n",
+         new=("    Array.prototype.forEach.call(document.querySelectorAll('[data-sid]'), function (e) { sentEls[e.dataset.sid] = e; });\n"
+              "    jgEls = {}; sidToG = {}; activeG = null; jaHold = null;\n"
+              "    Array.prototype.forEach.call(document.querySelectorAll('.jhl'), function (e) { (jgEls[e.dataset.jg] = jgEls[e.dataset.jg] || []).push(e); });\n"
+              "    parts.forEach(function (p) { (p.ja_align || []).forEach(function (g) { if (g.ja && jgEls[p.idx + ':' + g.g]) g.sids.forEach(function (s) { sidToG[s] = p.idx + ':' + g.g; }); }); });\n")),
+    dict(id="J23", file="app.js", kind="ADD", why="rev01-f: highlight(sid)の先頭でjaLight(sid)を呼ぶ(連動の追加点はこの1箇所。nullグループのEN文はJAを点灯しない)",
+         old="  function highlight(sid) {\n    if (sid === activeSid) return;\n",
+         new=("  function jaLight(sid) {   // rev01-f: 英語文のon/offに連動して、対応する日本語群だけを点灯する\n"
+              "    var g = sid ? (sidToG[sid] || null) : jaHold;   // 文と文の間: 同一群の前後の文に挟まれている間(jaHold)は消さない\n"
+              "    if (g === activeG) return;\n"
+              "    if (activeG && jgEls[activeG]) jgEls[activeG].forEach(function (e) { e.classList.remove('on'); });\n"
+              "    activeG = g;\n"
+              "    if (g && jgEls[g]) jgEls[g].forEach(function (e) { e.classList.add('on'); });\n"
+              "  }\n"
+              "  function gapGroup(g) {   // 文と文の間(2秒未満)で前後の文が同じ群なら、その群を返す\n"
+              "    var lo = 0, hi = sync.length - 1, k = -1;\n"
+              "    while (lo <= hi) { var m = (lo + hi) >> 1; if (sync[m].start <= g) { k = m; lo = m + 1; } else hi = m - 1; }\n"
+              "    if (k < 0 || k + 1 >= sync.length) return null;\n"
+              "    var a = sidToG[sync[k].sid], b = sidToG[sync[k + 1].sid];\n"
+              "    return (a && a === b && sync[k + 1].start - sync[k].end < 2.0) ? a : null;\n"
+              "  }\n"
+              "  function highlight(sid) {\n    jaLight(sid);\n    if (sid === activeSid) return;\n")),
+    dict(id="J24", file="app.js", kind="ADD", why="rev01-f: tick()で文と文の間の保持群(jaHold)を更新してからhighlight()を呼ぶ(再生・シーク・クリック・レベル切替は従来どおりtick/highlightに集約)",
+         old="    if (sync.length) highlight(findActive(gt()));\n",
+         new="    if (sync.length) { var ga = findActive(gt()); jaHold = ga ? null : gapGroup(gt()); highlight(ga); }\n"),
+    dict(id="J25", file="app.js", kind="ADD", why="rev01-f: 検証用の状態__EUPに点灯中のJA群(jg)を追加",
+         old="syncKind: syncKind, src: A.src };", new="syncKind: syncKind, src: A.src, jg: activeG };"),
+    dict(id="C5", file="style.css", kind="ADD", why="rev01-f: 日本語訳の対応群の点灯(.sent.onと同じ変数・同じ見た目)",
+         old=".kpitem .th2{margin-top:6px}\n",
+         new=".kpitem .th2{margin-top:6px}\n.jhl{border-radius:4px;transition:background .12s}\n.jhl.on{background:var(--on);box-shadow:0 0 0 3px var(--on)}\n"),
 ]
 
 
@@ -147,10 +204,10 @@ def main():
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         for n, t in res.items():
             (OUT_DIR / n).write_bytes(t.encode("utf-8"))
-        man = {"asset_build": "rev01-e", "derived_from": "DEV rev01-e(機械的派生。許可リスト=derive_assets_01.py EDITS)", "files": shas,
+        man = {"asset_build": "rev01-f", "derived_from": "DEV rev01-e + EDITS(機械的派生。許可リスト=derive_assets_01.py EDITS。rev01-fは連動ハイライトJ19-J25/C5を追加)", "files": shas,
                "edits": [{"id": e["id"], "file": e["file"], "kind": e["kind"], "why": e["why"]} for e in EDITS]}
         (OUT_DIR / "ASSET_SHA256.json").write_text(json.dumps(man, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-        lines = ["# production asset 差分一覧(DEV rev01-e -> production rev01-e)", "", "許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。", "",
+        lines = ["# production asset 差分一覧(DEV rev01-e -> production rev01-f)", "", "許可リスト(EDITS)に載った変更のみ。REMOVE=DEV専用機能の除去 / ADD=本番に必要な最小追加。", "",
                  "| id | file | 種別 | 内容 |", "|---|---|---|---|"]
         lines += [f"| {e['id']} | {e['file']} | {e['kind']} | {e['why']} |" for e in EDITS]
         lines += ["", "sha256:", ""] + [f"- {n}: `{s}`" for n, s in shas.items()]

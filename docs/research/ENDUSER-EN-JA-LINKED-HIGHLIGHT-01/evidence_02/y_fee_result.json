@@ -1,0 +1,144 @@
+{
+ "ok": true,
+ "family": "Y",
+ "enduser_dir": "C:\\Users\\tensh\\eigo-radio\\user_test\\family_y_production_redelivery_fee_03\\enduser",
+ "files": [
+  "app.js",
+  "build_info.json",
+  "data/article.json",
+  "data/sync_adv.json",
+  "data/sync_std.json",
+  "index.html",
+  "style.css"
+ ],
+ "consistency": "ok",
+ "sync": {
+  "std": {
+   "gate": "PASS",
+   "min_row_ratio": 0.9444,
+   "cost": {
+    "api_calls": 0,
+    "wall_s": 0.9,
+    "asr_transcribed": 0,
+    "cached_segments": 17,
+    "model": "medium"
+   },
+   "wall_s": 0.9
+  },
+  "adv": {
+   "gate": "PASS",
+   "min_row_ratio": 0.9524,
+   "cost": {
+    "api_calls": 0,
+    "wall_s": 0.8,
+    "asr_transcribed": 0,
+    "cached_segments": 15,
+    "model": "medium"
+   },
+   "wall_s": 0.8
+  }
+ },
+ "episode_check": {
+  "std": {
+   "rows_checked": 26,
+   "rows_skipped_silent": 0,
+   "max_abs_lag_s": 0.0,
+   "min_corr": 0.98978,
+   "episode_dur_s": 337.25,
+   "timeline_total_s": 337.212,
+   "length_diff_s": 0.038,
+   "length_basis": "run_timeline"
+  },
+  "adv": {
+   "rows_checked": 24,
+   "rows_skipped_silent": 0,
+   "max_abs_lag_s": 0.0,
+   "min_corr": 0.98939,
+   "episode_dur_s": 314.93,
+   "timeline_total_s": 314.88,
+   "length_diff_s": 0.05,
+   "length_basis": "run_timeline"
+  }
+ },
+ "translation_coverage": {
+  "std": {
+   "topic": {
+    "blocks": 1,
+    "translated": 0,
+    "source": "none_approved_translation_hidden"
+   },
+   "story": {
+    "blocks": 8,
+    "translated": 8,
+    "source": "approved_ja_original_in_dev_page"
+   }
+  },
+  "adv": {
+   "topic": {
+    "blocks": 1,
+    "translated": 0,
+    "source": "none_approved_translation_hidden"
+   },
+   "preview": {
+    "blocks": 1,
+    "translated": 0,
+    "source": "none_approved_translation_hidden"
+   },
+   "comment": {
+    "blocks": 2,
+    "translated": 0,
+    "source": "none_approved_translation_hidden"
+   },
+   "story": {
+    "blocks": 8,
+    "translated": 8,
+    "source": "approved_ja_original_in_dev_page"
+   }
+  }
+ },
+ "dev_index_sha256": "744a82e6e1a8d757b07498da5cc022b4dafe7acc191656c3436972c26158456f",
+ "enduser_index_sha256": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
+ "total_wall_s": 7.6,
+ "api_calls": 0,
+ "browser_verify": {
+  "rc": 0,
+  "result": "C:\\Users\\tensh\\AppData\\Local\\Temp\\claude\\C--Users-tensh-eigo-radio\\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\\scratchpad\\ejh02_run\\y_fee_result_browser.json"
+ },
+ "ja_align": {
+  "coverage": {
+   "std": {
+    "story_parts": 8,
+    "sentences_total": 51,
+    "sentences_linked": 29,
+    "groups_total": 34,
+    "groups_null": 11,
+    "reasons": {
+     "group_shift_margin": 7,
+     "sent_shift_margin": 3,
+     "number_mismatch": 1
+    },
+    "coverage": 0.5686
+   },
+   "adv": {
+    "story_parts": 8,
+    "sentences_total": 37,
+    "sentences_linked": 29,
+    "groups_total": 34,
+    "groups_null": 6,
+    "reasons": {
+     "sent_shift_margin": 2,
+     "group_shift_margin": 4
+    },
+    "coverage": 0.7838
+   }
+  },
+  "degraded": [],
+  "embedding": {
+   "api_calls": 0,
+   "tokens": 0,
+   "cached_hits": 274,
+   "cost_jpy": 0.0
+  },
+  "recompute": "done"
+ }
+}

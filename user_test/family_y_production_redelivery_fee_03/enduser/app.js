@@ -11,6 +11,7 @@
   var sync = [], syncKind = 'none', sentEls = {}, activeSid = null;
   var raf = 0, lastUserScroll = 0;
   var LEVEL_NAME = { std: 'Standard', adv: 'Advanced' };
+  var jgEls = {}, sidToG = {}, activeG = null, jaHold = null;   // rev01-f: 英語文と日本語訳の連動(ja_align)
   var JA = /[ぁ-んァ-ヶ一-龠]/;
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; }); }
@@ -33,7 +34,23 @@
   function trHtml(p) {   // 英語本文の直後に日本語訳(承認済み日本語原稿の対応段落のみ。無いブロックは出さない)
     if (!p.ja || !p.ja.length) return '';
     return '<div class="tr" lang="ja" data-src="' + esc(p.ja_source) + '"><span class="trtag">日本語訳</span>' +
-      p.ja.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>';
+      p.ja.map(function (t, k) { return '<p>' + jaHtml(p, k, t) + '</p>'; }).join('') + '</div>';
+  }
+  /* rev01-f: 英語文と日本語訳の連動。ja_align=[{g,sids,ja:[段落,開始,終了]|null}]。オフセットはJSのsubstringと同じUTF-16 code unit(正規化しない)。
+     訳本文は書き換えず、群の範囲を<span class="jhl" data-jg>で包むだけ。ja_align無し/不正(範囲外・重なり)は従来どおりの素のテキスト。 */
+  function jaHtml(p, k, t) {
+    var al = p.ja_align;
+    if (!al || !al.length) return esc(t);
+    var gs = al.filter(function (g) { return g.ja && g.ja[0] === k && g.ja[1] >= 0 && g.ja[1] < g.ja[2] && g.ja[2] <= t.length; })
+      .sort(function (x, y) { return x.ja[1] - y.ja[1]; });
+    var out = '', pos = 0;
+    for (var i = 0; i < gs.length; i++) {
+      var a = gs[i].ja[1], b = gs[i].ja[2];
+      if (a < pos) return esc(t);
+      out += esc(t.substring(pos, a)) + '<span class="jhl" data-jg="' + p.idx + ':' + gs[i].g + '">' + esc(t.substring(a, b)) + '</span>';
+      pos = b;
+    }
+    return out + esc(t.substring(pos));
   }
   function glossHtml(p) {   // 本文直下の意味一覧(下線対象 + Key Phrase/Word + Vocabulary。簡潔な日本語の意味のみ)
     if (!p.glossary || !p.glossary.length) return '';
@@ -111,6 +128,9 @@
     emphasize();
     sentEls = {};
     Array.prototype.forEach.call(document.querySelectorAll('[data-sid]'), function (e) { sentEls[e.dataset.sid] = e; });
+    jgEls = {}; sidToG = {}; activeG = null; jaHold = null;
+    Array.prototype.forEach.call(document.querySelectorAll('.jhl'), function (e) { (jgEls[e.dataset.jg] = jgEls[e.dataset.jg] || []).push(e); });
+    parts.forEach(function (p) { (p.ja_align || []).forEach(function (g) { if (g.ja && jgEls[p.idx + ':' + g.g]) g.sids.forEach(function (s) { sidToG[s] = p.idx + ':' + g.g; }); }); });
   }
 
   /* ---------- rev01-e: 学習ブロック引用英文内の解説対象語句を太字化(表示時のみ。データの英文は不変・記事非依存) ---------- */
@@ -220,7 +240,22 @@
     for (var i = 0; i < parts.length; i++) { if (g >= parts[i].start - 0.001) r = i; else break; }
     return r;
   }
+  function jaLight(sid) {   // rev01-f: 英語文のon/offに連動して、対応する日本語群だけを点灯する
+    var g = sid ? (sidToG[sid] || null) : jaHold;   // 文と文の間: 同一群の前後の文に挟まれている間(jaHold)は消さない
+    if (g === activeG) return;
+    if (activeG && jgEls[activeG]) jgEls[activeG].forEach(function (e) { e.classList.remove('on'); });
+    activeG = g;
+    if (g && jgEls[g]) jgEls[g].forEach(function (e) { e.classList.add('on'); });
+  }
+  function gapGroup(g) {   // 文と文の間(2秒未満)で前後の文が同じ群なら、その群を返す
+    var lo = 0, hi = sync.length - 1, k = -1;
+    while (lo <= hi) { var m = (lo + hi) >> 1; if (sync[m].start <= g) { k = m; lo = m + 1; } else hi = m - 1; }
+    if (k < 0 || k + 1 >= sync.length) return null;
+    var a = sidToG[sync[k].sid], b = sidToG[sync[k + 1].sid];
+    return (a && a === b && sync[k + 1].start - sync[k].end < 2.0) ? a : null;
+  }
   function highlight(sid) {
+    jaLight(sid);
     if (sid === activeSid) return;
     if (activeSid && sentEls[activeSid]) sentEls[activeSid].classList.remove('on');
     activeSid = sid;
@@ -248,8 +283,8 @@
     var pi = currentPartIdx();
     Array.prototype.forEach.call(document.querySelectorAll('[data-part].now'), function (e) { if (Number(e.dataset.part) !== pi || (A.paused && A.currentTime === 0)) e.classList.remove('now'); });
     if (pi != null && !(A.paused && A.currentTime === 0)) Array.prototype.forEach.call(document.querySelectorAll('[data-part="' + pi + '"]'), function (e) { e.classList.add('now'); });
-    if (sync.length) highlight(findActive(gt()));
-    window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src };
+    if (sync.length) { var ga = findActive(gt()); jaHold = ga ? null : gapGroup(gt()); highlight(ga); }
+    window.__EUP = { mode: mode, curIdx: curIdx, gt: gt(), active: activeSid, paused: A.paused, level: lv, article: art && art.id, syncKind: syncKind, src: A.src, jg: activeG };
   }
   function seekSentence(sid) {   // 文クリック: その文の先頭から全体音声を再生
     var r = sync.filter(function (x) { return x.sid === sid; })[0]; if (!r) return;

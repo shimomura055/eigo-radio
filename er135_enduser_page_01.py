@@ -9,6 +9,9 @@
  - 失敗 : `EnduserPageStop(ENDUSER_*)`。一時dirへ生成→一括renameなので失敗時は`enduser/`を書かない(M4)。既存`enduser/`は失敗時に削除しない(stale検出=M6)
  - DEV/Trial資産(試作ページ・試作script)のpathはimport・読込しない(静的testで検査)。
 
+英語文と日本語訳の連動(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01): story部の`ja_align`は`er135_enduser_align_01.py`が最終article(EN文+JA)から決定論的に作る
+(埋め込みはsha256キャッシュ。verify/resumeはAPI 0)。`build_info.ja_align`にcoverage・入力sha・degraded・埋め込み費用。asset=rev01-f(旧rev01-eは凍結)。
+
 公開API: parse_dev_page / build_rows_from_dev_html / compute_kp_audio / build_enduser_data / validate_output / write_enduser_page /
          verify_consistency / build_enduser(一括) / main(CLI: build | verify-consistency | verify-only)
 """
@@ -30,6 +33,7 @@ import time
 import uuid
 from pathlib import Path
 
+import er135_enduser_align_01 as AL
 import er135_enduser_dom_01 as D
 import er135_enduser_rules_01 as R
 from er135_enduser_dom_01 import EnduserPageStop, Node, parse_html, stop
@@ -37,6 +41,8 @@ from er135_enduser_dom_01 import EnduserPageStop, Node, parse_html, stop
 ROOT = Path(__file__).resolve().parent
 ASSET_DIR = ROOT / "enduser_page_assets" / R.ASSET_BUILD_ID
 ASSET_FILES = ("index.html", "app.js", "style.css")
+# 旧asset(凍結・残置)。再produce対象外の既公開dir(作品不採用=保存のみ)だけがこの旧buildで検証される(M6)。他のdirは現行ASSET_DIRと一致が必須
+FROZEN_ASSET_DIRS = {"family_z_in_a_grove_01": "rev01-e"}
 ASSET_MANIFEST = "ASSET_SHA256.json"
 ENDUSER_DIRNAME = "enduser"
 KP_METHOD = "silencedetect -40dB d=0.2: 発話ブロック2番目(ブロック数>=4)=最初の英語発話。ASR転写でKP表現と一致確認"
@@ -796,7 +802,7 @@ def build_glossary(lv: str, parts: list, vocab: list, level_meanings: list | Non
 # End Userデータの組立
 # ------------------------------------------------------------
 def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level: dict, ja: dict | None, meta: dict, *,
-                       kp_audio: dict | None = None, probe=None, extra_build_info: dict | None = None) -> tuple:
+                       kp_audio: dict | None = None, probe=None, extra_build_info: dict | None = None, align_store=None) -> tuple:
     """(article, sync_public_by_level, build_info)を返す。検査(sync受入・glossary assert・validate_output)をすべて通ったときだけ返る。"""
     if probe is None:
         stop("ENDUSER_PROBE_MISSING", "probe(音声sha/長さ)が必要")
@@ -850,6 +856,8 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
         sync_cost[lv] = si["cost"]
     article = {"schema": R.SCHEMA_ARTICLE, "id": meta["id"], "family": meta["family"], "title_ja": meta["title_ja"], "topic_en": meta["topic_en"],
                "notice": meta["notice"], "audio_base": "../", "levels": levels}
+    # 英語文 -> 日本語訳の連動(ja_align)。訳が表示されるstory部のみ。align_store無し(testの直接呼出)は未適用。埋め込み失敗は全null+degraded(M5。生成は止めない)
+    ja_info = AL.build_article_align(article, align_store, name_map=None) if align_store is not None else None
     build_info = {
         "schema": R.SCHEMA_BUILD_INFO, "id": meta["id"], "family": meta["family"], "asset_build": R.ASSET_BUILD_ID,
         "dev_index_sha256": meta["dev_index_sha256"], "audio_sha256": dict(sorted(audio_sha.items())),
@@ -860,6 +868,12 @@ def build_enduser_data(rows_by_level: dict, sync_by_level: dict, study_by_level:
                  "asr_wall_s": round(sum(float(c.get("wall_s", 0) or 0) for c in sync_cost.values()), 1), "build_wall_s": 0.0,
                  "cached_segments": int(sum(int(c.get("cached_segments", 0) or 0) for c in sync_cost.values()))},
     }
+    if ja_info is not None:
+        build_info["ja_align"] = ja_info
+        build_info["cost"].update({"embedding_api_calls": ja_info["embedding"]["api_calls"], "embedding_tokens": ja_info["embedding"]["tokens"],
+                                   "embedding_cost_jpy": ja_info["embedding"]["cost_jpy"]})
+        if ja_info["degraded"]:
+            build_info["warnings"].append("ja_align degraded(連動未適用の段落あり。次回pages/resumeで補完): " + "; ".join(ja_info["degraded"])[:400])
     if extra_build_info:
         for k, v in extra_build_info.items():
             if k == "cost":
@@ -893,12 +907,15 @@ def _arr(items):
 
 _S_SENT = _obj({"sid": S_STR, "html": S_STR, "text": S_STR})
 _S_FIELD = _obj({"label": S_STR, "html": S_STR})
+# 英語文群 -> 日本語訳の範囲(UTF-16 code unitのオフセット [段落index,開始,終了])。ja=nullは非ハイライト
+_S_JA_GROUP = _obj({"g": S_INT, "sids": _arr(S_STR), "ja": {"type": ["array", "null"], "items": S_INT}, "conf": S_NUM})
 _S_ITEM = _obj({"heading": S_STR_OR_NULL, "fields": _arr(_S_FIELD)})
 _S_PART = _obj({
     "idx": S_INT, "key": S_STR, "label": S_STR, "kind": {"type": "string", "enum": ["sfx", "fixed", "topic", "jtitle", "preview", "kp", "comment", "story", "oneline"]},
     "start": S_NUM, "dur": S_NUM, "seg": S_STR,
     "paragraphs": _arr(_arr(_S_SENT)), "meanings": _arr(S_STR), "glossary": _arr(_obj({"en": S_STR, "ja": S_STR, "vi": _t(type=["integer", "null"])})),
     "ja": _arr(S_STR), "ja_source": {"type": "string", "enum": list(R.JA_SOURCES)},
+    "ja_align": _arr(_S_JA_GROUP),
     "kp_header": _arr(S_STR),
     "kp": _arr(_obj({"en": S_STR, "text": S_STR, "text2": S_STR, "en_audio": _obj({"start": S_NUM, "end": S_NUM, "method": S_STR, "blocks": S_INT, "asr_text": S_STR, "token_match": S_NUM}, required=["start", "end", "method", "blocks"])}, required=["en", "text", "en_audio"])),
 }, required=["idx", "key", "label", "kind", "start", "dur", "seg"])
@@ -923,7 +940,10 @@ SCHEMA_BUILD_INFO_SPEC = _obj({
     "glossary": {"type": "object", "additionalProperties": S_STR},
     "ja_manuscript": _t(type=["object", "null"], properties={"name": S_STR, "sha256": S_STR}, required=["name", "sha256"], additionalProperties=False),
     "warnings": _arr(S_STR),
-    "cost": _obj({"api_calls": S_INT, "model": S_STR, "asr_wall_s": S_NUM, "build_wall_s": S_NUM, "cached_segments": S_INT}),
+    "cost": _obj({"api_calls": S_INT, "model": S_STR, "asr_wall_s": S_NUM, "build_wall_s": S_NUM, "cached_segments": S_INT,
+                  "embedding_api_calls": S_INT, "embedding_tokens": S_INT, "embedding_cost_jpy": S_NUM},
+                 required=["api_calls", "model", "asr_wall_s", "build_wall_s", "cached_segments"]),
+    "ja_align": {"type": "object"},
     "timeline_check": {"type": "object"},
     "episode_check": {"type": "object"},
 }, required=["schema", "id", "family", "asset_build", "dev_index_sha256", "audio_sha256", "assets", "files", "sync", "translation_coverage", "glossary", "ja_manuscript", "warnings", "cost"])
@@ -1011,6 +1031,13 @@ def validate_output(article: dict, sync_public: dict, build_info: dict, rows_by_
                 stop("ENDUSER_JA_SOURCE_INVALID", f"{p['key']}: jaとja_sourceが対になっていない")
             if p.get("ja_source") not in (None, *R.JA_SOURCES):
                 stop("ENDUSER_JA_SOURCE_INVALID", f"{p['key']}: ja_source={p.get('ja_source')}")
+    # 英語文と日本語訳の連動(ja_align): 構造不変条件・Yは『EN段落<->JAブロック1対1』(M-Y)
+    for lv, L in article["levels"].items():
+        for p in L["parts"]:
+            if p.get("ja") and p.get("paragraphs") and meta["family"] == "Y" and len(p["paragraphs"]) != len(p["ja"]):
+                stop("ENDUSER_JA_ALIGN_Y_PARA_MISMATCH", f"{lv} {p['label']}: EN段落数{len(p['paragraphs'])}とJAブロック数{len(p['ja'])}が1対1でない")
+            for msg in AL.check_part_align(p, f"{lv} {p['key']}"):
+                stop("ENDUSER_JA_ALIGN", msg)
     # 本文一致(dev行のDOM平文とバイト一致。空白除去後)・下線span一致
     for lv, L in article["levels"].items():
         rows = rows_by_level[lv]
@@ -1147,7 +1174,7 @@ def write_enduser_page(out_dir, data: tuple, assets_dir=ASSET_DIR) -> dict:
 # 一括(build)
 # ------------------------------------------------------------
 def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja_manuscript=None, kp_audio=None, asr=None, probe=None,
-                  assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None) -> dict:
+                  assets_dir=ASSET_DIR, y_article_ja=None, out_dir=None, extra_build_info=None, align_cache_dir=None, align_store=None) -> dict:
     t0 = time.time()
     dev_dir = Path(dev_dir).resolve()    # 相対pathだと音声pathが二重結合になる(runnerのctx.pages_dirは相対)
     idx = dev_dir / "index.html"
@@ -1169,7 +1196,10 @@ def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja
     extra = dict(extra_build_info or {})
     if tl:
         extra["timeline_check"] = tl
-    article, sync_public, build_info = build_enduser_data(rows_by_level, sync_by_level, study_by_level, ja, meta, kp_audio=kp_audio, probe=probe, extra_build_info=extra)
+    # 英語文<->日本語訳の対応づけ用の埋め込み(sha256キャッシュ。page_verify/resume/再実行はAPI 0)。訳を持つpartが無い記事(Z)ではAPIを呼ばない
+    store = align_store if align_store is not None else AL.EmbedStore(align_cache_dir)
+    article, sync_public, build_info = build_enduser_data(rows_by_level, sync_by_level, study_by_level, ja, meta, kp_audio=kp_audio, probe=probe, extra_build_info=extra,
+                                                          align_store=store)
     build_info["cost"]["build_wall_s"] = round(time.time() - t0, 2)
     res = write_enduser_page(out_dir or (dev_dir / ENDUSER_DIRNAME), (article, sync_public, build_info), assets_dir)
     res["article"] = article
@@ -1179,9 +1209,14 @@ def build_enduser(dev_dir, family: str, sync_by_level: dict, *, run_dir=None, ja
 # ------------------------------------------------------------
 # 公開dirの整合検査(M6: dev行=enduser本文、音声sha、asset sha、stale検出)
 # ------------------------------------------------------------
-def verify_consistency(public_dir, assets_dir=ASSET_DIR) -> dict:
-    """公開dir(dev index.html + enduser/)を検査。違反を列挙して返す(例外にしない)。{'ok','violations':[{code,message}],'checked':{}}"""
+def verify_consistency(public_dir, assets_dir=None, cache_dir=None) -> dict:
+    """公開dir(dev index.html + enduser/)を検査。違反を列挙して返す(例外にしない)。{'ok','violations':[{code,message}],'checked':{}}
+    assets_dir=None: 現行ASSET_DIR(rev01-f)。FROZEN_ASSET_DIRSの凍結dirだけ旧buildのassetで検証(M6)。
+    cache_dir: 埋め込みキャッシュ(生成時のcache_dir)。あれば保存ベクトルからja_alignを再計算して照合(API 0・キャッシュに無ければ不合格=M3)。無ければ構造+入力shaのみ。"""
     public_dir = Path(public_dir)
+    if assets_dir is None:
+        frozen = FROZEN_ASSET_DIRS.get(public_dir.resolve().name)
+        assets_dir = ROOT / "enduser_page_assets" / frozen if frozen else ASSET_DIR
     V, checked = [], {}
 
     def bad(code, msg):
@@ -1211,6 +1246,21 @@ def verify_consistency(public_dir, assets_dir=ASSET_DIR) -> dict:
     dev_html = raw_dev.decode("utf-8")
     if sha256_text_bytes(raw_dev) != bi["dev_index_sha256"]:
         bad("ENDUSER_STALE_DEV_CHANGED", "dev index.htmlがenduser生成後に変更されている(再生成が必要)")
+    try:
+        want_build = load_asset_manifest(assets_dir).get('asset_build')
+    except EnduserPageStop:
+        want_build = None     # manifest欠落は下のcheck_assetsがENDUSER_ASSET_MISMATCHにする
+    if want_build is not None and bi["asset_build"] != want_build:
+        bad("ENDUSER_ASSET_MISMATCH", f"asset_build={bi['asset_build']} が現行asset({want_build})と不一致(再produceが必要)")
+    # 英語文と日本語訳の連動(ja_align): 構造・入力sha(陳腐化)・(cache_dirがあれば)保存ベクトルからの再計算
+    try:
+        astore = AL.EmbedStore(cache_dir, allow_api=False) if cache_dir else None
+        av, ac = AL.verify_article_align(art, bi.get("ja_align"), astore)
+        for msg in av:
+            bad("ENDUSER_JA_ALIGN", msg)
+        checked["ja_align"] = {**ac, "degraded": list((bi.get("ja_align") or {}).get("degraded") or []), "coverage": (bi.get("ja_align") or {}).get("coverage")}
+    except Exception as e:                              # noqa: BLE001
+        bad("ENDUSER_JA_ALIGN", f"ja_align検査で例外: {type(e).__name__}: {e}")
     # ファイルsha
     for rel, sha in bi["files"].items():
         p = ed / rel
@@ -1447,7 +1497,7 @@ def produce_enduser(dev_dir, family: str, *, run_dir=None, cache_dir, ja_manuscr
         sync_wall[lv] = round(time.time() - t1, 1)
     ep = episode_checks(dev_dir, rows_by_level, meta, probe, run_dir=run_dir)
     res = build_enduser(dev_dir, family, sync_by_level, run_dir=run_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, probe=probe,
-                        out_dir=out_dir, extra_build_info={"episode_check": ep})
+                        out_dir=out_dir, extra_build_info={"episode_check": ep}, align_cache_dir=cache_dir)
     res["sync_by_level"] = {lv: {"gate": s["gate"]["status"], "min_row_ratio": s["gate"]["token_match"]["min_row_ratio"], "cost": s["cost"],
                                  "wall_s": sync_wall[lv]} for lv, s in sync_by_level.items()}
     res["episode_check"] = ep
@@ -1468,13 +1518,15 @@ def hook_run(dev_dir, family: str, *, run_dir, cache_dir, ja_manuscript=None, y_
     """runner hook共通入口: 生成 -> verify_consistency -> Playwright検証(PC+モバイル模擬)。失敗は`EnduserPageStop(ENDUSER_*)`。
     成功時は要約dictを返し、result_jsonへ保存する(公開dirには置かない)。"""
     res = produce_enduser(dev_dir, family, run_dir=run_dir, cache_dir=cache_dir, ja_manuscript=ja_manuscript, y_article_ja=y_article_ja, model=model)
-    vc = verify_consistency(dev_dir)
+    vc = verify_consistency(dev_dir, cache_dir=cache_dir)
     if not vc["ok"]:
         raise EnduserPageStop("ENDUSER_CONSISTENCY", "生成直後のverify_consistencyが不合格: " + json.dumps(vc["violations"], ensure_ascii=False)[:600])
     summary = {"ok": True, "family": family.upper(), "enduser_dir": res["out_dir"], "files": res["files"], "consistency": "ok",
                "sync": res["sync_by_level"], "episode_check": res["episode_check"], "translation_coverage": res["build_info"]["translation_coverage"],
                "dev_index_sha256": res["build_info"]["dev_index_sha256"], "enduser_index_sha256": res["build_info"]["files"]["index.html"],
-               "total_wall_s": res["total_wall_s"], "api_calls": 0, "browser_verify": None}
+               "total_wall_s": res["total_wall_s"], "api_calls": 0, "browser_verify": None,
+               "ja_align": {"coverage": ((res["build_info"].get("ja_align") or {}).get("coverage")), "degraded": ((res["build_info"].get("ja_align") or {}).get("degraded") or []),
+                            "embedding": ((res["build_info"].get("ja_align") or {}).get("embedding")), "recompute": vc["checked"].get("ja_align", {}).get("recompute")}}
     if browser_verify:
         import er135_enduser_page_verify_01 as V
         out = (str(Path(result_json).with_name(Path(result_json).stem + "_browser.json")) if result_json else None)
@@ -1563,8 +1615,10 @@ def main(argv=None) -> int:
     b.add_argument("--ja-manuscript", help="X: 承認済み日本語原稿(ja_writer/revision2.md等)")
     b.add_argument("--y-article-ja", help="Y: 承認済み日本語原稿(text/article_ja.md)。指定時はdevの日本語の元原稿と照合")
     b.add_argument("--kp-audio-json", help="KP英語区間のjson(省略時はffmpeg+ローカルASRで算出)")
+    b.add_argument("--cache-dir", help="日本語訳の対応づけ用の埋め込みキャッシュ(省略時はメモリのみ=毎回API)")
     v = sub.add_parser("verify-consistency")
     v.add_argument("--public-dir", required=True)
+    v.add_argument("--cache-dir", help="埋め込みキャッシュ(指定時は保存ベクトルからja_alignを再計算して照合。APIは呼ばない)")
     o = sub.add_parser("verify-only")
     o.add_argument("--public-dir", required=True)
     o.add_argument("--base-url", help="既に配信中のURL(省略時はローカルRange対応サーバを起動)")
@@ -1596,11 +1650,12 @@ def main(argv=None) -> int:
             return 0 if r["ok"] else 3
         if a.cmd == "build":
             kp = json.load(open(a.kp_audio_json, encoding="utf-8")) if a.kp_audio_json else None
-            r = build_enduser(a.dev_dir, a.family, _load_sync_args(a.sync_json), run_dir=a.run_dir, ja_manuscript=a.ja_manuscript, kp_audio=kp, y_article_ja=a.y_article_ja)
+            r = build_enduser(a.dev_dir, a.family, _load_sync_args(a.sync_json), run_dir=a.run_dir, ja_manuscript=a.ja_manuscript, kp_audio=kp, y_article_ja=a.y_article_ja,
+                             align_cache_dir=a.cache_dir)
             print(json.dumps({"ok": True, "out_dir": r["out_dir"], "files": r["files"]}, ensure_ascii=False))
             return 0
         if a.cmd == "verify-consistency":
-            r = verify_consistency(a.public_dir)
+            r = verify_consistency(a.public_dir, cache_dir=a.cache_dir)
             print(json.dumps(r, ensure_ascii=False, indent=1))
             return 0 if r["ok"] else 3
         if a.cmd == "verify-only":

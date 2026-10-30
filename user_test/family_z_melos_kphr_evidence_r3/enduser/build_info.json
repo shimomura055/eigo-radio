@@ -2,7 +2,7 @@
  "schema": "enduser_build_info_v1",
  "id": "family_z_melos_kphr_evidence_r3",
  "family": "Z",
- "asset_build": "rev01-e",
+ "asset_build": "rev01-f",
  "dev_index_sha256": "739a92ec85ec08702baba45a4419dbbc494936307d121df4fccef839cf182e4d",
  "audio_sha256": {
   "audio_advanced/Melos_b1b_full.mp3": "31369036a0d73335f16fe3343748d707bc217218b6faa838c44af0b3cf285d0d",
@@ -43,16 +43,16 @@
  },
  "assets": {
   "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "7ae1ebfd45d4b89a29091d3e2de515f55378599fcadb3343a3c28e1a3a10d7ac",
-  "style.css": "b292eb97418b84c944ed3dfaab28f678ad96c5c263e98933d5606932561eaed9"
+  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
+  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
  },
  "files": {
-  "data/article.json": "6a46cb26d17803f08f8319b98820367dda0db501704c7ba8cdefe4e8894fabf8",
+  "data/article.json": "885d47bb99384b94727a5060bbcb14cc57e9ebe00f3dba8bae35d30f6e82f91a",
   "data/sync_std.json": "76dd86a5f02b446956bbb000456f355fa3f1efc9ddd2222552b0d8e7339521f4",
   "data/sync_adv.json": "ee26243795bd28070f31354f3985070285048b9e47798d30bcd367bc7164616e",
   "index.html": "86231e4f85e0a8307f6d15e0a8bd2e41fcd730644fd228924349852744d512ab",
-  "app.js": "7ae1ebfd45d4b89a29091d3e2de515f55378599fcadb3343a3c28e1a3a10d7ac",
-  "style.css": "b292eb97418b84c944ed3dfaab28f678ad96c5c263e98933d5606932561eaed9"
+  "app.js": "44d63ca8f0cd1ed50b15e9d38bb410ab8c9ffa9cd26daf7221f98f271a62fa77",
+  "style.css": "6c6d348e8c50aecb9373af959ca428d94d4bb977882cf3c70254eca778222d8f"
  },
  "sync": {
   "std": {
@@ -73,7 +73,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "4155047960f8a79dc2ef141365770dff5f06bfd64fb16a8ddc5ecb7bd23f42c0",
+   "source_sha256": "95591126d7afae774ed8d5ff6e802ec2bc816e2feb3c6b482c3cc4959411c73b",
    "rows": 9,
    "sentences": 62,
    "min_row_ratio": 0.9394,
@@ -97,7 +97,7 @@
     "languages": "ja if CJK else en (kp window: en)"
    },
    "gate_status": "PASS",
-   "source_sha256": "b3c8cd62eaab9c0f6f69d5b63ef324faa47ee76550ac8b49893b870072c066dd",
+   "source_sha256": "81beb93f0b8719c5f4d606acebe14787e8fac47afe5f5d75ecbd077c818c6be2",
    "rows": 8,
    "sentences": 70,
    "min_row_ratio": 1.0,
@@ -152,9 +152,67 @@
  "cost": {
   "api_calls": 0,
   "model": "medium",
-  "asr_wall_s": 4.1,
-  "build_wall_s": 0.92,
-  "cached_segments": 25
+  "asr_wall_s": 2.4,
+  "build_wall_s": 0.91,
+  "cached_segments": 25,
+  "embedding_api_calls": 0,
+  "embedding_tokens": 0,
+  "embedding_cost_jpy": 0.0
+ },
+ "ja_align": {
+  "method": "mono_dp_embed_v1",
+  "model": "text-embedding-3-large",
+  "dims": 1024,
+  "params": {
+   "lam": 2.0,
+   "len_w": 1.0,
+   "pen_12": 0.9,
+   "pen_22": 4.0,
+   "pen_13": 1.5,
+   "skip": 3.0,
+   "tau": 0.5,
+   "delta_path": 0.1,
+   "delta_group": 0.0,
+   "delta_sent": 0.0,
+   "delta_group_en": -0.1,
+   "delta_sent_en": -0.1,
+   "eq_delta_ja": 0.0,
+   "eq_delta_en": 0.0,
+   "tau_para": 0.55,
+   "tau_floor": 0.4
+  },
+  "applicable": false,
+  "coverage": {
+   "std": {
+    "story_parts": 0,
+    "sentences_total": 0,
+    "sentences_linked": 0,
+    "groups_total": 0,
+    "groups_null": 0,
+    "reasons": {},
+    "coverage": null
+   },
+   "adv": {
+    "story_parts": 0,
+    "sentences_total": 0,
+    "sentences_linked": 0,
+    "groups_total": 0,
+    "groups_null": 0,
+    "reasons": {},
+    "coverage": null
+   }
+  },
+  "input_sha256": {
+   "std": {},
+   "adv": {}
+  },
+  "degraded": [],
+  "embedding": {
+   "api_calls": 0,
+   "tokens": 0,
+   "cached_hits": 0,
+   "cost_jpy": 0.0
+  }
  },
  "episode_check": {
   "std": {
