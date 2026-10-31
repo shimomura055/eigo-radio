@@ -25,7 +25,7 @@ a.chip{display:flex;align-items:center;justify-content:center;text-decoration:no
 #listhead{font-weight:700;font-size:14px;padding:8px 2px}
 .flag{white-space:normal;max-width:100%;display:inline-block;vertical-align:top;overflow-wrap:anywhere}
 /* ---- SELECTION-UI-OCCURRENCE-COUNT-01 (occ-v1): 出現回数(表示専用。各候補の日本語訳の下に1行) ---- */
-.occ{font-size:12px;margin-top:3px;line-height:1.55;color:#3d4852;overflow-wrap:anywhere}.occ .occn{color:#68717b}.occ .occu{color:#8a5a00;margin-left:6px}.occ .occx{color:#68717b;margin-left:6px}.occ-unconfirmable,.occ-title_only{color:#8a5a00}.occ-unconfirmable{font-weight:700}#occHint.occwarn{color:#ad4938;font-weight:700;font-size:13px}
+.occ{font-size:12px;margin-top:3px;line-height:1.55;color:#3d4852;overflow-wrap:anywhere}.occ .occn{color:#68717b}.occ .occu{color:#8a5a00;margin-left:6px}.occ .occx{color:#68717b;margin-left:6px}.occ-unconfirmable,.occ-title_only{color:#8a5a00}.occ-unconfirmable{font-weight:700}#occHint.occnote{color:#68717b;font-size:13px}#occHint.occwarn{color:#ad4938;font-weight:700;font-size:13px}
 </style></head><body><main class="panel"><h1>eigo-radio｜学習項目選定</h1><div class="muted" id="subtitle">承認フォームv3｜選定テスト用（Production未連携）</div>
 <div id="devBanner" class="devbanner" hidden>開発用・報告対象外の表示です（?dev=all）。ユーザー向けには使いません。</div><div id="staleBanner" class="banner2" hidden></div><div id="shaBanner" class="banner2" hidden></div><div id="notinBanner" class="banner2" hidden></div>
 <section id="gate" hidden></section><div id="formWrap">
@@ -175,7 +175,8 @@ function render(){
   }
   var oh=$('occHint');
   if(conf||!hasCands){oh.hidden=true;oh.textContent='';oh.className='hint'}
-  else if(occPg.missingAll){oh.hidden=false;oh.className='hint occwarn';oh.textContent='出現回数を集計できませんでした（この記事のデータには出現回数がありません）。'}
+  else if(occPg.legacy){oh.hidden=false;oh.className='hint occnote';oh.textContent='旧データ・出現回数なし（出現回数表示の導入前に作られた記事データです。選定・コピーなどの操作には影響しません）。'}
+  else if(occPg.failed){oh.hidden=false;oh.className='hint occwarn';oh.textContent='出現回数を集計できませんでした（この記事のデータには出現回数がありません）。'}
   else{oh.hidden=false;oh.className='hint';oh.textContent='出現回数は、本文・Comment・Preview・In One Lineの中で、同じ綴り・活用形・分離形（例 put it away）を数えた参考値です。意味の違いまでは判別していません。'}
   document.querySelectorAll('input[data-term]').forEach(function(el){el.addEventListener('change',function(e){
     var t=e.target.dataset.term,k=Number(e.target.dataset.cat),chk=e.target.checked;
