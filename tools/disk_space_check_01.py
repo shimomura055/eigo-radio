@@ -1,22 +1,13 @@
-"""disk_space_check_01: 空きGBを表示し、閾値未満ならrc=2。API 0・他へ未配線。"""
-import argparse
-import shutil
+"""disk_space_check_01: disk_guard_01 --hook の薄い別名(旧単独実装は撤去、DISK-GUARD-AUTO-CLEANUP-01 R-7)。
+空き容量を1行で表示(常にrc=0)。WARN以上は「Fableは即時報告すること」付き。引数はdisk_guard_01へそのまま渡す。API 0。"""
+import os
 import sys
 
-
-def main(argv=None):
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--path", default="C:\\")
-    ap.add_argument("--min-gb", type=float, default=10.0)
-    a = ap.parse_args(argv)
-    u = shutil.disk_usage(a.path)
-    free = u.free / 1024 ** 3
-    print(f"free_gb={free:.2f} total_gb={u.total / 1024 ** 3:.2f} min_gb={a.min_gb}")
-    if free < a.min_gb:
-        print("LOW_DISK: below threshold", file=sys.stderr)
-        return 2
-    return 0
-
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import disk_guard_01  # noqa: E402
 
 if __name__ == "__main__":
-    sys.exit(main())
+    _rc = disk_guard_01.main(["--hook"] + sys.argv[1:])
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(_rc)  # stdin読取threadが残っても確実に終了

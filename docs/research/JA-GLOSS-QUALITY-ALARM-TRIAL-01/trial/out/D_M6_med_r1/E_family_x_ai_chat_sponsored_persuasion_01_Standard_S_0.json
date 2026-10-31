@@ -1,0 +1,183 @@
+{
+ "bid": "E|family_x_ai_chat_sponsored_persuasion_01|Standard|S|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-P-002",
+  "c02": "JAQ-P-007",
+  "c03": "JAQ-P-001",
+  "c04": "JAQ-P-008",
+  "c05": "JAQ-P-000",
+  "c06": "JAQ-T3-085",
+  "c07": "JAQ-P-006",
+  "c08": "JAQ-P-003",
+  "c09": "JAQ-T3-084"
+ },
+ "scored": [
+  "JAQ-T3-084",
+  "JAQ-T3-085"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "売り込み",
+      "acceptable_alternatives": [
+       "販売の勧誘",
+       "セールストーク"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "説得する",
+      "acceptable_alternatives": [
+       "納得させる"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "示唆している",
+      "acceptable_alternatives": [
+       "示している"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "スポンサー付きの",
+      "acceptable_alternatives": [
+       "広告主が出資した"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "明確な減少を確認する",
+      "acceptable_alternatives": [
+       "はっきりした低下を確認する"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "助言を受け入れる",
+      "acceptable_alternatives": [
+       "助言に耳を傾ける"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "説得",
+      "acceptable_alternatives": [
+       "説得すること"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "特定の商品を推す",
+      "acceptable_alternatives": [
+       "一つの商品を優遇する"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "警告の笛を鳴らす",
+      "acceptable_alternatives": [
+       "警鐘を鳴らす"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_04a4b5e5efa8b3d9006ae597841be487d0880082cf63375a32",
+   "usage": [
+    {
+     "input_tokens": 1999,
+     "output_tokens": 275,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.05398399999999999,
+   "elapsed": 7.8,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c03",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c04",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "established_term_replaced",
+      "reason_ja": "「広告主に宣伝されている」では広告主による宣伝を指し、スポンサー付きの意味が伝わりにくい。",
+      "suggestion": "スポンサー付きの商品"
+     },
+     {
+      "id": "c05",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c06",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "「無視する」は助言を受け入れるという意味と反対。",
+      "suggestion": "助言を受け入れる"
+     },
+     {
+      "id": "c09",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "ここでは警告の笛を鳴らす比喩で、「口笛を吹く」では意味がずれる。",
+      "suggestion": "警告の笛を鳴らす"
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_05e09fc28e1318f7006ae597876bb487d092489f4d780ccb76",
+   "usage": [
+    {
+     "input_tokens": 1872,
+     "output_tokens": 566,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.07523200000000001,
+   "elapsed": 5.7,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c01",
+  "c02",
+  "c07",
+  "c08"
+ ]
+}

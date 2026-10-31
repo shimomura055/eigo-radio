@@ -1,0 +1,11 @@
+# Fable独立受入記録 SELECTION-UI-OCCURRENCE-COUNT-01(occ-v1)2026-10-31
+
+受入記録:
+(1) 当初目的・要求された最終状態: 「集計規則occ-v1を正式承認（APPROVED_FOR_PRODUCTION）」「既存のocc-v1集計規則を維持し、Family X/Y/Z × Standard/Advancedの全6水準でPRODUCTION_WIREDまで完了」「原因未確定のままPRODUCTION_WIREDと判定しないこと」「正常な旧データをエラー扱いしないこと」「すべての必須条件を満たした場合のみPRODUCTION_WIRED」(`docs/pm/delegation_log/2026-10-31_SELECTION-UI-OCCURRENCE-COUNT-01_USER_02.md` §1・§2①②・§3)。許容しない状態=テスト失敗の原因未確定、旧batchの赤字エラー、承認規則と出力回数の不一致、公開URLでの不動作、AI API費用の発生。
+(2) 実際に生成・残存した最終成果物: 正式export経路(`export_form_data_01.py` CLI、既定ON)で6水準すべてに`occurrence`/`occurrence_meta`付きform data(evidence_03/)。UI sel-v3-rev06-b(旧batch=中立案内「旧データ・出現回数なし」、集計失敗のみ赤警告、M4警告維持)。既存テスト8件=原因確定・是正(form1 22 passed、er140 79 passed、node 92 ALL PASS)。公開URL PC56/56・mobile56/56。SSOT(OPEN-632 APPROVED_FOR_PRODUCTION→本記録でPRODUCTION_WIRED、CURRENT_SPEC occ-v1節、DECISION-02)。失敗経路の最終成果物=`published_reference_conflict` guard発火時はrc=5で対象file無変更(上書きされない)。
+(3) 証拠(Fable直接確認): `export_form_data_01.py:162` `OCC_AUTO="auto"`、`:324/:513` 既定=OCC_AUTO、`--without-occurrence`は定義(:12,:481)以外で未使用/`RUNTIME_EVIDENCE_01.md:22` 手計算13/13一致(Phrase6・Word7、6水準)、`:28` 承認3項目6/6(`put it away`=確定、`put the books away`=保留、`building`/`lay`/`goods`/`saw`=保留)、`:30-31` M4 guard rc=5・`REFUSED_PUBLISHED_REFERENCE`・blob 97ad95af無変更/`evidence_03/occ_live03_both.json` `"ok":true`=112件・`"ok":false`=0件/`form_logic.js:542` `ASSET_VERSION='sel-v3-rev06-b'`、`smoke_occ-a-test.json` rev06-b一致/`TEST_TRIAGE_01.md` 8件の分類(固定値旧3・試作乖離1・資材2・autocrlf2、今回起因0、変更前3d4d8ef7cと失敗集合同一)/OPEN_ITEMS.md OPEN-632行=APPROVED_FOR_PRODUCTION、「設計中」文言なし(merge退行は7e19fa537で復元済み)。
+(4) 目的要件との一致: ①6水準で既定ON=一致 ②後続経路整合(再export sha一致・本文変更追従・guard)=一致 ③runtime evidence=一致(runnerは候補docまで、正式経路=exporter CLIと確認、代替ではない) ④Phrase/Word双方で規則一致=一致(13/13、承認3項目6/6) ⑤公開URL PC/スマホ=一致(112/112) ⑥既存機能退行なし=一致(Done/コメント/一括コピー/記事切替) ⑦テスト8件原因確定・是正=一致 ⑧AI API 0円=一致 ⑨SSOT/Git=一致(cd49297ae/d086921fc/7e19fa537/af0236f4f+本記録) ⑩承認内容と実動作の一致=一致。未確認事項: er128 restore test 3 errors(WordNet資材がsparse外=環境起因、変更前と同一)、er138/er136の24失敗(sparse外資材、変更前と同一)=本件起因ではない。
+(5) 最終受入判定と理由: **ACCEPTED=PRODUCTION_WIRED(Family X/Y/Z × Standard/Advanced 全6水準)**。ユーザー承認規則occ-v1が正式経路で既定ONかつ出力が規則と一致し、公開URL実動作・失敗経路・テスト原因確定・SSOTのすべてが揃ったため。
+判定整合: 重大NG=なし
+
+記録者: sonnet-worker(委任_04)、判定者: Fable

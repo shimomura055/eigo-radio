@@ -213,6 +213,14 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 **ユーザー決定(原文=docs/pm/delegation_log/2026-10-31_DISK-GUARD-AUTO-CLEANUP-01_USER.md §1-§4)**: 空き容量<20GBで予防警戒(原因列挙・安全整理可)、<10GBで自動整理を必ず実行、回復目標20GB以上。自動削除してよい対象は(1)終了済みClaude task一時出力(2)再取得可能なpip cache(3)Git上で完全に保存・push済みで未使用の作業用worktreeの3種のみ(個別に毎回承認不要)。禁止対象=Production成果物/SSOT/未commit・未pushのファイルとworktree/必要なTrial証拠/OS管理ファイル/安全性未確認のもの。worktreeは通常のGit管理コマンドで除去し強制削除禁止。安全と証明できなければ削除しない。実装=`tools/disk_guard_01.py`(許可リスト方式・dry-run既定・各条件をコードで検証)、状態=IMPLEMENTED_NOT_ACTIVATED(OPEN-637、有効化は委任_02でOpus安全レビュー後)。検証=sandbox模擬21/21 PASS(`docs/research/DISK-GUARD-AUTO-CLEANUP-01/EVIDENCE_01.md`)。保存仕様・保持期間は変更なし。
 
+## DISK-GUARD-AUTO-CLEANUP-01-DECISION-02: 有効化(Opus条件Aレビュー反映、2026-10-31、Fable決定)
+
+- **内容**: `tools/disk_guard_01.py`を有効化(SessionStart hook設定・Worker規約・schtasks登録)。Opus独立レビュー(必須M-1〜M-6・推奨R-1〜R-8、全文=`docs/research/DISK-GUARD-AUTO-CLEANUP-01/OPUS_REVIEW_01.md`)を全て反映: hookは`--hook`で常にexit 0・1行(exit 2だと警告が誰にも届かないため)、設定JSONは`/`区切り、rename往復probeを撤去(待機中bash等の使用中を証明できず副作用もあるため)し「locked+keep+親session非稼働(3時間)+プロセスCommandLine照合」へ、remove直前に再確認、整理は別process+単一lock、junction拒否、削除記録にHEAD/reflog、増加速度警告・書き手PID、schtasks 60分間隔。
+- **状態**: ACTIVATED_PENDING_FABLE(hook実発火の証跡=次セッション開始時にFableが取得するまで未取得)。ユーザー承認済み運用方針の範囲内(新仕様なし・削除対象3種不変)。
+- **比較/却下**: rename probe残置案(戻しretry+起動時復旧)は副作用が残るため却下。lockをDG独自のlease(`git worktree lock`)とする案を採用(gitが`worktree remove`で拒否する既存機構、DGも除外)。hook同期整理案はtimeout 30秒で途中killの恐れがあり却下。
+- **M-5実機確認**: 1行出力後に900秒sleepするbackground taskの`.output`に対し`file_in_use`=True(handle保持、879秒無出力時点でも)。よってA1に親session条件は追加せず(委任の条件分岐どおり)。
+- **根拠**: docs/research/DISK-GUARD-AUTO-CLEANUP-01/{DESIGN_01,EVIDENCE_02,OPUS_REVIEW_01,RESULT_PACKET_02}.md・evidence_02/。影響=CURRENT_SPEC「Cドライブ容量監視・自動整理 運用仕様」節・OPEN-637。費用0。
+
 ## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-01: 選定UI 出現回数表示 occ-v1 の実装・公開(集計規則はユーザー確認待ち、2026-10-31)
 
 - **内容**: Phrase・Wordの各候補へ記事内出現回数(本文・Comment・Preview・In One Line、Titleは別枠)を表示。exportが既定ONで決定論集計(AI API 0)し`occurrence`をdata JSONへ焼き込む。表示専用(選択条件・Done署名・照合コード・受領形式に入らない)。
@@ -224,7 +232,8 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 ## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-02: 出現回数表示 occ-v1 APPROVED_FOR_PRODUCTION(2026-10-31)
 
 - **内容**: ユーザーが集計規則occ-v1を正式承認(APPROVED_FOR_PRODUCTION)。承認3項目=(1)`put it away`等 代名詞1語を挟む分離句動詞は確定計上、(2)`building`/`lay`/`goods`/`saw`等 別語にもなり得る活用形は確定計上せず保留表示、(3)`put the books away`等 名詞句・人名挿入は確定計上せず保留表示。X/Y/Z x Standard/Advancedの6水準でPRODUCTION_WIREDまで完了させる指示。残課題①既存テスト8件の原因確定②旧batchを赤字エラーでなく案内表示へ③ディスク(整理済み、再承認不要)。
-- **状態**: APPROVED_FOR_PRODUCTION。PRODUCTION_WIREDはFable独立受入後(委任_03)。
+- **状態**: APPROVED_FOR_PRODUCTION。委任_03完了=PRODUCTION_WIRED_PENDING_FABLE(6水準evidence・既存テスト8件原因確定[変更前と同一失敗集合・今回起因0]・旧batch案内表示・公開URL PC/mobile 112項目PASS)。PRODUCTION_WIREDはFable独立受入後。
+- **残課題の決定**: ①既存テスト8件=固定値/資材ドリフト/test想定漏れ/環境(autocrlf・sparse)で、いずれも本変更起因でない(TEST_TRIAGE_01.md)。②旧batch(回数なし)は赤字エラーでなく中立色の案内(UI rev06-b)。M4(公開済み参照との不一致)の警告は維持。
 - **根拠**: 原文=docs/pm/delegation_log/2026-10-31_SELECTION-UI-OCCURRENCE-COUNT-01_USER_02.md。規則=docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/RULES_01.md(無変更)。費用0。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。
 
 ## SELECTION-UI-TWO-TIER-01-DECISION-01: 学習項目選定UIの2階層化 APPROVED_FOR_PRODUCTION(2026-10-31)
@@ -23010,6 +23019,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 適用外の区別: Puck|pro(confirmed=false)は承認仕様どおりの適用外(fail-closed、未完了Open Itemではない)。出自のない既存の保存音声・未確認Voiceも同様。自然なFlap転写は実run中に未発生(発火は保存attempt再判定+adapter実経路test、到達性は実Batch run)。
 - 反映: OPEN-627ステータス更新、CURRENT_SPEC Flap-T節見出し更新。根拠: docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/{EVIDENCE_02,EVIDENCE_03,FABLE_ACCEPTANCE_01}.md、docs/pm/RESULT_PACKET_FLAPTP_03.md。
 
+## FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01-DECISION-01: 公開済みX untidiness Adv Comment 4の生成訳の語義不一致を既存translate_part再実行で是正(2026-10-31、OPEN-634)
+- 判断: 新規仕様判断ではなく不具合是正(PM_GOVERNANCE 11-8、委任範囲内)。生成訳(ja_source=generated)の1part(adv_19)を、既存の`er135_enduser_translate_01.translate_part`でPrompt雛形・検査・対訳照合を変えず、文脈欄(直前part英文)と既存retry指摘枠(語義注記)だけを追加して再実行し、既存手順`er135 produce`で再produceした。手打ちの直接編集なし。
+- 根拠: 日本語音声は無く(adv_19.mp3は英語のみ)TTS再生成不要。変更はarticle.json(adv_19 ja/ja_align)とbuild_infoのみ(ech02 diff gate OK、他part・英文・承認済み訳・sync・音声は不変)。公開確認(HTTP 200、表示、verify-only 268 NG 0)。費用約¥0.046。
+- 未決(ユーザー判断要の可能性): 生成訳の一般的な入力/Prompt変更(直前partを文脈に渡す)は本件の範囲外。mainツリー未追跡cacheは旧訳のまま(是正済みの写しをev01に保存)。証跡=docs/research/FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01/EVIDENCE_01.md、docs/pm/RESULT_PACKET_FXC4_01.md。
 JA-GLOSS-QUALITY-ALARM-TRIAL-01-DECISION-01: 案B3不採用・現行維持・独立品質アラーム機構Trial開始(ユーザー正式決定、2026-10-31)
 - 決定: (1)JA-GLOSS-NUANCE-01の案B3はREJECTED(副作用による既存訳の品質悪化リスク)。(2)現行の日本語訳生成Prompt・仕様は維持。(3)生成済み日本語訳を独立してチェックする品質アラーム機構のDEV/Trialを開始(OPEN-636)。(4)問題が疑われる訳はHuman Reviewページで警告表示(最終的に承認/修正はユーザー)。(5)品質チェックのモデルはgpt-6-luna(Luna 6.0)限定、他モデルの採用・比較Trialなし。(6)警告Precision目標80〜90%(保証でない、基準の途中緩和禁止)。(7)Production配線はユーザー正式承認まで禁止(到達可能Status=VALIDATED/REJECTED/USER_DECISION_REQUIRED)。
 - 範囲: 設計・Trial・DEV試作のみ。既存の品質基準・選定仕様・訳生成Promptは不変。個別辞書・特定語の例外ルールは設計に入れない。

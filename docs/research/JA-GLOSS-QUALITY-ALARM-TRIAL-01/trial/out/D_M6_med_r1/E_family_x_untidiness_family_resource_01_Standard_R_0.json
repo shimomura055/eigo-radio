@@ -1,0 +1,203 @@
+{
+ "bid": "E|family_x_untidiness_family_resource_01|Standard|R|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-P-229",
+  "c02": "JAQ-T1-039",
+  "c03": "JAQ-T2-037",
+  "c04": "JAQ-P-230",
+  "c05": "JAQ-P-225",
+  "c06": "JAQ-T2-038",
+  "c07": "JAQ-T2-040",
+  "c08": "JAQ-T2-041",
+  "c09": "JAQ-P-231"
+ },
+ "scored": [
+  "JAQ-T2-037",
+  "JAQ-T2-038",
+  "JAQ-T1-039",
+  "JAQ-T2-040",
+  "JAQ-T2-041"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "サプリメント",
+      "acceptable_alternatives": [
+       "サプリ"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "評決",
+      "acceptable_alternatives": [
+       "結論"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "言い分を聞く",
+      "acceptable_alternatives": [
+       "話を聞いてみる"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "採点表",
+      "acceptable_alternatives": [
+       "評価表"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "生活をうまく回す",
+      "acceptable_alternatives": [
+       "暮らしを成り立たせる"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "点を差し引く",
+      "acceptable_alternatives": [
+       "評価を下げる"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "散らかった状態",
+      "acceptable_alternatives": [
+       "散らかり"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "もう一度見直す必要がある",
+      "acceptable_alternatives": [
+       "再考が必要だ"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "罪状",
+      "acceptable_alternatives": [
+       " आरोप"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_035b50cf8ba0ec93006ae59795a02c87d0905019a53a2566a0",
+   "usage": [
+    {
+     "input_tokens": 1790,
+     "output_tokens": 461,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.06552,
+   "elapsed": 4.3,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c03",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c04",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c05",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c06",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c07",
+      "equivalent": false,
+      "warn": true,
+      "severity": "minor",
+      "confidence": "high",
+      "category": "lost_nuance",
+      "reason_ja": "物そのものを指す訳で、散らかった状態という意味が弱まる。",
+      "suggestion": "散らかった状態"
+     },
+     {
+      "id": "c08",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c09",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "established_term_replaced",
+      "reason_ja": "法廷の比喩では「非難」より、問われている罪状・申し立てを指す。",
+      "suggestion": "罪状"
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_02d7761504db60c5006ae59799f15087d0a33a0e8f6e9fc193",
+   "usage": [
+    {
+     "input_tokens": 2068,
+     "output_tokens": 1354,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.14140799999999998,
+   "elapsed": 13.2,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c01",
+  "c02"
+ ]
+}

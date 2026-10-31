@@ -1,0 +1,207 @@
+{
+ "bid": "E|family_x_untidiness_family_resource_01|Standard|S|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-P-231",
+  "c02": "JAQ-P-229",
+  "c03": "JAQ-P-227",
+  "c04": "JAQ-P-223",
+  "c05": "JAQ-P-225",
+  "c06": "JAQ-T3-089",
+  "c07": "JAQ-P-226",
+  "c08": "JAQ-T3P-120",
+  "c09": "JAQ-P-230"
+ },
+ "scored": [
+  "JAQ-T3-089",
+  "JAQ-T3P-120"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": " आरोप",
+      "acceptable_alternatives": []
+     },
+     {
+      "id": "c02",
+      "best_ja": "サプリメント",
+      "acceptable_alternatives": [
+       "サプリ"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "判決",
+      "acceptable_alternatives": [
+       "評決"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "話を聞いてみる",
+      "acceptable_alternatives": [
+       "言い分を聞いてみる"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "日常生活をうまく回す",
+      "acceptable_alternatives": [
+       "暮らしを成り立たせる"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "評価を下げる",
+      "acceptable_alternatives": [
+       "点数を差し引く"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "見直す必要がある",
+      "acceptable_alternatives": [
+       "改めて考える必要がある"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "散らかり",
+      "acceptable_alternatives": [
+       "雑然とした状態"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "採点表",
+      "acceptable_alternatives": [
+       "評価表"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_077abb49cb86426a006ae5979a5d7487d0b1df96b68129f14c",
+   "usage": [
+    {
+     "input_tokens": 1790,
+     "output_tokens": 414,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.06176,
+   "elapsed": 4.1,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "established_term_replaced",
+      "reason_ja": "法廷の比喩での「訴因・ आरोप」を「非難」とすると法的な意味が薄れる。",
+      "suggestion": "罪状"
+     },
+     {
+      "id": "c03",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "established_term_replaced",
+      "reason_ja": "法廷の比喩での「判決」を一般的な「結論」に置き換えている。",
+      "suggestion": "判決"
+     },
+     {
+      "id": "c04",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c05",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c06",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "「点を加える」では、評価を下げるという原文と逆の意味になる。",
+      "suggestion": "評価を下げる"
+     },
+     {
+      "id": "c07",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c08",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "clutterは散らかった状態であり、必ずしもゴミではない。",
+      "suggestion": "散らかり"
+     },
+     {
+      "id": "c09",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_09617889f1aedf1d006ae5979e786487d0b35c333bcd6c6ddb",
+   "usage": [
+    {
+     "input_tokens": 2186,
+     "output_tokens": 1413,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.148016,
+   "elapsed": 14.2,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c02"
+ ]
+}

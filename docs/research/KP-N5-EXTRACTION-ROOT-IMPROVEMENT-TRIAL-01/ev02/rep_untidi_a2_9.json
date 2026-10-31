@@ -1,0 +1,1426 @@
+{
+ "case": "untidi_a2",
+ "rep": 9,
+ "proc": "p4b",
+ "ext": {
+  "A0": {
+   "n_calls": 1,
+   "cost_jpy": 0.1394,
+   "sec": 16.5,
+   "wall_sec": 16.5,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "b1",
+     "label": "N5R2_A0",
+     "in": 999,
+     "out": 1543,
+     "max_out": 6000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.1394,
+     "sec": 16.5
+    }
+   ],
+   "fallback": null,
+   "n_cands": 11,
+   "spans": [
+    "something in the way",
+    "gets heated",
+    "relied on",
+    "take points away from",
+    "make life work",
+    "turn the talk into",
+    "high level of education",
+    "fit every home",
+    "hear it out",
+    "taking its job quite seriously",
+    "keeping it in sight"
+   ]
+  },
+  "E2": {
+   "n_calls": 1,
+   "cost_jpy": 0.3877,
+   "sec": 40.3,
+   "wall_sec": 40.3,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "b1",
+     "label": "N5R2_E2",
+     "in": 950,
+     "out": 4656,
+     "max_out": 6000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.3877,
+     "sec": 40.3
+    }
+   ],
+   "fallback": null,
+   "n_cands": 40,
+   "spans": [
+    "in the kitchen",
+    "Left out again",
+    "speak for it",
+    "put it away",
+    "Not so fast",
+    "makes the kitchen look bad",
+    "forget to take it",
+    "take up space",
+    "in a way",
+    "comes from",
+    "talking with people",
+    "lived together",
+    "where they could see them",
+    "something in the way",
+    "helps me remember",
+    "in different ways",
+    "doing its job",
+    "No wonder",
+    "gets heated",
+    "Straight into the cupboard",
+    "relied on",
+    "in daily life",
+    "another look",
+    "not that simple",
+    "look at clutter",
+    "not always a sign",
+    "take points away",
+    "make life work",
+    "things left out",
+    "at home",
+    "put that away",
+    "questioning someone in court",
+    "help with",
+    "turn the talk into",
+    "rush to say",
+    "leave it out",
+    "in sight",
+    "high level of education",
+    "fit every home",
+    "hear it out"
+   ]
+  },
+  "E5": {
+   "n_cands": 0,
+   "spans": [],
+   "cost_jpy": 0,
+   "sec": 0
+  },
+  "E5diff": {
+   "n_cands": 0,
+   "spans": []
+  }
+ },
+ "pools": {
+  "A0": {
+   "info": {
+    "n_calls": 1,
+    "cost_jpy": 0.2963,
+    "sec": 30.7,
+    "wall_sec": 30.7,
+    "truncated": 0,
+    "attempts_gt1": 0,
+    "metas": [
+     {
+      "stage": "sel",
+      "label": "SEL",
+      "in": 2704,
+      "out": 3163,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.2963,
+      "sec": 30.7
+     }
+    ],
+    "n_pool": 12,
+    "n_rejected": 3,
+    "n_keep": 8,
+    "deferred": [],
+    "rejected": [
+     {
+      "span": "take points away from",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "take points away from"
+     },
+     {
+      "span": "make life work",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "make life work"
+     },
+     {
+      "span": "hear it out",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "hear it out"
+     }
+    ]
+   },
+   "judged": [
+    {
+     "span": "hear it out",
+     "sentence": "Before you bring out the storage box, hear it out",
+     "n5_origin": "P7",
+     "p7_rank": 1,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "最後まで話を聞く定着した句動詞"
+    },
+    {
+     "span": "take points away from",
+     "sentence": "But that could take points away from the ways each home has found to make life work",
+     "n5_origin": "P7",
+     "p7_rank": 2,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "take something away fromで価値を損なう"
+    },
+    {
+     "span": "make life work",
+     "sentence": "But that could take points away from the ways each home has found to make life work",
+     "n5_origin": "P7",
+     "p7_rank": 3,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "make＋目的語＋workの通常の組合せ"
+    },
+    {
+     "span": "needs another look",
+     "sentence": "Its help in daily life needs another look",
+     "n5_origin": "P7",
+     "p7_rank": 4,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "needとlookの通常の文法的な組合せ"
+    },
+    {
+     "span": "something in the way",
+     "sentence": "For the person who wants it put away, it is \"something in the way",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "in the wayは邪魔になることを表す"
+    },
+    {
+     "span": "gets heated",
+     "sentence": "No wonder the kitchen meeting gets heated",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "議論が白熱する際にget heatedを使う"
+    },
+    {
+     "span": "relied on",
+     "sentence": "But you might also remove the reminder the person relied on",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "rely onは対象を頼りにする定型表現"
+    },
+    {
+     "span": "turn the talk into",
+     "sentence": "That can turn the talk into a planning meeting about how to make daily life work",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "turn something intoで別のものに変える"
+    },
+    {
+     "span": "high level of education",
+     "sentence": "Many people in the study had a high level of education, too",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "教育水準を描写する通常の名詞句"
+    },
+    {
+     "span": "fit every home",
+     "sentence": "So we cannot say these results fit every home",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "fitの目的語を替えられる通常の組合せ"
+    },
+    {
+     "span": "taking its job quite seriously",
+     "sentence": "That supplement may be taking its job quite seriously",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "take something seriouslyは定着した連語"
+    },
+    {
+     "span": "keeping it in sight",
+     "sentence": "The study did not test whether keeping it in sight works",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "in sightは見える範囲にあることを表す"
+    }
+   ]
+  },
+  "E2": {
+   "info": {
+    "n_calls": 2,
+    "cost_jpy": 0.4974,
+    "sec": 52.8,
+    "wall_sec": 52.9,
+    "truncated": 0,
+    "attempts_gt1": 0,
+    "metas": [
+     {
+      "stage": "sel",
+      "label": "SEL",
+      "in": 3698,
+      "out": 5216,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.4764,
+      "sec": 49.4
+     },
+     {
+      "stage": "sel",
+      "label": "SEL_DEFERRED",
+      "in": 2275,
+      "out": 217,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.021,
+      "sec": 3.4
+     }
+    ],
+    "n_pool": 39,
+    "n_rejected": 5,
+    "n_keep": 17,
+    "deferred": [
+     {
+      "span": "another look",
+      "keep": false
+     }
+    ],
+    "rejected": [
+     {
+      "span": "where they could see them",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "another look",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "needs another look"
+     },
+     {
+      "span": "take points away",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "take points away from"
+     },
+     {
+      "span": "make life work",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "make life work"
+     },
+     {
+      "span": "hear it out",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "hear it out"
+     }
+    ]
+   },
+   "judged": [
+    {
+     "span": "hear it out",
+     "sentence": "Before you bring out the storage box, hear it out",
+     "n5_origin": "P7",
+     "p7_rank": 1,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "hear someone outで相手の話を最後まで聞く"
+    },
+    {
+     "span": "take points away from",
+     "sentence": "But that could take points away from the ways each home has found to make life work",
+     "n5_origin": "P7",
+     "p7_rank": 2,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "take away fromで価値や効果を損なう"
+    },
+    {
+     "span": "make life work",
+     "sentence": "But that could take points away from the ways each home has found to make life work",
+     "n5_origin": "P7",
+     "p7_rank": 3,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "make something workで機能・成立させる"
+    },
+    {
+     "span": "needs another look",
+     "sentence": "Its help in daily life needs another look",
+     "n5_origin": "P7",
+     "p7_rank": 4,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "needとanother lookの通常の組合せ"
+    },
+    {
+     "span": "in the kitchen",
+     "sentence": "A supplement sits alone in the kitchen",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "場所を表す通常の前置詞句"
+    },
+    {
+     "span": "Left out again",
+     "sentence": "Left out again",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": true,
+     "chunk_reason_ja": "物が出しっぱなしの状態を述べる断片"
+    },
+    {
+     "span": "speak for it",
+     "sentence": "This supplement may need a lawyer to speak for it",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "speak forで代理・擁護する"
+    },
+    {
+     "span": "put it away",
+     "sentence": "A lawyer speaks for the \"put it away\" side",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "put something awayで片づける"
+    },
+    {
+     "span": "Not so fast",
+     "sentence": "But the court says, \"Not so fast",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "相手を制止する決まった言い回し"
+    },
+    {
+     "span": "makes the kitchen look bad",
+     "sentence": "The charge is that it makes the kitchen look bad",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "make＋目的語＋形容詞の通常構文"
+    },
+    {
+     "span": "forget to take it",
+     "sentence": "But the defense says, \"If I put it away, I might forget to take it",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "forgetの後に不定詞を続けた通常構文"
+    },
+    {
+     "span": "take up space",
+     "sentence": "So it does more than take up space",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "take up spaceで場所を取る"
+    },
+    {
+     "span": "In a way",
+     "sentence": "In a way, it is a \"kitchen reminder",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "「ある意味では」を表す定型句"
+    },
+    {
+     "span": "comes from",
+     "sentence": "This comes from a study of homes in New Zealand",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "come fromで出所・由来を示す"
+    },
+    {
+     "span": "talking with people",
+     "sentence": "Researchers used photos while talking with people in 22 homes",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "talkとwith peopleの通常の組合せ"
+    },
+    {
+     "span": "lived together",
+     "sentence": "Several people lived together in each home",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "liveとtogetherの意味から分かる"
+    },
+    {
+     "span": "something in the way",
+     "sentence": "For the person who wants it put away, it is \"something in the way",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "in the wayで邪魔・障害を表す"
+    },
+    {
+     "span": "helps me remember",
+     "sentence": "For the person who left it there, it is \"a sign that helps me remember",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "helpとrememberを通常の構文で結ぶ"
+    },
+    {
+     "span": "in different ways",
+     "sentence": "They see the same thing, but in different ways",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "waysをdifferentで修飾した通常句"
+    },
+    {
+     "span": "doing its job",
+     "sentence": "The other sees a worker still doing its job",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "do its jobで本来の役割を果たす"
+    },
+    {
+     "span": "No wonder",
+     "sentence": "No wonder the kitchen meeting gets heated",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "「どうりで」を表す定型句"
+    },
+    {
+     "span": "gets heated",
+     "sentence": "No wonder the kitchen meeting gets heated",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "get heatedで議論などが白熱する"
+    },
+    {
+     "span": "Straight into the cupboard",
+     "sentence": "If you say, \"Straight into the cupboard",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "方向と場所を示す通常の表現"
+    },
+    {
+     "span": "relied on",
+     "sentence": "But you might also remove the reminder the person relied on",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "rely onで頼る・依存する"
+    },
+    {
+     "span": "in daily life",
+     "sentence": "Its help in daily life needs another look",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "dailyを別の語に替えられる通常句"
+    },
+    {
+     "span": "not that simple",
+     "sentence": "It is not that simple",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "否定と程度を表す通常の構文"
+    },
+    {
+     "span": "look at clutter",
+     "sentence": "The study gives us another way to look at clutter",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "look atで対象を検討・考察する"
+    },
+    {
+     "span": "not always a sign",
+     "sentence": "It is not always a sign that someone has failed",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "not alwaysとa signの通常の組合せ"
+    },
+    {
+     "span": "things left out",
+     "sentence": "Do you have any \"things left out that are still doing a job\" at home",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": true,
+     "chunk_reason_ja": "left outは物を修飾する受動分詞"
+    },
+    {
+     "span": "at home",
+     "sentence": "Do you have any \"things left out that are still doing a job\" at home",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "場所を表しat workなどに替えられる"
+    },
+    {
+     "span": "put that away",
+     "sentence": "If you ask, \"Why don't you put that away",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "put something awayの同じ用法が重複"
+    },
+    {
+     "span": "questioning someone in court",
+     "sentence": "it can feel like you are questioning someone in court",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "行為と場所を表す通常の組合せ"
+    },
+    {
+     "span": "help with",
+     "sentence": "Ask instead, \"What does having it there help with",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "help withは一般的な動詞の補い方"
+    },
+    {
+     "span": "turn the talk into",
+     "sentence": "That can turn the talk into a planning meeting about how to make daily life work",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "turn something intoで別のものに変える"
+    },
+    {
+     "span": "rush to say",
+     "sentence": "But don't rush to say, \"Science proves that if you leave it out, you won't forget",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "rushと不定詞の通常の組合せ"
+    },
+    {
+     "span": "leave it out",
+     "sentence": "But don't rush to say, \"Science proves that if you leave it out, you won't forget",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "本文では物を外に出しておく字義的用法"
+    },
+    {
+     "span": "in sight",
+     "sentence": "The study did not test whether keeping it in sight works",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "in sightで見える範囲にある"
+    },
+    {
+     "span": "high level of education",
+     "sentence": "Many people in the study had a high level of education, too",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "教育水準を描写する通常の名詞句"
+    },
+    {
+     "span": "fit every home",
+     "sentence": "So we cannot say these results fit every home",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "fitの字義どおりの用法で置換可能"
+    },
+    {
+     "span": "another look",
+     "sentence": "Its help in daily life needs another look",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "another＋名詞の通常の組合せで、語を置き換えられる"
+    }
+   ]
+  }
+ },
+ "picks": {
+  "A0": [
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "take points away from",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "gets heated",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "turn the talk into",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "something in the way",
+    "difficulty": "easy",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "relied on",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "taking its job quite seriously",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A2": [
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "take points away from",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "make life work",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "speak for it",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "something in the way",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "gets heated",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "relied on",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A2d": [
+   {
+    "span": "take points away from",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "make life work",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "speak for it",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "something in the way",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "gets heated",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "relied on",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A4": [
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "take points away from",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "make life work",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "speak for it",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "put it away",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "take up space",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "comes from",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A4d": [
+   {
+    "span": "take points away from",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "make life work",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "put it away",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "speak for it",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "take up space",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "comes from",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A7p": [
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "Not so fast",
+    "difficulty": "easy",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "No wonder",
+    "difficulty": "easy",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "make life work",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "turn the talk into",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "something in the way",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "take up space",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A13": [
+   {
+    "span": "hear it out",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "make life work",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "take points away from",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "take up space",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "something in the way",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "Not so fast",
+    "difficulty": "easy",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "speak for it",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ]
+ },
+ "rr": {
+  "E2": {
+   "n_calls": 1,
+   "cost_jpy": 0.0923,
+   "sec": 10.7,
+   "wall_sec": 10.7,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "sel",
+     "label": "N5R2_RERANK",
+     "in": 1191,
+     "out": 916,
+     "max_out": 7000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.0923,
+     "sec": 10.7
+    }
+   ],
+   "fallback": null,
+   "n_input": 17,
+   "n_missing": 0,
+   "order_spans": [
+    "hear it out",
+    "Not so fast",
+    "No wonder",
+    "make life work",
+    "turn the talk into",
+    "something in the way",
+    "take up space",
+    "relied on",
+    "gets heated",
+    "take points away from",
+    "speak for it",
+    "in sight",
+    "put it away",
+    "In a way",
+    "doing its job",
+    "comes from",
+    "look at clutter"
+   ]
+  }
+ },
+ "sens": {},
+ "body_recur": {
+  "hear it out": {
+   "trial": 1,
+   "strict": 1
+  },
+  "take points away from": {
+   "trial": 1,
+   "strict": 1
+  },
+  "make life work": {
+   "trial": 2,
+   "strict": 1
+  },
+  "speak for it": {
+   "trial": 2,
+   "strict": 2
+  },
+  "put it away": {
+   "trial": 6,
+   "strict": 6
+  },
+  "Not so fast": {
+   "trial": 1,
+   "strict": 1
+  },
+  "take up space": {
+   "trial": 1,
+   "strict": 1
+  },
+  "In a way": {
+   "trial": 2,
+   "strict": 1
+  },
+  "comes from": {
+   "trial": 1,
+   "strict": 1
+  },
+  "something in the way": {
+   "trial": 2,
+   "strict": 1
+  },
+  "doing its job": {
+   "trial": 1,
+   "strict": 2
+  },
+  "No wonder": {
+   "trial": 1,
+   "strict": 1
+  },
+  "gets heated": {
+   "trial": 1,
+   "strict": 1
+  },
+  "relied on": {
+   "trial": 1,
+   "strict": 1
+  },
+  "look at clutter": {
+   "trial": 1,
+   "strict": 1
+  },
+  "turn the talk into": {
+   "trial": 1,
+   "strict": 1
+  },
+  "in sight": {
+   "trial": 3,
+   "strict": 3
+  }
+ },
+ "total_calls": 6,
+ "total_cost_jpy": 1.4131,
+ "all_metas": [
+  {
+   "stage": "b1",
+   "label": "N5R2_A0",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.1394,
+   "sec": 16.5,
+   "out": 1543,
+   "max_out": 6000
+  },
+  {
+   "stage": "b1",
+   "label": "N5R2_E2",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.3877,
+   "sec": 40.3,
+   "out": 4656,
+   "max_out": 6000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.2963,
+   "sec": 30.7,
+   "out": 3163,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.4764,
+   "sec": 49.4,
+   "out": 5216,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL_DEFERRED",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.021,
+   "sec": 3.4,
+   "out": 217,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "N5R2_RERANK",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.0923,
+   "sec": 10.7,
+   "out": 916,
+   "max_out": 7000
+  }
+ ],
+ "rep_wall_sec": 151.2
+}

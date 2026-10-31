@@ -1,0 +1,201 @@
+{
+ "bid": "E|family_y_production_redelivery_fee_03|Advanced|S|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-T3P-123",
+  "c02": "JAQ-P-158",
+  "c03": "JAQ-P-160",
+  "c04": "JAQ-P-153",
+  "c05": "JAQ-T3P-122",
+  "c06": "JAQ-P-161",
+  "c07": "JAQ-P-157",
+  "c08": "JAQ-T3-091",
+  "c09": "JAQ-P-152",
+  "c10": "JAQ-P-159",
+  "c11": "JAQ-P-154"
+ },
+ "scored": [
+  "JAQ-T3-091",
+  "JAQ-T3P-122",
+  "JAQ-T3P-123"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "自分の都合のいいときに",
+      "acceptable_alternatives": [
+       "自分に都合のいいときに"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "事前に",
+      "acceptable_alternatives": [
+       "前もって"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "用事",
+      "acceptable_alternatives": [
+       "ちょっとした用事"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "仕方がない",
+      "acceptable_alternatives": [
+       "やむを得ない"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "結局、対面で受け取ることになる",
+      "acceptable_alternatives": [
+       "しまいには、直接受け取ることになる"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "促す",
+      "acceptable_alternatives": [
+       "後押しする"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "立ち去る",
+      "acceptable_alternatives": [
+       "次へ向かう"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "～に加えて",
+      "acceptable_alternatives": [
+       "～のほかに"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "納得がいかない",
+      "acceptable_alternatives": [
+       "しっくりこない"
+      ]
+     },
+     {
+      "id": "c10",
+      "best_ja": "繰り返し",
+      "acceptable_alternatives": [
+       "何度も"
+      ]
+     },
+     {
+      "id": "c11",
+      "best_ja": "わざわざ",
+      "acceptable_alternatives": [
+       "手間をかけて"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_00797626ac6e3cbe006ae5979be29087d08cfb977e62222f1a",
+   "usage": [
+    {
+     "input_tokens": 2796,
+     "output_tokens": 490,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.08393600000000001,
+   "elapsed": 5.2,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "equivalent": false,
+      "warn": true,
+      "severity": "minor",
+      "confidence": "high",
+      "category": "unnatural_ja",
+      "reason_ja": "意味は通じるが、説明的で回りくどい表現です。",
+      "suggestion": "自分の都合のいいときに"
+     },
+     {
+      "id": "c05",
+      "equivalent": false,
+      "warn": true,
+      "severity": "minor",
+      "confidence": "high",
+      "category": "unnatural_ja",
+      "reason_ja": "「結果的に」「最終的には」が重なり、表現が冗長です。",
+      "suggestion": "結局、対面で受け取ることになる"
+     },
+     {
+      "id": "c08",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "ここでは「上に置いて」ではなく「～に加えて」という意味です。",
+      "suggestion": "～に加えて"
+     },
+     {
+      "id": "c09",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "否定を含む表現なのに、「納得できる」と肯定の意味になっています。",
+      "suggestion": "納得がいかない"
+     },
+     {
+      "id": "c11",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_0cb671188499e169006ae597a0bd2c87d097097203c972d6f5",
+   "usage": [
+    {
+     "input_tokens": 2382,
+     "output_tokens": 830,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.10451200000000001,
+   "elapsed": 8.1,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c02",
+  "c03",
+  "c04",
+  "c06",
+  "c07",
+  "c10"
+ ]
+}

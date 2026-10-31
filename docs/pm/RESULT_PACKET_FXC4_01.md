@@ -1,0 +1,14 @@
+# RESULT_PACKET FXC4_01: FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01 委任_01(2026-10-31、OPEN-634)
+- 結果: 是正完了・公開確認済み(Fable受入待ち)。公開X untidiness Adv Comment 4(adv_19-s044)の生成訳「省かれたもの」→「この話は、出しっぱなしになっている物にも目的があるかもしれない…」。分類=修正へ進む(完了)。
+- 原因: End User生成時のLLM生成訳(ja_source=generated)。Comment部は1段落3文が全て訳対象で文脈欄が空(er135_enduser_translate_01.py:521)、対訳照合(同:56)は語義違いを不合格にしない。JA音声は無く(adv_19.mp3は英語のみ)TTS不要。
+- 経路: 既存translate_partをadv_19限定で再実行(文脈=直前part英文+既存retry指摘枠の語義注記、Prompt雛形sha不変)→既存`er135 produce`再produce。手打ち編集なし。差分=article.json(adv_19 ja/ja_align)+build_infoのみ(ech02 diff gate OK)。
+- 検証: ローカルPlaywright 268 NG0 / 公開(commit 8fa6d811e)HTTP 200・Comment 4表示(PC/mobile、旧訳0、console error 0)・verify-only 268 NG0。同記事の同種不一致なし(left out系4か所中adv_19のみ)。
+- 費用: API約¥0.046(translate¥0.0302+verify¥0.0159)、TTS 0。個別Cap ¥10内。
+- 証跡: docs/research/FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01/{EVIDENCE_01.md,tools/,ev01/}
+- 原因仮説・根拠・次の一手: 仮説=文脈欠如(実証: 同Prompt+文脈+語義注記で正訳、translate 1 callで合格)。根拠=translate_part:521の文脈=訳対象外文のみ。次の一手候補=生成訳に直前partを文脈として渡す(生成訳の入力変更。改善見込み=高、ただしPrompt/入力変更でユーザー判断要の可能性)。
+- 判断候補: (a)生成訳の文脈入力の恒久策=分類D(承認済み生成訳仕様[OPEN-618]の入力変更・OPEN-630と併せ検討、Fable判断)。(b)mainツリー未追跡cache(er019_output/…/untidiness_family_resource__run_fx4_01/enduser_sync_cache/ja_generated.json)は旧訳のまま=分類B(承認範囲内。是正済みの写し=ev01/ja_generated_corrected_01.json、mainツリー読取専用方針のため未編集、置換はFable/operator)。
+- (1)既存仕様整合: er135_enduser_page_01.py:839,1006(generate_missing_translations)、er135_enduser_translate_01.py:491,521,56,314-321(translate_part/文脈/VERIFY_HEAD/retry指摘枠)、AUDIT_01.md:143-144(J4)。承認済み訳(approved_ja_manuscript)・英文・音声は不変。
+- (2)未承認機能の既定値: 新機能なし。`tools/retranslate_part_01.py`は証跡用の単発script(docs配下、Production経路から未参照=Grep 0件)。Production Prompt・閾値・Gate無変更。
+- (3)失敗終了なし。最終成果物=公開 https://shimomura055.github.io/eigo-radio/user_test/family_x_untidiness_family_resource_01/enduser/index.html?lv=adv (Comment 4が新訳で表示)。ユーザー原文未取得(Fable委任文に基づく)。目的(訳と本文語義の一致)に適合。
+- (4)撤去・残置: 撤去した規則/検査/test=なし。残存Grep: article.json内「省かれ」=0件。
+- 判定整合: 重大NG=なし

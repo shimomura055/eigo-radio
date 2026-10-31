@@ -1,0 +1,200 @@
+{
+ "bid": "E|rec:untidiness_family_resource__run_fx4_01|Standard|R|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-P-228",
+  "c02": "JAQ-P-230",
+  "c03": "JAQ-P-225",
+  "c04": "JAQ-P-229",
+  "c05": "JAQ-T1-106",
+  "c06": "JAQ-P-226",
+  "c07": "JAQ-P-224",
+  "c08": "JAQ-P-223",
+  "c09": "JAQ-P-227"
+ },
+ "scored": [
+  "JAQ-T1-106"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "散らかり",
+      "acceptable_alternatives": [
+       "散らかった物"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "評価基準",
+      "acceptable_alternatives": [
+       "採点表",
+       "評価表"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "暮らしを成り立たせる",
+      "acceptable_alternatives": [
+       "日々の生活をうまく回す"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "サプリメント",
+      "acceptable_alternatives": [
+       "栄養補助食品"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "罪状",
+      "acceptable_alternatives": [
+       " आरोप"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "見直す必要がある",
+      "acceptable_alternatives": [
+       "改めて検討する必要がある"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "減点する",
+      "acceptable_alternatives": [
+       "評価を下げる"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "言い分を聞く",
+      "acceptable_alternatives": [
+       "話を聞いてみる"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "判決",
+      "acceptable_alternatives": [
+       "判断"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_030e2647cfe9a543006ae597b1abb087d0a7d1547f89cb10c4",
+   "usage": [
+    {
+     "input_tokens": 1764,
+     "output_tokens": 621,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.077904,
+   "elapsed": 5.5,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c02",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c03",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c05",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "established_term_replaced",
+      "reason_ja": "法廷の文脈での「charge」は「非難」より「罪状」に当たる。",
+      "suggestion": "罪状"
+     },
+     {
+      "id": "c06",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c07",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c08",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c09",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "established_term_replaced",
+      "reason_ja": "法廷の比喩を続ける箇所なので、「結論」では判決の含みが薄れる。",
+      "suggestion": "判決"
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_014f007127cca784006ae597b7318c87d0bb3956ec6a21a020",
+   "usage": [
+    {
+     "input_tokens": 2056,
+     "output_tokens": 1440,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.148096,
+   "elapsed": 13.3,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c01",
+  "c04"
+ ]
+}

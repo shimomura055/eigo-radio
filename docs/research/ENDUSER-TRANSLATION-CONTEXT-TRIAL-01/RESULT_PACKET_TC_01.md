@@ -1,0 +1,11 @@
+# RESULT_PACKET_TC_01(ENDUSER-TRANSLATION-CONTEXT-TRIAL-01 委任_01、2026-10-31)
+Status: ①②完了 / ③ Phase 1完了(OPEN-638=INVESTIGATING)。Production変更0、`er*.py`変更0。費用=probe API 1.0022円(Cap 15円)。
+①Git: OPEN-633 push=37edbd86e6fef7067874c084989a2d06a3350bf7(test 68 OK、競合=OPEN_ITEMSのみ)/OPEN-634 push=d84cff09ca49fa66abcf2f70e07ae0ac390fa3e4(競合=OPEN_ITEMS・DECISION_LOG・CURRENT_SPEC、全て両保持)。**自己申告**: 1回目のmergeでOPEN-630/632を旧版へ退行させた(共通祖先との3-way未確認)→別Worker 8b62c887bが復元済み、現origin/mainで確認。
+②キャッシュ: 旧ja_generated.json→是正版へ置換(旧は保存、差分=Comment 4 entryのみ)。置換後コピーに本番translate_partをLLM呼出で例外になる状態で実行: X untidiness生成訳7 part全てcache hit・LLM試行0(API 0)・訳とja_alignが公開article.jsonと完全一致。`省かれた`の他の旧訳0件。証跡=docs/research/FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01/CLOSEOUT_{GIT,CACHE}_01.md、docs/research/ENDUSER-TRANSLATION-CONTEXT-TRIAL-01/ev02/。
+③要点: 公開10記事の生成訳61part・310文を全件ブラインド裁定=重大0(是正済み)/中4文1.3%/軽27文8.7%(18は訳語不整合)。根本原因=文脈が実質空(他part・タイトル・既訳なし)+訳語統一機構なし+キャッシュ鍵に文脈なし+対訳照合が文脈なしで語義を見ない。probe(8 part-run): 現行Aは独立生成でも`left out`を「省かれた」と誤訳(2/2)しverifyも通過。直前part文脈(B)で翻訳は正しくなるが文脈なしverifyが不合格→fail-closed。追加input費用はD(記事全体)でも+0.1円/セット=70円の0.15%、リスクは再試行率。方式A/B/C/D/E+F(参照対訳)+因子V(verifyへ文脈)を設計、事前登録(dev34part/held-out27part、G1重大悪化0等)。
+費用見積(本格Trial、委任_02): 約55円±15。Cap提案60円、止め線48円(7-7の300円以下・承認済みScope内=AI自律範囲)。
+判断候補: なし(ユーザー判断候補0)。補足: 因子V(verifyへ文脈)は採用時にProduction verify入力の変更になるためTrial armとして比較し、採用はユーザー正式承認(既判断の範囲)。
+判定整合: 重大NG=なし / 主因=文脈入力不足+verify文脈なし / 是正対象=OPEN-638(Trial委任_02) / STOP理由=なし / 提示=証拠のみ
+RESULT(1)既存仕様整合: er135_enduser_translate_01.py:491,521,120,56,35 / er135_enduser_page_01.py:839,1006 / OPEN-634 / PM_GOVERNANCE 7-7,11-3,11-8 / CLAUDE.md原文。(2)未承認機能の既定値: Production到達経路への追加0(Trial toolは docs/research 配下のみ、er*.py未変更、flag・env無し、キャッシュは tempdir)。確認=終了時git diff(er*.py)0。(3)最終成果物: ①push済みSSOT、②是正キャッシュ+旧版保存、③docs/research/ENDUSER-TRANSLATION-CONTEXT-TRIAL-01/(原文要求=①②Closeout+Phase1調査・設計・計画に適合。本格Trial・Fable独立受入は未実施)。(4)撤去・残置: 撤去0、旧ルール残置なし。`省かれた`残存Grep=キャッシュ・公開article.json 0件(er026 KP候補SUPERSEDEDの別件のみ)。
+証跡: docs/research/ENDUSER-TRANSLATION-CONTEXT-TRIAL-01/{CURRENT_STATE_01,ERROR_CASES_01,DESIGN_OPTIONS_01,TRIAL_PLAN_01,ADJUDICATION_RUBRIC_01}.md・ev02/ev03/ev04_probe/・tools/
+次の一手: 委任_02=dev実行(A・A'・B・C・D・E、約20円)→基準判定→held-out→(V/F)→Fable独立再裁定。改善見込み: 現行品質が高く(NG中1.3%)改善余地が小さいため、B1(解消率)を満たせるかが最大の不確実性(自己評価=訳語整合の改善は中程度の見込み、語義誤訳は文脈のみでは確定しない)。

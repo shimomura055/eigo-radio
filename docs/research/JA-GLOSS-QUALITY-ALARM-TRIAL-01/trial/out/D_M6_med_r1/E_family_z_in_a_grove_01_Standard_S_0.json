@@ -1,0 +1,163 @@
+{
+ "bid": "E|family_z_in_a_grove_01|Standard|S|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-T3-092",
+  "c02": "JAQ-P-045",
+  "c03": "JAQ-P-042",
+  "c04": "JAQ-P-046",
+  "c05": "JAQ-P-044",
+  "c06": "JAQ-P-040",
+  "c07": "JAQ-P-041"
+ },
+ "scored": [
+  "JAQ-T3-092"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "警官",
+      "acceptable_alternatives": [
+       "巡査"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "短剣",
+      "acceptable_alternatives": [
+       "短刀"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "闇の中へ沈んでいく",
+      "acceptable_alternatives": [
+       "暗闇に沈んでいく"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "盗賊",
+      "acceptable_alternatives": [
+       "追いはぎ"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "溺れて自殺する",
+      "acceptable_alternatives": [
+       "入水自殺をする"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "霊媒を通じて",
+      "acceptable_alternatives": [
+       "霊媒師を通して"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "音も立てずに",
+      "acceptable_alternatives": [
+       "忍び足で"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_0c78e71589f3b35a006ae597a8dea887d0adb8148c3f83ab16",
+   "usage": [
+    {
+     "input_tokens": 1411,
+     "output_tokens": 475,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.060576000000000005,
+   "elapsed": 5.0,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "「領主」は土地を治める人で、constable（警官）とは異なります。",
+      "suggestion": "警官"
+     },
+     {
+      "id": "c03",
+      "equivalent": false,
+      "warn": true,
+      "severity": "minor",
+      "confidence": "mid",
+      "category": "lost_nuance",
+      "reason_ja": "原文にない「死」を加え、闇の比喩を死の闇と限定しています。",
+      "suggestion": "闇の中へ沈んでいく"
+     },
+     {
+      "id": "c05",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "自分を溺れさせて自殺を図ったという意図が伝わりません。",
+      "suggestion": "溺れて自殺する"
+     },
+     {
+      "id": "c06",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c07",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_09f81c8ef1adb678006ae597add91887d0b5dc59adb1a50735",
+   "usage": [
+    {
+     "input_tokens": 1593,
+     "output_tokens": 791,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.08876799999999999,
+   "elapsed": 8.0,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c02",
+  "c04"
+ ]
+}

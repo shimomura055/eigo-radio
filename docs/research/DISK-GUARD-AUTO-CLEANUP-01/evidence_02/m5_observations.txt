@@ -1,0 +1,9 @@
+M-5 実機観測(Claude Code background task の .output に対する file_in_use。別名の一時コピー dgm5_copy.py + probe.py を使用、DGは無変更)
+task: Bash run_in_background `echo M5_ONE_LINE; sleep 900; echo done` (1行出力後に900秒sleep)
+ obs1  t=7s     size=12  file_in_use=True   (m5_obs1_7s.json)
+ obs2  t=213s   size=12  file_in_use=True   (無出力のsleep中)
+ obs3  t=879s   size=12  file_in_use=True   (14.6分間無出力でもhandle保持)
+ obs4  task終了後 size=39 age=35s file_in_use=False (m5_obs3_after_task_end.json)
+Restart Manager(RmGetList)の同時観測: holders = bash.exe(Git for Windows) / bash.exe / sleep.exe (書き手PID・command lineを取得可)
+結論: Python側share=0 openによるfile_in_use判定は、稼働中taskの.outputを正しくTrue(使用中)と判定する。
+      委任条件(Falseなら親session非稼働条件をA1へ追加)に該当せず、A1への追加条件は実装しない。
