@@ -103,6 +103,9 @@ model: sonnet
   またはrun-dirのない作業では、全`*STOP_NOTICE*`・`STOP`・`STOP_ALL`
   (`docs/pm/delegation_log/`、`<run>/STOP`、
   `er026_output/family_z_production_e2e_01/STOP_ALL`)を適用とみなす。
+- 容量(DISK-GUARD-AUTO-CLEANUP-01): 作業開始時に`tools/disk_guard_01.py --hook`を実行し、WARN以上(WARN/CRITICAL/ACTIVE_BIG)はRESULT_PACKET冒頭に記載する。
+- worktreeは`git worktree add --lock --reason "<管理ID>"`で作成し、完了報告時にunlockしない(Fableが回収時にunlock)。
+- 対話型Pythonのbackground起動禁止。background出力は`| head -c 50M`等で上限を付ける。
 - 自分が起動したprocessが外部から停止された、または原因不明のrc≠0が2回続いた場合は、
   再起動せず即STOPして報告する。
 - 監督ループ・自動再試行ラッパ・別名ラッパ(command lineを変えて同じ処理を起動するもの)を作らない。

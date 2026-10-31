@@ -3319,3 +3319,18 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 - **適用外(救済しない)**: AY/AW核・複数読み・未登録語・未確認Voice・Voice/出自不明・語頭語末・音節的n・クラスター・数字/記号token差・数詞/否定語を含む対・1:1でない置換・scope外(A/B/C)。
 - **量産単価**: +0円(量産経路に新ASR/TTS/LLM呼出なし。CMU辞書はローカル)。
 - **実装・証跡**: `er139_flapt_equivalence_01.py`(純規則+`decide()`、`er109_xz_scope_01.decision()`からのみ呼出)、`er139_flapt_provenance_01.py`、`er139_flapt_voice_table_01.json`、test=`er139_flapt_equivalence_01_test_01.py`、証跡=`docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/EVIDENCE_02.md`+`ev02/`。
+
+## Cドライブ容量監視・自動整理 運用仕様(DISK-GUARD-AUTO-CLEANUP-01、ユーザー承認済み運用方針2026-10-31、OPEN-637、`ACTIVATED_PENDING_FABLE`)
+
+運用機構でありProduction成果物(記事・音声・Prompt・Gate)には触れない(API 0)。原文=`docs/pm/delegation_log/2026-10-31_DISK-GUARD-AUTO-CLEANUP-01_USER.md`。実装=`tools/disk_guard_01.py`、設計/証跡=`docs/research/DISK-GUARD-AUTO-CLEANUP-01/`(DESIGN_01・EVIDENCE_01/02・OPUS_REVIEW_01)。
+
+- **閾値**: 空き<20GB=WARN(原因候補列挙のみ)、<10GB=自動整理(回復目標20GB・各削除後に再計測・最小削除)、未回復=CRITICAL。
+- **削除対象(許可リスト方式の3種のみ。他のpathは構造的に到達不能)**: (1) Claude task出力`<LOCALAPPDATA>/Temp/claude/<project>/<session>/tasks/*.output`(A1=200MB超かつ60分以上未更新[削除前に先頭・末尾各64KBを`runs/excerpts/`へ保存]、A2=旧session[24h超]の小出力。現sessionが不明な呼出ではA2を行わない)、(2) pip cache(venvのpipの`cache purge`、cache dirが`LOCALAPPDATA/pip/Cache`配下)、(3) scratchpad直下のgit worktree。
+- **禁止対象**: Production成果物/SSOT(CURRENT_SPEC・DECISION_LOG・OPEN_ITEMS・HISTORY_INDEX)/`er0*_output`/未commit・未pushのfileとworktree/Trial証拠/OS管理file(pagefile等)/安全性未確認のもの。`--force`・reparse point(junction/symlink)経由・許可pattern外は拒否。
+- **worktreeの削除条件(全て成立時のみ。1つでも不成立/確認不能=保留)**: 許可pattern(`<project>/<session>/scratchpad/<name>`)・非locked(`git worktree add --lock --reason "<管理ID>"`で作成したものは対象外)・`.disk_guard_keep`外・親sessionが非稼働(`<session>/tasks`配下の最新mtimeが3時間以上前、かつ現session[hook stdinの`session_id`]でない)・worktree pathを含むprocess(Win32_Process CommandLine/ExecutablePath)なし・git操作中でない・`origin/main..HEAD`が0件・HEADがorigin/mainの祖先・60分以上未更新・`status --porcelain --ignored`が空(`__pycache__`/`.pyc`のみ許容)。`git worktree remove`(--forceなし)の直前に上記を再確認(TOCTOU対策)し、削除記録にHEAD sha・branch・`git reflog -n 20`を残す。rename往復probeは撤去(Opus M-3)。
+- **.outputの使用中判定**: `file_in_use`(share=0 open)。実機で稼働中のbackground task出力に対しTrue(handle保持)を確認済み(EVIDENCE_02)。
+- **起動経路**: (a) SessionStart hook(`.claude/settings.json`、matcher=`startup|resume`、`disk_guard_01.py --hook`): 常にexit 0・stdout 1行(`disk_guard: OK|WARN|CRITICAL|ACTIVE_BIG free=… record=…`、WARN以上は「Fableは即時報告すること」付き。CRITICALはユーザーへも即時報告)。<10GB時の整理は別process(DETACHED_PROCESS)へ委譲し、単一実行lock(`%LOCALAPPDATA%/eigo-radio/disk_guard/.lock`、stale 1時間で回収)で多重実行を直列化。(b) Worker開始(`.claude/agents/sonnet-worker.md`、`tools/disk_space_check_01.py`=`--hook`の別名)。(c) Windowsタスク`eigo-radio-disk-guard`(60分間隔・ユーザー権限・pythonw・StartWhenAvailable、`tools/disk_guard_task_install_01.py`で登録、`--auto --quiet`)。
+- **早期検知(止めはしない=検知と通知のみ)**: 直近60分以内に更新中の`.output`が1GB超、または増加速度が1GB/10分超のときACTIVE_BIG警告。書き手PID・command line(Restart Manager`RmGetList`+Win32_Process)を警告に含める(killしない)。
+- **記録**: `%LOCALAPPDATA%/eigo-radio/disk_guard/runs/<ts>_<pid>.json`(保持50件でrotation)・`excerpts/`(保持100件)・`last_run.json`(生存確認)・`active_state.json`(増加速度用)・`CRITICAL.flag`(schtasks等でCRITICAL未回復のとき作成、次のhookで1回表示して消える)。
+- **Worker規約**(`.claude/agents/sonnet-worker.md`): 作業開始時に`tools/disk_guard_01.py --hook`を実行しWARN以上はRESULT_PACKET冒頭に記載/worktreeは`git worktree add --lock --reason "<管理ID>"`で作成し完了報告時にunlockしない(Fableが回収時にunlock)/対話型Pythonのbackground起動禁止・background出力は`| head -c 50M`等で上限。
+- **撤去**: `tools/claude_task_output_cleanup_01.py`(A1/A2は本機構へ統合)。`tools/disk_space_check_01.py`は`--hook`の薄い別名に置換。

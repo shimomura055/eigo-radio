@@ -213,6 +213,14 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 **ユーザー決定(原文=docs/pm/delegation_log/2026-10-31_DISK-GUARD-AUTO-CLEANUP-01_USER.md §1-§4)**: 空き容量<20GBで予防警戒(原因列挙・安全整理可)、<10GBで自動整理を必ず実行、回復目標20GB以上。自動削除してよい対象は(1)終了済みClaude task一時出力(2)再取得可能なpip cache(3)Git上で完全に保存・push済みで未使用の作業用worktreeの3種のみ(個別に毎回承認不要)。禁止対象=Production成果物/SSOT/未commit・未pushのファイルとworktree/必要なTrial証拠/OS管理ファイル/安全性未確認のもの。worktreeは通常のGit管理コマンドで除去し強制削除禁止。安全と証明できなければ削除しない。実装=`tools/disk_guard_01.py`(許可リスト方式・dry-run既定・各条件をコードで検証)、状態=IMPLEMENTED_NOT_ACTIVATED(OPEN-637、有効化は委任_02でOpus安全レビュー後)。検証=sandbox模擬21/21 PASS(`docs/research/DISK-GUARD-AUTO-CLEANUP-01/EVIDENCE_01.md`)。保存仕様・保持期間は変更なし。
 
+## DISK-GUARD-AUTO-CLEANUP-01-DECISION-02: 有効化(Opus条件Aレビュー反映、2026-10-31、Fable決定)
+
+- **内容**: `tools/disk_guard_01.py`を有効化(SessionStart hook設定・Worker規約・schtasks登録)。Opus独立レビュー(必須M-1〜M-6・推奨R-1〜R-8、全文=`docs/research/DISK-GUARD-AUTO-CLEANUP-01/OPUS_REVIEW_01.md`)を全て反映: hookは`--hook`で常にexit 0・1行(exit 2だと警告が誰にも届かないため)、設定JSONは`/`区切り、rename往復probeを撤去(待機中bash等の使用中を証明できず副作用もあるため)し「locked+keep+親session非稼働(3時間)+プロセスCommandLine照合」へ、remove直前に再確認、整理は別process+単一lock、junction拒否、削除記録にHEAD/reflog、増加速度警告・書き手PID、schtasks 60分間隔。
+- **状態**: ACTIVATED_PENDING_FABLE(hook実発火の証跡=次セッション開始時にFableが取得するまで未取得)。ユーザー承認済み運用方針の範囲内(新仕様なし・削除対象3種不変)。
+- **比較/却下**: rename probe残置案(戻しretry+起動時復旧)は副作用が残るため却下。lockをDG独自のlease(`git worktree lock`)とする案を採用(gitが`worktree remove`で拒否する既存機構、DGも除外)。hook同期整理案はtimeout 30秒で途中killの恐れがあり却下。
+- **M-5実機確認**: 1行出力後に900秒sleepするbackground taskの`.output`に対し`file_in_use`=True(handle保持、879秒無出力時点でも)。よってA1に親session条件は追加せず(委任の条件分岐どおり)。
+- **根拠**: docs/research/DISK-GUARD-AUTO-CLEANUP-01/{DESIGN_01,EVIDENCE_02,OPUS_REVIEW_01,RESULT_PACKET_02}.md・evidence_02/。影響=CURRENT_SPEC「Cドライブ容量監視・自動整理 運用仕様」節・OPEN-637。費用0。
+
 ## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-01: 選定UI 出現回数表示 occ-v1 の実装・公開(集計規則はユーザー確認待ち、2026-10-31)
 
 - **内容**: Phrase・Wordの各候補へ記事内出現回数(本文・Comment・Preview・In One Line、Titleは別枠)を表示。exportが既定ONで決定論集計(AI API 0)し`occurrence`をdata JSONへ焼き込む。表示専用(選択条件・Done署名・照合コード・受領形式に入らない)。

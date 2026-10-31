@@ -1,0 +1,58 @@
+PASS S0 15GB: WARN(rc=1)・削除0  [rc=1]
+PASS S0 15GB: 原因候補を列挙  [cand=10]
+PASS S0 15GB: 全ファイル/worktree残存
+PASS S0b R-3c: ACTIVE_BIGの書き手PID(Restart Manager)が警告に含まれる(killはしない)  [[{"pid": 44788, "app": "Python", "cmdline": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe tools/disk_guard_01_test_01.py --evidence-dir docs/research/DISK-GUARD-AUTO-CLEANUP-01/evidence_02]
+PASS S0b 25GB: OK(rc=0)・候補走査なし・削除0
+PASS S0b 25GB: 稼働中>5MB outputをACTIVE_BIG列挙  [[{'path': 'C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_cl4k9x7x\\s0\\LocalAppData\\Temp\\claude\\PROJ\\SESS_CURRENT_01\\tasks\\recent_big.output', 'task_id': 'recent_big', 'mb': 3.1, 'age_min': 0.1, 'writers': [{'pid': 44788, 'app': 'Python', 'cmdline': 'C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe tools/disk_guard_01_test_01.py --evidence-dir docs/research/DISK-GUARD-AUTO-CLEANUP-01/evidence_02'}]}]]
+PASS S6 5GB dry-run: 候補列挙・削除0・rc=2(未回復)
+PASS S1 5GB apply: 自動整理が発動(deleted>0)  [deleted=8]
+PASS S1 安全な.output(古い巨大2+旧session小)のみ削除
+PASS S1 pip cacheがpurgeされた
+PASS S1 安全worktree4件(detached/old commit/merged branch/pycacheのみ)削除  [[False, False, False, False]]
+PASS S1 保護対象(未commit/untracked/ignored/ahead/keep/locked/recent/scratchpad外/handle保持/SSOT名/repo配下/別project)全残存  [[]]
+PASS S1 保留理由が記録される(dirty/untracked/ahead/keep/locked/recent/handle)  [{"held_open_big.output": "in_use_or_unconfirmable", "OPEN_ITEMS.output": "not_in_allowlist", "wt_active_session": "parent_session_active:current_session", "wt_ahead": "ahead_or_unknown:1", "wt_dirty_tracked": "dirty_or_untracked_or_ignored: M a.txt", "wt_ignored_file": "dirty_or_untracked_or_ignored:!! ignored_x.dat", "wt_keep": "keep_list", "wt_locked": "locked_or_prunable", "wt_procheld": "in_use_process:44976,30224", "wt_recent": "recent_update_0min", "wt_untracked": "dirty_or_untracked_or_ignored:?? new_evidence.txt"}]
+PASS S1 M-3: 使用中worktree(Popenでcwd保持+path付きprocess)は保留・残存  [in_use_process:44976,30224]
+PASS S1 M-3: 稼働中sessionのscratchpad内worktreeは対象外(parent_session_active)  [parent_session_active:current_session]
+PASS S1 M-3: rename往復probe撤去(.dgprobe残骸なし・コード上もdir_in_use無し)
+PASS S1 R-4: A1削除前に先頭・末尾の抜粋が保存される  [['C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_cl4k9x7x\\s0\\runs\\excerpts\\20261031_160942_big_old_0.output.txt', 'C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_cl4k9x7x\\s0\\runs\\excerpts\\2026]
+PASS S1 R-2: worktree削除記録にHEAD sha・branch・reflog  [{'head': '9f298e116f85d6b29790d52c492795af48a9c775', 'branch': 'feat/merged', 'reflog': ['9f298e1 HEAD@{0} reset: moving to HEAD', '9f298e1 HEAD@{1}']}]
+PASS S1 R-5: current_session引数が記録に残る
+PASS S1 整理後に再計測(before=5.0, after=before+freed)  [after_U=17.00]
+PASS S1 目標20GB未達=WARN(rc=1)
+PASS S1 実行記録json出力
+PASS S1 git worktree list にprotectedが残る(強制削除なし)
+PASS S1b 5U+18U>=20U で目標到達→rc=0、残りworktree/pip/旧session小は未処理(最小削除)  [rc=0 deleted=3]
+PASS S5 回復不能(5GB→10GB未満): CRITICAL・rc=2・UNRECOVERED警告・記録あり  [rc=2 after=0.01]
+PASS S5 回復不能でも保護対象は無傷
+PASS quiet出力は1行  [disk_guard: OK free=0.0->0.0GB record=-]
+PASS S7 --dry-run指定時は--autoでも削除0
+PASS S8 R-5: current session不明ではA2(旧session小出力)を候補にしない  [set()]
+PASS S8 R-5: current session既知ならA2候補になる  [{'old_session_small.output'}]
+PASS S9 R-3b: 増加速度>閾値のactive .outputをACTIVE_BIG(growing)警告  [[{"path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_cl4k9x7x\\s9\\LocalAppData\\Temp\\claude\\PROJ\\SESS_CURRENT_01\\tasks\\recent_big.output", "task_id": "recent_big", "mb": 3.1, "age_min": 0.0]
+PASS S10 R-1: session dirがjunctionなら走査・削除しない(実体の.output無傷)+warning  [['LOW_DISK free=0.00GB < warn 0.02GB; candidates=7 (0.00GB)', 'UNRECOVERED free=0.01GB < crit 0.01GB: 追加対応要(原因調査・報告)', 'session_dir_is_reparse_skipped:C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_cl]
+PASS S10b R-1: LOCALAPPDATA非絶対なら失敗終了(rc=3・黙って無効化しない)  [rc=3 disk_guard: ERROR LOCALAPPDATA_not_absolute:'relative_dir'
+]
+PASS S10c R-1: project_dir無しはwarning(黙って空にしない)  [['project_dir_missing_or_unreadable:C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_cl4k9x7x\\s10b\\LocalAppData\\Temp\\claude\\PROJ']]
+PASS S11 M-4: 候補確認後にuntracked追加されたworktreeはremove直前の再確認で保留・残存  [recheck:recent_update_0min]
+PASS S11 M-4: 候補確認後に未push commit追加されたworktreeはremove直前の再確認で保留・残存  [recheck:ahead_or_unknown:1]
+PASS S12 hook 25GB: exit 0・stdout 1行(OK)・stderr同文  [disk_guard: OK free=0.0GB record=-]
+PASS S12 hook 15GB: exit 0(WARNでも)・1行・Fable即時報告文言・記録path  [disk_guard: WARN free=0.0GB record=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s12\runs\20261031_161100_44800_hook.json Fableは即時報告すること]
+PASS S12 hook WARN: 整理process起動なし・削除0
+PASS S12 hook 5GB: exit 0・1行(CRITICAL)・Fable/ユーザー即時報告文言・整理をdetached起動  [disk_guard: CRITICAL free=0.0GB record=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s12\runs\20261031_161100_32608_hook.json ACTIVE_BIG=1(top 3.1MB task=recent_big) cleanup=started(別process) Fableは即時報告すること(CRITICALはユーザーへも即時報告)]
+PASS S12 M-6: 整理は別process(detached)で完走し削除記録が残る  [deleted=9]
+PASS S12 R-5: hook stdin JSONのsession_idが子processへ渡る  [SESS_CURRENT_01]
+PASS S12 M-6: 単一実行lockが整理完了後に解放される
+PASS S12 hook 不正stdinでもexit 0・1行  [disk_guard: CRITICAL free=0.0GB record=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s12\runs\20261031_161110_26504_]
+PASS S12 hook 内部エラー(LOCALAPPDATA非絶対)でもexit 0・1行ERROR  [disk_guard: ERROR RuntimeError: LOCALAPPDATA_not_absolute:'relative_dir' (整理・監視は未実行。Fableは即時報告すること)]
+PASS S12 hook 不正引数(argparse失敗)でもexit 0  [rc=0]
+PASS S13 M-6: lock保持中(1時間以内)の多重実行はskip(rc=0・削除0・lock温存)  [disk_guard: SKIPPED 別の整理が実行中(lock=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s13\.lock)]
+PASS S13 hook: lock保持中は整理を起動しない(cleanup=skipped)  [disk_guard: CRITICAL free=0.0GB record=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s13\runs\20261031_161113_36944_hook.json cleanup=skipped(別の整理が実行中) Fableは即時報告すること(CRITICALはユーザーへも即時報告)]
+PASS S13 M-6: stale lock(2時間前)は回収して実行し、完了後lock解放  [deleted=9]
+PASS S14 R-4: 回復不能CRITICALでflag fileが作られる
+PASS S14 R-4: 次のhookで前回CRITICALを表示(Fable即時報告)し、flagは1回で消える  [disk_guard: OK free=0.0GB record=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s14\runs\20261031_161130_40380_hook.json PREV_CRITICAL=2026-10-31T16:11:23 CRITICAL free=0.01GB record=C:\Users\tensh]
+PASS S14 R-4: 2回目のhookはOKのみ  [disk_guard: OK free=0.0GB record=-]
+PASS S14 R-4: runs rotation(保持50件)  [records=50]
+PASS S14 R-4: quiet行に記録path  [disk_guard: WARN free=0.0->0.0GB record=C:\Users\tensh\AppData\Local\Temp\dgtest_cl4k9x7x\s14\runs\20261031_161252_6932.json]
+S1_apply_full_scan_s 6.8
+quiet_ok_path_s 0.18
+ALL PASS 54/54
