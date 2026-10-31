@@ -140,6 +140,14 @@ def run_views(base, kind, batch_id, n_members, asset_version, shots_dir=None):
                     ck('%s: 個別ページ(?set=)にフレーズ/単語の独立コメント欄が可視' % kind, ('set=' in pg.url) and pg.is_visible('#commentPhrase') and pg.is_visible('#commentWord'))
                     ck('%s: 個別ページに上下のTopへ戻る(同batchのトップ)' % kind, pg.is_visible('#topBack1') and pg.locator('#topBack2').count() == 1 and ('batch=%s' % batch_id) in (pg.get_attribute('#topBack2', 'href') or '') and 'set=' not in (pg.get_attribute('#topBack2', 'href') or ''))
                     ck('%s: 個別ページに固定フッタ/一括コピーを出さない' % kind, not pg.is_visible('#fbar') and not pg.is_visible('#fCopy'))
+                    # 出現回数(SELECTION-UI-OCCURRENCE-COUNT-01 occ-v1): 回数行が候補と1対1で出る(旧data=ページ単位の『集計できませんでした』案内)。『出現 0回』とは断定表示しない(M5)
+                    n_item = pg.locator('#candPhrase .item, #candWord .item').count()
+                    n_occ = pg.locator('#candPhrase .occ[data-occ], #candWord .occ[data-occ]').count()
+                    hint = pg.inner_text('#occHint') if pg.is_visible('#occHint') else ''
+                    warn = ('occwarn' in (pg.get_attribute('#occHint', 'class') or '')) or ('occnote' in (pg.get_attribute('#occHint', 'class') or ''))   # OCC-03: 旧データは中立色occnote(案内)、集計失敗はoccwarn
+                    ck('%s: 出現回数 候補数==回数行数(または旧dataのページ単位案内)' % kind, (n_item > 0 and n_occ == n_item and bool(hint) and not warn) or (warn and n_occ == 0 and ('集計できませんでした' in hint or '旧データ・出現回数なし' in hint)) or n_item == 0,
+                       'items=%d occ=%d warn=%s hint=%s' % (n_item, n_occ, warn, hint[:40]))
+                    ck('%s: 出現回数に「出現 0回」の断定表示なし' % kind, not any(('出現 0回' in t) for t in pg.locator('.occ').all_inner_texts()))
             ck('%s: pageerror 0' % kind, not errs, errs[:2])
             if shots_dir and kind == 'none':
                 os.makedirs(shots_dir, exist_ok=True)

@@ -1,6 +1,7 @@
 # DESIGN_01 — 学習項目選定UI: Phrase/Word 出現回数の集計仕様と表示(設計。未実装・Production未変更)
 
 管理ID: SELECTION-UI-OCCURRENCE-COUNT-01 / OPEN-632 / 委任_01 / 状態: 設計中(Opus条件Aレビュー前)
+**【委任_02(2026-10-31)で実装済み。本書は設計原本として残す。差分】** (1)最終規則表=`RULES_01.md`(Opus必須M1-M6+推奨を反映。本書§2との差=1語項目の除外表該当形・前置詞兼用の不変化詞の分離形・人名スロットを保留へ、先頭be/have/doを確定へ、縮約'sを除外、sb/sth別名、S/U和集合)。(2)**exporterは既定ON**(Fable判断=表示方針は承認済み)。本書§7・§8-10の「`--with-occurrence`明示のみ」は撤回済みで、`--with-occurrence`は存在しない(止めるのは`--without-occurrence`のみ。手順書では使わない)。(3)集計関数=`er140_selection_occurrence_count_01.py`(提案名`er_selection_occurrence_count_01.py`から変更、既存`erNNN_*`命名に合わせた)。(4)実装・検証=`EVIDENCE_01.md`。
 ユーザー原文: `docs/pm/delegation_log/2026-10-31_LEARNING-ITEM-QUALITY-TRIO-01_USER.md` §4。現状調査: `CURRENT_STATE_01.md`。精度検証: `PRECISION_01.md`(試作 `tools/occurrence_count_01.py` の実測)。
 
 ## 0. 結論(1段落)

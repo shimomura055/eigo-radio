@@ -645,6 +645,67 @@ t('KPD: rare/hard candidates remain selectable (no gate)', () => {
   const tl = FL.terms(d), st = FL.newState(); assert.ok(FL.setChoice(st, tl, tl[0], 1, true)); assert.ok(FL.setChoice(st, tl, tl[1], 1, true)); assert.ok(FL.setChoice(st, tl, tl[2], 1, true));
 });
 
+// ======== SELECTION-UI-OCCURRENCE-COUNT-01 委任_02: 出現回数は表示専用(署名・照合コード・選択・LIMITS・受領形式に不干渉)。M5/M6 ========
+t('OCC occurrenceOf: ok -> 合計+0の区分省略+Title別枠 (例 出現 6回｜本文4・Comment1・In One Line1)', () => {
+  const it = { term: 'put away', occurrence: { v: 'occ-v1', counts: { story: 4, comment: 1, preview: 0, oneline: 1, title: 0 }, total: 6, forms: { 'put away': 3, 'put it away': 2, 'putting something away': 1 } } };
+  const o = FL.occurrenceOf(it, true);
+  assert.strictEqual(o.state, 'ok'); assert.strictEqual(o.text, '出現 6回｜本文4・Comment1・In One Line1'); assert.strictEqual(o.total, 6);
+  assert.strictEqual(o.note, '（put it away、putting something away含む）');      // 見出し語そのもの(put away)は伏せ、別の形だけ行内に出す(スマホでも見える)
+  assert.ok(o.tip.includes('put it away×2') && o.tip.includes('意味の違いまでは判別していません'));
+  assert.ok(!/Preview/.test(o.text), '0の区分は省略');
+  const t2 = FL.occurrenceOf({ term: 'x', occurrence: { counts: { story: 2, title: 1 }, forms: {} } }, true);
+  assert.strictEqual(t2.text, '出現 2回｜本文2（ほかにタイトルに1回）');
+});
+t('OCC M5: 本文等0回かつタイトル0=「出現回数を確認できません」(0回と表示しない) / タイトルのみ=「本文等0回・タイトルのみ1回」', () => {
+  const z = FL.occurrenceOf({ term: 'x', occurrence: { counts: { story: 0, comment: 0, preview: 0, oneline: 0, title: 0 }, total: 0 } }, true);
+  assert.strictEqual(z.state, 'unconfirmable'); assert.strictEqual(z.text, '出現回数を確認できません'); assert.ok(!/0回/.test(z.text));
+  const to = FL.occurrenceOf({ term: 'Now in Session', occurrence: { counts: { story: 0, title: 1 }, total: 0 } }, true);
+  assert.strictEqual(to.state, 'title_only'); assert.strictEqual(to.text, '出現 本文等0回・タイトルのみ1回');
+  const ua = FL.occurrenceOf({ term: 'x', occurrence: { counts: { story: 0, title: 1 }, unavailable: ['comment', 'preview'] } }, true);
+  assert.strictEqual(ua.state, 'unconfirmable', '区分が未取得で0=0と断定しない');
+});
+t('OCC 保留と未集計の表示: 「＋似た形N（未計上）」「※Comment・Preview未集計」', () => {
+  const o = FL.occurrenceOf({ term: 'leave out', occurrence: { counts: { story: 3, comment: 1 }, uncertain: { story: 1, oneline: 1 }, uncertain_forms: { 'leaving things out': 2 }, unavailable: ['preview'], forms: { 'left out': 3, 'leave out': 1 } } }, true);
+  assert.strictEqual(o.uncText, '＋似た形2（未計上）'); assert.strictEqual(o.unavailText, '※Preview未集計'); assert.strictEqual(o.state, 'ok'); assert.strictEqual(o.total, 4);
+  assert.ok(o.tip.includes('未計上の似た形: leaving things out×2'));
+  assert.strictEqual(FL.occurrenceOf({ term: 'x', occurrence: { counts: { story: 1 }, unavailable: ['comment', 'preview'] } }, true).unavailText, '※Comment・Preview未集計');
+});
+t('OCC M6: occurrence 欠落=ページ単位で扱う(候補行は出さない)。一部欠落=その候補だけ「確認できません」。不正値は0扱い', () => {
+  const d = { phrases: [{ term: 'a' }, { term: 'b' }], words: [{ term: 'c' }] };
+  assert.deepStrictEqual(FL.occurrencePage(d), { n: 3, withOcc: 0, anyHas: false, missingAll: true, legacy: true, failed: false });   // OCC-03: meta無し=旧データ(案内表示・警告でない)
+  assert.deepStrictEqual(FL.occurrencePage(Object.assign({}, d, { occurrence_meta: { error: 'sections_not_found' } })), { n: 3, withOcc: 0, anyHas: false, missingAll: true, legacy: false, failed: true });   // meta有り+回数0件=集計失敗(警告)
+  assert.strictEqual(FL.occurrenceOf(d.phrases[0], false).has, false);
+  const d2 = { phrases: [{ term: 'a', occurrence: { counts: { story: 1 } } }, { term: 'b' }], words: [] };
+  assert.strictEqual(FL.occurrencePage(d2).anyHas, true); assert.strictEqual(FL.occurrencePage(d2).missingAll, false);
+  assert.strictEqual(FL.occurrenceOf(d2.phrases[1], true).text, '出現回数を確認できません');
+  assert.strictEqual(FL.occurrencePage({ phrases: [], words: [] }).missingAll, false);
+  [null, undefined, { term: 'x', occurrence: 'bad' }, { term: 'x', occurrence: [] }, { term: 'x', occurrence: { counts: [] } }].forEach(v => assert.strictEqual(FL.hasOccurrence(v), false));
+  assert.strictEqual(FL.occurrenceOf({ term: 'x', occurrence: { counts: { story: -3, comment: 'a', preview: NaN, oneline: 1.9 } } }, true).total, 1);
+});
+t('OCC invariance: occurrence をdataへ足しても validate / terms / doneSig / AIF1 readable code / counts / allowed は不変、コピー本文に出ない', () => {
+  const base = JSON.parse(JSON.stringify(dYuki)); const withO = JSON.parse(JSON.stringify(dYuki));
+  (withO.phrases || []).concat(withO.words || []).forEach((it, i) => { it.occurrence = { v: 'occ-v1', counts: { story: i + 1, comment: 1, preview: 0, oneline: 0, title: 0 }, total: i + 2, forms: { [it.term]: i + 1 } }; });
+  assert.deepStrictEqual(FL.validateArticle(withO), []); assert.deepStrictEqual(FL.terms(withO), FL.terms(base));
+  const stA = decide(base, mkSt(base, { 0: 1, 1: 1, 2: 1 })); const stB = decide(withO, mkSt(withO, { 0: 1, 1: 1, 2: 1 }));
+  assert.strictEqual(FL.doneSig(withO, stB), FL.doneSig(base, stA), 'Done署名不変');
+  const o = { stem: dYuki.__stem, file_sha256: dYuki.__file_sha256 };
+  assert.strictEqual(FL.buildReadable(withO, stB, o), FL.buildReadable(base, stA, o), '照合コード/コピー本文不変');
+  assert.ok(!/出現|occurrence|本文\d|似た形/.test(FL.buildReadable(withO, stB, o)), '出現回数はコピー本文に出ない');
+  assert.deepStrictEqual(FL.counts(FL.choicesOf(withO, stB), FL.terms(withO)), FL.counts(FL.choicesOf(base, stA), FL.terms(base)));
+  assert.deepStrictEqual(FL.LIMITS, [3, 5, 12]);
+});
+t('OCC index.html contract: 日本語訳の下・AI理由の上に1行、ページ単位の案内(occHint)、選定/受領形式の関数は回数を読まない', () => {
+  const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8'), js = fs.readFileSync(path.join(FD, 'form_logic.js'), 'utf8');
+  assert.ok(h.indexOf('data-occ=') > h.indexOf('class="jatext"') && h.indexOf('data-occ=') < h.indexOf('<details class="why"'), '訳の下・理由の上');
+  assert.ok(/id="occHint"/.test(h) && /出現回数を集計できませんでした/.test(h));
+  assert.ok(/旧データ・出現回数なし/.test(h) && /occPg\.legacy/.test(h) && /occnote/.test(h) && !/occwarn[^;]*旧データ/.test(h));   // OCC-03: 旧データは中立色の案内(赤字警告にしない)
+  assert.ok(/occurrenceOf\(it,occPg\.anyHas\)/.test(h));
+  ['buildText', 'buildStructured', 'buildReadable', 'doneSig', 'makeCode', 'selectRemaining'].forEach(fn => {
+    const m = new RegExp('function ' + fn + '\\(').exec(js); assert.ok(m, fn);
+    const body = js.slice(m.index, m.index + 3500).split(/\n  function /)[0]; assert.ok(!/occurrence/i.test(body), fn + ' は occurrence を読まない');
+  });
+});
+
 // ======== 委任_04 (SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01): 報告(batch)解決・名前空間・ルート・コピー欠落検査 (Opus M1/M2/M4/M5/M6/M10/M13) ========
 const stemE = a => String(a.data || '').replace(/^.*\//, '').replace(/\.json$/, '');
 const dataEntries = idx.articles.filter(a => a.data);

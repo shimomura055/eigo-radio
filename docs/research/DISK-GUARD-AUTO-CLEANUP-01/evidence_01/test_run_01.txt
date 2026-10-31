@@ -1,0 +1,24 @@
+PASS S0 15GB: WARN(rc=1)・削除0  [rc=1]
+PASS S0 15GB: 原因候補を列挙  [cand=9]
+PASS S0 15GB: 全ファイル/worktree残存
+PASS S0b 25GB: OK(rc=0)・候補走査なし・削除0
+PASS S0b 25GB: 稼働中>5MB outputをACTIVE_BIG列挙  [[{'path': 'C:\\Users\\tensh\\AppData\\Local\\Temp\\dgtest_6amf5dhw\\s0\\LocalAppData\\Temp\\claude\\PROJ\\SESS1\\tasks\\recent_big.output', 'task_id': 'recent_big', 'mb': 3.1, 'age_min': 0.0}]]
+PASS S6 5GB dry-run: 候補列挙・削除0・rc=2(未回復)
+PASS S1 5GB apply: 自動整理が発動(deleted>0)  [deleted=8]
+PASS S1 安全な.output(古い巨大2+旧session小)のみ削除
+PASS S1 pip cacheがpurgeされた
+PASS S1 安全worktree4件(detached/old commit/merged branch/pycacheのみ)削除  [[False, False, False, False]]
+PASS S1 保護対象(未commit/untracked/ignored/ahead/keep/locked/recent/scratchpad外/handle保持/SSOT名/repo配下/別project)全残存  [[]]
+PASS S1 保留理由が記録される(dirty/untracked/ahead/keep/locked/recent/handle)  [{"held_open_big.output": "in_use_or_unconfirmable", "OPEN_ITEMS.output": "not_in_allowlist", "wt_ahead": "ahead_or_unknown:1", "wt_dirty_tracked": "dirty_or_untracked_or_ignored: M a.txt", "wt_ignored_file": "dirty_or_untracked_or_ignored:!! ignored_x.dat", "wt_keep": "keep_list", "wt_locked": "locked_or_prunable", "wt_recent": "recent_update_0min", "wt_untracked": "dirty_or_untracked_or_ignored:?? new_evidence.txt"}]
+PASS S1 整理後に再計測(before=5.0, after=before+freed)  [after_U=17.00]
+PASS S1 目標20GB未達=WARN(rc=1)
+PASS S1 実行記録json出力
+PASS S1 git worktree list にprotectedが残る(強制削除なし)
+PASS S1b 5U+18U>=20U で目標到達→rc=0、残りworktree/pip/旧session小は未処理(最小削除)  [rc=0 deleted=3]
+PASS S5 回復不能(5GB→10GB未満): CRITICAL・rc=2・UNRECOVERED警告・記録あり  [rc=2 after=0.01]
+PASS S5 回復不能でも保護対象は無傷
+PASS quiet出力は1行  [disk_guard: OK free=0.0->0.0GB]
+PASS S7 --dry-run指定時は--autoでも削除0
+S1_apply_full_scan_s 1.75
+quiet_ok_path_s 0.17
+ALL PASS 21/21

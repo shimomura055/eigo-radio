@@ -209,6 +209,24 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## DISK-GUARD-AUTO-CLEANUP-01-DECISION-01: Cドライブ容量監視・自動整理の運用方針(ユーザー承認済み、2026-10-31)
+
+**ユーザー決定(原文=docs/pm/delegation_log/2026-10-31_DISK-GUARD-AUTO-CLEANUP-01_USER.md §1-§4)**: 空き容量<20GBで予防警戒(原因列挙・安全整理可)、<10GBで自動整理を必ず実行、回復目標20GB以上。自動削除してよい対象は(1)終了済みClaude task一時出力(2)再取得可能なpip cache(3)Git上で完全に保存・push済みで未使用の作業用worktreeの3種のみ(個別に毎回承認不要)。禁止対象=Production成果物/SSOT/未commit・未pushのファイルとworktree/必要なTrial証拠/OS管理ファイル/安全性未確認のもの。worktreeは通常のGit管理コマンドで除去し強制削除禁止。安全と証明できなければ削除しない。実装=`tools/disk_guard_01.py`(許可リスト方式・dry-run既定・各条件をコードで検証)、状態=IMPLEMENTED_NOT_ACTIVATED(OPEN-637、有効化は委任_02でOpus安全レビュー後)。検証=sandbox模擬21/21 PASS(`docs/research/DISK-GUARD-AUTO-CLEANUP-01/EVIDENCE_01.md`)。保存仕様・保持期間は変更なし。
+
+## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-01: 選定UI 出現回数表示 occ-v1 の実装・公開(集計規則はユーザー確認待ち、2026-10-31)
+
+- **内容**: Phrase・Wordの各候補へ記事内出現回数(本文・Comment・Preview・In One Line、Titleは別枠)を表示。exportが既定ONで決定論集計(AI API 0)し`occurrence`をdata JSONへ焼き込む。表示専用(選択条件・Done署名・照合コード・受領形式に入らない)。
+- **状態**: 実装完了・公開URL検証済み・**集計規則のユーザー確認待ち(受入4)**。確認後PRODUCTION_WIRED。表示方針=ユーザー承認済み(原文=docs/pm/delegation_log/2026-10-31_LEARNING-ITEM-QUALITY-TRIO-01_USER.md §4)。exporter既定ONはFable判断(表示方針は承認済みのため)。
+- **採用理由/比較**: 語境界+承認済みer105活用表で決定論(NLTK/spaCyは新規依存・再現性で不採用)。多義は判別しない(原文§4-4/§4-8・過剰設計回避)。判定できない形は保留として加算せず件数のみ併記(原文§4-8「推測で加算しない」)。data焼き込み(サイドカー案は整合管理が増えるため不採用)。
+- **Opus条件Aレビュー**: 必須6件(M1-M6)+推奨を全て反映(EVIDENCE_01.md §3の対応表)。公開済みbatchのdata fileは上書きしない(M4、exporter guard)。
+- **根拠**: docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/{DESIGN_01,PRECISION_01,RULES_01,EVIDENCE_01}.md。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。費用0。
+
+## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-02: 出現回数表示 occ-v1 APPROVED_FOR_PRODUCTION(2026-10-31)
+
+- **内容**: ユーザーが集計規則occ-v1を正式承認(APPROVED_FOR_PRODUCTION)。承認3項目=(1)`put it away`等 代名詞1語を挟む分離句動詞は確定計上、(2)`building`/`lay`/`goods`/`saw`等 別語にもなり得る活用形は確定計上せず保留表示、(3)`put the books away`等 名詞句・人名挿入は確定計上せず保留表示。X/Y/Z x Standard/Advancedの6水準でPRODUCTION_WIREDまで完了させる指示。残課題①既存テスト8件の原因確定②旧batchを赤字エラーでなく案内表示へ③ディスク(整理済み、再承認不要)。
+- **状態**: APPROVED_FOR_PRODUCTION。PRODUCTION_WIREDはFable独立受入後(委任_03)。
+- **根拠**: 原文=docs/pm/delegation_log/2026-10-31_SELECTION-UI-OCCURRENCE-COUNT-01_USER_02.md。規則=docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/RULES_01.md(無変更)。費用0。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。
+
 ## SELECTION-UI-TWO-TIER-01-DECISION-01: 学習項目選定UIの2階層化 APPROVED_FOR_PRODUCTION(2026-10-31)
 
 - **内容**: トップ(一覧・進捗・一括コピー)と個別(1記事x1レベルのフォーム、上下に「Topへ戻る」)の2階層へ変更。選定仕様・ロジック・データ・コピー書式は無変更。共通テンプレート+`?set=`。
@@ -22991,3 +23009,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - Status(セル別): X Std/X Adv/Y Std/Y Adv/Z Std/Z Adv = 全て**PRODUCTION_WIRED**。X Adv/Z Std/Z Adv=委任_02 EVIDENCE_02 §5、X Std/Y Std/Y Adv=委任_03 EVIDENCE_03(batches.create model_id/voice・wav sha束縛[6%減速子登録transform 6.0含む]・sidecar 8/8=100%・attempt audit tts_provenance)。費用約¥0.40(個別Cap ¥5)、量産単価+0。
 - 適用外の区別: Puck|pro(confirmed=false)は承認仕様どおりの適用外(fail-closed、未完了Open Itemではない)。出自のない既存の保存音声・未確認Voiceも同様。自然なFlap転写は実run中に未発生(発火は保存attempt再判定+adapter実経路test、到達性は実Batch run)。
 - 反映: OPEN-627ステータス更新、CURRENT_SPEC Flap-T節見出し更新。根拠: docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/{EVIDENCE_02,EVIDENCE_03,FABLE_ACCEPTANCE_01}.md、docs/pm/RESULT_PACKET_FLAPTP_03.md。
+
+JA-GLOSS-QUALITY-ALARM-TRIAL-01-DECISION-01: 案B3不採用・現行維持・独立品質アラーム機構Trial開始(ユーザー正式決定、2026-10-31)
+- 決定: (1)JA-GLOSS-NUANCE-01の案B3はREJECTED(副作用による既存訳の品質悪化リスク)。(2)現行の日本語訳生成Prompt・仕様は維持。(3)生成済み日本語訳を独立してチェックする品質アラーム機構のDEV/Trialを開始(OPEN-636)。(4)問題が疑われる訳はHuman Reviewページで警告表示(最終的に承認/修正はユーザー)。(5)品質チェックのモデルはgpt-6-luna(Luna 6.0)限定、他モデルの採用・比較Trialなし。(6)警告Precision目標80〜90%(保証でない、基準の途中緩和禁止)。(7)Production配線はユーザー正式承認まで禁止(到達可能Status=VALIDATED/REJECTED/USER_DECISION_REQUIRED)。
+- 範囲: 設計・Trial・DEV試作のみ。既存の品質基準・選定仕様・訳生成Promptは不変。個別辞書・特定語の例外ルールは設計に入れない。
+- 反映: OPEN-630(B3 REJECTED)、OPEN-636新規、docs/research/JA-GLOSS-NUANCE-01/TRIAL_01.md §9。原文=docs/pm/delegation_log/2026-10-31_JA-GLOSS-QUALITY-ALARM-TRIAL-01_USER.md。CURRENT_SPECは変更しない(Trial段階)。
