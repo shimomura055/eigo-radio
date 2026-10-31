@@ -1,4 +1,5 @@
 # CURRENT_STATE_01(ENDUSER-TRANSLATION-CONTEXT-TRIAL-01 委任_01 Phase 1(a)、2026-10-31)
+> 【訂正(委任_02、2026-10-31、Opus条件Aレビュー M-1・Fable決定)】下記の旧記載のうち、DとEの1回目の訳は**正しかった**(D=『出しっぱなしの物』、E=『置きっぱなしの物』。`ev04_probe/log_*adv_19_{D,E}.json`)。文脈なしverifyが『left out=省かれた』と不合格にし、その指摘がretry noteとして翻訳側へ渡され(er135_enduser_translate_01.py:583)、再翻訳で誤訳へ戻った。つまり文脈を足したB・D・Eは3/3とも1回目で正しく訳し、文脈なしverifyが3/3覆した(文脈方式どうしの差はverifyの覆しで隠れて測れない)。『キャッシュ鍵が英文shaのみ』(:120-123)は事実だが**誤訳の原因ではなく採用時の整合事項**。『A 2/2』は独立生成2回の観測でありn=2の率ではない。ERROR_CASES_01 §4の根本原因(b)(c)は仮説。
 
 調査基準: origin/main d84cff09c(メインツリーの`er135_enduser_translate_01.py`は未追跡の古い版で現行ではない。以下は全て origin/main の worktree で確認)。コード変更0・Production出力変更0。
 
