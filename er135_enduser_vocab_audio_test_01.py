@@ -150,8 +150,8 @@ class VA3_Asset(unittest.TestCase):
         js = (root / "app.js").read_text(encoding="utf-8")
         for needle in ("data-act=\"vocab\"", "function playVocab", "function endVocab", "mode === 'vocab'", "sentHtml(p)) + trHtml(p)"):
             self.assertIn(needle, js)
-        self.assertEqual((root / "index.html").read_text(encoding="utf-8").count("rev01-h"), 4)
-        self.assertEqual(E.R.ASSET_BUILD_ID, "rev01-h")
+        self.assertEqual((root / "index.html").read_text(encoding="utf-8").count("rev01-i"), 4)
+        self.assertEqual(E.R.ASSET_BUILD_ID, "rev01-i")
 
 
 if __name__ == "__main__":

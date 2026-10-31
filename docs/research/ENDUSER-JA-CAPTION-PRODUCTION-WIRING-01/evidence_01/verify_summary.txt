@@ -1,0 +1,19 @@
+# er135_enduser_page_verify_01(Playwright PC+mobile)の結果。rev01-i生成物(既公開3記事の複製+rev01-i asset差替、build_info shaのみ更新、scratch。公開dir不変)
+## 最終asset(字幕 ON/OFF)での初回実行
+family_x_meta_waddle_world_01 consistency True []
+family_x_meta_waddle_world_01 TOTAL 270 NG 1
+family_x_meta_waddle_world_01 NG ('pc', 'V', 'std_vocab_each_item_plays_own_audio_and_returns', False)
+family_y_production_surname_choice_01 consistency True []
+family_y_production_surname_choice_01 TOTAL 268 NG 0
+family_z_melos_kphr_evidence_r3 consistency True []
+family_z_melos_kphr_evidence_r3 TOTAL 250 NG 1
+family_z_melos_kphr_evidence_r3 NG ('mobile', 'V', 'adv_vocab_each_item_plays_own_audio_and_returns', False)
+
+## vocab_each_item flakeの切り分け(同一script・直列実行。rev01-h=現行公開dirの未変更複製 / rev01-i=本件)
+baseX1 rc=3 NG ('pc', 'V', 'adv_vocab_each_item_plays_own_audio_and_returns', False) NG ('mobile', 'V', 'std_vocab_each_item_plays_own_audio_and_returns', False) NG ('mobile', 'I', 'adv_glossary_links_open_the_expression', False) 
+newX1 rc=0 
+baseX2 rc=0 
+newX2 rc=1 
+baseZ1 rc=0 
+newZ1 rc=0 
+(newX2 rc=1 は Playwright Page.goto 30秒timeout=環境起因。baseX1はrev01-hでも vocab_each_item x2 と glossary_links x1 がNG=既存flake)

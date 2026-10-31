@@ -420,7 +420,7 @@ class A4_PageIntegration(unittest.TestCase):
             self.assertTrue(any(v["code"] == "ENDUSER_JA_ALIGN" and "陳腐化" in v["message"] for v in r3["violations"]), r3["violations"])
 
     def test_old_asset_build_is_stale_except_frozen_allowlist(self):
-        self.assertEqual(R.ASSET_BUILD_ID, "rev01-h")
+        self.assertEqual(R.ASSET_BUILD_ID, "rev01-i")
         self.assertTrue((ROOT / "enduser_page_assets" / "rev01-e" / "app.js").is_file())          # 旧assetは凍結・残置
         self.assertEqual(E.FROZEN_ASSET_DIRS, {"family_z_in_a_grove_01": "rev01-e"})
         E.check_assets(ROOT / "enduser_page_assets" / "rev01-e")                                  # 凍結assetは自身のmanifestと一致
