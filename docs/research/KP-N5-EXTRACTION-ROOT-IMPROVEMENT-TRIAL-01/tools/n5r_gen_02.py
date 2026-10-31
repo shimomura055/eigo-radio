@@ -21,8 +21,9 @@ for r in R.values():
     for p in r["pools"].values():
         for c in p["judged"]:
             sent.setdefault(L.norm_key(c["span"]), c["sentence"])
-arms = sorted({a for r in R.values() for a in r["picks"]}) if ARMS == "ALL" else ARMS.split(",")
-if "A0" not in arms: arms = ["A0"] + arms
+TARGETS = ARMS == "TARGETS"
+arms = sorted({a for r in R.values() for a in r["picks"]}) if ARMS in ("ALL", "TARGETS") else ARMS.split(",")
+if "A0" not in arms and not TARGETS: arms = ["A0"] + arms
 ctx = L.make_ctx(CASE, PROC, f"n5r2_gen_{CASE}")
 
 
@@ -61,6 +62,8 @@ if not CONFIRM:
     for r in reps:
         for a in arms:
             for c in R[r]["picks"].get(a, []):
+                if TARGETS and not any(rx.search(c["span"]) for rx in (L.PUT_AWAY, L.IN_THE_WAY, L.LEAVE_OUT, L.IN_SIGHT)):
+                    continue
                 k = L.norm_key(c["span"])
                 if k not in cache and c["span"] not in pend and k not in [L.norm_key(x) for x in pend]:
                     pend.append(c["span"])

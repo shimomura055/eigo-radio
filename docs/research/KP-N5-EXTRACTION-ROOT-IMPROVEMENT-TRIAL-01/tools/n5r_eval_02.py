@@ -3,10 +3,15 @@ import sys, os, json, re, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import n5r_lib_02 as L
 n5 = L.n5
-PREFIX, CASES = sys.argv[1], sys.argv[2].split(",")
+PREFIX, CASESPEC = sys.argv[1], sys.argv[2].split(",")
+RNG = {}
+CASES = []
+for sp in CASESPEC:
+    c, _, rg = sp.partition(":"); CASES.append(c)
+    if rg: RNG[c] = tuple(int(x) for x in rg.split("-"))
 MAIN = {"untidi_b1b", "untidi_a2"}
 HR = ["turn into an interrogation", "hear it out"]
-POOL_OF = {"A0": "A0", "A1": "E1", "A2": "E2", "A2d": "E2", "A4": "E2", "A4d": "E2", "A8": "E2", "A5": "E5", "A6p": "E6", "A7p": "E2", "A3ref": "E2"}
+POOL_OF = {"A13": "E2", "A9": "E2", "A10": "E2", "A12": "E2", "A0": "A0", "A1": "E1", "A2": "E2", "A2d": "E2", "A4": "E2", "A4d": "E2", "A8": "E2", "A5": "E5", "A6p": "E6", "A7p": "E2", "A3ref": "E2"}
 ARMS = list(POOL_OF)
 SAME = ("SAME", "MODIFIER_DROPPED_OK")
 fx = L.fixture()
@@ -14,6 +19,7 @@ fx = L.fixture()
 
 def load(case):
     reps = sorted(int(f.split("_")[-1].split(".")[0]) for f in os.listdir(L.EV) if f.startswith(f"rep_{case}_") and f.endswith(".json"))
+    if case in RNG: reps = [r for r in reps if RNG[case][0] <= r <= RNG[case][1]]
     R = {r: json.load(open(f"{L.EV}/rep_{case}_{r}.json", encoding="utf-8")) for r in reps}
     cf = f"{L.EV}/gen_cache_{case}.json"
     cache = json.load(open(cf, encoding="utf-8")) if os.path.exists(cf) else {}
@@ -68,6 +74,7 @@ for case in CASES:
     for r, rep in R.items():
         a0f = final_items(rep, "A0", cache, text)
         for arm in ARMS:
+            if arm not in rep["picks"]: continue
             pk = pick_items(rep, arm)
             pool = rep["pools"][POOL_OF[arm]]["judged"]
             fin = final_items(rep, arm, cache, text)
@@ -76,6 +83,15 @@ for case in CASES:
             rec = {"case": case, "rep": r, "arm": arm, "pool_hits": hpool, "pick_hits": hp, "pick_both": hp["put_away"] and hp["in_the_way"],
                    "pool_both": hpool["put_away"] and hpool["in_the_way"], "n_pick": len(pk), "pick": [c["span"] for c in pk],
                    "ext_fallback": (rep["ext"].get({"A0": "A0", "E1": "E1", "E2": "E2", "E5": "E5", "E6": "E2"}[POOL_OF[arm]], {}) or {}).get("fallback")}
+            # pick-level の副作用指標(GEN前でも算出可能なもの): N2/N3/タイトル句/難易度分布
+            a0pk = rep["picks"]["A0"]
+            rec["pk_n2"] = sum(1 for c in pk if c["difficulty"] == "easy" and L.body_recur_trial(c["span"], text) < 3 and c["chunk_type"] in ("fixed_phrase", "collocation"))
+            rec["pk_displaced"] = [c["span"] for c in a0pk if not in_list(c["span"], pk)] if arm != "A0" else []
+            rec["pk_entrants"] = [c["span"] for c in pk if not in_list(c["span"], a0pk)] if arm != "A0" else []
+            rec["pk_hr"] = {h: in_list(h, pk) for h in HR if in_list(h, a0pk)} if arm != "A0" else {h: in_list(h, pk) for h in HR if any(L.norm_key(h) == L.norm_key(c["span"]) for c in pk)}
+            rec["pk_title_mix"] = sum(1 for c in pk if L.TITLE_PHRASES.search(c["span"]))
+            rec["pk_diff"] = {d: sum(1 for c in pk if c["difficulty"] == d) for d in ("advanced", "upper_intermediate", "easy")}
+            rec["pk_leave_out"] = L.hits([c["span"] for c in pk])["leave_out"]; rec["pk_in_sight"] = L.hits([c["span"] for c in pk])["in_sight"]
             if fin is not None:
                 hf = {k: False for k in ("put_away", "in_the_way", "leave_out", "in_sight")}
                 s = L.hits([c["span"] + " | " + c["g"]["display_form"] for c in fin]); hf.update(s)
@@ -111,10 +127,10 @@ for case in CASES:
             # N6 cost/time (抽出+SEL+rerank)
             def c_of(x): return (x or {}).get("cost_jpy") or 0
             def s_of(x): return (x or {}).get("sec") or 0
-            ex = {"A0": "A0", "A1": "E1", "A2": "E2", "A2d": "E2", "A4": "E2", "A4d": "E2", "A8": "E2", "A5": None, "A6p": "E2", "A7p": "E2", "A3ref": "E2"}[arm]
+            ex = {"A13": "E2", "A9": "E2", "A10": "E2", "A12": "E2", "A0": "A0", "A1": "E1", "A2": "E2", "A2d": "E2", "A4": "E2", "A4d": "E2", "A8": "E2", "A5": None, "A6p": "E2", "A7p": "E2", "A3ref": "E2"}[arm]
             cost = c_of(rep["ext"].get(ex)) + c_of(rep["pools"][POOL_OF[arm]]["info"]); sec = s_of(rep["ext"].get(ex)) + s_of(rep["pools"][POOL_OF[arm]]["info"])
-            if arm in ("A7p", "A6p"):
-                rr = rep["rr"]["E2" if arm == "A7p" else "E6"]; cost += c_of(rr); sec += s_of(rr)
+            if arm in ("A7p", "A6p", "A9", "A13"):
+                rr = rep["rr"][{"A7p": "E2", "A6p": "E6", "A9": "SLATE", "A13": "E2"}[arm]]; cost += c_of(rr); sec += s_of(rr)
             rec["cost"] = round(cost, 4); rec["sec"] = round(sec, 1)
             rows.append(rec)
     # N7
@@ -144,6 +160,11 @@ def agg_arm(arm, cases):
                  mean_diff_dist={d: round(sum(r["diff_dist"][d] for r in fr) / len(fr), 2) for d in ("advanced", "upper_intermediate", "easy")})
         hs = [(h, v) for r in fr for h, v in (r.get("hr_survive") or {}).items()]
         a["hr_survive"] = f"{sum(1 for _, v in hs if v)}/{len(hs)}" if hs else None
+    a.update(pk_mean_n2=round(sum(r["pk_n2"] for r in rr) / len(rr), 2), pk_mean_displaced=round(sum(len(r["pk_displaced"]) for r in rr) / len(rr), 2) if arm != "A0" else None,
+             pk_mean_entrants=round(sum(len(r["pk_entrants"]) for r in rr) / len(rr), 2) if arm != "A0" else None,
+             pk_title_mix=round(sum(r["pk_title_mix"] for r in rr) / len(rr), 2), pk_leave_out=cnt(lambda r: r["pk_leave_out"]), pk_in_sight=cnt(lambda r: r["pk_in_sight"]),
+             pk_hr_survive=(lambda hs: f"{sum(1 for _, v in hs if v)}/{len(hs)}")([(h, v) for r in rr for h, v in r["pk_hr"].items()]),
+             pk_mean_diff={d: round(sum(r["pk_diff"][d] for r in rr) / len(rr), 2) for d in ("advanced", "upper_intermediate", "easy")})
     n4 = [r["n4_clskeep"] for r in rr if "n4_clskeep" in r]
     if n4: a["n4_clskeep_mean"] = round(sum(n4) / len(n4), 4); a["n4_diff_mean"] = round(sum(r["n4_diff"] for r in rr if "n4_diff" in r) / len(n4), 4)
     return a

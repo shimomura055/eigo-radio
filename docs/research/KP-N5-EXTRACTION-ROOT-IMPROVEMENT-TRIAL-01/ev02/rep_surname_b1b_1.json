@@ -1,0 +1,1700 @@
+{
+ "case": "surname_b1b",
+ "rep": 1,
+ "proc": "p3a",
+ "ext": {
+  "A0": {
+   "n_calls": 1,
+   "cost_jpy": 0.1381,
+   "sec": 17.0,
+   "wall_sec": 17.0,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "b1",
+     "label": "N5R2_A0",
+     "in": 1144,
+     "out": 1498,
+     "max_out": 6000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.1381,
+     "sec": 17.0
+    }
+   ],
+   "fallback": null,
+   "n_cands": 12,
+   "spans": [
+    "way out in the country",
+    "old-fashioned about it",
+    "without taking offense",
+    "at ease",
+    "let go of my son",
+    "can’t help thinking about",
+    "thought it was only natural",
+    "feel at least a little grateful",
+    "decide for themselves",
+    "hold my son back",
+    "overlaps with the feeling",
+    "giving something up"
+   ]
+  },
+  "E2": {
+   "n_calls": 1,
+   "cost_jpy": 0.3134,
+   "sec": 33.9,
+   "wall_sec": 33.9,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "b1",
+     "label": "N5R2_E2",
+     "in": 1095,
+     "out": 3698,
+     "max_out": 6000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.3134,
+     "sec": 33.9
+    }
+   ],
+   "fallback": null,
+   "n_cands": 40,
+   "spans": [
+    "got married",
+    "last name",
+    "marriage registration form",
+    "joins her family",
+    "adopted son",
+    "have their own feelings",
+    "care about different things",
+    "can both accept",
+    "took his wife’s last name",
+    "at his wife’s parents’ home",
+    "had no problem at all",
+    "accepted it easily",
+    "way out in the country",
+    "old-fashioned about it",
+    "again and again",
+    "really sure",
+    "both sets of parents",
+    "without taking offense",
+    "find it a little hard",
+    "get much time to myself",
+    "at ease",
+    "getting married next year",
+    "live near her parents’ home",
+    "moving away",
+    "got very upset",
+    "the truth is",
+    "stay close",
+    "old-fashioned way to think",
+    "let go of my son",
+    "accept his choice",
+    "without getting too close",
+    "care about their happiness",
+    "can’t help thinking about",
+    "discussing it with his parents",
+    "became ill",
+    "thought it was only natural",
+    "at least a little grateful",
+    "decide for themselves",
+    "hold my son back",
+    "share how I feel"
+   ]
+  },
+  "E5": {
+   "n_cands": 0,
+   "spans": [],
+   "cost_jpy": 0,
+   "sec": 0
+  },
+  "E5diff": {
+   "n_cands": 0,
+   "spans": []
+  }
+ },
+ "pools": {
+  "A0": {
+   "info": {
+    "n_calls": 2,
+    "cost_jpy": 0.1867,
+    "sec": 16.7,
+    "wall_sec": 17.6,
+    "truncated": 0,
+    "attempts_gt1": 0,
+    "metas": [
+     {
+      "stage": "sel",
+      "label": "SEL",
+      "in": 2764,
+      "out": 965,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.1214,
+      "sec": 11.7
+     },
+     {
+      "stage": "sel",
+      "label": "SEL_DEFERRED",
+      "in": 2437,
+      "out": 329,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.0653,
+      "sec": 5.0
+     }
+    ],
+    "n_pool": 9,
+    "n_rejected": 10,
+    "n_keep": 5,
+    "deferred": [
+     {
+      "span": "overlaps with the feeling",
+      "keep": false
+     }
+    ],
+    "rejected": [
+     {
+      "span": "way out in the country",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "way out in the country"
+     },
+     {
+      "span": "without taking offense",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "taking offense"
+     },
+     {
+      "span": "at ease",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "at ease"
+     },
+     {
+      "span": "let go of my son",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "let go of"
+     },
+     {
+      "span": "can’t help thinking about",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "thought it was only natural",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "feel at least a little grateful",
+      "reasons": [
+       "既存Gate(validate): 語数が1〜5語でない(実際: 6語)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "hold my son back",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "hold my son back"
+     },
+     {
+      "span": "overlaps with the feeling",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "overlaps with"
+     },
+     {
+      "span": "giving something up",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "giving something up"
+     }
+    ]
+   },
+   "judged": [
+    {
+     "span": "taking offense",
+     "sentence": "I was grateful that both sets of parents accepted my decision without taking offense",
+     "n5_origin": "P7",
+     "p7_rank": 1,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "take offenseで「気分を害する」を表す"
+    },
+    {
+     "span": "let go of",
+     "sentence": "I need to let go of my son, don't I",
+     "n5_origin": "P7",
+     "p7_rank": 2,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "let go of someoneで人への執着を手放す"
+    },
+    {
+     "span": "hold my son back",
+     "sentence": "Even so, I don't want to hold my son back because of my feelings as a parent",
+     "n5_origin": "P7",
+     "p7_rank": 3,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "hold someone backで人の前進を妨げる"
+    },
+    {
+     "span": "at ease",
+     "sentence": "Once I could accept that of course we were different, I felt much more at ease",
+     "n5_origin": "P7",
+     "p7_rank": 4,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "at easeで「くつろいで・安心して」を表す"
+    },
+    {
+     "span": "way out in the country",
+     "sentence": "My parents accepted it easily, even though my hometown is way out in the country",
+     "n5_origin": "P7",
+     "p7_rank": 5,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "way outと場所を表す句の自由な組合せ"
+    },
+    {
+     "span": "giving something up",
+     "sentence": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+     "n5_origin": "P7",
+     "p7_rank": 6,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "give something upで何かを手放す"
+    },
+    {
+     "span": "overlaps with",
+     "sentence": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+     "n5_origin": "P7",
+     "p7_rank": 7,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "upper_intermediate",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "overlapはwithを伴う通常の意味で使われている"
+    },
+    {
+     "span": "old-fashioned about it",
+     "sentence": "They weren't old-fashioned about it",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "形容詞と前置詞句の通常の組合せ"
+    },
+    {
+     "span": "decide for themselves",
+     "sentence": "I say that they should decide for themselves, but that still bothers me",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "decideをchooseなどに替えても同じ型で使える"
+    },
+    {
+     "span": "overlaps with the feeling",
+     "sentence": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "upper_intermediate",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の意味で予測できる動詞と前置詞の組合せ"
+    }
+   ]
+  },
+  "E2": {
+   "info": {
+    "n_calls": 1,
+    "cost_jpy": 0.4054,
+    "sec": 42.9,
+    "wall_sec": 42.9,
+    "truncated": 0,
+    "attempts_gt1": 0,
+    "metas": [
+     {
+      "stage": "sel",
+      "label": "SEL",
+      "in": 4098,
+      "out": 4248,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.4054,
+      "sec": 42.9
+     }
+    ],
+    "n_pool": 37,
+    "n_rejected": 10,
+    "n_keep": 16,
+    "deferred": [],
+    "rejected": [
+     {
+      "span": "can both accept",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "took his wife's last name",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "last name"
+     },
+     {
+      "span": "way out in the country",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "way out in the country"
+     },
+     {
+      "span": "without taking offense",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "taking offense"
+     },
+     {
+      "span": "at ease",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "at ease"
+     },
+     {
+      "span": "the truth is",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "let go of my son",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "let go of"
+     },
+     {
+      "span": "can’t help thinking about",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "thought it was only natural",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "hold my son back",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "hold my son back"
+     }
+    ]
+   },
+   "judged": [
+    {
+     "span": "taking offense",
+     "sentence": "I was grateful that both sets of parents accepted my decision without taking offense",
+     "n5_origin": "P7",
+     "p7_rank": 1,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "take offenseで「気分を害する」を表す"
+    },
+    {
+     "span": "let go of",
+     "sentence": "I need to let go of my son, don't I",
+     "n5_origin": "P7",
+     "p7_rank": 2,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "let go ofで人や物を手放す"
+    },
+    {
+     "span": "hold my son back",
+     "sentence": "Even so, I don't want to hold my son back because of my feelings as a parent",
+     "n5_origin": "P7",
+     "p7_rank": 3,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "hold someone backで進歩や行動を妨げる"
+    },
+    {
+     "span": "at ease",
+     "sentence": "Once I could accept that of course we were different, I felt much more at ease",
+     "n5_origin": "P7",
+     "p7_rank": 4,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "at easeで安心した状態を表す"
+    },
+    {
+     "span": "way out in the country",
+     "sentence": "My parents accepted it easily, even though my hometown is way out in the country",
+     "n5_origin": "P7",
+     "p7_rank": 5,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "場所を説明する通常の語の組合せ"
+    },
+    {
+     "span": "giving something up",
+     "sentence": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+     "n5_origin": "P7",
+     "p7_rank": 6,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "give something upで何かを手放す"
+    },
+    {
+     "span": "overlaps with",
+     "sentence": "In a conversation about last names, perhaps a person's own choice overlaps with the feeling that a parent is giving something up",
+     "n5_origin": "P7",
+     "p7_rank": 7,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "upper_intermediate",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "重なりを表す通常の動詞用法"
+    },
+    {
+     "span": "got married",
+     "sentence": "If your last name changed when you got married, how would you feel",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "get marriedが結婚するの定型的な言い方"
+    },
+    {
+     "span": "last name",
+     "sentence": "If your last name changed when you got married, how would you feel",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "compound_noun",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "last nameは姓を表す定着した複合名詞"
+    },
+    {
+     "span": "marriage registration form",
+     "sentence": "Whether a husband chooses his wife's last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "婚姻届を説明する自由な名詞句"
+    },
+    {
+     "span": "joins her family",
+     "sentence": "Whether a husband chooses his wife's last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "家族に加わるという字義どおりの表現"
+    },
+    {
+     "span": "adopted son",
+     "sentence": "Whether a husband chooses his wife's last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "養子である息子を表す記述的な名詞句"
+    },
+    {
+     "span": "have their own feelings",
+     "sentence": "Whether a husband chooses his wife's last name on the marriage registration form or joins her family as an adopted son, he and each of their families have their own feelings",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "feelingsを持つという通常の動詞句"
+    },
+    {
+     "span": "care about different things",
+     "sentence": "When they care about different things, how can they choose something they can both accept",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "care about somethingで関心を持つ"
+    },
+    {
+     "span": "at his wife's parents' home",
+     "sentence": "He lives with his family at his wife's parents' home",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "場所を示す通常の前置詞句"
+    },
+    {
+     "span": "had no problem at all",
+     "sentence": "I had no problem at all with changing my last name",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "have no problemで問題や異議がない"
+    },
+    {
+     "span": "accepted it easily",
+     "sentence": "My parents accepted it easily, even though my hometown is way out in the country",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "受け入れた様子を字義どおりに述べる"
+    },
+    {
+     "span": "old-fashioned about it",
+     "sentence": "They weren't old-fashioned about it",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "upper_intermediate",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "形容詞とaboutの通常の組合せ"
+    },
+    {
+     "span": "again and again",
+     "sentence": "It was my wife's parents who worried, asking me again and again if I was really sure",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "again and againで繰り返しを表す"
+    },
+    {
+     "span": "really sure",
+     "sentence": "It was my wife's parents who worried, asking me again and again if I was really sure",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "程度を加えた通常の形容詞句"
+    },
+    {
+     "span": "both sets of parents",
+     "sentence": "I was grateful that both sets of parents accepted my decision without taking offense",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "両方の親の組を指す記述的な名詞句"
+    },
+    {
+     "span": "find it a little hard",
+     "sentence": "I still find it a little hard that I don't get much time to myself while living at my wife's parents' home, but adjusting to the way each family does things was harder than changing my last name",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "find it hardの通常の文型と程度表現"
+    },
+    {
+     "span": "get much time to myself",
+     "sentence": "I still find it a little hard that I don't get much time to myself while living at my wife's parents' home, but adjusting to the way each family does things was harder than changing my last name",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "time to oneselfで自分だけの時間を表す"
+    },
+    {
+     "span": "getting married next year",
+     "sentence": "The next speaker is a mother whose son is getting married next year",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "get marriedの用法だが8と重複"
+    },
+    {
+     "span": "live near her parents' home",
+     "sentence": "He'll live near her parents' home, far from us",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "住む場所を通常の語で説明している"
+    },
+    {
+     "span": "moving away",
+     "sentence": "When he said he would change his last name too, I felt like my son was moving away, and I got very upset",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "move awayで離れる・引っ越す"
+    },
+    {
+     "span": "got very upset",
+     "sentence": "When he said he would change his last name too, I felt like my son was moving away, and I got very upset",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "get upsetで動揺した状態になる"
+    },
+    {
+     "span": "stay close",
+     "sentence": "I think the truth is that I wanted him to stay close",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "stayとcloseの通常の組合せ"
+    },
+    {
+     "span": "old-fashioned way to think",
+     "sentence": "Someone told me that was an old-fashioned way to think, and I think they were right",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "考え方を説明する記述的な名詞句"
+    },
+    {
+     "span": "accept his choice",
+     "sentence": "I still feel sad, but I want to accept his choice to take his wife's last name",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "選択を受け入れる字義どおりの動詞句"
+    },
+    {
+     "span": "without getting too close",
+     "sentence": "I want to treat his wife without getting too close, and care about their happiness",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "get closeで親密になる・近づく"
+    },
+    {
+     "span": "care about their happiness",
+     "sentence": "I want to treat his wife without getting too close, and care about their happiness",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "care aboutの用法だが14と重複"
+    },
+    {
+     "span": "discussing it with his parents",
+     "sentence": "He took his wife's last name without discussing it with his parents, and I know that his mother, my aunt, was so shocked that she became ill",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "話し合う相手を添えた通常の動詞句"
+    },
+    {
+     "span": "became ill",
+     "sentence": "He took his wife's last name without discussing it with his parents, and I know that his mother, my aunt, was so shocked that she became ill",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "状態変化を表す通常の動詞と形容詞"
+    },
+    {
+     "span": "at least a little grateful",
+     "sentence": "I want them to feel at least a little grateful to my son",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "at leastで最低限の程度を示す"
+    },
+    {
+     "span": "decide for themselves",
+     "sentence": "I say that they should decide for themselves, but that still bothers me",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "decide for oneselfで自分で決める"
+    },
+    {
+     "span": "share how I feel",
+     "sentence": "If he talked to me before deciding on a last name, I could share how I feel, too",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "内容節を目的語に取る通常のshare"
+    }
+   ]
+  }
+ },
+ "picks": {
+  "A0": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "easy",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   }
+  ],
+  "A2": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "without getting too close",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "decide for themselves",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A2d": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "without getting too close",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "decide for themselves",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A4": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "care about different things",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A4d": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "care about different things",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A8": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "care about different things",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A3ref": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "got married",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "last name",
+    "difficulty": "easy",
+    "chunk_type": "compound_noun",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A7p": [
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "decide for themselves",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "last name",
+    "difficulty": "easy",
+    "chunk_type": "compound_noun",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A9": [
+   {
+    "span": "last name",
+    "difficulty": "easy",
+    "chunk_type": "compound_noun",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "decide for themselves",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   }
+  ],
+  "A10": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "care about different things",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "without getting too close",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A12": [
+   {
+    "span": "taking offense",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "at ease",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "let go of",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "hold my son back",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "giving something up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "care about different things",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "get much time to myself",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ]
+ },
+ "rr": {
+  "E2": {
+   "n_calls": 1,
+   "cost_jpy": 0.0836,
+   "sec": 10.4,
+   "wall_sec": 10.4,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "sel",
+     "label": "N5R2_RERANK",
+     "in": 1430,
+     "out": 759,
+     "max_out": 7000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.0836,
+     "sec": 10.4
+    }
+   ],
+   "fallback": null,
+   "n_input": 16,
+   "n_missing": 0
+  },
+  "SLATE": {
+   "n_calls": 1,
+   "cost_jpy": 0.0691,
+   "sec": 7.6,
+   "wall_sec": 7.6,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "sel",
+     "label": "N5R2_SLATE",
+     "in": 1494,
+     "out": 565,
+     "max_out": 7000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.0691,
+     "sec": 7.6
+    }
+   ],
+   "fallback": null,
+   "n_input": 16,
+   "n_selected_valid": 7
+  }
+ },
+ "sens": {
+  "A11_caps": {
+   "8": [
+    "taking offense",
+    "at ease",
+    "let go of",
+    "hold my son back",
+    "giving something up",
+    "care about different things",
+    "get much time to myself",
+    "moving away"
+   ],
+   "9": [
+    "taking offense",
+    "at ease",
+    "let go of",
+    "hold my son back",
+    "giving something up",
+    "care about different things",
+    "get much time to myself",
+    "moving away",
+    "without getting too close"
+   ],
+   "10": [
+    "taking offense",
+    "at ease",
+    "let go of",
+    "hold my son back",
+    "giving something up",
+    "care about different things",
+    "get much time to myself",
+    "moving away",
+    "without getting too close",
+    "decide for themselves"
+   ]
+  }
+ },
+ "body_recur": {
+  "taking offense": {
+   "trial": 1,
+   "strict": 1
+  },
+  "let go of": {
+   "trial": 1,
+   "strict": 1
+  },
+  "hold my son back": {
+   "trial": 1,
+   "strict": 1
+  },
+  "at ease": {
+   "trial": 1,
+   "strict": 1
+  },
+  "giving something up": {
+   "trial": 1,
+   "strict": 1
+  },
+  "got married": {
+   "trial": 3,
+   "strict": 3
+  },
+  "last name": {
+   "trial": 18,
+   "strict": 18
+  },
+  "care about different things": {
+   "trial": 1,
+   "strict": 1
+  },
+  "had no problem at all": {
+   "trial": 1,
+   "strict": 1
+  },
+  "again and again": {
+   "trial": 1,
+   "strict": 1
+  },
+  "get much time to myself": {
+   "trial": 1,
+   "strict": 1
+  },
+  "moving away": {
+   "trial": 1,
+   "strict": 1
+  },
+  "got very upset": {
+   "trial": 1,
+   "strict": 1
+  },
+  "without getting too close": {
+   "trial": 1,
+   "strict": 1
+  },
+  "at least a little grateful": {
+   "trial": 2,
+   "strict": 2
+  },
+  "decide for themselves": {
+   "trial": 1,
+   "strict": 1
+  }
+ },
+ "total_calls": 7,
+ "total_cost_jpy": 1.1963,
+ "all_metas": [
+  {
+   "stage": "b1",
+   "label": "N5R2_A0",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.1381,
+   "sec": 17.0,
+   "out": 1498,
+   "max_out": 6000
+  },
+  {
+   "stage": "b1",
+   "label": "N5R2_E2",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.3134,
+   "sec": 33.9,
+   "out": 3698,
+   "max_out": 6000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.1214,
+   "sec": 11.7,
+   "out": 965,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL_DEFERRED",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.0653,
+   "sec": 5.0,
+   "out": 329,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.4054,
+   "sec": 42.9,
+   "out": 4248,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "N5R2_RERANK",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.0836,
+   "sec": 10.4,
+   "out": 759,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "N5R2_SLATE",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.0691,
+   "sec": 7.6,
+   "out": 565,
+   "max_out": 7000
+  }
+ ],
+ "rep_wall_sec": 130.1
+}

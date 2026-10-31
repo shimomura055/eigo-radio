@@ -53,7 +53,8 @@ for rep in range(R0_, R1_ + 1):
     P = {}
     P["A0"] = L.pick_R0(J["A0"]); P["A2"] = L.pick_R0(J["E2"])
     P["A2d"] = L.pick_R0d(J["E2"], text); P["A4"] = L.pick_R1(J["E2"]); P["A4d"] = L.pick_R1d(J["E2"], text)
-    P["A8"] = L.pick_R5(J["E2"], text, k=2); P["A3ref"] = L.pick_A3(J["E2"], text)
+    if MODE != "p4":
+        P["A8"] = L.pick_R5(J["E2"], text, k=2); P["A3ref"] = L.pick_A3(J["E2"], text)
     if MODE == "full":
         P["A1"] = L.pick_R0(J["E1"]); P["A5"] = L.pick_R0(J["E5"])
         out["sens"]["R5_k1"] = [c["span"] for c in L.pick_R5(J["E2"], text, k=1)]
@@ -61,10 +62,12 @@ for rep in range(R0_, R1_ + 1):
     P["A7p"], out["rr"]["E2"] = L.run_rerank(text, J["E2"], ctx, f"{CASE}_{rep}_RR_E2")
     if MODE == "full":
         P["A6p"], out["rr"]["E6"] = L.run_rerank(text, J["E6"], ctx, f"{CASE}_{rep}_RR_E6")
-    else:
+    elif MODE == "p3":
         P["A9"], out["rr"]["SLATE"] = L.run_slate(text, J["E2"], ctx, f"{CASE}_{rep}_SLATE")
         P["A10"] = L.pick_A10(J["E2"], text); P["A12"] = L.pick_A12(J["E2"], text)
         out["sens"]["A11_caps"] = {str(cp): [c["span"] for c in L.pick_R1d(J["E2"], text, cp)] for cp in (8, 9, 10)}
+    else:   # p4: A13 RRF(R1d順 x rerank順)
+        P["A13"] = L.pick_RRF(J["E2"], text, out["rr"]["E2"].get("order_spans"))
     for a, lst in P.items():
         out["picks"][a] = spans_of(lst)
     for a, lst in P.items():

@@ -1,0 +1,1585 @@
+{
+ "case": "melos_a2",
+ "rep": 2,
+ "proc": "p3b",
+ "ext": {
+  "A0": {
+   "n_calls": 1,
+   "cost_jpy": 0.1128,
+   "sec": 13.0,
+   "wall_sec": 13.0,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "b1",
+     "label": "N5R2_A0",
+     "in": 865,
+     "out": 1237,
+     "max_out": 6000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.1128,
+     "sec": 13.0
+    }
+   ],
+   "fallback": null,
+   "n_cands": 8,
+   "spans": [
+    "in his place",
+    "rose above everyone’s voices",
+    "pulled him under",
+    "blocked his way",
+    "lose his life",
+    "for once",
+    "kept his eyes on them",
+    "win such trust"
+   ]
+  },
+  "E2": {
+   "n_calls": 1,
+   "cost_jpy": 0.3162,
+   "sec": 35.1,
+   "wall_sec": 35.1,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "b1",
+     "label": "N5R2_E2",
+     "in": 816,
+     "out": 3789,
+     "max_out": 6000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.3162,
+     "sec": 35.1
+    }
+   ],
+   "fallback": null,
+   "n_cands": 40,
+   "spans": [
+    "called across the hall",
+    "kill men from fear",
+    "give them a chance",
+    "a chance to speak",
+    "grabbed the young shepherd",
+    "ordered his death",
+    "Give me three days",
+    "see my sister’s wedding",
+    "return to you",
+    "in your place",
+    "turned to his friend",
+    "offered his hands",
+    "no time to speak",
+    "come back",
+    "listened closely",
+    "left for the city",
+    "before daylight",
+    "bridge was gone",
+    "stepped back",
+    "jumped into the flood",
+    "pulled him under",
+    "fought toward the light",
+    "grabbed a branch",
+    "pulled himself onto",
+    "blocked his way",
+    "knife flashed",
+    "with his walking stick",
+    "ran uphill",
+    "each step hurt",
+    "tried to stand",
+    "lose his life",
+    "for one awful moment",
+    "standing up",
+    "held out for the chains",
+    "trusted him without asking",
+    "got onto his knees",
+    "stood up",
+    "raced to the square",
+    "put the sword down",
+    "waited for a reply"
+   ]
+  },
+  "E5": {
+   "n_cands": 0,
+   "spans": [],
+   "cost_jpy": 0,
+   "sec": 0
+  },
+  "E5diff": {
+   "n_cands": 0,
+   "spans": []
+  }
+ },
+ "pools": {
+  "A0": {
+   "info": {
+    "n_calls": 1,
+    "cost_jpy": 0.1809,
+    "sec": 16.4,
+    "wall_sec": 16.4,
+    "truncated": 0,
+    "attempts_gt1": 0,
+    "metas": [
+     {
+      "stage": "sel",
+      "label": "SEL",
+      "in": 2446,
+      "out": 1772,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.1809,
+      "sec": 16.4
+     }
+    ],
+    "n_pool": 9,
+    "n_rejected": 3,
+    "n_keep": 6,
+    "deferred": [],
+    "rejected": [
+     {
+      "span": "in his place",
+      "reasons": [
+       "B1候補が本文に連続一致しない"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "pulled him under",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "pulled him under"
+     },
+     {
+      "span": "win such trust",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "win such trust"
+     }
+    ]
+   },
+   "judged": [
+    {
+     "span": "pulled him under",
+     "sentence": "The water pulled him under, but he fought toward the light",
+     "n5_origin": "P7",
+     "p7_rank": 1,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "水中へ引き込む字義どおりの組合せ"
+    },
+    {
+     "span": "without asking for another promise",
+     "sentence": "His friend trusted him without asking for another promise",
+     "n5_origin": "P7",
+     "p7_rank": 2,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の文法でできた自由な表現"
+    },
+    {
+     "span": "lost my trust in you",
+     "sentence": "I almost lost my trust in you,\" his friend replied",
+     "n5_origin": "P7",
+     "p7_rank": 3,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "lose trust in someoneは定着した連語"
+    },
+    {
+     "span": "win such trust",
+     "sentence": "More softly, he then asked, \"How can a man win such trust",
+     "n5_origin": "P7",
+     "p7_rank": 4,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "win trustは信頼を得る定着した連語"
+    },
+    {
+     "span": "rose above everyone's voices",
+     "sentence": "At the wedding, his sister's laugh rose above everyone's voices",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "rise aboveは音が他の音に負けず聞こえる"
+    },
+    {
+     "span": "blocked his way",
+     "sentence": "Later, three men blocked his way, and a knife flashed",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "道を物理的に塞ぐ字義どおりの表現"
+    },
+    {
+     "span": "lose his life",
+     "sentence": "But his friend would lose his life instead",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "lose one's lifeは「死ぬ」の定着表現"
+    },
+    {
+     "span": "For once",
+     "sentence": "For once, he waited for a reply instead of demanding one",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "「いつもと違って今回は」を表す定型句"
+    },
+    {
+     "span": "kept his eyes on them",
+     "sentence": "The ruler kept his eyes on them",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "keep one's eyes onは注視する定着表現"
+    }
+   ]
+  },
+  "E2": {
+   "info": {
+    "n_calls": 1,
+    "cost_jpy": 0.4116,
+    "sec": 39.3,
+    "wall_sec": 39.3,
+    "truncated": 0,
+    "attempts_gt1": 0,
+    "metas": [
+     {
+      "stage": "sel",
+      "label": "SEL",
+      "in": 3673,
+      "out": 4410,
+      "max_out": 7000,
+      "attempt": 1,
+      "json_ok": true,
+      "cost_jpy": 0.4116,
+      "sec": 39.3
+     }
+    ],
+    "n_pool": 42,
+    "n_rejected": 2,
+    "n_keep": 11,
+    "deferred": [],
+    "rejected": [
+     {
+      "span": "bridge was gone",
+      "reasons": [
+       "既存Gate(validate): 有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ],
+      "origin": "B1",
+      "blocked_by": null
+     },
+     {
+      "span": "pulled him under",
+      "reasons": [
+       "既存候補とspanが包含関係(重複)"
+      ],
+      "origin": "B1",
+      "blocked_by": "pulled him under"
+     }
+    ]
+   },
+   "judged": [
+    {
+     "span": "pulled him under",
+     "sentence": "The water pulled him under, but he fought toward the light",
+     "n5_origin": "P7",
+     "p7_rank": 1,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "underが水中へ引き込む意味を作る"
+    },
+    {
+     "span": "without asking for another promise",
+     "sentence": "His friend trusted him without asking for another promise",
+     "n5_origin": "P7",
+     "p7_rank": 2,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の語義と文法で組み立てられる"
+    },
+    {
+     "span": "lost my trust in you",
+     "sentence": "I almost lost my trust in you,\" his friend replied",
+     "n5_origin": "P7",
+     "p7_rank": 3,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "lose trust in someoneが強く結びつく"
+    },
+    {
+     "span": "win such trust",
+     "sentence": "More softly, he then asked, \"How can a man win such trust",
+     "n5_origin": "P7",
+     "p7_rank": 4,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "win someone's trustが強く結びつく"
+    },
+    {
+     "span": "called across the hall",
+     "sentence": "Melos called across the hall, \"You kill men from fear",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "場所を表すacrossとの通常の組合せ"
+    },
+    {
+     "span": "kill men from fear",
+     "sentence": "Melos called across the hall, \"You kill men from fear",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の語義で意味を推測できる"
+    },
+    {
+     "span": "give them a chance",
+     "sentence": "You never give them a chance to speak",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "collocation",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "give someone a chanceが定着した連語"
+    },
+    {
+     "span": "a chance to speak",
+     "sentence": "You never give them a chance to speak",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "chanceに不定詞を続ける通常の型"
+    },
+    {
+     "span": "grabbed the young shepherd",
+     "sentence": "Silence came, and guards grabbed the young shepherd",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "動詞と目的語の字義通りの組合せ"
+    },
+    {
+     "span": "ordered his death",
+     "sentence": "The ruler ordered his death",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の語義で意味を推測できる"
+    },
+    {
+     "span": "Give me three days",
+     "sentence": "Give me three days to see my sister's wedding,\" Melos said",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "時間を目的語にした通常のgive"
+    },
+    {
+     "span": "see my sister's wedding",
+     "sentence": "Give me three days to see my sister's wedding,\" Melos said",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "seeと目的語の通常の組合せ"
+    },
+    {
+     "span": "return to you",
+     "sentence": "Then I will return to you",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "人のもとへ戻る字義通りの表現"
+    },
+    {
+     "span": "in your place",
+     "sentence": "Return late, and he will die in your place",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "fixed_phrase",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "「あなたの代わりに」を表す定着句"
+    },
+    {
+     "span": "turned to his friend",
+     "sentence": "Melos turned to his friend, who offered his hands for the chains",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "友人の方を向く字義通りの表現"
+    },
+    {
+     "span": "offered his hands",
+     "sentence": "Melos turned to his friend, who offered his hands for the chains",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "目的語を伴う通常のoffer"
+    },
+    {
+     "span": "no time to speak",
+     "sentence": "Melos had no time to speak",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "no timeと不定詞の通常の組合せ"
+    },
+    {
+     "span": "come back",
+     "sentence": "Go now, because I know you will come back",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "come backで「戻る」を表す"
+    },
+    {
+     "span": "listened closely",
+     "sentence": "Melos listened closely to remember its exact sound",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "closelyは他の副詞にも置換できる"
+    },
+    {
+     "span": "left for the city",
+     "sentence": "He left for the city before daylight on day three",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "目的地を表すforとの通常の組合せ"
+    },
+    {
+     "span": "before daylight",
+     "sentence": "He left for the city before daylight on day three",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "beforeと時刻表現の通常の組合せ"
+    },
+    {
+     "span": "stepped back",
+     "sentence": "He stepped back, ran, and jumped into the flood",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "step backで「後ずさる」を表す"
+    },
+    {
+     "span": "jumped into the flood",
+     "sentence": "He stepped back, ran, and jumped into the flood",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "移動先を示すintoとの通常の組合せ"
+    },
+    {
+     "span": "fought toward the light",
+     "sentence": "The water pulled him under, but he fought toward the light",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "文脈上の描写的な組合せ"
+    },
+    {
+     "span": "grabbed a branch",
+     "sentence": "He grabbed a branch and pulled himself onto the far bank",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "動詞と目的語の字義通りの組合せ"
+    },
+    {
+     "span": "pulled himself onto",
+     "sentence": "He grabbed a branch and pulled himself onto the far bank",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "移動を表す字義通りの組合せ"
+    },
+    {
+     "span": "blocked his way",
+     "sentence": "Later, three men blocked his way, and a knife flashed",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "道を塞ぐという通常の語義で読める"
+    },
+    {
+     "span": "knife flashed",
+     "sentence": "Later, three men blocked his way, and a knife flashed",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "ナイフが光るという描写的な表現"
+    },
+    {
+     "span": "with his walking stick",
+     "sentence": "He hit the man holding it with his walking stick",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "道具を示す通常の前置詞句"
+    },
+    {
+     "span": "ran uphill",
+     "sentence": "He ran uphill as their shouts followed behind him",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "方向を表す副詞との通常の組合せ"
+    },
+    {
+     "span": "each step hurt",
+     "sentence": "By afternoon, each step hurt, and his feet were bloody",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の主語と動詞の組合せ"
+    },
+    {
+     "span": "tried to stand",
+     "sentence": "He fell beside a rock and tried to stand",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "tryに不定詞を続ける通常の型"
+    },
+    {
+     "span": "lose his life",
+     "sentence": "But his friend would lose his life instead",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "idiom",
+     "difficulty": "upper_intermediate",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "lose one's lifeが「死ぬ」を表す"
+    },
+    {
+     "span": "For one awful moment",
+     "sentence": "For one awful moment, that felt easier than standing up",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "修飾語を含む通常の時間表現"
+    },
+    {
+     "span": "standing up",
+     "sentence": "For one awful moment, that felt easier than standing up",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "stand upで立ち上がる意味になる"
+    },
+    {
+     "span": "held out for the chains",
+     "sentence": "He remembered the hands held out for the chains",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "upper_intermediate",
+     "keep": false,
+     "passive_fragment": true,
+     "chunk_reason_ja": "hold something outは差し出す意味"
+    },
+    {
+     "span": "trusted him without asking",
+     "sentence": "His friend trusted him without asking for another promise",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "通常の動詞と節の組合せ"
+    },
+    {
+     "span": "got onto his knees",
+     "sentence": "Melos drank, got onto his knees, and stood up",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "upper_intermediate",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "膝をつく動作を表す通常の表現"
+    },
+    {
+     "span": "stood up",
+     "sentence": "Melos drank, got onto his knees, and stood up",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "stand upで立ち上がる意味になる"
+    },
+    {
+     "span": "raced to the square",
+     "sentence": "He raced to the square, where the sword was already raised above his friend",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "F",
+     "chunk_type": "none",
+     "difficulty": "easy",
+     "keep": false,
+     "passive_fragment": false,
+     "chunk_reason_ja": "目的地への移動を表す通常の組合せ"
+    },
+    {
+     "span": "Put the sword down",
+     "sentence": "Finally, he said, \"Put the sword down and free both men",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "put something downで下に置く意味"
+    },
+    {
+     "span": "waited for a reply",
+     "sentence": "For once, he waited for a reply instead of demanding one",
+     "n5_origin": "B1",
+     "p7_rank": null,
+     "cls": "C",
+     "chunk_type": "phrasal_verb",
+     "difficulty": "easy",
+     "keep": true,
+     "passive_fragment": false,
+     "chunk_reason_ja": "wait forで対象を待つ意味になる"
+    }
+   ]
+  }
+ },
+ "picks": {
+  "A0": [
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "rose above everyone's voices",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "For once",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "kept his eyes on them",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A2": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "give them a chance",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A2d": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "give them a chance",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A4": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "stepped back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A4d": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "stepped back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A8": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "stepped back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A3ref": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "give them a chance",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A7p": [
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "give them a chance",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A9": [
+   {
+    "span": "give them a chance",
+    "difficulty": "easy",
+    "chunk_type": "collocation",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "Put the sword down",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A10": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "stood up",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ],
+  "A12": [
+   {
+    "span": "pulled him under",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "lost my trust in you",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "win such trust",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "collocation",
+    "n5_origin": "P7",
+    "cls": "C"
+   },
+   {
+    "span": "in your place",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "fixed_phrase",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "come back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "stepped back",
+    "difficulty": "easy",
+    "chunk_type": "phrasal_verb",
+    "n5_origin": "B1",
+    "cls": "C"
+   },
+   {
+    "span": "lose his life",
+    "difficulty": "upper_intermediate",
+    "chunk_type": "idiom",
+    "n5_origin": "B1",
+    "cls": "C"
+   }
+  ]
+ },
+ "rr": {
+  "E2": {
+   "n_calls": 1,
+   "cost_jpy": 0.0592,
+   "sec": 7.1,
+   "wall_sec": 7.1,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "sel",
+     "label": "N5R2_RERANK",
+     "in": 933,
+     "out": 553,
+     "max_out": 7000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.0592,
+     "sec": 7.1
+    }
+   ],
+   "fallback": null,
+   "n_input": 11,
+   "n_missing": 0
+  },
+  "SLATE": {
+   "n_calls": 1,
+   "cost_jpy": 0.0516,
+   "sec": 5.7,
+   "wall_sec": 5.7,
+   "truncated": 0,
+   "attempts_gt1": 0,
+   "metas": [
+    {
+     "stage": "sel",
+     "label": "N5R2_SLATE",
+     "in": 997,
+     "out": 445,
+     "max_out": 7000,
+     "attempt": 1,
+     "json_ok": true,
+     "cost_jpy": 0.0516,
+     "sec": 5.7
+    }
+   ],
+   "fallback": null,
+   "n_input": 11,
+   "n_selected_valid": 7
+  }
+ },
+ "sens": {
+  "A11_caps": {
+   "8": [
+    "pulled him under",
+    "lost my trust in you",
+    "win such trust",
+    "in your place",
+    "come back",
+    "stepped back",
+    "lose his life",
+    "stood up"
+   ],
+   "9": [
+    "pulled him under",
+    "lost my trust in you",
+    "win such trust",
+    "in your place",
+    "come back",
+    "stepped back",
+    "lose his life",
+    "stood up",
+    "Put the sword down"
+   ],
+   "10": [
+    "pulled him under",
+    "lost my trust in you",
+    "win such trust",
+    "in your place",
+    "come back",
+    "stepped back",
+    "lose his life",
+    "stood up",
+    "Put the sword down",
+    "waited for a reply"
+   ]
+  }
+ },
+ "body_recur": {
+  "pulled him under": {
+   "trial": 1,
+   "strict": 1
+  },
+  "lost my trust in you": {
+   "trial": 1,
+   "strict": 1
+  },
+  "win such trust": {
+   "trial": 1,
+   "strict": 1
+  },
+  "give them a chance": {
+   "trial": 1,
+   "strict": 1
+  },
+  "in your place": {
+   "trial": 1,
+   "strict": 1
+  },
+  "come back": {
+   "trial": 1,
+   "strict": 1
+  },
+  "stepped back": {
+   "trial": 1,
+   "strict": 1
+  },
+  "lose his life": {
+   "trial": 1,
+   "strict": 1
+  },
+  "stood up": {
+   "trial": 2,
+   "strict": 2
+  },
+  "Put the sword down": {
+   "trial": 1,
+   "strict": 1
+  },
+  "waited for a reply": {
+   "trial": 1,
+   "strict": 1
+  }
+ },
+ "total_calls": 6,
+ "total_cost_jpy": 1.1323,
+ "all_metas": [
+  {
+   "stage": "b1",
+   "label": "N5R2_A0",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.1128,
+   "sec": 13.0,
+   "out": 1237,
+   "max_out": 6000
+  },
+  {
+   "stage": "b1",
+   "label": "N5R2_E2",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.3162,
+   "sec": 35.1,
+   "out": 3789,
+   "max_out": 6000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.1809,
+   "sec": 16.4,
+   "out": 1772,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "SEL",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.4116,
+   "sec": 39.3,
+   "out": 4410,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "N5R2_RERANK",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.0592,
+   "sec": 7.1,
+   "out": 553,
+   "max_out": 7000
+  },
+  {
+   "stage": "sel",
+   "label": "N5R2_SLATE",
+   "attempt": 1,
+   "json_ok": true,
+   "cost_jpy": 0.0516,
+   "sec": 5.7,
+   "out": 445,
+   "max_out": 7000
+  }
+ ],
+ "rep_wall_sec": 117.1
+}

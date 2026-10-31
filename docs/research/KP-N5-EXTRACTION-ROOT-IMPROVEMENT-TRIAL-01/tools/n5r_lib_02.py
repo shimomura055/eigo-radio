@@ -323,12 +323,12 @@ def run_rerank(text, judged, ctx, tag, log=None, cap=7):
         rest = sorted(missing, key=lambda i: _kd(ks[i - 1], tl, RANK.get(ks[i - 1]["difficulty"], 1)))
         ordered = [ks[i - 1] for i in order + rest]
         picked = _dedupe_cap(ordered, cap)
-        n_missing = len(missing)
+        n_missing = len(missing); order_spans = [c["span"] for c in ordered]
     except n5.N5TechnicalFailure as e:
         fb = f"RR失敗->R0d: {str(e)[:120]}"
-        picked = pick_R0d(judged, text, cap); n_missing = None
+        picked = pick_R0d(judged, text, cap); n_missing = None; order_spans = None
     info = calls_info(ctx, k0, time.time() - t0)
-    info.update(fallback=fb, n_input=len(ks), n_missing=n_missing)
+    info.update(fallback=fb, n_input=len(ks), n_missing=n_missing, order_spans=order_spans)
     return picked, info
 
 
@@ -435,3 +435,18 @@ def run_slate(text, judged, ctx, tag, cap=7):
     info = calls_info(ctx, k0, time.time() - t0)
     info.update(fallback=fb, n_input=len(ks), n_selected_valid=nsel)
     return picked, info
+
+
+# ================= Phase 3b (TRIAL_PLAN_04): A13 順位統合(RRF、k=60固定) =================
+def pick_RRF(judged, text, rr_order_spans, k=60, cap=7):
+    tl = text.lower(); ks = [c for c in judged if c["keep"]]
+    r1 = sorted(ks, key=lambda c: _kd(c, tl, _r1rank(c)))
+    if rr_order_spans is None:                      # rerank失敗: R1dへフォールバック
+        return _dedupe_cap(r1, cap)
+    pos2 = {norm_key(sp): i for i, sp in enumerate(rr_order_spans, 1)}
+    sc = {}
+    for i, c in enumerate(r1, 1):
+        p2 = pos2.get(norm_key(c["span"]), len(r1) + 1)
+        sc[id(c)] = 1.0 / (k + i) + 1.0 / (k + p2)
+    order = sorted(r1, key=lambda c: (-sc[id(c)], r1.index(c)))
+    return _dedupe_cap(order, cap)
