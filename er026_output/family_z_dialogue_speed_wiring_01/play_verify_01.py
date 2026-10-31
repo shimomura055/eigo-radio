@@ -2,7 +2,7 @@
 """公開試聴ページの全audio: HTTP 200/Content-Length>0 + Playwright実再生(muted、currentTime進行)。API 0。
 usage: python play_verify_ab_01.py <url> <out.json>"""
 import json, sys, urllib.request
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 url, out = sys.argv[1], sys.argv[2]
 res = {"url": url, "page_status": None, "audios": []}
 with sync_playwright() as p:

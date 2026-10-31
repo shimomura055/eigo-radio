@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """FAMILY-X-TTS-ASR-ROOTCAUSE-01 委任_22: Muse追加5 audioのPages HTTP+Play実再生。課金APIなし。"""
 import json, urllib.request, time
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 B="https://shimomura055.github.io/eigo-radio/user_test/meta_regen_01_asr_check/"
 names=["muse_comment_2_take2_fail","muse_comment_2_take1_ref","muse_in_one_line_take1","muse_in_one_line_take2","muse_in_one_line_take3"]
 out={"index_url":B+"index.html","http":{},"play":[]}

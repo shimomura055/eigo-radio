@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """委任_02 公開Pages上のFinal v5試聴ページPlaywright実再生evidence(有料APIなし)。"""
 import json, re, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 BASE = "https://shimomura055.github.io/eigo-radio/user_test/coffee_final_v5/"
 OUTP = "er057_output/coffee_final_v5/pages_play_evidence_v5_01.json"
 M = json.load(open("er057_output/coffee_final_v5/assembly_manifest_v5_01.json", encoding="utf-8"))["levels"]

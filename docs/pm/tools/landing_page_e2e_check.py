@@ -61,7 +61,7 @@ def main() -> int:
                      help="0-indexedのStandardリンクを代表クリック確認(既定: young_travelers/free_address[修正対象]/ai_hiring[修正対象]/home_robots)")
     args = ap.parse_args()
 
-    from playwright.sync_api import sync_playwright
+    import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
     rows = parse_tsv(args.tsv)
     result: dict = {"url": args.url, "checks": {}, "reasons": []}

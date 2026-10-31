@@ -1,6 +1,6 @@
 # 公開URLでAdv Comment 4(adv_19)の英文と日本語訳の表示・クリック連動(英文クリックで日本語側ハイライト)を確認する(Playwright)
 import json, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright_noplay as sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 url, out = sys.argv[1], sys.argv[2]
 res = {"url": url}
 with sync_playwright() as p:

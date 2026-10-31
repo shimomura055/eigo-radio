@@ -1,6 +1,6 @@
 """KP再生/Vocabulary音声/『ここから再生』/再生中の英文クリックでのキャプション整合を観察。使い方: py -3.14 observe_extra_caption_trial_01.py <base_url> <out_json>"""
 import json, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 base, outp = sys.argv[1].rstrip('/'), sys.argv[2]
 S = """() => { const e = window.__EUP || {}; const on = Array.from(document.querySelectorAll('.jhl.on')).map(x => x.textContent).join('');
  const cap = document.getElementById('jcapT').textContent; return {mode: e.mode, jg: e.jg, ok: cap === on, cap: cap.slice(0, 20), paused: document.getElementById('aud').paused}; }"""

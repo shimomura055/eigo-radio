@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """SJS4: Pages HTTP + Playwright実再生(課金APIなし)。Gate 7(l)(m)(n)の機械確認を含む。前例 er057_output/ja_aoede_style_trial_02/play_verify_01.py を流用。"""
 import json, urllib.request, urllib.error, time, re, argparse, datetime
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 ap = argparse.ArgumentParser()
 ap.add_argument("--url", required=True)
 ap.add_argument("--out", required=True)

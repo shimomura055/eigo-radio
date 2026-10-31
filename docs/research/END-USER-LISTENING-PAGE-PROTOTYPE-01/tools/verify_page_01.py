@@ -4,7 +4,7 @@
 出力: docs/research/END-USER-LISTENING-PAGE-PROTOTYPE-01/shots/*.png, verify_result_01.json
 """
 import json, os, sys, time
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 BASE = (sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8766').rstrip('/')
 PAGE = BASE + '/user_test/dev_enduser_page_01/index.html'

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """FXMS7 候補ページのPlaywright検証(API 0)。用法: python page_verify_fxms7.py <base_url_ending_slash|--local dir> out.json"""
 import sys, json, re, functools, http.server, threading
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 arg, out = sys.argv[1], sys.argv[-1]
 if arg == "--local":
     h = functools.partial(http.server.SimpleHTTPRequestHandler, directory=sys.argv[2])

@@ -3,7 +3,7 @@
 import sys, json
 sys.path.insert(0, sys.argv[1])
 import er135_enduser_page_verify_01 as V
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright_noplay as sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 pub, rate, N = sys.argv[2], float(sys.argv[3]), int(sys.argv[4])
 OLD = """() => new Promise(res => { let last = -1, same = 0; const t0 = performance.now();
   (function f(){ const y = Math.round(scrollY); same = (y === last) ? same + 1 : 0; last = y;

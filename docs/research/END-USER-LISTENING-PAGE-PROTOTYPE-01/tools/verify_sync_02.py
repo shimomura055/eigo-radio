@@ -5,7 +5,7 @@
 同期データ(01a由来)の期待と一致するかを見る=「ページ実装+時刻基準変換(全編/パート)」の整合。
 同期データ自体の聴感上の正しさ(ASR+無音スナップ精度)は別(01a VERIFY.json、ユーザー聴感未確認)。"""
 import json, os, sys, urllib.request
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 BASE = (sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8767').rstrip('/')
 LIVE = BASE.startswith('https://')
 HERE = os.path.dirname(os.path.abspath(__file__)); OUTD = os.path.abspath(os.path.join(HERE, '..'))

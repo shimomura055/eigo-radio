@@ -2,7 +2,7 @@
 """FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_06: 公開Pages上の試聴ページPlaywright実再生evidence(有料APIなし)。
 er071_coffee_m2p0_n01_play_verify_04.py派生。"""
 import json
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 BASE = "https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01/"
 OUTP = "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/pages_play_evidence_06.json"

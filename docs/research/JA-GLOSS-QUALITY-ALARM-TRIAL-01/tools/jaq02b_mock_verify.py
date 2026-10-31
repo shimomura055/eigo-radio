@@ -3,7 +3,7 @@
 検証: (1)form_logic.js sha256一致 (2)警告なし候補行のDOMがProductionと同一(警告ブロック除去後も含む) (3)警告件数=DOMの.qa-alarm数
 (4)同じ選択操作で stats/miniStats/コピー文(照合コード行以外)が一致、警告は操作を妨げない (5)スクショ(PC/スマホ)。"""
 import json, os, sys, hashlib, http.server, threading, functools, re
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright_noplay as sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 HERE = os.path.dirname(os.path.abspath(__file__)); BASE = os.path.dirname(HERE)
 ROOT = os.path.abspath(os.path.join(BASE, "..", "..", ".."))
 SHOTS = os.path.join(BASE, "trial", "mock_shots"); os.makedirs(SHOTS, exist_ok=True)
