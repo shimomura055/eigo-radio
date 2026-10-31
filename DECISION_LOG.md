@@ -211,7 +211,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 ## SELECTION-UI-TWO-TIER-01-DECISION-01: 学習項目選定UIの2階層化 APPROVED_FOR_PRODUCTION(2026-10-31)
 
 - **内容**: トップ(一覧・進捗・一括コピー)と個別(1記事x1レベルのフォーム、上下に「Topへ戻る」)の2階層へ変更。選定仕様・ロジック・データ・コピー書式は無変更。共通テンプレート+`?set=`。
-- **状態**: APPROVED_FOR_PRODUCTION(ユーザー明示、原文=docs/pm/delegation_log/2026-10-31_SELECTION-UI-TWO-TIER-01_USER.md §7)。実装・公開・公開URL実操作PASS。PRODUCTION_WIRED判定=Fable。
+- **状態**: APPROVED_FOR_PRODUCTION(ユーザー明示、原文=docs/pm/delegation_log/2026-10-31_SELECTION-UI-TWO-TIER-01_USER.md §7)。実装・公開・公開URL実操作PASS。Status=PRODUCTION_WIRED(2026-10-31 Fable独立受入ACCEPTED、FABLE_ACCEPTANCE_01.md)。
 - **採用理由/比較**: 個別HTML大量生成案は保守負担のため不採用(原文§4)。画面内切替(従来)は長大フォームでの移動が困難というユーザー評価により変更。
 - **根拠**: docs/research/SELECTION-UI-TWO-TIER-01/{DESIGN_01,EVIDENCE_01}.md。影響=CURRENT_SPEC選定フォームv3節・OPEN-629(親OPEN-620)。費用0。
 
