@@ -1,0 +1,179 @@
+{
+ "checks": [
+  {
+   "name": "mobile: 1 トップ: 一覧のみ(記事9・セット18)、個別フォーム非表示",
+   "ok": true,
+   "obs": "form_hidden=True visible_form_controls=0 progress=対象記事 9件 セット 18 Done 0 / 18 報告: twotier-a-18sets-te"
+  },
+  {
+   "name": "mobile: 1b チップ文言Standard/Advanced",
+   "ok": true,
+   "obs": "['Advanced', 'Standard']"
+  },
+  {
+   "name": "mobile: 2 Standardクリックで個別ページ(moon_shrinking__a2)",
+   "ok": true,
+   "obs": "url=_form_v3/index.html?batch=twotier-a-18sets-test&set=moon_shrinking__a2 cur=選択中：月は少しずつ縮んでいる？｜Standard（1 / 18） n=27"
+  },
+  {
+   "name": "mobile: 2b Advancedクリックで個別ページ(moon_shrinking__b1b)",
+   "ok": true,
+   "obs": "選択中：月は少しずつ縮んでいる？｜Advanced（2 / 18）"
+  },
+  {
+   "name": "mobile: 2c 個別ページの順序: 上Top→タイトル/レベル→フレーズ→フレーズコメント→単語→単語コメント→全体→Done→下Top",
+   "ok": true,
+   "obs": "[['topBack1', 79], ['curbar', 145], ['candPhrase', 605], ['boxPhrase', 1344], ['candWord', 1445], ['boxWord', 1902], ['comment', 4173], ['doneBox', 4288], ['topBack2', 4546]]"
+  },
+  {
+   "name": "mobile: 11a Topへ戻るボタンが押しやすいサイズ(高さ>=44, 幅>=120)",
+   "ok": true,
+   "obs": "[[344, 52], [344, 52]]"
+  },
+  {
+   "name": "mobile: 4a 最下部で下のTopへ戻るボタンが画面内",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: 3 上のTopへ戻る→同batchのトップ",
+   "ok": true,
+   "obs": "est/selection_form_v3/index.html?batch=twotier-a-18sets-test"
+  },
+  {
+   "name": "mobile: 4 下のTopへ戻る→同batchのトップ",
+   "ok": true,
+   "obs": "est/selection_form_v3/index.html?batch=twotier-a-18sets-test"
+  },
+  {
+   "name": "mobile: 5 選択(フレーズ/単語)とコメント3種がページ移動後も保持",
+   "ok": true,
+   "obs": "sel=3"
+  },
+  {
+   "name": "mobile: 12a 既存: 残りをすべて選択ボタンが個別ページに存在(①3件で有効)",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: 6 個別でDone→トップの進捗とチップが更新(Done 1/18)",
+   "ok": true,
+   "obs": "prog=(1, 18) cls=chip st-done | このセットは Done です。"
+  },
+  {
+   "name": "mobile: 7 Done後に選択変更→Done解除(個別表示・トップ0/18・チップ未完了)",
+   "ok": true,
+   "obs": "内容変更のため未完了に戻りました。内容を確認して、もう一度Doneを押してくださ | (0, 18) | chip st-stale"
+  },
+  {
+   "name": "mobile: 13 ブラウザ戻る→トップ(進捗維持)/進む→個別(入力維持)/個別再読み込み(選択・コメント・Done維持)",
+   "ok": true,
+   "obs": "back=True fwd=True reload=True"
+  },
+  {
+   "name": "mobile: 2d URL直接オープンで指定セットのフォーム表示",
+   "ok": true,
+   "obs": "選択中：月は少しずつ縮んでいる？｜Advanced（2 / 18）"
+  },
+  {
+   "name": "mobile: 14 無効URL安全案内: 存在しないセット",
+   "ok": true,
+   "obs": "指定されたセットは、この報告の対象にありません URLのセット指定（no_such__a2）が正しくないか、別の報告のセットです。 Topへ戻る（twotier"
+  },
+  {
+   "name": "mobile: 14 無効URL安全案内: 別batchに無いセット",
+   "ok": true,
+   "obs": "指定されたセットは、この報告の対象にありません URLのセット指定（ai_chat_sponsored_persuasion__a2）が正しくないか、別の報告の"
+  },
+  {
+   "name": "mobile: 14 無効URL安全案内: 不正batch",
+   "ok": true,
+   "obs": "報告IDの形式が正しくありません 報告IDは英小文字・数字・_・- のみ（3〜64文字）です。 現在開ける報告はありません。"
+  },
+  {
+   "name": "mobile: 14 無効URL安全案内: batch無し",
+   "ok": true,
+   "obs": "対象の報告が指定されていません 選定は「報告ごとのリンク（?batch=報告ID）」から開きます。過去の記事を含む全記事は表示しません。 現在開ける報告はありま"
+  },
+  {
+   "name": "mobile: 8a 17/18時点の進捗",
+   "ok": true,
+   "obs": "(17, 18)"
+  },
+  {
+   "name": "mobile: 8b 未完了時は一括コピー拒否+未完了一覧(1件)",
+   "ok": true,
+   "obs": "閉じる 未完了のセットが1件あるため、コピーしていません。 雪女(Yuki-Onna)｜Advanced ① Key Phraseはちょうど3件必要です(現在0件)。"
+  },
+  {
+   "name": "mobile: 8c 未完了一覧→該当個別ページへ遷移",
+   "ok": true,
+   "obs": "v3/index.html?batch=twotier-a-18sets-test&set=yuki_onna__b1b"
+  },
+  {
+   "name": "mobile: 8d 18/18 Done",
+   "ok": true,
+   "obs": "(18, 18)"
+  },
+  {
+   "name": "mobile: 8e 個別ページには一括コピー/固定フッタを出さない(ページ毎コピー方式にしない)",
+   "ok": true,
+   "obs": "visible=0"
+  },
+  {
+   "name": "mobile: TT-A 18セット: 一括コピー=SET 18件・連番・stem一意",
+   "ok": true,
+   "obs": "sets=18"
+  },
+  {
+   "name": "mobile: TT-A 18セット: ヘッダ バッチ=twotier-a-18sets-test と END 合計18件",
+   "ok": true,
+   "obs": ""
+  },
+  {
+   "name": "mobile: TT-A 18セット: フレーズ/単語コメントが各セット1回ずつ(欠落0・重複0)",
+   "ok": true,
+   "obs": "p=[1, 1, 1] w=[1, 1, 1]"
+  },
+  {
+   "name": "mobile: TT-A 18セット: コピー成功の表示(フッタ直上)",
+   "ok": true,
+   "obs": "閉じる\n18件（全SET＋コメント）をコピーしました。Claudeへそのまま貼り付けてください。"
+  },
+  {
+   "name": "mobile: TT-A 18セット: er128 confirm-batch --dry-run で受入(全18件)",
+   "ok": true,
+   "obs": "rc=0 n=18 batch=twotier-a-18sets-test "
+  },
+  {
+   "name": "mobile: 10a 別batch(B)はA入力と非混在: Done 0/5・セット5",
+   "ok": true,
+   "obs": "(0, 5)"
+  },
+  {
+   "name": "mobile: 10b 同一セット(moon_shrinking__a2)でもBのフォームは空で、localStorageキーがbatch別",
+   "ok": true,
+   "obs": "keys=['eigo-kp-form-v3:b:twotier-a-18sets-test']"
+  },
+  {
+   "name": "mobile: 10c Bで入力後もAの同セットは元のコメントのまま",
+   "ok": true,
+   "obs": "P-moon_shrinking__a2"
+  },
+  {
+   "name": "mobile: 15 JSエラー0",
+   "ok": true,
+   "obs": "[]"
+  }
+ ],
+ "meta": {
+  "base": "https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/",
+  "a": "twotier-a-18sets-test",
+  "b": "twotier-b-5sets-test"
+ },
+ "summary": {
+  "total": 33,
+  "pass": 33,
+  "fail": 0
+ }
+}
