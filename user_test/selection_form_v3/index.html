@@ -24,6 +24,8 @@ a.chip{display:flex;align-items:center;justify-content:center;text-decoration:no
 .topback{display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px;width:100%;margin:10px 0;padding:8px 14px;border:2px solid #20272f;border-radius:12px;background:#fff;color:#20272f;font-size:16px;font-weight:700;text-decoration:none}.topback:active{background:#eef0f3}
 #listhead{font-weight:700;font-size:14px;padding:8px 2px}
 .flag{white-space:normal;max-width:100%;display:inline-block;vertical-align:top;overflow-wrap:anywhere}
+/* ---- SELECTION-UI-OCCURRENCE-COUNT-01 (occ-v1): 出現回数(表示専用。各候補の日本語訳の下に1行) ---- */
+.occ{font-size:12px;margin-top:3px;line-height:1.55;color:#3d4852;overflow-wrap:anywhere}.occ .occn{color:#68717b}.occ .occu{color:#8a5a00;margin-left:6px}.occ .occx{color:#68717b;margin-left:6px}.occ-unconfirmable,.occ-title_only{color:#8a5a00}.occ-unconfirmable{font-weight:700}#occHint.occwarn{color:#ad4938;font-weight:700;font-size:13px}
 </style></head><body><main class="panel"><h1>eigo-radio｜学習項目選定</h1><div class="muted" id="subtitle">承認フォームv3｜選定テスト用（Production未連携）</div>
 <div id="devBanner" class="devbanner" hidden>開発用・報告対象外の表示です（?dev=all）。ユーザー向けには使いません。</div><div id="staleBanner" class="banner2" hidden></div><div id="shaBanner" class="banner2" hidden></div><div id="notinBanner" class="banner2" hidden></div>
 <section id="gate" hidden></section><div id="formWrap">
@@ -31,7 +33,7 @@ a.chip{display:flex;align-items:center;justify-content:center;text-decoration:no
 <div id="setForm" hidden><a class="topback" id="topBack1" href="#">← Topへ戻る</a>
 <p id="selWrap"><select id="article" aria-label="記事・レベルを選択"></select></p><div id="curbar" class="curbar" hidden></div><div id="srcnote" class="notice" hidden></div><div id="miniStats" role="status" aria-label="選択数"></div><div class="stats" id="stats"></div><div class="kpwarn" id="kpWarn" role="status"></div><div class="hint" id="khint">各候補の日本語訳は、エンドユーザーへ提供予定の日本語意味（既存の生成結果を再利用。AI再生成なし）です。「正式訳」以外は仮訳・未生成で、確定内容として扱われません。「AI理由・確認用」はAIの選定理由で、確認用の参考情報です。<br>各候補は①②③のいずれか1つだけ。①はちょうど3件、①＋②で5件、①＋②＋③で12件まで。</div>
 <div class="restrow" id="restRow" hidden><button id="selRest">残りをすべて選択（③本文意味表示へ）</button><span class="hint" id="restHint"></span></div>
-<div id="candPhrase"></div><div class="cbox" id="boxPhrase" hidden><label for="commentPhrase">フレーズ選定へのコメント（任意）</label><textarea id="commentPhrase" placeholder="例：このフレーズの日本語訳を自然にしてください。"></textarea></div>
+<div class="hint" id="occHint" hidden></div><div id="candPhrase"></div><div class="cbox" id="boxPhrase" hidden><label for="commentPhrase">フレーズ選定へのコメント（任意）</label><textarea id="commentPhrase" placeholder="例：このフレーズの日本語訳を自然にしてください。"></textarea></div>
 <div id="candWord"></div><div class="cbox" id="boxWord" hidden><label for="commentWord">単語選定へのコメント（任意）</label><textarea id="commentWord" placeholder="例：別の上級単語も探してください。"></textarea></div>
 <h2>文法解説（Top 1・Top 2から1件、または適切な候補なし） <span class="muted" id="grammarCount"></span></h2><div class="notice" id="grammarNotice" hidden></div><div id="grammars"></div>
 <h2 id="commentTitle">自由コメント・追加指示</h2><textarea id="comment" placeholder="例：snatch の説明を修正。別の上級単語を2件追加探索してください。"></textarea>
@@ -148,14 +150,16 @@ function render(){
     lockHtml=lh;
   }
   var cbk=d.cap_by_kind||null;
+  var occPg=FL.occurrencePage(d);
   function groupHtml(group,withHead){
     var html=withHead?'<div class="head"><span style="text-align:left">候補</span><span>①</span><span>②</span><span>③</span></div>':'';
     html+='<div class="group">'+group.title+'（'+group.items.length+'件'+(group.cap?'／上限'+group.cap+'件':'')+'）</div>';
     group.items.forEach(function(it){
-      var term=it.term,now=ch[term]||0,g=FL.glossOf(it),ro=FL.reasonOf(it),df=FL.difficultyOf(it);
+      var term=it.term,now=ch[term]||0,g=FL.glossOf(it),ro=FL.reasonOf(it),df=FL.difficultyOf(it),oc=FL.occurrenceOf(it,occPg.anyHas);
       var tip=[g.text,it.excerpt].filter(Boolean).join('｜');
       html+='<div class="item"><div class="lab"><label'+(tip?' title="'+esc(tip)+'"':'')+'>'+esc(term)+'</label>'+(df.has?' <span class="diff diff-'+df.level+'" data-diff="'+df.level+'" title="難易度(参考表示・選択には影響しません)">｜'+esc(df.label)+'</span>':'')+(it.flag?' <span class="flag" title="'+esc(it.flag_note_ja||it.flag)+'">'+esc(it.flag_note_ja||it.flag)+'</span>':'')+
         '<div class="ja"><span class="gl gl-'+g.status+'">'+esc(g.label)+'</span> '+(g.text?'<span class="jatext">'+esc(g.text)+'</span>':'<span class="muted">（日本語訳は未生成です。仮訳は表示しません）</span>')+'</div>'+
+        (oc.has?'<div class="occ occ-'+oc.state+'" data-occ="'+oc.state+'" data-occ-total="'+oc.total+'"'+(oc.tip?' title="'+esc(oc.tip)+'"':'')+'>'+esc(oc.text)+(oc.note?' <span class="occn">'+esc(oc.note)+'</span>':'')+(oc.unc?' <span class="occu">'+esc(oc.uncText)+'</span>':'')+(oc.unavail.length?' <span class="occx">'+esc(oc.unavailText)+'</span>':'')+'</div>':'')+
         (ro.has?'<details class="why" data-why="'+esc(term)+'"'+(openWhy[skey()+'|'+term]?' open':'')+'><summary>AI理由・確認用</summary><div class="whybody">'+esc(ro.text)+'<br><span class="muted">※確認用情報です。確定内容（英語・日本語訳・解説）ではありません。</span></div></details>':'')+'</div>';
       for(var cat=1;cat<=3;cat++){var ok=FL.allowed(st.choices,tl,term,cat);
         html+='<div class="pick '+(now===cat?'chosen':!ok?'locked':'')+'"><input aria-label="'+esc(term)+' 区分'+cat+'" type="checkbox" data-term="'+esc(term)+'" data-cat="'+cat+'" '+(now===cat?'checked':'')+' '+(!ok?'disabled':'')+'></div>'}
@@ -169,6 +173,10 @@ function render(){
     $('candPhrase').innerHTML=groupHtml({title:'フレーズ',items:d.phrases||[],cap:cbk&&cbk.phrase},true);
     $('candWord').innerHTML=groupHtml({title:'単語',items:d.words||[],cap:cbk&&cbk.word},false);
   }
+  var oh=$('occHint');
+  if(conf||!hasCands){oh.hidden=true;oh.textContent='';oh.className='hint'}
+  else if(occPg.missingAll){oh.hidden=false;oh.className='hint occwarn';oh.textContent='出現回数を集計できませんでした（この記事のデータには出現回数がありません）。'}
+  else{oh.hidden=false;oh.className='hint';oh.textContent='出現回数は、本文・Comment・Preview・In One Lineの中で、同じ綴り・活用形・分離形（例 put it away）を数えた参考値です。意味の違いまでは判別していません。'}
   document.querySelectorAll('input[data-term]').forEach(function(el){el.addEventListener('change',function(e){
     var t=e.target.dataset.term,k=Number(e.target.dataset.cat),chk=e.target.checked;
     edit(function(s){FL.setChoice(s,tl,t,k,chk)});render()})});

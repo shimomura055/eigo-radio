@@ -105,6 +105,53 @@
     var lv = Object.prototype.hasOwnProperty.call(DIFF_LABEL, d.level) ? d.level : 'unknown';
     return { has: true, level: lv, label: DIFF_LABEL[lv] };
   }
+  // ---- SELECTION-UI-OCCURRENCE-COUNT-01 (occ-v1, 委任_02): 出現回数は表示専用の参考情報(Gateではない) ----
+  // 選択/LIMITS/Done署名/照合コード(AIF1/BATCH1)/Claude受領形式には一切含めない(難易度と同じ扱い)。UIは数えない: exporterが焼き込んだ entry.occurrence を読むだけ。
+  // 表示: `出現 6回｜本文4・Comment1・In One Line1`(0の区分は省略) / タイトルのみ=`出現 本文等0回・タイトルのみ1回` / 数えられない=`出現回数を確認できません`(0回と表示しない, Opus M5)
+  //       保留=`＋似た形N（未計上）` / 区分未取得=`※Comment・Preview未集計` / 数えた形=`（put it away含む）`(スマホでも見える行内表示)。
+  var OCC_ORDER = ['story', 'comment', 'preview', 'oneline'];
+  var OCC_LABEL = { story: '本文', comment: 'Comment', preview: 'Preview', oneline: 'In One Line' };
+  function occNum(v) { return (typeof v === 'number' && isFinite(v) && v >= 0) ? Math.floor(v) : 0; }
+  function occObj(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
+  function hasOccurrence(it) { var o = it && it.occurrence; return occObj(o) && occObj(o.counts); }
+  function occNorm(s) { return String(s || '').toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim(); }
+  function occFormList(f, skip) {
+    if (!occObj(f)) return [];
+    return Object.keys(f).filter(function (k) { return occNum(f[k]) > 0 && skip.indexOf(occNorm(k)) < 0; }).sort(function (a, b) { return occNum(f[b]) - occNum(f[a]) || (a < b ? -1 : 1); });
+  }
+  // pageHas: そのページ(記事x水準)の他候補に occurrence があるか。ある=この候補だけ欠落→「確認できません」。無い=ページ単位の案内(occurrencePage)に任せ、候補行には何も出さない。
+  function occurrenceOf(it, pageHas) {
+    var base = { has: false, state: 'missing', text: '', total: 0, parts: [], title: 0, unc: 0, uncText: '', unavail: [], unavailText: '', note: '', tip: '' };
+    if (!hasOccurrence(it)) {
+      if (pageHas) { base.has = true; base.state = 'unconfirmable'; base.text = '出現回数を確認できません'; }
+      return base;
+    }
+    var o = it.occurrence, c = o.counts, parts = [], sum = 0;
+    OCC_ORDER.forEach(function (k) { var n = occNum(c[k]); sum += n; if (n > 0) parts.push({ key: k, label: OCC_LABEL[k], n: n }); });
+    var title = occNum(c.title), unc = 0;
+    if (occObj(o.uncertain)) Object.keys(o.uncertain).forEach(function (k) { unc += occNum(o.uncertain[k]); });
+    var unavail = Array.isArray(o.unavailable) ? o.unavailable.filter(function (k) { return OCC_ORDER.indexOf(k) >= 0; }) : [];
+    var state = 'ok';
+    if (sum === 0) state = (title > 0 && !unavail.length) ? 'title_only' : 'unconfirmable';      // 候補なのに本文等0回=数え損ね。0回と断定しない
+    var text;
+    if (state === 'ok') text = '出現 ' + sum + '回｜' + parts.map(function (p) { return p.label + p.n; }).join('・') + (title > 0 ? '（ほかにタイトルに' + title + '回）' : '');
+    else if (state === 'title_only') text = '出現 本文等0回・タイトルのみ' + title + '回';
+    else text = '出現回数を確認できません';
+    var skip = [occNorm(it.term), occNorm(it.selection_phrase)];
+    var forms = occFormList(o.forms, skip), note = '';
+    if (state !== 'unconfirmable' && forms.length) note = '（' + forms.slice(0, 3).join('、') + (forms.length > 3 ? '、ほか' + (forms.length - 3) + '形' : '') + '含む）';
+    var uforms = occFormList(o.uncertain_forms, []);
+    var tip = '同じ綴り・活用形・分離形（例 put it away）の出現を数えています。意味の違いまでは判別していません。';
+    if (occObj(o.forms) && Object.keys(o.forms).length) tip += '数えた形: ' + Object.keys(o.forms).map(function (k) { return k + '×' + occNum(o.forms[k]); }).join(', ') + '。';
+    if (uforms.length) tip += '未計上の似た形: ' + uforms.map(function (k) { return k + '×' + occNum(o.uncertain_forms[k]); }).join(', ') + '。';
+    return { has: true, state: state, text: text, total: sum, parts: parts, title: title, unc: unc, uncText: unc ? '＋似た形' + unc + '（未計上）' : '',
+      unavail: unavail, unavailText: unavail.length ? '※' + unavail.map(function (k) { return OCC_LABEL[k]; }).join('・') + '未集計' : '', note: note, tip: tip };
+  }
+  // ページ単位(Opus M6): 表示対象の候補に1件も occurrence が無い=集計されていないページ。
+  function occurrencePage(d) {
+    var items = allItems(d || {}), withOcc = items.filter(hasOccurrence).length;
+    return { n: items.length, withOcc: withOcc, anyHas: withOcc > 0, missingAll: items.length > 0 && withOcc === 0 };
+  }
   function allItems(d) { return (d.phrases || []).concat(d.words || []); }
   function findItem(d, term) { return allItems(d).filter(function (x) { return x.term === term; })[0] || { term: term }; }
   // 候補の識別(委任_03): candidate_id=候補docの逐語(termは同一表示が複数候補にあり得るため対応付けの正にしない)。旧データはidを流用、無ければnull(捏造しない)
@@ -489,7 +536,7 @@
 
   // ======== 報告単位batch(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_04、DESIGN_03 + Opus M1-M14) ========
   // M13: UI資産の版。live smokeがローカルHEADと一致を確認する(index.htmlもこの値を表示)
-  var ASSET_VERSION = 'sel-v3-rev05-a';
+  var ASSET_VERSION = 'sel-v3-rev06-a';
   // M6: batch id。UI・publish tool・er128の3箇所で同一の正規表現(パストラバーサル対策)
   var BATCH_ID_RE = /^[a-z0-9][a-z0-9_-]{2,63}$/;
   function validBatchId(id) { return typeof id === 'string' && BATCH_ID_RE.test(id); }
@@ -546,7 +593,7 @@
   return {
     LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
-    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, difficultyOf: difficultyOf, DIFF_LABEL: DIFF_LABEL, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
+    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, difficultyOf: difficultyOf, DIFF_LABEL: DIFF_LABEL, occurrenceOf: occurrenceOf, occurrencePage: occurrencePage, hasOccurrence: hasOccurrence, OCC_LABEL: OCC_LABEL, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex,
     KP_EXACT: KP_EXACT, SIG_VER: SIG_VER, normalizeState: normalizeState, doneSig: doneSig, doneStatus: doneStatus, doneErrors: doneErrors, selectRemaining: selectRemaining,
     sanitizeComment: sanitizeComment, composeComment: composeComment, singleComment: singleComment, batchSets: batchSets, batchCopyErrors: batchCopyErrors, buildBatchReadable: buildBatchReadable, batchCode: batchCode, extractCode: extractCode, BATCH_PREFACE: BATCH_PREFACE,
