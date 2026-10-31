@@ -822,7 +822,7 @@ class T11_Assets(unittest.TestCase):
         derived = m.derive()
         for n, t in derived.items():   # derive_assets_01.py の出力=rev01-h(rev01-iはrev01-hからの機械的派生。下で検査)
             self.assertEqual((ASSETS / "rev01-h" / n).read_text(encoding="utf-8"), t, n)
-        spec2 = importlib.util.spec_from_file_location("build_rev01i_01", ASSETS.parent / "docs" / "research" / "ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01" / "tools" / "build_rev01i_01.py")
+        spec2 = importlib.util.spec_from_file_location("build_rev01i_01", ASSETS / "build_rev01i_01.py")
         m2 = importlib.util.module_from_spec(spec2)
         spec2.loader.exec_module(m2)
         with tempfile.TemporaryDirectory() as td2:   # 現行asset(rev01-i)=rev01-hのbuild_rev01i_01.pyによる機械的派生(許可リストCAP1-CAP5のみ)

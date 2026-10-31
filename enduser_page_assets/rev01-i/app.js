@@ -274,7 +274,7 @@
   function capSetOn(on, keepUrl) {   // 再生・位置・点灯には触れない。設定保持=URLの?caption=(レベル切替の?lv=と同方式。history.replaceState)
     document.body.classList.toggle('capon', on); document.body.classList.toggle('capoff', !on);
     var b = $('capToggle'); if (b) { b.textContent = '字幕 ' + (on ? 'ON' : 'OFF'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
-    if (!keepUrl) { try { var u = new URL(location.href); u.searchParams.set('caption', on ? '1' : '0'); history.replaceState(null, '', u); } catch (e) { } }
+    if (!keepUrl) { try { var u = new URL(location.href); if (on) u.searchParams.delete('caption'); else u.searchParams.set('caption', '0'); history.replaceState(null, '', u); } catch (e) { } }
   }
   (function capInit() {
     var b = $('capToggle'); if (b) b.addEventListener('click', function () { capSetOn(!document.body.classList.contains('capon')); });

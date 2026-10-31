@@ -9,6 +9,7 @@ from playwright.sync_api import sync_playwright
 
 ap = argparse.ArgumentParser()
 ap.add_argument("tree"); ap.add_argument("out"); ap.add_argument("--base-url"); ap.add_argument("--dirs"); ap.add_argument("--no-shots", action="store_true")
+ap.add_argument("--browser", default="chromium", choices=["chromium", "webkit"]); ap.add_argument("--views"); ap.add_argument("--levels", default="std,adv")
 a = ap.parse_args()
 out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
 DIRS = (a.dirs.split(",") if a.dirs else ["family_x_meta_waddle_world_01", "family_y_production_surname_choice_01", "family_z_melos_kphr_evidence_r3"])
@@ -31,7 +32,7 @@ CLICK = "(sid) => { const s = document.querySelector('[data-sid=\"'+sid+'\"]'); 
 
 
 def run_view(p, view, opts, base, d, lv, R, shots):
-    br = p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"])
+    br = p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"]) if a.browser == "chromium" else p.webkit.launch()
     ctx = br.new_context(**opts); page = ctx.new_page()
     errs = []
     page.on("pageerror", lambda e: errs.append(str(e)))
@@ -39,7 +40,10 @@ def run_view(p, view, opts, base, d, lv, R, shots):
     page.on("response", lambda r: errs.append(f"http{r.status}:{r.url}") if r.status >= 400 else None)
     url = f"{base}/{d}/enduser/index.html?lv={lv}"
     page.goto(url); page.wait_for_function("window.__EUP && window.__EUP.syncKind==='real'", timeout=30000); page.wait_for_timeout(500)
-    res = {"url": url}; chk = {}
+    res = {"url": url, "browser": a.browser, "view": view}; chk = {}
+    res["build_id"] = page.evaluate("() => (document.querySelector('meta[name=build-id]') || {}).content || null"); chk["build_id_is_rev01i"] = res["build_id"] == "rev01-i"
+    art = page.evaluate("(u) => fetch(u + '?cb=' + Date.now()).then(r => r.json())", f"{base}/{d}/enduser/data/article.json"); EXP = V.caption_expected(art["levels"][lv])
+    res["nowlabel_states"] = []
     sh = lambda n: (None if a.no_shots else page.screenshot(path=str(shots / f"{d[:10]}_{lv}_{view}_{n}.png")))
     sh("01_initial")
     L0 = page.evaluate(LAYOUT); res["initial"] = L0
@@ -49,13 +53,16 @@ def run_view(p, view, opts, base, d, lv, R, shots):
     chk["layout_ok_ON"] = L0["jcapBelowRow2"] and not L0["jcapOverlapPP"] and not L0["row2Overflow"] and not L0["hScroll"] and L0["barTop"] > 0
     info = page.evaluate("""() => { const A = document.getElementById('aud'); const t0 = A.currentTime; const rows = [];
       document.querySelectorAll('.sent').forEach(s => { s.click(); const cap = document.getElementById('jcapT').textContent; const on = Array.from(document.querySelectorAll('.jhl.on')).map(x => x.textContent).join('');
-        rows.push({sid: s.dataset.sid, cap, on}); });
+        rows.push({sid: s.dataset.sid, cap, on, barH: Math.round(document.getElementById('bar').getBoundingClientRect().height * 10) / 10, scr: document.getElementById('jcap').scrollHeight, cli: document.getElementById('jcap').clientHeight}); });
       return {rows, played: !A.paused, moved: Math.abs(A.currentTime - t0) > 0.05}; }""")
     rows = info["rows"]; withcap = [r for r in rows if r["cap"]]; nocap = [r for r in rows if not r["cap"]]
     res["sentences"] = len(rows); res["with_caption"] = len(withcap); res["without_caption"] = len(nocap)
     chk["click_no_play_no_seek"] = (not info["played"]) and (not info["moved"])
     chk["click_cap_equals_jhl_on"] = all(r["cap"] == r["on"] for r in rows)
-    chk["no_ja_sentences_blank"] = all(r["cap"] == "" for r in nocap)
+    chk["caption_equals_ja_align_expected_for_every_sentence"] = bool(rows) and all(r["cap"] == EXP.get(r["sid"], "") for r in rows)   # 期待値=ja_align由来(群なしsid・g.ja==null・ja無しpart・degraded=空欄)
+    res["expected_blank_sentences"] = sum(1 for r in rows if EXP.get(r["sid"], "") == ""); res["expected_nonblank_sentences"] = sum(1 for r in rows if EXP.get(r["sid"], ""))
+    fit = [r for r in rows if r["scr"] <= r["cli"] + 1 and r["cli"] <= L0["jcapH"] + 1]
+    chk["bar_height_constant_0_to_2_lines"] = bool(fit) and all(abs(r["barH"] - L0["barH"]) <= 0.6 for r in fit); res["bar_rows"] = dict(fit=len(fit), over2=len(rows) - len(fit), base=L0["barH"])
     if withcap:
         mid = withcap[len(withcap) // 2]
         page.evaluate(CLICK, mid["sid"]); page.wait_for_timeout(250)
@@ -69,6 +76,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
         chk["toggle_keeps_state"] = (S1["paused"] == S0["paused"]) and abs(S1["t"] - S0["t"]) < 0.05 and S1["sel"] == S0["sel"]
         page.click("#capToggle"); page.wait_for_timeout(250)
         L2 = page.evaluate(LAYOUT); S2 = page.evaluate(SAMPLE); sh("04_ON_again")
+        chk["ON_again_clears_caption_param"] = "caption" not in page.url and abs(S2["barH"] - S0["barH"]) <= 0.6   # 同じキャプション(OFF前と同じ文)ならバー高さも戻る
         chk["ON_again_shows_current_ja"] = L2["on"] and S2["cap"] == mid["cap"] and S2["cap"] != "" and L2["bodyPadBottom"] >= L2["barH"]
         longest = max(withcap, key=lambda r: len(r["cap"]))
         page.evaluate(CLICK, longest["sid"]); page.wait_for_timeout(250)
@@ -81,7 +89,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
         target = next((s for s in ss if s["sid"] in sidcap and s["start"] > 1), None)
         if target:
             page.evaluate("(t) => { const A = document.getElementById('aud'); A.currentTime = Math.max(0, t - 0.4); A.play(); }", target["start"]); page.wait_for_timeout(1200)
-            sh("06_playing")
+            sh("06_playing"); res["nowlabel_states"].append(dict(state="playing", **{k: page.evaluate(LAYOUT)[k] for k in ("nowLabel", "nowLabelTrunc", "nowLabelW")}))
             samples = []
             for _ in range(80):
                 samples.append(page.evaluate(SAMPLE)); page.wait_for_timeout(100)
@@ -130,6 +138,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
                     ks.append(page.evaluate(SAMPLE)); page.wait_for_timeout(100)
                 chk[f"{nm}_cap_consistent"] = all(s["ok"] for s in ks) and any(s["mode"] == nm for s in ks)
                 chk[f"{nm}_cap_blank_while_playing_clip"] = all(s["cap"] == "" for s in ks if s["mode"] == nm)
+                res["nowlabel_states"].append(dict(state=nm + "_playing", **{k: page.evaluate(LAYOUT)[k] for k in ("nowLabel", "nowLabelTrunc", "nowLabelW")}))
                 res[f"{nm}_play"] = {"modes": sorted(set(str(s["mode"]) for s in ks)), "caps_nonempty": sum(1 for s in ks if s["cap"])}
             page.evaluate("() => document.getElementById('aud').pause()")
     sh("07_end")
@@ -158,8 +167,10 @@ def main():
     try:
         with sync_playwright() as p:
             for view, opts in VIEWS.items():
+                if a.views and view not in a.views.split(","):
+                    continue
                 for d in DIRS:
-                    for lv in ("std", "adv"):
+                    for lv in a.levels.split(","):
                         run_view(p, view, opts, base, d, lv, R, shots)
     finally:
         if srv:

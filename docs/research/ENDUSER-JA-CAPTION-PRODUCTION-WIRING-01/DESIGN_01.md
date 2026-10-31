@@ -3,7 +3,7 @@
 承認済み仕様: ユーザー原文(`docs/pm/delegation_log/2026-10-31_ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01_USER.md`)= A案(既定ON+ON/OFF切替)、APPROVED_FOR_PRODUCTION。追加デザインTrial・仕様拡張なし。現状把握は`CURRENT_STATE_01.md`。
 
 ## 1. 方式
-新asset `enduser_page_assets/rev01-i/{index.html,app.js,style.css,ASSET_SHA256.json}` を、`docs/research/ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01/tools/build_rev01i_01.py` で rev01-h から機械的に派生(各置換は出現1回をassert。rev01-h本体は不変)。
+新asset `enduser_page_assets/rev01-i/{index.html,app.js,style.css,ASSET_SHA256.json}` を、`enduser_page_assets/build_rev01i_01.py`(委任_02でresearch側から移設) で rev01-h から機械的に派生(各置換は出現1回をassert。rev01-h本体は不変)。
 - Trial(`build_caption_trial_01.py`)から**移植**: `capUpdate`(点灯中の日本語群`activeG`のtextContentを`#jcapT`へ。群なし/日本語なし/KP・Vocab個別再生中=空=誤表示しない)、`jaLight`末尾とrender末尾からの呼出、`.jcap`のCSS(位置=固定再生バー内`.row2`直下、14px/スマホ13.5px、min-height 3.1em、max-height 5.4em縦スクロール、`--bar-h` 176/168px)。外観・位置・文字サイズはTrialと同一。
 - Trialから**移植しない**: 黄色Trial帯、noindex、現行版リンク、Trial専用の記事data参照(`SRC/BASE`、`data-src/lv/prod`)、`?lv=`のprodLink更新。
 - **追加**(原文2-2のみ): ①ON/OFFボタン`#capToggle`を固定再生バーの`.skips`内(±10秒ボタンの左隣。±10秒の位置は不変)に配置。既存`.skips button`の見た目に合わせ、幅72px以上・高さ40px(既存36pxより大きい)、ON時は淡青の押下表示、`aria-pressed`。ラベル`字幕 ON/OFF`(`aria-label`=「日本語キャプション(字幕)の表示切替」)。ラベルを短くした理由=320px幅で既存の現在位置ラベル(`全体`等)が潰れないため(実測: `キャプション ON`では`全.`に省略された)。②初期ON: `<body class="capon">`をindex.htmlに静的記述(JS実行前から表示=切替時のちらつき無し)。`#jcap`もindex.htmlに静的に置く(JS挿入によるレイアウト変動なし)。③OFF=`body.capoff`で`.jcap`が`display:none`(DOMからは非表示=高さ0)、`--bar-h`がrev01-h既定値(112px)へ戻る=固定バーと本文末尾の余白(`body padding-bottom = --bar-h+24px`)が解放され余白残り0(rev01-hと同じ構造)。④切替は`classList`とボタン文言/URL更新のみ。`audio`・`currentTime`・`play/pause`・点灯state(`selectedSid`/`activeG`)には触れない。OFF中も`capUpdate`は動く(ONへ戻すと現在の訳を即表示)。
@@ -26,7 +26,7 @@
 
 ## 4. テスト計画
 1. 既存: `er135_enduser_*_test_01.py`全件・`er136_nuance_abolition_test_01.py`(asset版固定を更新したうえで)、`er135_enduser_page_verify_01.py`(sentence_click F/M7・jhl・J・K等のPlaywright 270項目)を既公開3記事(X meta_waddle_world / Y surname_choice / Z melos_kphr_evidence_r3)のrev01-i生成物で実行。失敗はrev01-hでの結果との差分で判定。
-2. 追加: `observe_caption_prod_01.py`(PC1280/スマホ390/狭幅320 x X・Y・Z x Std・Adv)= 初期ON、OFFで領域解放(`jcap`高さ0・`--bar-h`復帰・余白=rev01-h同一)、ONで現在の訳表示、再生中更新(`.jhl.on`一致、バー高さ不変=ちらつき/レイアウト変動なし)、停止/一時停止中クリック選択、再生中クリックで位置不変、シーク/+-10秒/ここから再生、KP/Vocab個別音声、日本語なし文=空欄、長文、切替で再生位置・状態不変、`?caption=0`再読込・レベル切替で保持、ボタンサイズ/viewport内、console/HTTPエラー0。
+2. 追加: `observe_caption_prod_01.py`(PC1280/スマホ390/狭幅320 x X・Y・Z x Std・Adv)= 初期ON、OFFで領域解放(`jcap`高さ0・`--bar-h`復帰・余白=rev01-h同一)、ONで現在の訳表示、再生中更新(`.jhl.on`一致、バー高さ一定=0〜2行でちらつき/レイアウト変動なし。委任_02のOpus R-1/R-2で訂正: 委任_01の記述「バー高さ不変」は観測[1行以下162.4/2行176.4px]と矛盾していた。原因=`*{box-sizing:border-box}`で`.jcap{min-height:3.1em}`がpadding/borderを含み1行分しか確保できていなかった。`min-height:calc(3.1em + 14px)`[スマホ+12px]で是正。最大占有[`--bar-h:176px`/スマホ168px]は不変。Trialとの差=0〜1行時にバーが+12〜14px高いのみ)、停止/一時停止中クリック選択、再生中クリックで位置不変、シーク/+-10秒/ここから再生、KP/Vocab個別音声、日本語なし文=空欄、長文、切替で再生位置・状態不変、`?caption=0`再読込・レベル切替で保持、ボタンサイズ/viewport内、console/HTTPエラー0。
 3. 静的: `build_rev01i_01`の出現1回assert、manifest sha整合(`check_assets`)、FORBIDDEN_ASSET(`dummy`等)不検出(`er135_enduser_page_test_01`で実行)。
 4. 全6経路の正式runner発火証拠・公開9URL実操作は委任_02(本委任は共通asset+ローカル検証まで)。
 

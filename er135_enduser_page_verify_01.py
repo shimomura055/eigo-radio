@@ -384,6 +384,13 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
                     page.wait_for_function("() => window.__EUP && window.__EUP.mode === 'full' && document.getElementById('aud').paused", timeout=int(v["audio"]["dur"] * 1000) + 6000)
                 except Exception:
                     pass
+                # 終端でendVocab()はmode='full'+pause()を同期で行い、位置復帰(currentTime=)は通し音声のloadedmetadata後(withMeta)。mode/pausedだけを待つと復帰前のt=0を読む検査側の競合
+                # (ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01で確定。evidence_02/repro_vocab_flake.py: 通し音声の応答遅延でも製品は正しく復帰する)。通し音声のmetadata読込完了を待ってから位置を判定する。
+                try:
+                    page.wait_for_function("() => { const a = document.getElementById('aud'); return a.readyState >= 1 && a.src.indexOf('/audio/vocab_') < 0; }", timeout=8000)
+                    page.wait_for_timeout(300)
+                except Exception:
+                    pass
                 e_ = A()
                 if not (during["mode"] == "vocab" and during["vi"] == i and not during["paused"] and during["src_ok"] and not during["active"] and not during["jg"]
                         and before_open == after_open and (e_["eup"] or {}).get("mode") == "full" and e_["paused"] and abs(e_["t"] - 20.0) < 2.5 and e_["err"] is None):
@@ -419,9 +426,11 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
                 li.scroll_into_view_if_needed()
                 li.click()
                 # 長いページ(Yの3 Voice等)ではsmooth scrollが700msで終わらない。スクロール位置が止まる(150ms間隔で2回連続同値)まで最大5秒待ってから判定する
-                page.evaluate("""() => new Promise(res => { let last = -1, same = 0; const t0 = performance.now();
+                # smooth scrollの開始が遅れる環境で『開始前に同値2回』と誤判定しないよう、目的地(開いた項目が画面内)に到達し、かつ停止してから判定する(最大6秒。到達しなければNG)
+                page.evaluate("""(href) => new Promise(res => { let last = -1, same = 0; const t0 = performance.now();
                   (function f(){ const y = Math.round(scrollY); same = (y === last) ? same + 1 : 0; last = y;
-                    if (same >= 2 || performance.now() - t0 > 5000) res(y); else setTimeout(f, 150); })(); })""")
+                    const t = document.getElementById(href.slice(1)), b = t && t.getBoundingClientRect(), there = !!t && t.open && b.top >= -5 && b.top <= innerHeight * 0.8;
+                    if ((there && same >= 2) || performance.now() - t0 > 6000) res(y); else setTimeout(f, 150); })(); })""", href)
                 r_ = page.evaluate("(href) => { const t=document.getElementById(href.slice(1)); if(!t) return null; const b=t.getBoundingClientRect(); return {top:b.top, open:t.open, head:t.querySelector('.vh').textContent, vh:innerHeight}; }", href)
                 if not r_ or r_["head"] != en or not r_["open"] or not (-5 <= r_["top"] <= r_["vh"] * 0.8):
                     badl.append((en, href, r_))
@@ -430,6 +439,9 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
             rec("I", pre + "no_glossary_when_not_applicable", page.evaluate("() => document.querySelectorAll('.gloss').length") == 0, None)
         # ---- J 英語文と日本語訳の連動(J1-J8 + M7) ----
         linked_checks(page, view, lv, L, sync, rec, shot, open_lv, lvs=list(art["levels"]), art=art)
+        # ---- CAP 日本語キャプション(rev01-i。ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01 M-5) ----
+        open_lv(lv)
+        caption_checks(page, view, lv, L, rec, open_lv)
         # ---- J 画面の目視用shots ----
         open_lv(lv)
         shot(f"{lv}_top")
@@ -456,6 +468,86 @@ def _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir):
     rec("Z", "console_errors_0", not errs, errs[:5])
     rec("Z", "http_4xx_5xx_0", not bad, bad[:5])
     browser.close()
+
+
+# ------------------------------------------------------------
+# K2: 日本語キャプション(ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01 / Opus M-5。rev01-i以降のページのみ)
+# ------------------------------------------------------------
+_CAP_LAYOUT_JS = """() => { const cap = document.getElementById('jcap'), bar = document.getElementById('bar'), t = document.getElementById('capToggle'), a = document.getElementById('aud');
+  return {on: document.body.classList.contains('capon'), disp: getComputedStyle(cap).display, jcapH: Math.round(cap.getBoundingClientRect().height * 10) / 10, barH: Math.round(bar.getBoundingClientRect().height * 10) / 10,
+          capScroll: cap.scrollHeight, capClient: cap.clientHeight, txt: t.textContent, aria: t.getAttribute('aria-pressed'), url: location.search, capText: document.getElementById('jcapT').textContent,
+          paused: a.paused, t: a.currentTime, sel: (window.__EUP || {}).sel, mode: (window.__EUP || {}).mode}; }"""
+_CAP_CLICK_ALL_JS = """() => { const a = document.getElementById('aud'), t0 = a.currentTime, rows = [];
+  document.querySelectorAll('.sent').forEach(s => { s.click(); const c = document.getElementById('jcap'); rows.push({sid: s.dataset.sid, cap: document.getElementById('jcapT').textContent,
+    barH: Math.round(document.getElementById('bar').getBoundingClientRect().height * 10) / 10, scr: c.scrollHeight, cli: c.clientHeight}); });
+  return {rows, played: !a.paused, moved: Math.abs(a.currentTime - t0) > 0.05}; }"""
+
+
+def caption_expected(L: dict) -> dict:
+    """sid -> 期待キャプション。ja_align由来(群なしsid・g.ja==null・ja無しpart・ja_align無し/劣化=空欄)。app.jsのcapUpdate(点灯中の群のtextContent)と同じ定義。"""
+    groups, sid2key, _ = expect_maps(L)
+    out = {}
+    for pt in L["parts"]:
+        for pa in pt.get("paragraphs") or []:
+            for s in pa:
+                out[s["sid"]] = groups.get(sid2key.get(s["sid"]), "") if sid2key.get(s["sid"]) else ""
+    return out
+
+
+def caption_checks(page, view, lv, L, rec, open_lv):
+    pre = lv + "_CAP_"
+    if (page.evaluate("() => document.body.dataset.build || ''") or "") < "rev01-i" or not page.evaluate("() => !!document.getElementById('jcap')"):
+        rec("CAP", pre + "skipped_asset_without_caption", True, "ページがrev01-i未満(凍結dir等)。verify_consistencyが版を別途検査")
+        return
+    exp = caption_expected(L)
+    L0 = page.evaluate(_CAP_LAYOUT_JS)
+    rec("CAP", pre + "initial_ON", L0["on"] and L0["disp"] == "block" and L0["txt"].endswith("ON") and L0["aria"] == "true" and "caption" not in L0["url"], L0)
+    # 停止中に全英文をクリック: capがja_align由来の期待値と一致・再生/シークしない・バー高さが0〜2行で一定
+    info = page.evaluate(_CAP_CLICK_ALL_JS)
+    rows = info["rows"]
+    badx = [(r["sid"], r["cap"][:20], exp.get(r["sid"], "")[:20]) for r in rows if r["cap"] != exp.get(r["sid"], "")]
+    blank_exp = sum(1 for r in rows if exp.get(r["sid"], "") == "")
+    rec("CAP", pre + "click_stopped_caption_equals_ja_align_expected", bool(rows) and not badx and (not info["played"]) and (not info["moved"]),
+        dict(sentences=len(rows), expected_blank=blank_exp, expected_nonblank=len(rows) - blank_exp, mismatch=badx[:3], played=info["played"], moved=info["moved"]))
+    base_h = L0["barH"]
+    fit = [r for r in rows if r["scr"] <= r["cli"] + 1 and r["cli"] <= L0["capClient"] + 1]   # キャプションが最小枠(0〜2行)に収まる行
+    badh = sorted({r["barH"] for r in fit if abs(r["barH"] - base_h) > 0.6})
+    rec("CAP", pre + "bar_height_constant_0_to_2_lines", bool(fit) and not badh, dict(base=base_h, fit_rows=len(fit), over2_rows=len(rows) - len(fit), other_heights=badh[:4]))
+    # OFF -> ON(停止中。選択状態を保持)
+    sel = next((r for r in rows if exp.get(r["sid"])), None)
+    if sel:
+        page.evaluate("(sid) => document.querySelector('[data-sid=\"'+sid+'\"]').click()", sel["sid"])
+    S0 = page.evaluate(_CAP_LAYOUT_JS)
+    page.click("#capToggle")
+    page.wait_for_timeout(150)
+    S1 = page.evaluate(_CAP_LAYOUT_JS)
+    rec("CAP", pre + "OFF_hides_caption_frees_bar", (not S1["on"]) and S1["disp"] == "none" and S1["jcapH"] == 0 and S1["barH"] < S0["barH"] - 40 and S1["txt"].endswith("OFF") and S1["aria"] == "false" and "caption=0" in S1["url"], dict(on=S0["barH"], off=S1["barH"], url=S1["url"]))
+    page.click("#capToggle")
+    page.wait_for_timeout(150)
+    S2 = page.evaluate(_CAP_LAYOUT_JS)
+    rec("CAP", pre + "ON_again_restores_bar_and_current_ja_and_clears_url", S2["on"] and abs(S2["barH"] - S0["barH"]) < 0.6 and S2["capText"] == S0["capText"] and "caption" not in S2["url"]
+        and S1["paused"] == S0["paused"] == S2["paused"] and S1["t"] == S0["t"] == S2["t"] and S1["sel"] == S0["sel"] == S2["sel"], dict(S0=S0, S2=S2))
+    # 再生中の切替でcurrentTime・pausedが乱れない
+    if rows:
+        page.evaluate("() => { const a = document.getElementById('aud'); a.currentTime = 2; a.play(); }")
+        page.wait_for_timeout(900)
+        T0 = page.evaluate(_CAP_LAYOUT_JS)
+        page.click("#capToggle")
+        page.wait_for_timeout(300)
+        T1 = page.evaluate(_CAP_LAYOUT_JS)
+        page.click("#capToggle")
+        page.wait_for_timeout(300)
+        T2 = page.evaluate(_CAP_LAYOUT_JS)
+        page.evaluate("() => document.getElementById('aud').pause()")
+        rec("CAP", pre + "toggle_while_playing_keeps_playback", (not T0["paused"]) and (not T1["paused"]) and (not T2["paused"]) and 0.2 < T1["t"] - T0["t"] < 1.5 and 0.2 < T2["t"] - T1["t"] < 1.5 and T0["mode"] == T1["mode"] == T2["mode"],
+            dict(t=[T0["t"], T1["t"], T2["t"]], paused=[T0["paused"], T1["paused"], T2["paused"]]))
+    # ?caption=0で開く: OFF・キャプション高0・バー高さ復帰。レベル切替でOFF保持、ON操作でURLからcaptionが消える
+    page.goto(page.url.split("?")[0] + f"?lv={lv}&caption=0&cb=cap")
+    page.wait_for_function("() => window.__EUP && window.__EUP.syncKind === 'real'", timeout=15000)
+    page.wait_for_timeout(200)
+    Q0 = page.evaluate(_CAP_LAYOUT_JS)
+    rec("CAP", pre + "caption0_opens_OFF_with_bar_restored", (not Q0["on"]) and Q0["disp"] == "none" and Q0["jcapH"] == 0 and Q0["barH"] < base_h - 40 and Q0["txt"].endswith("OFF"), Q0)
+    open_lv(lv)   # 後続の検査のため通常状態(既定ON)へ戻す
 
 
 # ------------------------------------------------------------

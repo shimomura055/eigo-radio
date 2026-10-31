@@ -126,11 +126,11 @@ details.vi summary .vplay{margin-left:12px;vertical-align:middle;font-size:13px}
 .target-term{font-weight:700}
 
 /* ===== rev01-i: 日本語キャプション(Trial cap-trial-01の外観を移植) + ON/OFFボタン ===== */
-.jcap{display:none;margin-top:6px;padding:6px 10px;background:#fffdf0;border:1px solid #f0e2a0;border-radius:8px;font-size:14px;line-height:1.55;min-height:3.1em;max-height:5.4em;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-wrap:anywhere}
+.jcap{display:none;margin-top:6px;padding:6px 10px;background:#fffdf0;border:1px solid #f0e2a0;border-radius:8px;font-size:14px;line-height:1.55;min-height:calc(3.1em + 14px);max-height:5.4em;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-wrap:anywhere}
 .jcap .jtag{display:inline-block;margin-right:6px;padding:0 6px;border-radius:4px;background:#f0e2a0;color:#5b4a00;font-size:11px;font-weight:700;vertical-align:1px}
 .jcap.empty .jtag{visibility:hidden}
 body.capon .jcap{display:block}
 body.capon{--bar-h:176px}
-@media(max-width:640px){.jcap{font-size:13.5px;padding:5px 8px}body.capon{--bar-h:168px}}
+@media(max-width:640px){.jcap{font-size:13.5px;padding:5px 8px;min-height:calc(3.1em + 12px)}body.capon{--bar-h:168px}}
 .skips #capToggle{min-width:72px;min-height:40px;padding:0 10px}
 .skips #capToggle[aria-pressed=true]{background:var(--soft);border-color:var(--accent);color:var(--accent)}

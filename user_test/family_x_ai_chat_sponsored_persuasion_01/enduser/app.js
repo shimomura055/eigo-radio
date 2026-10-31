@@ -132,6 +132,7 @@
     jgEls = {}; sidToG = {}; activeG = null; jaHold = null; selectedSid = null;
     Array.prototype.forEach.call(document.querySelectorAll('.jhl'), function (e) { (jgEls[e.dataset.jg] = jgEls[e.dataset.jg] || []).push(e); });
     parts.forEach(function (p) { (p.ja_align || []).forEach(function (g) { if (g.ja && jgEls[p.idx + ':' + g.g]) g.sids.forEach(function (s) { sidToG[s] = p.idx + ':' + g.g; }); }); });
+    capText = null; capUpdate();
   }
 
   /* ---------- rev01-e: 学習ブロック引用英文内の解説対象語句を太字化(表示時のみ。データの英文は不変・記事非依存) ---------- */
@@ -259,7 +260,26 @@
     if (activeG && jgEls[activeG]) jgEls[activeG].forEach(function (e) { e.classList.remove('on'); });
     activeG = g;
     if (g && jgEls[g]) jgEls[g].forEach(function (e) { e.classList.add('on'); });
+    capUpdate();
   }
+
+  /* ===== rev01-i: 点灯中の日本語1文を固定再生バー内に表示(補助表示のみ。再生・点灯ロジックは無変更)。ON/OFF切替・既定ON ===== */
+  var capText = null;
+  function capUpdate() {   // activeG(点灯中の日本語群)の本文だけを表示。群なし/null/日本語なしは空(誤表示しない)。OFF中も更新する(ONへ戻した時に現在の訳を即表示)
+    var el = $('jcapT'); if (!el) return;
+    var t = (activeG && jgEls[activeG]) ? jgEls[activeG].map(function (e) { return e.textContent; }).join('') : '';
+    if (t === capText) return;
+    capText = t; el.textContent = t; $('jcap').classList.toggle('empty', !t); $('jcap').scrollTop = 0;
+  }
+  function capSetOn(on, keepUrl) {   // 再生・位置・点灯には触れない。設定保持=URLの?caption=(レベル切替の?lv=と同方式。history.replaceState)
+    document.body.classList.toggle('capon', on); document.body.classList.toggle('capoff', !on);
+    var b = $('capToggle'); if (b) { b.textContent = '字幕 ' + (on ? 'ON' : 'OFF'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+    if (!keepUrl) { try { var u = new URL(location.href); if (on) u.searchParams.delete('caption'); else u.searchParams.set('caption', '0'); history.replaceState(null, '', u); } catch (e) { } }
+  }
+  (function capInit() {
+    var b = $('capToggle'); if (b) b.addEventListener('click', function () { capSetOn(!document.body.classList.contains('capon')); });
+    capSetOn(Q.get('caption') !== '0', true);
+  })();
   function gapGroup(g) {   // 文と文の間(2秒未満)で前後の文が同じ群なら、その群を返す
     var lo = 0, hi = sync.length - 1, k = -1;
     while (lo <= hi) { var m = (lo + hi) >> 1; if (sync[m].start <= g) { k = m; lo = m + 1; } else hi = m - 1; }

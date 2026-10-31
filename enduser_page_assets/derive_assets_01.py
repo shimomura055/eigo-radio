@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(現行rev01-h。rev01-g・rev01-f・旧rev01-eは残置[rev01-e=藪の中のみ凍結])をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
+"""END-USER-LISTENING-PAGE-PRODUCTION-WIRING-01 委任_02B: production asset(rev01-h。現行rev01-iは同dirのbuild_rev01i_01.pyがrev01-hから派生。rev01-g・rev01-f・旧rev01-eは残置[rev01-e=藪の中のみ凍結])をDEVの『機械的派生』として作る(ENDUSER-EN-JA-LINKED-HIGHLIGHT-01 委任_02でrev01-fを追加)。
 
  - 入力 : DEV rev01-e(`user_test/dev_enduser_page_01/{index.html,app.js,style.css}`。**読み取りのみ・DEVは不変**)
  - 出力 : `enduser_page_assets/rev01-e/{index.html,app.js,style.css,ASSET_SHA256.json}` と `ASSET_DIFF_01.md`(許可リスト=EDITSの一覧)
