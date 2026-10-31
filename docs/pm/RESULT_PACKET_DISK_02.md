@@ -1,0 +1,1 @@
+DISK-SPACE-RECOVERY-01 委任_02: 空き 45.95GB -> 73.91GB (+28.0GB)。回収9本/保留7本(status非空: ejh03b,eu06,wt_cnt,wt_flapt,wt_flapt2,wt_n5,wt_sub)。メイン12986件不変、除外worktree不変、API 0。詳細=docs/research/DISK-SPACE-RECOVERY-01/WORKTREE_RECLAIM_01.md
