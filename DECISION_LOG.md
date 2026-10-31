@@ -208,6 +208,10 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## DISK-GUARD-AUTO-CLEANUP-01-DECISION-01: Cドライブ容量監視・自動整理の運用方針(ユーザー承認済み、2026-10-31)
+
+**ユーザー決定(原文=docs/pm/delegation_log/2026-10-31_DISK-GUARD-AUTO-CLEANUP-01_USER.md §1-§4)**: 空き容量<20GBで予防警戒(原因列挙・安全整理可)、<10GBで自動整理を必ず実行、回復目標20GB以上。自動削除してよい対象は(1)終了済みClaude task一時出力(2)再取得可能なpip cache(3)Git上で完全に保存・push済みで未使用の作業用worktreeの3種のみ(個別に毎回承認不要)。禁止対象=Production成果物/SSOT/未commit・未pushのファイルとworktree/必要なTrial証拠/OS管理ファイル/安全性未確認のもの。worktreeは通常のGit管理コマンドで除去し強制削除禁止。安全と証明できなければ削除しない。実装=`tools/disk_guard_01.py`(許可リスト方式・dry-run既定・各条件をコードで検証)、状態=IMPLEMENTED_NOT_ACTIVATED(OPEN-637、有効化は委任_02でOpus安全レビュー後)。検証=sandbox模擬21/21 PASS(`docs/research/DISK-GUARD-AUTO-CLEANUP-01/EVIDENCE_01.md`)。保存仕様・保持期間は変更なし。
+
 ## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-01: 選定UI 出現回数表示 occ-v1 の実装・公開(集計規則はユーザー確認待ち、2026-10-31)
 
 - **内容**: Phrase・Wordの各候補へ記事内出現回数(本文・Comment・Preview・In One Line、Titleは別枠)を表示。exportが既定ONで決定論集計(AI API 0)し`occurrence`をdata JSONへ焼き込む。表示専用(選択条件・Done署名・照合コード・受領形式に入らない)。
