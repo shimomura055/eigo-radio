@@ -200,8 +200,47 @@ def run(c, bid, old_ids, obs):
         rows = c.occ_rows()
         check(c.tag('5 旧batch %s: 無変更dataがsha一致(警告なし)で表示・候補表示・回数なしはページ単位案内' % ob), sha_hidden and pg.locator('input[data-term]').count() > 0 and '旧データ・出現回数なし' in hint and all(r['state'] is None for r in rows),
               'sha_hidden=%s hint=%s rows=%d' % (sha_hidden, hint[:30], len(rows)))
+        cls = pg.get_attribute('#occHint', 'class') or ''
+        color = pg.evaluate("()=>getComputedStyle(document.getElementById('occHint')).color")
+        check(c.tag('5b 旧batch %s: 案内は中立色(occnote・赤でない)で「旧データ・出現回数なし」と表示' % ob), 'occnote' in cls and 'occwarn' not in cls and color == 'rgb(104, 113, 123)', 'class=%s color=%s hint=%s' % (cls, color, hint[:40]))
         if ob == old_ids[0]:
             c.shot('O7_old_batch_set')
+    # 7 M4(公開済み参照との不一致)の警告は維持: 旧batchの1 member dataを(ネットワーク層で)1バイト変えて返すと shaBanner が出る(公開データは無変更)
+    if old_ids:
+        ob = old_ids[0]
+        c.top(ob)
+        file_hit = []
+        def tamper(route):
+            resp = route.fetch()
+            file_hit.append(route.request.url)
+            route.fulfill(response=resp, body=resp.body() + b' ')
+        pg.route(re.compile(r'.*/data/[^/]+__prod\.json(\?.*)?$'), tamper)
+        pg.reload(wait_until='load')
+        pg.wait_for_selector('#list .art', timeout=60000)
+        pg.wait_for_timeout(1200)
+        shown = pg.evaluate("()=>{const b=document.getElementById('shaBanner');return {hidden:b.hidden,text:b.textContent}}")
+        check(c.tag('7a M4警告維持: data改変(sha不一致)なら「データが更新されました」バナーが出る'), (not shown['hidden']) and 'データが更新されました' in shown['text'] and len(file_hit) > 0, 'fetched=%d banner=%s' % (len(file_hit), shown['text'][:50]))
+        c.shot('O8_m4_banner')
+        pg.unroute(re.compile(r'.*/data/[^/]+__prod\.json(\?.*)?$'))
+        # 7b: occurrence_meta があるのに回数が1件も無いdata(今回の集計失敗を模擬)なら赤の警告(旧データの案内とは別物)
+        def inject(route):
+            resp = route.fetch()
+            try:
+                d = json.loads(resp.body().decode('utf-8'))
+                d['occurrence_meta'] = {'error': 'sections_not_found'}
+                route.fulfill(response=resp, body=json.dumps(d, ensure_ascii=False).encode('utf-8'))
+            except Exception:  # noqa: BLE001
+                route.fulfill(response=resp)
+        pg.route(re.compile(r'.*/data/[^/]+__prod\.json(\?.*)?$'), inject)
+        pg.goto(c.base + 'index.html?batch=%s' % ob, wait_until='load')
+        pg.wait_for_selector('#list .art', timeout=60000)
+        kk = c.keys()
+        c.open_set(kk[0])
+        cls = pg.get_attribute('#occHint', 'class') or ''
+        hint = pg.inner_text('#occHint') if pg.is_visible('#occHint') else ''
+        check(c.tag('7b 集計失敗(occurrence_metaあり・回数0件)は赤の警告「集計できませんでした」(旧データ案内と区別)'), 'occwarn' in cls and '集計できませんでした' in hint and '旧データ' not in hint, 'class=%s hint=%s' % (cls, hint[:40]))
+        c.shot('O9_failed_warn')
+        pg.unroute(re.compile(r'.*/data/[^/]+__prod\.json(\?.*)?$'))
     check(c.tag('6 JSエラー0'), not c.errs, str(c.errs[:3]))
 
 

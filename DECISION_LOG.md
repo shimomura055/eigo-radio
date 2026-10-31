@@ -224,7 +224,8 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 ## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-02: 出現回数表示 occ-v1 APPROVED_FOR_PRODUCTION(2026-10-31)
 
 - **内容**: ユーザーが集計規則occ-v1を正式承認(APPROVED_FOR_PRODUCTION)。承認3項目=(1)`put it away`等 代名詞1語を挟む分離句動詞は確定計上、(2)`building`/`lay`/`goods`/`saw`等 別語にもなり得る活用形は確定計上せず保留表示、(3)`put the books away`等 名詞句・人名挿入は確定計上せず保留表示。X/Y/Z x Standard/Advancedの6水準でPRODUCTION_WIREDまで完了させる指示。残課題①既存テスト8件の原因確定②旧batchを赤字エラーでなく案内表示へ③ディスク(整理済み、再承認不要)。
-- **状態**: APPROVED_FOR_PRODUCTION。PRODUCTION_WIREDはFable独立受入後(委任_03)。
+- **状態**: APPROVED_FOR_PRODUCTION。委任_03完了=PRODUCTION_WIRED_PENDING_FABLE(6水準evidence・既存テスト8件原因確定[変更前と同一失敗集合・今回起因0]・旧batch案内表示・公開URL PC/mobile 112項目PASS)。PRODUCTION_WIREDはFable独立受入後。
+- **残課題の決定**: ①既存テスト8件=固定値/資材ドリフト/test想定漏れ/環境(autocrlf・sparse)で、いずれも本変更起因でない(TEST_TRIAGE_01.md)。②旧batch(回数なし)は赤字エラーでなく中立色の案内(UI rev06-b)。M4(公開済み参照との不一致)の警告は維持。
 - **根拠**: 原文=docs/pm/delegation_log/2026-10-31_SELECTION-UI-OCCURRENCE-COUNT-01_USER_02.md。規則=docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/RULES_01.md(無変更)。費用0。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。
 
 ## SELECTION-UI-TWO-TIER-01-DECISION-01: 学習項目選定UIの2階層化 APPROVED_FOR_PRODUCTION(2026-10-31)
