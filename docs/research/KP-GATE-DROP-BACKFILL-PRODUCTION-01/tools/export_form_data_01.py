@@ -9,6 +9,7 @@ grammar[]は正式Part 2候補が無い限り空(仮データを入れない)。
 実行: .venv\\Scripts\\python.exe docs\\research\\KP-GATE-DROP-BACKFILL-PRODUCTION-01\\tools\\export_form_data_01.py
         --cand <kp_candidates.json> --slug <slug> --level <a2|b1b> --name <表示名> --family <X|Y|Z> --out <out.json>
         [--grammar <grammar_candidates.json>] [--source-kind PRODUCTION_FORMAL_PATH|REPLAY_FROZEN_INITIAL_REAL_BACKFILL] [--run <run名>] [--note-ja <注記>]
+        [--without-occurrence]   (出現回数[occ-v1]の集計・焼き込みを止める。**既定は集計ON**=正式export経路は明示flagなしで各entryへ`occurrence`を入れる。起動script/手順書では使わない)
         [--grammar-study-dir <study_dir>]   (Production: 文法のstudy dirから form_grammar_bundle(level) を直接読む。提示=AI評価Top1/Top2の最大2件(rank順)・
                                              grammar_max_select=1・grammar_presented_ids・grammar_candidates_sha256/grammar_text_sha256を出力する。事前生成が不完全/失敗/sha不整合ならデータを出さずエラー[rc=4]。
                                              --grammar-bundle[保存済みbundle json]とは同時に指定できない)
@@ -157,6 +158,75 @@ def difficulty_info(c: dict) -> dict:
             "reason_ja": (d.get("reason_ja") if isinstance(d, dict) else "") or "", "source": "fail_open" if isinstance(d, dict) else "not_graded"}
 
 
+# ---- SELECTION-UI-OCCURRENCE-COUNT-01 委任_02 (OPEN-632): 出現回数 occ-v1(既定ON。ユーザー確認[受入4]待ち) ----
+OCC_AUTO = "auto"
+
+
+def _occ_mods():
+    """集計module(er140_*: 純関数・API 0)と区分本文loader。exporterは単一入口でこれだけ呼ぶ。"""
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+    import er140_selection_occurrence_count_01 as oc
+    import er140_selection_occurrence_sections_01 as sl
+    return oc, sl
+
+
+def attach_occurrence(cands: list, es: list, *, family: str, level: str, cand_path, sections=None, sources=None, roots=None) -> tuple:
+    """各entry(esはcandsと同順・同じdict)へ `occurrence` を入れ、記事単位の `occurrence_meta` を返す。
+    戻り値: (occurrence_meta, issues[list[dict]])。区分本文が一切読めない場合は entry へ何も入れず(=UIがページ単位で「集計できませんでした」)、issuesへ記録する(fail-open: 回数は選定条件ではない)。
+    自己検査: 実表現の完全一致件数(Story+In One Line+Title)==候補docの item.occurrence_count(er105が選定時に保証した値)。不一致はissues(`occurrence_selfcheck_mismatch`)。
+    候補なのに本文等0回かつタイトル0回のものは issues(`occurrence_zero_candidate`)に列挙(UIは「回数を確認できません」と表示し0回と言わない)。"""
+    oc, sl = _occ_mods()
+    issues: list = []
+    if sections is None:
+        sections, sources = sl.load_sections(family, cand_path, level, roots)
+    meta = sl.sections_meta(sections, sources or {}, os.getcwd())
+    if all(v is None for v in sections.values()):
+        meta["error"] = "sections_not_found"
+        issues.append({"code": "occurrence_unavailable", "message": "出現回数を集計できませんでした(区分本文を読めません): " + str(cand_path)})
+        return meta, issues
+    if sections.get("story") is None:
+        issues.append({"code": "occurrence_story_unavailable", "message": "本文(Story)を読めないため出現回数は不完全です"})
+    mism, zero, checked = [], [], 0
+    for c, e in zip(cands, es):
+        sel = e.get("selection_phrase") or e["term"]
+        occ = oc.count_entry(sections, e["term"], e.get("selection_phrase"))
+        e["occurrence"] = occ
+        old = (c.get("item") or {}).get("occurrence_count")
+        mine = oc.exact_selection_count(sections, sel)
+        if isinstance(old, int) and mine is not None:
+            checked += 1
+            if old != mine:
+                mism.append({"candidate_id": e["candidate_id"], "term": e["term"], "selection_phrase": sel, "candidate_doc_occurrence_count": old, "exact_match_count": mine})
+        if occ["total"] == 0 and occ["counts"].get("title", 0) == 0:
+            zero.append({"candidate_id": e["candidate_id"], "term": e["term"]})
+    meta["selfcheck"] = {"checked": checked, "mismatches": mism}
+    if zero:
+        meta["zero_candidates"] = zero
+        issues.append({"code": "occurrence_zero_candidate", "count": len(zero), "candidates": zero,
+                       "message": "候補なのに出現回数を数えられない(本文等0回・タイトル0回)ものが" + str(len(zero)) + "件あります。UIは『出現回数を確認できません』と表示します"})
+    if mism:
+        issues.append({"code": "occurrence_selfcheck_mismatch", "count": len(mism), "candidates": mism,
+                       "message": "実表現の完全一致件数が候補docのitem.occurrence_count(選定時の値)と一致しない候補が" + str(len(mism)) + "件あります(選定後に本文が変わった可能性)"})
+    return meta, issues
+
+
+def augment_form_data(data: dict, cand_doc: dict | None, *, cand_path: str, roots: list | None = None) -> dict:
+    """既に出力済みのフォームdata(1記事x1水準)へ `occurrence`(各entry)・`occurrence_meta`(記事)だけを追加した新しいdictを返す。元のdataは変更しない。
+    使いどころ: exportの再実行なしに既存dataへ回数を足した**別stemのdata**を作る(公開済みbatchが参照するfileは上書きしない=M4。出力側は published_reference_conflict で検査する)。
+    candidate_idで候補docの候補と対応づけ、自己検査(item.occurrence_count)も convert 時と同じに行う。"""
+    import copy
+    out = copy.deepcopy(data)
+    es = [e for k in ("phrases", "words", "overflow") for e in (out.get(k) or [])]
+    cmap = {c.get("candidate_id"): c for c in ((cand_doc or {}).get("candidates") or [])}
+    cands = [cmap.get(e.get("candidate_id")) or {} for e in es]
+    meta, issues = attach_occurrence(cands, es, family=out["family"], level=out["level"], cand_path=cand_path, roots=roots)
+    out["occurrence_meta"] = meta
+    if issues:
+        out["occurrence_meta"]["issues"] = [{k: v for k, v in i.items() if k != "candidates"} for i in issues]
+    return out
+
+
 def entry(c: dict, source_kind: str = "PRODUCTION_FORMAL_PATH") -> dict:
     fl = c.get("flags") or {}
     rj, rsrc = reason_info(c)
@@ -251,7 +321,9 @@ def grammar_bundle_from_study_dir(study_dir: str, level: str) -> dict:
 
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
             grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None,
-            grammar_meta: dict | None = None) -> dict:
+            grammar_meta: dict | None = None, occurrence=OCC_AUTO, occurrence_roots: list | None = None) -> dict:
+    """occurrence: OCC_AUTO(既定)=cand_pathがあれば出現回数を集計して各entryの`occurrence`・記事の`occurrence_meta`へ焼き込む(cand_path無しの呼出は従来とバイト同一)/
+    False=集計しない(--without-occurrence専用。起動script・手順書では使わない)/ dict=区分本文を直接渡す({story,comment,preview,oneline,title: list|None})。"""
     rv = _rv()
     cands = sorted(rv.presentable_candidates(doc), key=lambda c: c.get("ai_rank") or 99)      # 仕様①: 品質検査を通った候補だけを選択可能に提示する
     excluded_pres = rv.excluded_from_presentation(doc)                                       # 旧doc(旗付きで保存済み)の提示除外。新docは生成時にdropped済み=通常0件
@@ -295,6 +367,13 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
     if over:                                   # フォームの枠(フレーズ7/単語5)を超える候補は表示せず別枠に保持(情報は失わない)
         out["overflow"] = over
         out["shortfall_note_ja"] = (out["shortfall_note_ja"] + "、" if out["shortfall_note_ja"] else "") + "枠超過で未表示の候補" + str(len(over)) + "件(overflow)"
+    occ_issues: list = []
+    if occurrence is not False and (isinstance(occurrence, dict) or (occurrence == OCC_AUTO and cand_path)):
+        meta, occ_issues = attach_occurrence(cands, es, family=family, level=level, cand_path=cand_path, sections=occurrence if isinstance(occurrence, dict) else None,
+                                             roots=occurrence_roots)
+        out["occurrence_meta"] = meta
+        if occ_issues:
+            out["occurrence_meta"]["issues"] = [{k: v for k, v in i.items() if k != "candidates"} for i in occ_issues]
     if grammar_status:
         out["grammar_status"] = grammar_status
     if grammar_source:
@@ -304,6 +383,34 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
     elif not grammar:
         out["grammar_note_ja"] = "候補なし・要生成(この記事のPart 2文法解説候補は未生成です。仮データは入れていません)"
     return out
+
+
+def _norm_sha_bytes(b: bytes) -> str:
+    return hashlib.sha256(b.replace(b"\r\n", b"\n")).hexdigest()
+
+
+def published_reference_conflict(out_path: str, new_text: str) -> list:
+    """M4(Opus、SELECTION-UI-OCCURRENCE-COUNT-01): 公開済みbatch(data/batches/*.json の member_sha256)が参照するdata fileを、内容の異なるデータで上書きしない。
+    書込み予定内容のsha256(改行をLFへ正規化、publish toolの norm_sha と同一)が、同stemを参照する公開済みbatchの記録sha256と異なれば、そのbatch idを返す(=上書き拒否)。
+    内容が同一(再export)なら空。参照するbatchが無い、またはbatchesディレクトリが無ければ空。"""
+    stem = os.path.splitext(os.path.basename(out_path))[0]
+    bdir = os.path.join(os.path.dirname(os.path.abspath(out_path)), "batches")
+    if not os.path.isdir(bdir):
+        return []
+    new_sha = _norm_sha_bytes(new_text.encode("utf-8"))
+    bad = []
+    for fn in sorted(os.listdir(bdir)):
+        if not fn.endswith(".json") or fn == "index.json":
+            continue
+        try:
+            with open(os.path.join(bdir, fn), encoding="utf-8") as f:
+                doc = json.load(f)
+        except (OSError, ValueError):
+            continue
+        rec = (doc.get("member_sha256") or {}).get(stem)
+        if rec and rec != new_sha:
+            bad.append({"batch": doc.get("id") or fn[:-5], "recorded_sha256": rec, "new_sha256": new_sha})
+    return bad
 
 
 def write_batch_key(articles_json: str, members: list, batch_id: str = None, generated: str = None) -> dict:
@@ -371,6 +478,7 @@ def main(argv=None) -> int:
     ap.add_argument("--text-sha256", default=None)
     ap.add_argument("--grammar-bundle", default=None, help="form_grammar_bundle.json(SCHEMA_CONTRACT_01 §5)。文法候補+解説全文をフォームデータへ取り込む")
     ap.add_argument("--grammar-study-dir", default=None, help="文法のstudy dir(Production経路)。form_grammar_bundleを直接読む。不完全/失敗/不整合はデータを出さずrc=4で終了")
+    ap.add_argument("--without-occurrence", action="store_true", help="出現回数(occ-v1)の集計・焼き込みを止める。既定は集計ON。起動script・手順書では使わない")
     ap.add_argument("--grammar-source-json", default=None, help="文法の出所(summary_<level>.json等)から grammar_source に入れるJSON")
     a = ap.parse_args(argv)
     with open(a.cand, encoding="utf-8") as f:
@@ -401,10 +509,32 @@ def main(argv=None) -> int:
             with open(a.grammar_source_json, encoding="utf-8") as f:
                 gsrc = json.load(f)
     out = convert(doc, slug=a.slug, level=a.level, name=a.name, family=a.family, run=a.run or os.path.dirname(a.cand), source_kind=a.source_kind,
-                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc, grammar_meta=gmeta)
+                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc, grammar_meta=gmeta,
+                  occurrence=(False if a.without_occurrence else OCC_AUTO))
+    text = json.dumps(out, ensure_ascii=False, indent=1)
+    conflict = published_reference_conflict(a.out, text)
+    if conflict:      # M4: 公開済みbatchが参照するdata fileは上書きしない(Done署名・照合コード・member_sha256が変わるため)。新しいstem/別dirへ出力する
+        print(json.dumps({"status": "REFUSED_PUBLISHED_REFERENCE", "out": a.out, "conflicts": conflict,
+                          "message_ja": "公開済みbatchが参照するdata fileを内容の異なるデータで上書きできません。--out を新しいstem(別ファイル名)にして出力してください"}, ensure_ascii=False), file=sys.stderr)
+        return 5
     with open(a.out, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=1)
-    print(json.dumps({"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "grammar": len(out["grammar"]), "shortfall_note_ja": out["shortfall_note_ja"]}, ensure_ascii=False))
+        f.write(text)
+    res = {"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "grammar": len(out["grammar"]), "shortfall_note_ja": out["shortfall_note_ja"]}
+    om = out.get("occurrence_meta")
+    if a.without_occurrence:
+        res["occurrence"] = {"status": "DISABLED_BY_FLAG"}
+        print("[OCCURRENCE][WARN] --without-occurrence: 出現回数を焼き込んでいません(正式exportでは既定ON)", file=sys.stderr)
+    elif om is None:
+        res["occurrence"] = {"status": "SKIPPED_NO_CAND"}
+    else:
+        sc = om.get("selfcheck") or {}
+        res["occurrence"] = {"status": "UNAVAILABLE" if om.get("error") else "OK", "unavailable": om.get("unavailable"), "selfcheck_checked": sc.get("checked"),
+                             "selfcheck_mismatches": len(sc.get("mismatches") or []), "zero_candidates": len(om.get("zero_candidates") or []), "issues": om.get("issues") or []}
+        for i in om.get("issues") or []:
+            print("[OCCURRENCE][WARN] " + i["code"] + ": " + i["message"], file=sys.stderr)
+        if om.get("unavailable") and not om.get("error"):
+            print("[OCCURRENCE][WARN] 未集計の区分: " + ",".join(om["unavailable"]) + "(0回ではなく「未集計」として表示されます)", file=sys.stderr)
+    print(json.dumps(res, ensure_ascii=False))
     return 0
 
 
