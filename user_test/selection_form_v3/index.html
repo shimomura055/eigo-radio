@@ -19,10 +19,16 @@ html{scroll-padding-bottom:100px;scroll-padding-top:48px}body.hasfoot{padding-bo
 body.kb #fbar,body.kb #fpop{display:none}
 .devbanner{background:#b3261e;color:#fff;font-weight:700;padding:8px 10px;border-radius:8px;margin:8px 0}.banner2{background:#fff3d6;border:1px solid #d9a21b;color:#6b4800;border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13px;font-weight:700}.banner2 a{color:#0b57d0}.testtag{background:#8a5a00;color:#fff;border-radius:4px;padding:1px 6px;font-size:11px}
 #gate{border:2px solid #ad4938;border-radius:12px;padding:14px;margin:14px 0;background:#fff8f6}#gate h2{margin:0 0 8px;font-size:16px}#gate a{display:block;min-height:44px;line-height:44px;border:1px solid #cdd2d8;border-radius:10px;padding:0 12px;margin-top:6px;background:#fff;color:#0b57d0;text-decoration:none}
+/* ---- SELECTION-UI-TWO-TIER-01: 2階層(トップ=一覧、個別=1記事x1レベル) ---- */
+a.chip{display:flex;align-items:center;justify-content:center;text-decoration:none;color:inherit}a.chip.st-done{color:#17623f}a.chip.st-stale{color:#8a5a00}a.chip.st-todo{color:#555}
+.topback{display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px;width:100%;margin:10px 0;padding:8px 14px;border:2px solid #20272f;border-radius:12px;background:#fff;color:#20272f;font-size:16px;font-weight:700;text-decoration:none}.topback:active{background:#eef0f3}
+#listhead{font-weight:700;font-size:14px;padding:8px 2px}
+.flag{white-space:normal;max-width:100%;display:inline-block;vertical-align:top;overflow-wrap:anywhere}
 </style></head><body><main class="panel"><h1>eigo-radio｜学習項目選定</h1><div class="muted" id="subtitle">承認フォームv3｜選定テスト用（Production未連携）</div>
 <div id="devBanner" class="devbanner" hidden>開発用・報告対象外の表示です（?dev=all）。ユーザー向けには使いません。</div><div id="staleBanner" class="banner2" hidden></div><div id="shaBanner" class="banner2" hidden></div><div id="notinBanner" class="banner2" hidden></div>
 <section id="gate" hidden></section><div id="formWrap">
-<section id="batchTop" hidden><div class="progress" id="progress" aria-live="polite"></div><details id="listwrap" open><summary>記事一覧（タップで下のフォームに切替）</summary><div id="list"></div><div class="actions"><button id="goNext">次の未完了セットへ</button></div></details></section>
+<section id="batchTop" hidden><div class="progress" id="progress" aria-live="polite"></div><div id="listwrap"><div id="listhead">対象記事一覧（StandardまたはAdvancedを押すと、その選定ページが開きます）</div><div id="list"></div><div class="actions"><button id="goNext">次の未完了セットへ</button></div></div></section>
+<div id="setForm" hidden><a class="topback" id="topBack1" href="#">← Topへ戻る</a>
 <p id="selWrap"><select id="article" aria-label="記事・レベルを選択"></select></p><div id="curbar" class="curbar" hidden></div><div id="srcnote" class="notice" hidden></div><div id="miniStats" role="status" aria-label="選択数"></div><div class="stats" id="stats"></div><div class="kpwarn" id="kpWarn" role="status"></div><div class="hint" id="khint">各候補の日本語訳は、エンドユーザーへ提供予定の日本語意味（既存の生成結果を再利用。AI再生成なし）です。「正式訳」以外は仮訳・未生成で、確定内容として扱われません。「AI理由・確認用」はAIの選定理由で、確認用の参考情報です。<br>各候補は①②③のいずれか1つだけ。①はちょうど3件、①＋②で5件、①＋②＋③で12件まで。</div>
 <div class="restrow" id="restRow" hidden><button id="selRest">残りをすべて選択（③本文意味表示へ）</button><span class="hint" id="restHint"></span></div>
 <div id="candPhrase"></div><div class="cbox" id="boxPhrase" hidden><label for="commentPhrase">フレーズ選定へのコメント（任意）</label><textarea id="commentPhrase" placeholder="例：このフレーズの日本語訳を自然にしてください。"></textarea></div>
@@ -31,9 +37,10 @@ body.kb #fbar,body.kb #fpop{display:none}
 <h2 id="commentTitle">自由コメント・追加指示</h2><textarea id="comment" placeholder="例：snatch の説明を修正。別の上級単語を2件追加探索してください。"></textarea>
 <div class="donebox" id="doneBox" hidden><div class="state" id="doneState"></div><ul id="doneErr"></ul><button class="primary" id="doneBtn"></button></div>
 <div class="actions"><button class="primary" id="send">ChatGPTへ送信</button><button id="copy">選定結果をコピー</button></div><div class="sendhelp" id="sendHelp"><strong>ChatGPTへ送信</strong>：選定結果をコピーし、ChatGPTを開きます（入力欄に内容が入っていればそのまま送信、空ならCtrl+V / ⌘V で貼り付けて送信）。<br><strong>選定結果をコピー</strong>：コピーだけ行います。ChatGPTから返ってきたコードブロックは、そのままClaudeへ貼り付けてください（JSONの編集は不要です）。<br>Claude・Productionへの自動反映はありません。</div><div id="status" class="warning" role="status"></div><textarea id="fallback" readonly hidden aria-label="コピー用テキスト（手動コピー）"></textarea>
+<div class="actions"><button id="resetSet">このセットの選択をリセット</button></div><a class="topback" id="topBack2" href="#">← Topへ戻る</a></div>
 <section class="batchbox" id="batchBox" hidden><div style="font-weight:700;margin-bottom:8px">一括コピー（全セットがDoneのときだけコピーできます）</div><button class="primary" id="batchCopy">一括コピー</button><div id="batchMsg" role="status"></div><textarea id="batchFallback" readonly hidden aria-label="一括コピー用テキスト（手動コピー）" style="min-height:160px;margin-top:10px"></textarea><div class="hint" style="margin-top:8px">コピーした全文を、そのままClaudeへ貼り付けてください（ChatGPT等の自動送信はありません）。</div></section>
 <details class="techbox" id="techBox"><summary>技術情報付きでコピー（通常は不要）</summary><div>従来形式（人間可読の要約＋JSON・全候補付き）をコピーします。通常の送信には使いません。</div><button id="copyTech">技術情報付きでコピー</button></details>
-<details class="techbox" id="resetBox"><summary>リセット</summary><button id="resetSet">このセットの選択をリセット</button> <button id="resetAll">この報告の全セットをリセット</button></details>
+<details class="techbox" id="resetBox"><summary>リセット</summary><button id="resetAll">この報告の全セットをリセット</button></details>
 <div class="muted" id="assetv" style="margin-top:14px"></div></div></main>
 <div id="fpop" role="status" hidden></div>
 <div id="fbar" hidden><span class="fd" id="fDone">Done 0/0</span><button id="fNext">次の未完了へ</button><button class="fcopy" id="fCopy">一括コピー</button></div>
@@ -64,6 +71,10 @@ function status(m,k){var el=$('status');el.textContent=m;el.className=(k==='ok')
 function dataOf(e){return (e&&e.data&&cache[e.data]&&!derr[e.data])?cache[e.data]:null}
 var STATUS_JA={done:'Done',todo:'未完了',stale:'要再確認'};
 function setStatus(e){var d=dataOf(e);return d?FL.doneStatus(d,stOf(e)):'todo'}
+var MODE='top';                         // 'top'(一覧) | 'set'(個別)。init()で決定
+function baseUrl(){var u=new URL(location.href);u.search='';u.hash='';return u.toString()}
+function topUrl(){var q=(BS&&BS.dev)?'?dev=all':'?batch='+encodeURIComponent(BS?BS.id:'');return baseUrl()+q}
+function setUrl(key){return topUrl()+'&set='+encodeURIComponent(key)}
 function renderTop(){
   if(!BS)return;
   var ms=BS.members, arts=[], seen={};
@@ -74,19 +85,19 @@ function renderTop(){
   arts.forEach(function(slug,ai){
     var rows=ms.filter(function(e){return e.slug===slug});
     h+='<div class="art" data-slug="'+esc(slug)+'"><div class="aname">'+(ai+1)+'. '+esc(rows[0].name)+'</div><div class="chips">'+rows.map(function(e){var s=setStatus(e);
-      return '<button class="chip st-'+s+(entry&&keyOf(e)===keyOf(entry)?' cur':'')+'" data-key="'+esc(keyOf(e))+'" aria-label="'+esc(e.name+' '+(e.level_label||e.level)+' '+STATUS_JA[s])+'">'+esc(e.level_label||e.level)+'｜'+STATUS_JA[s]+'</button>'}).join('')+'</div></div>';
+      return '<a class="chip st-'+s+'" data-key="'+esc(keyOf(e))+'" href="'+esc(setUrl(keyOf(e)))+'" aria-label="'+esc(e.name+' '+(e.level_label||e.level)+' '+STATUS_JA[s])+'">'+esc(e.level_label||e.level)+'｜'+STATUS_JA[s]+'</a>'}).join('')+'</div></div>';
   });
   $('list').innerHTML=h;
-  document.querySelectorAll('.chip[data-key]').forEach(function(b){b.addEventListener('click',function(){jumpTo(b.dataset.key)})});
   var bb=$('batchCopy');bb.textContent='一括コピー（Done '+nd+' / '+ms.length+'）';updateFooter(nd,ms.length);
 }
 function updateFooter(nd,n){
+  if(MODE!=='top')return;
   $('fDone').textContent='Done '+nd+'/'+n;var fc=$('fCopy');fc.textContent=nd===n?'一括コピー':'一括コピー（残り'+(n-nd)+'）';fc.classList.toggle('notyet',nd!==n);
   $('fbar').hidden=false;document.body.classList.add('hasfoot');
 }
 function jumpTo(key){
-  var i=IDX.articles.findIndex(function(a){return keyOf(a)===key});if(i<0)return;
-  activate(i).then(function(){var f=$('curbar');if(f&&f.scrollIntoView)f.scrollIntoView({block:'start'})});
+  if(!BS||!BS.members.some(function(e){return keyOf(e)===key}))return;
+  location.href=setUrl(key);
 }
 function renderDone(){
   if(!BS){$('doneBox').hidden=true;return}
@@ -103,13 +114,13 @@ function renderRest(){
   var msg={kp_lt3:'①をちょうど3件にすると押せます。',kp_confirmed:'確定済みの記事では使えません。',nothing_left:'残りの候補はありません。',no_candidates:'候補がありません。',invalid_data:'データを読み込めません。',blocked:'上限のため選べません。'}[r.reason]||'';
   $('selRest').disabled=!r.ok;$('restHint').textContent=r.ok?'未選択の'+r.added.length+'件を③へまとめて選びます。':msg;
 }
-function refreshAll(){renderTop();renderDone();renderRest()}
+function refreshAll(){renderTop();if(MODE==='set'&&entry){renderDone();renderRest()}}
 function render(){
   var d=D, st=get();
   $('curbar').hidden=!BS;
   if(BS&&entry){var idx0=BS.members.findIndex(function(e){return keyOf(e)===keyOf(entry)});$('curbar').textContent='選択中：'+entry.name+'｜'+(entry.level_label||entry.level)+'（'+(idx0+1)+' / '+BS.members.length+'）'}
   $('boxPhrase').hidden=!BS||!d;$('boxWord').hidden=!BS||!d;
-  $('send').hidden=!!BS;$('sendHelp').hidden=!!BS;$('techBox').hidden=!!BS;$('batchBox').hidden=!BS;$('resetBox').hidden=!BS;
+  $('send').hidden=!!BS;$('sendHelp').hidden=!!BS;$('techBox').hidden=!!BS;$('batchBox').hidden=!BS||MODE!=='top';$('resetBox').hidden=!BS||MODE!=='top';
   $('commentTitle').textContent=BS?'追加指示（全体）':'自由コメント・追加指示';
   var src=$('srcnote');
   var dw=(d&&d.data_warnings||[]).map(function(w){return '【データ警告】'+(w.message_ja||w.code)}).join('　');
@@ -190,7 +201,6 @@ async function activate(i){
   entry=IDX.articles[i];D=null;status('');
   $('article').value=String(i);
   if(entry.data){await loadData(entry);if(derr[entry.data])status(derr[entry.data]);else D=cache[entry.data]}
-  if(BS){try{var u=new URL(location.href);u.searchParams.set('a',keyOf(entry));history.replaceState(null,'',u.toString())}catch(ex){}}
   render();
 }
 function copyFallback(text,id){
@@ -259,7 +269,7 @@ function popHtml(html){
   el.querySelectorAll('button[data-jump]').forEach(function(b){b.addEventListener('click',function(){el.hidden=true;jumpTo(b.dataset.jump)})});
 }
 function goNextUnfinished(){
-  var ms=BS.members,cur=ms.findIndex(function(e){return keyOf(e)===keyOf(entry)});
+  var ms=BS.members,cur=entry?ms.findIndex(function(e){return keyOf(e)===keyOf(entry)}):-1;
   for(var k=1;k<=ms.length;k++){var e=ms[(cur+k)%ms.length];if(setStatus(e)!=='done'){$('fpop').hidden=true;jumpTo(keyOf(e));return}}
   var h='<div class="banner">すべてのセットがDoneです。「一括コピー」を押してください。</div>';$('batchMsg').innerHTML=h;popHtml(h);
 }
@@ -298,7 +308,8 @@ $('resetAll').addEventListener('click',function(){
   state={};render();status('全セットをリセットしました。');
 });
 // M2: 他タブでの変更を反映して再描画
-window.addEventListener('storage',function(e){if(e.key!==STORE_KEY&&e.key!==null)return;loadAllState();if(IDX&&entry)render()});
+window.addEventListener('storage',function(e){if(e.key!==STORE_KEY&&e.key!==null)return;loadAllState();if(!IDX||!BS)return;if(MODE==='top')renderTop();else if(entry)render()});
+window.addEventListener('pageshow',function(e){if(e.persisted&&BS){loadAllState();if(MODE==='top')renderTop();else if(entry)render()}});
 var ROUTE=null;
 // 記事を出さない画面。title/本文/既知の報告一覧リンク(test:trueは一覧に出さない)
 function gate(title,bodyHtml,bidx){
@@ -339,28 +350,32 @@ function gate(title,bodyHtml,bidx){
   }
   loadAllState();
   var sel=$('article');
-  var want=route.aParam||null;
+  var want=sp.get('set')||route.aParam||null;
   var visible=IDX.articles.map(function(a,i){return {a:a,i:i}});
   var mk={};BS.members.forEach(function(e){mk[keyOf(e)]=1});
   visible=visible.filter(function(v){return mk[keyOf(v.a)]});
-  $('selWrap').hidden=true;$('batchTop').hidden=false;
-  $('subtitle').textContent='承認フォームv3｜一括選定（'+BS.members.length+'セット）｜選定テスト用（Production未連携）';
+  $('selWrap').hidden=true;MODE=want?'set':'top';
+  $('subtitle').textContent='承認フォームv3｜'+(MODE==='top'?'一括選定（'+BS.members.length+'セット）':'個別選定')+'｜選定テスト用（Production未連携）';
   await Promise.all(BS.members.map(loadData));
   var loaded={};BS.members.forEach(function(e){var c=cache[e.data];if(c&&!derr[e.data])loaded[FL.stemOfEntry(e)]=c.__file_sha256});
   var mm=FL.shaMismatches(BS,loaded);
   if(mm.length){$('shaBanner').hidden=false;$('shaBanner').textContent='データが更新されました（この報告の公開後に候補データが変わったセット: '+mm.join(', ')+'）。該当セットはDoneを確認し直してください。'}
-  if(window.matchMedia&&window.matchMedia('(max-width:520px)').matches)$('listwrap').open=true;
   sel.innerHTML=visible.map(function(v){return '<option value="'+v.i+'">'+(v.i+1)+'. '+esc(v.a.name)+(v.a.level_label?'｜'+esc(v.a.level_label):'')+'</option>'}).join('');
-  var i0=want?visible.findIndex(function(v){return keyOf(v.a)===want}):-1;
-  if(want&&i0<0){$('notinBanner').hidden=false;$('notinBanner').textContent='指定されたセット（'+want+'）はこの報告の対象外です。この報告の未完了セットを表示します。'}
-  if(i0<0){var m0=BS.members.findIndex(function(e){return setStatus(e)!=='done'});if(m0<0)m0=0;i0=visible.findIndex(function(v){return keyOf(v.a)===keyOf(BS.members[m0])})}
-  if(i0<0)i0=0;
-  var start=visible[i0].i;
-  sel.value=String(start);sel.addEventListener('change',function(){activate(Number(sel.value))});
+  $('topBack1').href=topUrl();$('topBack2').href=topUrl();
+  if(MODE==='top'){
+    $('batchTop').hidden=false;$('setForm').hidden=true;$('batchBox').hidden=false;$('resetBox').hidden=false;
+    renderTop();
+  }else{
+    var i0=visible.findIndex(function(v){return keyOf(v.a)===want});
+    if(i0<0){gate('指定されたセットは、この報告の対象にありません','URLのセット指定（'+esc(want)+'）が正しくないか、別の報告のセットです。<a href="'+esc(topUrl())+'" style="font-weight:700">Topへ戻る（'+esc(BS.id)+'）</a>',bidx);return}
+    $('batchTop').hidden=true;$('setForm').hidden=false;$('batchBox').hidden=true;$('resetBox').hidden=true;
+    $('fbar').hidden=true;$('fpop').hidden=true;document.body.classList.remove('hasfoot');
+    sel.value=String(visible[i0].i);
+  }
   if(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches){   // M12: ソフトキーボード表示中は固定フッタを隠して入力欄との重なりを避ける
     document.addEventListener('focusin',function(e){var t=e.target;if(t&&(t.tagName==='TEXTAREA'||(t.tagName==='INPUT'&&t.type!=='checkbox'&&t.type!=='radio')))document.body.classList.add('kb')});
     document.addEventListener('focusout',function(){document.body.classList.remove('kb')});
   }
-  await activate(start);
+  if(MODE==='set')await activate(Number(sel.value));
 })();
 </script></body></html>

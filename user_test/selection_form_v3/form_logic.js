@@ -489,7 +489,7 @@
 
   // ======== 報告単位batch(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_04、DESIGN_03 + Opus M1-M14) ========
   // M13: UI資産の版。live smokeがローカルHEADと一致を確認する(index.htmlもこの値を表示)
-  var ASSET_VERSION = 'sel-v3-rev04-a';
+  var ASSET_VERSION = 'sel-v3-rev05-a';
   // M6: batch id。UI・publish tool・er128の3箇所で同一の正規表現(パストラバーサル対策)
   var BATCH_ID_RE = /^[a-z0-9][a-z0-9_-]{2,63}$/;
   function validBatchId(id) { return typeof id === 'string' && BATCH_ID_RE.test(id); }

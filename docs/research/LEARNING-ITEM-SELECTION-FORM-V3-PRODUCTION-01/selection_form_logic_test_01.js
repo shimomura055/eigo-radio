@@ -729,4 +729,18 @@ t('04 index.html contract: no articles.json.batch resolver; per-batch STORE_KEY 
   assert.ok(/gate\('対象の報告が指定されていません'/.test(h) && /gate\('旧形式のリンクです'/.test(h));
   assert.ok(/data-asset-version/.test(h) && /__ASSET_VERSION/.test(h));
 });
+t('05 two-tier contract (SELECTION-UI-TWO-TIER-01): top has list+links only, set page has form + top/bottom back buttons, same STORE_KEY/batch routing', () => {
+  const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8');
+  assert.ok(/id="setForm" hidden/.test(h), '個別フォームは既定で非表示(トップに出さない)');
+  const sf = h.indexOf('id="setForm"'), tb1 = h.indexOf('id="topBack1"'), tb2 = h.indexOf('id="topBack2"'), cp = h.indexOf('id="candPhrase"'), dn = h.indexOf('id="doneBox"');
+  assert.ok(sf > 0 && sf < tb1 && tb1 < cp && cp < dn && dn < tb2, '上Topへ戻る→フォーム→Done→下Topへ戻る の順');
+  assert.ok(h.indexOf('id="batchBox"') > tb2 && h.indexOf('id="commentPhrase"') < tb2 && h.indexOf('id="comment"') < tb2, '一括コピーはフォーム外(トップ)・コメント欄はフォーム内');
+  assert.ok(/MODE=want\?'set':'top'/.test(h) && /sp\.get\('set'\)/.test(h), 'URLパラメータ set で個別/トップを切替');
+  assert.ok(/function topUrl\(\)/.test(h) && /\$\('topBack1'\)\.href=topUrl\(\)/.test(h) && /\$\('topBack2'\)\.href=topUrl\(\)/.test(h), 'Topへ戻る=同batchのトップ');
+  assert.ok(/<a class="chip st-'/.test(h) && !/<button class="chip/.test(h), 'トップのStandard/Advancedはリンク');
+  assert.ok(/gate\('指定されたセットは、この報告の対象にありません'/.test(h), '存在しないセットは安全な案内');
+  assert.ok(/\.topback\{[^}]*min-height:5\dpx/.test(h), 'Topへ戻るはスマホで押しやすい高さ');
+  assert.ok(/STORE_KEY=FL\.storeKey\(BS\.id\)/.test(h), '保存キーは従来どおり報告単位');
+  assert.ok(/if\(MODE!=='top'\)return;/.test(h), '個別ページでは固定フッタ(ページ毎の一括コピー)を出さない');
+});
 console.log('ALL PASS', n);
