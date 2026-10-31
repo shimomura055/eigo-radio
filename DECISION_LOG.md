@@ -208,6 +208,16 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## ASR-FLAP-T-PRODUCTION-WIRING-01-DECISION-01: 米国英語Flap-T救済方式(Trial M1)APPROVED_FOR_PRODUCTION(2026-10-31)
+
+- 判断: ユーザー正式決定(原文=docs/pm/delegation_log/2026-10-31_ASR-FLAP-T-PRODUCTION-WIRING-01_USER.md:3-8)。ASR-FLAP-T-EQUIVALENCE-TRIAL-01のM1(CMU音素+flap環境規則)をAPPROVED_FOR_PRODUCTIONとし、到達目標PRODUCTION_WIRED(Family X/Y/Z x Standard/Advanced)。Trial Status VALIDATEDからの格上げ根拠はこの原文のみ。
+- 仕様(原文:16-32): 既存ASR同音救済の第3層。文字列t/d置換禁止、強勢母音と無強勢音節の間の/t/<->/d/のみ、母音一致・canonical単一読み・辞書登録維持、AY/AW核(writer/rider, title/tidal)は自動救済しない、未確認Voice/未登録語/複数読みは救済対象外、救済時は必ずPASS_WITH_WARNING+内部根拠ログ、既存ASR閾値・Primary/Secondary条件・最終ANDゲート無変更。
+- 品質定義の変更範囲: 上記条件を満たす米国英語Flap-T発音を許容する範囲に限定(原文:28)。既存の同音救済・Connected Speech救済・その他音声QA基準は不変。
+- 運用: 正式Productionで既定ON(flagを置く場合も有効、既定OFFのまま完了報告不可、原文:71)。量産単価+0円(量産経路に新API call追加なし)。追加Voice probe想定≈¥20は承認済み予算・日次上限内(原文:48)。追加検証・必要な修正・Production Wiringまで承認済み(原文:12)。11-7の限定例外ではなく通常のProduction実装。
+- 比較した選択肢: M1(採用)/M2 LLM二重確認(非推奨・不採用)/M3 ASR側操作(循環のため不採用)=Trial DESIGN_01 3節。
+- 配線: OPEN-627(設計=docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/DESIGN_01.md、実装は委任_02)。OPEN-626は採用決定を反映(Trial記述の「既定OFF・未承認」は置換)。USER_DECISION_REGISTER #230(旧D2採用判断=解消)。
+- 根拠: docs/research/ASR-FLAP-T-EQUIVALENCE-TRIAL-01/{DESIGN_01,CLOSEOUT_02,VOICE_PROBE_02}.md、docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/{CURRENT_STATE_01,DESIGN_01}.md。影響するCURRENT_SPEC項目: 配線完了時(委任_02)にASR判定節へ反映(本委任ではCURRENT_SPEC未変更)。
+
 ## ONE-STEP-FURTHER-CORNER-TRIAL-01-DECISION-01: One Step Further REJECTED(2026-10-30)
 
 - 判断: ユーザー正式判断でREJECTED。Production導入・追加Trialは行わない。追加のユーザー承認不要、既存の承認済み仕様・品質基準を維持。
