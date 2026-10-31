@@ -17,6 +17,23 @@ PRINCIPLES = (
     "reason_ja は60字以内で具体的に書き、断定しすぎない表現にします。"
     "suggestion は、より適切な訳が明確にあるときだけ書き、なければ空文字にします。warn=false の項目は reason_ja と suggestion を空文字にします。"
 )
+
+PRINCIPLES2 = (
+    "あなたは英語学習教材の日本語訳レビュアーです。学習対象の英語表現(expression)について、現在の日本語訳(current_ja)が、"
+    "本文のこの箇所での意味を学習者に適切に伝えているかを、記事全文と該当箇所の文脈に基づいて判定します。特定の語についての決まりごとはありません。"
+    "毎回、本文の文脈から判断してください。各項目は互いに独立に判定し、前の項目の判定に引きずられないでください。"
+    "責任者が修正を指示する水準の問題だけを warn=true にします。好みや言い換え案のほうが少し良い程度、根拠が弱い疑いは warn=false にします。"
+    "次は問題にしません(warn=false): 像は薄いが意味は同じ / 文脈の意味を含みつつ、やや広い語を使っている / 定訳と並ぶ別の妥当な訳語 / やや硬い・やや冗長だが意味は明確 / 品詞・活用・語尾の違い。"
+    "問題とする型は次のとおりです。"
+    "(1)本文の意味と食い違う (2)文脈上の語義でなく、辞書の第一義・最頻義に寄せた訳で、文脈の意味が学習者に誤って伝わる、または消える "
+    "(3)比喩・たとえ・場面の像が失われ、比喩が指す意味が変わる、または本文との対応が崩れる "
+    "(4)確立した定訳・専門用語があるのに、定義文や曖昧な語に置き換えて、訳語として使えなくなっている "
+    "(5)日本語として意味が取れない、または意味を誤解させる(訳に含まれる所有や対象の指示が、本文の主体と食い違って読める場合を含む)。"
+    "severity は、(1)〜(4)のように意味が変わる・定訳が消える場合は major、意味は概ね取れるが不自然・冗長・誤解を招く場合や、(4)で意味は保たれている場合は minor、問題なしは none。"
+    "confidence は、その判定への確信度です。"
+    "reason_ja は60字以内で具体的に書き、断定しすぎない表現にします。"
+    "suggestion は、より適切な訳が明確にあるときだけ書き、なければ空文字にします。warn=false の項目は reason_ja と suggestion を空文字にします。"
+)
 BATCH_NOTE = "次の複数項目を、同じ記事の文脈で一括して検査してください。出力の results には、入力した全ての id を1件ずつ、漏れなく含めてください。"
 SINGLE_NOTE = "次の1項目を、記事の文脈で検査してください。"
 REF_NOTE = (
@@ -88,16 +105,18 @@ SCHEMAS = {
 
 
 def developer_text(method, ref=False, batch=True):
-    t = PRINCIPLES + (BATCH_NOTE if batch else SINGLE_NOTE)
-    if method == "M3": t += M3_NOTE
-    if method == "R6": t += R6_NOTE
+    v2 = method.endswith("v2")
+    base = method[:-2] if v2 else method
+    t = (PRINCIPLES2 if v2 else PRINCIPLES) + (BATCH_NOTE if batch else SINGLE_NOTE)
+    if base == "M3": t += M3_NOTE
+    if base == "R6": t += R6_NOTE
     if ref: t += REF_NOTE
     return t
 
 
 def all_prompt_texts():
     """M-8照合の対象(Prompt本文+schema名/キー)。"""
-    out = {"PRINCIPLES": PRINCIPLES, "BATCH_NOTE": BATCH_NOTE, "SINGLE_NOTE": SINGLE_NOTE, "REF_NOTE": REF_NOTE, "M3_NOTE": M3_NOTE, "R6_NOTE": R6_NOTE,
+    out = {"PRINCIPLES": PRINCIPLES, "PRINCIPLES2": PRINCIPLES2, "BATCH_NOTE": BATCH_NOTE, "SINGLE_NOTE": SINGLE_NOTE, "REF_NOTE": REF_NOTE, "M3_NOTE": M3_NOTE, "R6_NOTE": R6_NOTE,
            "M6S1": M6S1, "M6S2": M6S2, "M5S2": M5S2}
     return out
 

@@ -190,9 +190,9 @@ def run_batch(U, b, method, effort, rep, ref, refd, slugs, outdir, base_dir=None
     text = b["article_text"]; lv = b["level"]
     tag = f"{os.path.basename(outdir)}|{b['bid']}"
     lines = [item_line(U[uid], rev[uid], other_level(U[uid], refd, slugs) if ref else None) for uid in uids]
-    if method in ("M2", "M3", "R6"):
+    if method in ("M2", "M3", "R6", "M3v2", "R6v2"):
         dev = P.developer_text(method, ref, True)
-        sk = {"M2": "base", "M3": "m3", "R6": "r6"}[method]
+        sk = {"M2": "base", "M3": "m3", "R6": "r6", "M3v2": "m3", "R6v2": "r6"}[method]
         rec["stages"]["s1"] = call_retry(dev, user_msg(text, lv, lines), sk, effort, tag + "|s1", list(idmap))
     elif method == "M1":
         res = {"ok": True, "outputs": {}, "cost": 0.0, "elapsed": 0.0}

@@ -19,7 +19,7 @@ def rule_warn(r, rule, method=""):
     """r: dict(warn, severity, confidence, category, [fidelity]). 未検査は呼ぶ前に除外。"""
     if not r.get("warn"): return False
     if rule == "R_loose": return True
-    if method == "M3" and r.get("fidelity") == "faithful": return False
+    if method.startswith("M3") and r.get("fidelity") == "faithful": return False
     if rule == "R_strict": return r["severity"] == "major" and r["confidence"] in ("mid", "high")
     if rule == "R_default":
         return r["severity"] == "major" or (r["severity"] == "minor" and r["confidence"] == "high" and r["category"] in CATS4)
@@ -38,7 +38,7 @@ def load_run(run, U):
         # elapsed: batch内のstage合計(並列実行なので批次ごと)
         out.setdefault("_batch_elapsed", []).append(sum(st.get("elapsed", 0.0) for st in rec["stages"].values()))
         s1 = rec["stages"].get("s1")
-        if m in ("M1", "M2", "M3", "R6"):
+        if m in ("M1", "M2", "M3", "R6", "M3v2", "R6v2"):
             got = {}
             if s1 and s1.get("output"):
                 got = {x["id"]: x for x in s1["output"]["results"]}

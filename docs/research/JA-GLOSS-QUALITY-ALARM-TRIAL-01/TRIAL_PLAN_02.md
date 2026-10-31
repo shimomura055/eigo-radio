@@ -106,3 +106,9 @@ trial/ledger.json、trial/out/*.json、`frozen_config.json`、RESULTS_01.md(P-a'
 - 費用上の縮退(事前登録): 累計+R1b+R2+再現性+ref+finalが¥55に収まるよう、R1bは **R6の low/high、M3の low のみ**(medium値はR1)。M2のeffort比較、M3のhighは費用起因で未実施(『実施した』と書かない。RESULT_02に明記)。
 - 効果が測れない場合の扱い: M5は段2が全38警告を『提案訳が優位』と判定(取消0)したため方式として機能せず、以降の最適化対象にしない(Status上は比較実測済み)。
 - R2(Prompt改善、最大2周中まず1周): 対象は上位方式のみ。**変更は一般基準の追記に限り、特定語・例を入れない**(severityの定義を凍結rubric §4の一般基準[意味が変わる・辞書第一義への一般化・比喩/像の喪失で意味が変わる・定訳の不適切な言い換え=major]に合わせる等)。変更のたびM-8機械照合をPASSさせsha256を記録。R2の結果は dev のみで評価し、held-out/プールの数値は見ない。
+### 9-6. R1b結果と R2・参考入力 run の手順(2026-10-31、実行前に記録)
+- R1b実測(dev、単一run): R6 low = ガードA最大7/10(R_default 7/10, P-dev 37.5%) / R6 medium = R_default 9/10, P-dev 66.7%(4/6) / R6 high = ガードA最大9/10(R_loose, P-dev 55.6%)、R_defaultは8/10・60.0% / M3 low = ガードA最大8/10(<9)。累計費用¥27.72。
+- effort選択(§3-2の規則適用): 『上位effort(high)より全指標が5pt以上悪化しない最も低いeffort』= **medium**(lowはガードAが2〜3項目低く除外。mediumはhighに対しP-dev・ガードAとも同等以上)。ノイズ注意: devは単一run・problem 5件のため差は小さく、effortによる確定的優劣を主張しない。主構成の方式=**R6(分析→判定型)、effort=medium**。
+- R2(1周目): R6のPrompt v2(`jaq02b_prompts.PRINCIPLES2`: 凍結rubric §3/§4の一般基準を記述[修正指示水準・normal例の水準・severity定義]、特定語・例なし、M-8照合PASS)を R6v2・effort=medium でdev実行。**v2採用条件(事前登録)**: R6v2が(§3-1の規則選択後)ガードA ≥9/10 かつ P-dev Precision がR6(v1)より高く、FP数がR6(v1)より増えない場合のみ v2を採用。それ以外はv1。単一runの差は誤差の範囲であり、採用しても『改善を証明した』とは書かない。
+- R-9(a)参考入力: R6v2 + ref(他levelの同表現の訳を参考入力)を同時に1 run。採用条件(§9-3): 同一prompt・規則でFP数が増えず、ガードA検出数が減らない場合のみ凍結構成に含める。v1が採用になった場合は『refの効果はv2上で測定』と明記し、v1+refは未測定のため**ref無効**(保守側既定)とする。
+- 費用計画: R2 = R6v2 + R6v2(ref) ≈ ¥8、final = 2 rep ≈ ¥14(見込み)。合計が¥55を超える見込みになった場合は final を1 repに縮退して報告する(3 repは費用上実施しない)。dev再現性rep2は、finalの2 repで再現性を測るため実施しない(devのrep2は費用上省略、理由を記録)。
