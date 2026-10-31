@@ -117,11 +117,12 @@ def run_views(base, kind, batch_id, n_members, asset_version, shots_dir=None):
                 ck('none: 記事を出さない(chip 0・セレクタ非表示)', pg.locator('.chip[data-key]').count() == 0 and not pg.is_visible('#formWrap'))
                 ck('none: 「対象の報告が指定されていません」', '対象の報告が指定されていません' in pg.inner_text('#gate'), pg.inner_text('#gate')[:80])
             else:
-                pg.wait_for_selector('#curbar:not([hidden])', timeout=60000)
+                # 2階層UI(SELECTION-UI-TWO-TIER-01): トップ=一覧のみ(個別フォーム非表示)、個別=?set=
+                pg.wait_for_selector('#list .art', timeout=60000)
                 pg.wait_for_timeout(1500)
-                chips = pg.locator('.chip[data-key]').count()
+                chips = pg.locator('a.chip[data-key]').count()
                 ck('%s: セット数==members数(全枠フォールバック無し)' % kind, chips == n_members, 'chips=%d members=%d' % (chips, n_members))
-                ck('%s: フレーズ/単語の独立コメント欄が可視' % kind, pg.is_visible('#commentPhrase') and pg.is_visible('#commentWord'))
+                ck('%s: トップに個別フォーム(コメント欄・候補)を出さない' % kind, not pg.is_visible('#setForm') and not pg.is_visible('#commentPhrase') and pg.locator('input[data-term]').count() == 0)
                 ck('%s: 固定フッタ(Done n/M・次の未完了へ・一括コピー)' % kind, pg.is_visible('#fbar') and pg.is_visible('#fDone') and pg.is_visible('#fNext') and pg.is_visible('#fCopy'), pg.inner_text('#fDone'))
                 ck('%s: Done 0/%d 表示' % (kind, n_members), ('/%d' % n_members) in pg.inner_text('#fDone'), pg.inner_text('#fDone'))
                 av = pg.evaluate('()=>window.__ASSET_VERSION')
@@ -129,8 +130,18 @@ def run_views(base, kind, batch_id, n_members, asset_version, shots_dir=None):
                 cur = pg.url
                 ck('%s: URLが ?batch=%s に固定' % (kind, batch_id), ('batch=%s' % batch_id) in cur, cur[-80:])
                 ck('%s: 画面にbatch idを表示' % kind, batch_id in pg.inner_text('#progress'), pg.inner_text('#progress')[:100])
+                if shots_dir:
+                    os.makedirs(shots_dir, exist_ok=True)
+                    pg.screenshot(path=os.path.join(shots_dir, 'smoke_%s_%s_%s_top.png' % (kind, batch_id or 'none', view)))
+                if chips:
+                    pg.locator('a.chip[data-key]').first.click()
+                    pg.wait_for_selector('#curbar:not([hidden])', timeout=60000)
+                    pg.wait_for_timeout(800)
+                    ck('%s: 個別ページ(?set=)にフレーズ/単語の独立コメント欄が可視' % kind, ('set=' in pg.url) and pg.is_visible('#commentPhrase') and pg.is_visible('#commentWord'))
+                    ck('%s: 個別ページに上下のTopへ戻る(同batchのトップ)' % kind, pg.is_visible('#topBack1') and pg.locator('#topBack2').count() == 1 and ('batch=%s' % batch_id) in (pg.get_attribute('#topBack2', 'href') or '') and 'set=' not in (pg.get_attribute('#topBack2', 'href') or ''))
+                    ck('%s: 個別ページに固定フッタ/一括コピーを出さない' % kind, not pg.is_visible('#fbar') and not pg.is_visible('#fCopy'))
             ck('%s: pageerror 0' % kind, not errs, errs[:2])
-            if shots_dir:
+            if shots_dir and kind == 'none':
                 os.makedirs(shots_dir, exist_ok=True)
                 pg.screenshot(path=os.path.join(shots_dir, 'smoke_%s_%s_%s.png' % (kind, batch_id or 'none', view)))
             results[view] = checks
