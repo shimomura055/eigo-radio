@@ -59,6 +59,15 @@ def effective_voice(voice_name: str) -> str:
     return voice_name
 
 
+def _flapt_note(voice, model_id) -> None:
+    """ASR-FLAP-T-PRODUCTION-WIRING-01: Standard経路のFlap-T出自記録点(TTS成功直後。cost logger非依存)。X/Y/Z scope外・flag OFFでは即return。"""
+    try:
+        import er139_flapt_provenance_01 as _fp
+        _fp.note_tts_sent(voice, model_id, source="sdk_boundary_standard")
+    except Exception:
+        pass
+
+
 def build_speech_config(voice_name: str) -> types.SpeechConfig:
     voice_name = effective_voice(voice_name)
     return types.SpeechConfig(
@@ -73,6 +82,7 @@ def make_tts_call_fn(voice_name: str, client: genai.Client = None):
     """指定話者(voice_name)固定のtts_call_fn(prompt)->bytesを返す。"""
     client = client or make_client()
     speech_config = build_speech_config(voice_name)
+    _sent_voice = effective_voice(voice_name)      # ASR-FLAP-T-PRODUCTION-WIRING-01: 実送信voice(build_speech_configと同一決定関数)
 
     def tts_call_fn(prompt: str) -> bytes:
         response = client.models.generate_content(
@@ -88,6 +98,7 @@ def make_tts_call_fn(voice_name: str, client: genai.Client = None):
         pcm = b"".join(p.inline_data.data for p in parts if p.inline_data and p.inline_data.data)
         if not pcm:
             raise RuntimeError(f"音声パーツが空でした(parts数: {len(parts)})")
+        _flapt_note(_sent_voice, common.MODEL_NAME)
         return pcm
 
     return tts_call_fn

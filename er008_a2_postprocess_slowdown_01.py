@@ -51,6 +51,13 @@ def apply_a2_slowdown(src_path: str, dst_path: str, slowdown_pct: float = A2_SLO
                             f"{result.stderr[-2000:]}")
     dst_duration = read_wav_duration_seconds(dst_path)
     actual_slowdown_pct = round((dst_duration / src_duration - 1.0) * 100, 3)
+    # ASR-FLAP-T-PRODUCTION-WIRING-01: Std 6%減速・Z Adv 1.06x高速化とも、変換後wav(判定対象)へ親の出自+transformを引き継ぐ唯一の点。
+    # X/Y/Z scope外・親の出自なしでは何もしない。
+    try:
+        import er139_flapt_provenance_01 as _flapt_prov
+        _flapt_prov.register_child(src_path, dst_path, {"kind": "atempo", "slowdown_pct": slowdown_pct})
+    except Exception:
+        pass
     return {
         "slowdown_pct_target": slowdown_pct, "slowdown_pct_actual": actual_slowdown_pct,
         "src_duration_seconds": round(src_duration, 3), "dst_duration_seconds": round(dst_duration, 3),

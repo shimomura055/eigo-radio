@@ -212,6 +212,10 @@ def make_speech_metadata_call_fn(model_name: str, voice_name: str, client=None,
                                f"{f', output_path={output_path}' if output_path else ''})")
         samples, framerate = _decode_audio_defensive(raw)
         samples = _resample_to_common_rate(samples, framerate)
+        try:
+            gclient._flapt_note(voice_name, resolved_model_name)     # ASR-FLAP-T-PRODUCTION-WIRING-01: Flap-T出自記録点(Standard・成功直後)
+        except Exception:
+            pass
         return _float_to_pcm16_bytes(samples)
 
     return tts_call_fn

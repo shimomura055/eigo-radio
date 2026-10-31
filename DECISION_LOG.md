@@ -22971,3 +22971,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 実施: er138 `pool_and_select`の再判定(`SEL_DEFERRED`)、`n5_pool` drop理由にTrial差分記録。回帰test追加(J2再判定の発動/非発動・同一span・19ケースL1一致)。M10再replay(実API 3level ¥19.05、untidi_b1bはCap見通しで未実施)=§4A①②③④⑤喪失なし・既存Gate喪失0件。未観測の実run: 技術失敗injection(X a2、外側retryで回復・N5なし候補0)、Y/Z再選定round。人称書換は全13 docで0件=未観測。
 - 費用: ¥63.57/Cap¥70。N5段の量産単価=5サンプル平均¥6.53/セット(Trial見積¥6.28比+4%)。運用記録: 委任_02のM10枠超過・起動間隔違反・STOP後の別dir実施を再掲記録、委任_03は起動11回で違反ゼロ。
 - 状態: PRODUCTION_WIRED未宣言(⑪未観測、Fable受入待ち)。
+
+## ASR-FLAP-T-PRODUCTION-WIRING-01 委任_02(2026-10-31): Flap-T救済のProduction配線を実装・検証(Fable受入待ち)
+- 決定根拠: ユーザー2026-10-31正式決定(docs/pm/delegation_log/2026-10-31_ASR-FLAP-T-PRODUCTION-WIRING-01_USER.md)=Trial M1を既定ONでPRODUCTION_WIRED(X/Y/Z x Std/Adv)。本エントリは新規仕様判断ではなく承認済み仕様の実装記録。
+- 実装: 形態B(新module er139_flapt_equivalence_01/er139_flapt_provenance_01+er109 decision()第3層分岐)。Voice/modelはAPI境界の実送信値を出自台帳(sha256(wav)束縛)で判定へ渡す。表=er139_flapt_voice_table_01.json(20行、Puck|pro=false)。flag既定ON(literal)、親flag=er109。Opus条件A必須修正1〜4+推奨+Fable追加(attempt audit tts_provenance)を反映。
+- 検証: 新規72 test PASS、既存67 file回帰=新規失敗0、保存11,181転写replay誤救済0、BATCH実run 3本(X Adv/Z Adv/Z Std)でsidecar 6/6=100%、費用約¥0.49。量産単価+0。
+- 未宣言: PRODUCTION_WIREDはFable受入判定。出自のない既存音声は適用外。証跡=docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/EVIDENCE_02.md。

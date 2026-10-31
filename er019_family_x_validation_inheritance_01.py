@@ -38,6 +38,7 @@ import time
 import wave
 from typing import Optional
 
+import er139_flapt_provenance_01 as flapt_prov  # ASR-FLAP-T-PRODUCTION-WIRING-01
 import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: X専用tool(rebuild_state系)の入口decorator(リテラル"X"のみ)
 
 REUSED_VALIDATED = "REUSED_VALIDATED"
@@ -253,6 +254,8 @@ def _norm(x) -> str:
     return " ".join(str(x or "").lower().split())
 
 
+@flapt_prov.rejudge_entry_context(lambda entry, level, label, force_lang=None: (force_lang == "ja") if force_lang in ("ja", "en") else is_japanese_label(level, label),
+                                    speedup_possible=lambda entry, level, label, force_lang=None: level != "a2")   # ASR-FLAP-T-PRODUCTION-WIRING-01: 保存entryの出自(sha/voice/model/tts_provenance)をhydrateして判定(出自なし=適用外。Std[a2]は高速化なし=変換履歴不要)
 def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: Optional[str] = None) -> dict:
     """J11(AUW 委任_04、DESIGN_02_ADDENDUM_01 §3-1): 既存音声の継承時に、保存済み転写を**統一judgeの入口
     (er078_asr_unified_judge_01.unified_judge)**でAPI 0のまま再判定する(旧: 英語のclassify_asr_matchのみ・日本語は対象外)。

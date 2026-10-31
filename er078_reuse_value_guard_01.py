@@ -85,6 +85,15 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
     if (_xz.ortho_contributed(entry.get("asr_judgement")) or _xz.ortho_contributed(entry.get("asr_judgement_inherited"))) and not _xz.is_active_for_run():
         out.update(blocked=True, applicable=True, reason=_xz.OUT_OF_SCOPE_BLOCK_REASON)
         return out
+    # ASR-FLAP-T-PRODUCTION-WIRING-01: Flap-T(米音の弾音化)救済が合否に寄与した音声は、X/Y/Z run scope外・親/子flag OFF・Voice表sha(またはCMU辞書sha)が
+    # 保存時と異なる・当該(voice,model)が現表で未確認、のいずれかでは再利用しない(再判定NGが保護理由でなければ下の再判定は止めないため、ここで先に止める)。
+    # 保存audit(sites[*].er109.flapt)が読めない場合もfail-closed(再生成)。Flap-Tを使っていないentryには作用しない。
+    _ajs_flap = [a for a in (entry.get("asr_judgement"), entry.get("asr_judgement_inherited")) if _xz.flapt_contributed(a)]
+    if _ajs_flap:
+        import er139_flapt_equivalence_01 as _flapt_fe
+        if (not _xz.is_active_for_run()) or not all(_flapt_fe.reuse_still_valid(a)[0] for a in _ajs_flap):
+            out.update(blocked=True, applicable=True, reason=_flapt_fe.REUSE_BLOCK_REASON)
+            return out
     # ASR-QUALITY-2ITEMS ②UKUS 委任_04(OF-UKUS-W-03): ②英米綴り層(UKUS)が合否に寄与した音声は、UKUS層が有効でない間(UKUS flagだけOFFのrollback等。親ortho/scopeは上で処理済み)は再利用しない。
     # UKUS flagだけOFFだと再判定NG(非保護差)はblockされない(下の保護差のみblock)ため、ここが唯一の防壁。asr_judgement/asr_judgement_inherited両方・全site(primary/secondary/KP票)を見る。
     # 検出は fail-closed(ortho適用・version=*_ukus*でsite auditが無い/壊れていればUKUS寄与あり)。配置はkp_vote_gate_follows早期returnより前。

@@ -548,6 +548,13 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     if ctx.wav_sha256:
         audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
     _ortho_record_primary(pr, lang, audit)   # ASR-HOMOPHONE 委任_04: ortho根拠のPrimaryのみ加算記録(それ以外は何もしない)
+    if lang == "en" and ctx.wav_sha256:
+        # ASR-FLAP-T-PRODUCTION-WIRING-01: 新規生成音声の出自(実送信voice/model)をattempt auditへ保存 -> retry/resume/HR rejudgeでhydrate可能にする。
+        # X/Y/Z scope内で出自が解決できたときだけキーが付く(scope外・出自なし=キー無し=従来と同一)。
+        import er139_flapt_provenance_01 as _fp
+        _tp = _fp.audit_provenance(ctx.wav_sha256)
+        if _tp is not None:
+            audit["tts_provenance"] = _tp
 
     def done(state, reason, warnings=(), unavailable=False) -> JudgeResult:
         if vote is not None and audit.get("vote") is vote:

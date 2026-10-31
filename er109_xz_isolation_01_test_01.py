@@ -37,6 +37,9 @@ PRODUCTION_SCOPE_IMPORTERS = {
     # JA-ASR-V2-BETA-PRODUCTION-WIRING-01 委任_02A(2026-10-29): 日本語ASR v2+β(APPROVED_FOR_PRODUCTION)。どちらも current_scope() の読取のみ(scope入口は呼ばない。単一読取関数)。
     "er078_ja_v2beta_01.py",             # is_active_for_run()/begin(): X/Y/Z scope内だけ有効(scope外は従来コードパス)
     "er007_ja_secondary_asr_01.py",      # _v2b_begin(): scope外なら新moduleをimportせず即None(M-5: 新module/依存libの障害をA/B/Cへ波及させない)
+    # ASR-FLAP-T-PRODUCTION-WIRING-01 委任_02(2026-10-31、APPROVED_FOR_PRODUCTION): Flap-T救済層。どちらも is_active_for_run()/current_scope() の読取のみ(scope入口は呼ばない。単一読取関数)。
+    "er139_flapt_equivalence_01.py",     # decide(): X/Y/Z scope内だけ(scope外は即None)。呼出元はer109_xz_scope_01.decision()のみ(er139_flapt_equivalence_01_test_01がASTで固定)
+    "er139_flapt_provenance_01.py",      # _active()/judging_wav(): 出自台帳。scope外は完全no-op
 }
 # PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ。glob・接頭辞での拡張禁止)。
 # Trial harness(X/Z限定の実生成と同じscopeをかぶせて再利用する隔離DEV runner)。Productionから参照されないことは下のtestで確認する。

@@ -203,6 +203,9 @@ import er103_run_entity_table_01 as pnap_ret   # ASR-QUALITY PN 委任_04(OPEN-4
 # ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_04(ユーザー正式採用2026-10-23、Family X/Zのみ): er109(表記違い同音)をX/Z run scope内でのみ有効にする。
 # 単一読取関数 ortho_scope.is_active_for_run()(flag∧scope)。scope外(A/B/C・単体呼出)は下の追加ブロックが全て短絡=従来コードパスのまま。
 import er109_xz_scope_01 as ortho_scope
+# ASR-FLAP-T-PRODUCTION-WIRING-01: Flap-T救済の出自台帳。EN判定の入口(下の evaluate_attempt_with_cascade_detail)を decorator で包み、判定対象wavのsha256を
+# contextvarへ張る。X/Y/Z run scope外・JA・flag OFFでは decorator は fn をそのまま呼ぶ(完全に従来どおり)。
+import er139_flapt_provenance_01 as flapt_prov
 
 
 # --- M1 複数発音候補(ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01) -------------
@@ -871,6 +874,7 @@ def _pnap_try_accept(*, result: dict, audit: dict, jr, cls, captured: dict, sec:
     return True
 
 
+@flapt_prov.adapter_context
 def evaluate_attempt_with_cascade_detail(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
@@ -1325,6 +1329,10 @@ def evaluate_attempt_with_cascade_detail(
     # 多語同音spanが無い(1:1同音・通常PASS・NG)場合はキー自体を付けない(OFF時バイト一致)。
     if result.get("verified") and any(st.get("multiword_homophone_spans") for st in steps):
         audit["internal_flags"] = list(audit.get("internal_flags") or []) + ["MULTIWORD_HOMOPHONE_PASS"]
+    if _ortho_errors.get("flapt_declined"):
+        # ASR-FLAP-T-PRODUCTION-WIRING-01(Opus 3): Flap対があったのに不発火(voice_unconfirmed/provenance_missing/non_flap_token_diff等)を監査へ加算転記。
+        # 該当しない行(通常のPASS/NG)ではキー自体が付かない=asr_judgementの署名は不変。
+        audit["flapt_declined"] = list(audit.get("flapt_declined") or []) + _ortho_errors["flapt_declined"]
     if _ortho_errors.get("orthographic_equivalence_errors"):
         # ASR-HOMOPHONE 委任_04: er109評価が例外 -> 『同値ではない』として従来判定のまま続行し、事実だけauditに残す(runは止めない)。scope外では空=キー無し。
         audit["orthographic_equivalence_errors"] = list(audit.get("orthographic_equivalence_errors") or []) + _ortho_errors["orthographic_equivalence_errors"]

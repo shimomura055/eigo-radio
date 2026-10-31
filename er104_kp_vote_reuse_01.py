@@ -21,6 +21,7 @@ import er006_master_audio_store_01 as store
 import er006_secondary_asr_01 as secondary_asr
 import er078_asr_unified_judge_01 as uj
 import er104_kp_three_asr_vote_01 as kp3v
+import er139_flapt_provenance_01 as flapt_prov   # ASR-FLAP-T-PRODUCTION-WIRING-01: 保存entryの出自をhydrateして再判定(出自なし=適用外。scope外は素通し)
 
 # ---- 単一flag読取(P-05: 全呼出点はこの関数だけを見る。実体はkp3vの定数) ----
 CHECK_VERSION = kp3v.CHECK_VERSION
@@ -147,6 +148,7 @@ def _stop_reason(ev: dict) -> str:
     return "whisper_unavailable" if ev["state"] == uj.NG_WHISPER_UNAVAILABLE else "secondary_unavailable"
 
 
+@flapt_prov.rejudge_entry_context(lambda entry, *a, **kw: False, speedup_possible=lambda entry, *a, **kw: False)   # KP英語音声に高速化はない
 def kp_vote_reuse_ok(entry: dict, *, wav_path: str, canonical_text: str, allow_s1: bool, label: str = "") -> dict:
     """KP英語phrase再利用6点の共通helper(fail-closed)。entry = Store entry / 前回results entry。戻り値: {action, ok, reason, kp_dual_check,
     azure_real_calls, source}。

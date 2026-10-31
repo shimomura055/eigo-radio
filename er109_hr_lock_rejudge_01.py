@@ -104,7 +104,9 @@ def _old_judgement(att: dict) -> dict:
 
 def _rejudge_attempt_nonkp(canonical: str, seg_id: str, level: str, att: dict, res_entry: dict) -> dict:
     import er019_family_x_validation_inheritance_01 as vi
-    entry = {"text": canonical, "asr_text": att.get("asr_text"), "sha256": _attempt_sha(att) or "", "asr_judgement": att.get("asr_judgement")}
+    entry = {"text": canonical, "asr_text": att.get("asr_text"), "sha256": _attempt_sha(att) or "", "asr_judgement": att.get("asr_judgement"),
+             # ASR-FLAP-T-PRODUCTION-WIRING-01: 保存attemptの出自(voice/model)。asr_judgement.tts_provenanceがあればそちらが優先。無ければ適用外(fail-closed)
+             "voice": att.get("voice"), "model": att.get("model")}
     if isinstance(res_entry, dict) and res_entry.get("local_rewrite"):
         entry["local_rewrite"] = res_entry.get("local_rewrite")
     if not att.get("asr_text"):
@@ -125,6 +127,12 @@ def _rejudge_attempt_nonkp(canonical: str, seg_id: str, level: str, att: dict, r
 
 
 def _rejudge_attempt_kp(canonical: str, att: dict) -> dict:
+    import er139_flapt_provenance_01 as _flapt_prov     # ASR-FLAP-T-PRODUCTION-WIRING-01: 保存attemptの出自をhydrateして票を再構築
+    with _flapt_prov.rejudge_context(dict(att, sha256=_attempt_sha(att) or att.get("sha256")), tag="hr_kp_rejudge", speedup_possible=False):   # KP音声に高速化はない
+        return _rejudge_attempt_kp_impl(canonical, att)
+
+
+def _rejudge_attempt_kp_impl(canonical: str, att: dict) -> dict:
     import er104_kp_three_asr_vote_01 as kp3v
     aj = att.get("asr_judgement") if isinstance(att.get("asr_judgement"), dict) else {}
     vote = aj.get("vote") if isinstance(aj.get("vote"), dict) else {}

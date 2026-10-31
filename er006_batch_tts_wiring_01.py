@@ -148,6 +148,15 @@ def _record(status: str, model_name: str, voice_name: str, job_name: Optional[st
     既存の全API call loggingと同じ設計)。cost_logger未installの通常
     実行(cl.install()が呼ばれていない場合)や、logger自体が無い環境
     では静かに何もしない(TTS生成そのものを壊さない)。"""
+    if status == "SUCCESS":
+        # ASR-FLAP-T-PRODUCTION-WIRING-01: Flap-T出自の記録点(Batch)。cost logger未install(下のreturn)より前に置く。
+        # er006 make_batch_tts_call_fn(_resolve_single_item)と er033 make_speech_metadata_batch_call_fn の両方がこのSUCCESS記録を通る。
+        # X/Y/Z scope外・flag OFFでは即return(Family A/B/C完全no-op)。TTS生成は絶対に壊さない。
+        try:
+            import er139_flapt_provenance_01 as _flapt_prov
+            _flapt_prov.note_tts_sent(voice_name, model_name, source="sdk_boundary_batch")
+        except Exception:
+            pass
     if cost_logger is None or getattr(cost_logger, "_LOG_PATH", None) is None:
         return
     entry = {

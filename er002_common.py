@@ -419,6 +419,13 @@ def write_wav_float(path: str, samples: "np.ndarray", framerate: int, channels: 
         w.setsampwidth(2)
         w.setframerate(framerate)
         w.writeframes(pcm16.tobytes())
+    # ASR-FLAP-T-PRODUCTION-WIRING-01: 直前のTTS成功(実送信voice/model)をこのwavのsha256へ束縛(mono 24kHzのみ・単一用途)。
+    # X/Y/Z scope外・flag OFF・pendingなしでは何もしない(Family A/B/C・組立wav[channels=2]・Store再利用コピーは完全no-op)。
+    try:
+        import er139_flapt_provenance_01 as _flapt_prov
+        _flapt_prov.bind_pending(path, framerate, channels)
+    except Exception:
+        pass
 
 
 # ============================================================

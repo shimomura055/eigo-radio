@@ -86,6 +86,7 @@ def make_tts_call_fn_for_model(model_name: str, voice_name: str, client: "genai.
     modelだけを引数で差し替え可能にした版。gclient.py本体は変更しない。"""
     client = client or gclient.make_client()
     speech_config = gclient.build_speech_config(voice_name)
+    _sent_voice = gclient.effective_voice(voice_name)   # ASR-FLAP-T-PRODUCTION-WIRING-01: 実送信voice
 
     def tts_call_fn(prompt: str) -> bytes:
         response = client.models.generate_content(
@@ -101,6 +102,10 @@ def make_tts_call_fn_for_model(model_name: str, voice_name: str, client: "genai.
         pcm = b"".join(p.inline_data.data for p in parts if p.inline_data and p.inline_data.data)
         if not pcm:
             raise RuntimeError(f"音声パーツが空でした(parts数: {len(parts)})")
+        try:
+            gclient._flapt_note(_sent_voice, model_name)     # ASR-FLAP-T-PRODUCTION-WIRING-01: Flap-T出自記録点(Standard・成功直後)
+        except Exception:
+            pass
         return pcm
 
     return tts_call_fn

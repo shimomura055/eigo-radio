@@ -30,7 +30,9 @@ ORTHO_LABEL = "ORTHOGRAPHIC_EQUIVALENT_MATCH"
 ORTHO_BASIS = "ORTHOGRAPHIC_EQUIVALENT_MATCH"   # APPROVED_EQUIVALENCE_BASES には入れない(最終ANDゲートを丸ごとskipさせない。P-06)
 W_ORTHO_NEGATION = "ORTHO_NEGATION_WORD_HOMOPHONE"
 W_ORTHO_NONREP = "ORTHO_NON_REPRESENTATIVE_VARIANT"
-ORTHO_WARNING_LABELS = frozenset({W_ORTHO_NEGATION, W_ORTHO_NONREP})
+# ASR-FLAP-T-PRODUCTION-WIRING-01: Flap-T(米音の弾音化)救済の警告ラベルを追加(=`ortho_contributed`の(4)で捕捉。Store再利用ガード・事後試聴リストに流れる)。
+W_FLAPT = "FLAP_T_EQUIVALENT"
+ORTHO_WARNING_LABELS = frozenset({W_ORTHO_NEGATION, W_ORTHO_NONREP, W_FLAPT})
 _WARNING_MAP = {"negation_word_homophone": W_ORTHO_NEGATION, "non_representative_variant_match": W_ORTHO_NONREP}
 AUDIT_KEY = "orthographic_equivalence"
 OUT_OF_SCOPE_BLOCK_REASON = "ORTHOGRAPHIC_EQUIVALENT_AUDIO_OUT_OF_SCOPE"
@@ -80,6 +82,13 @@ def layer_version() -> str:
     """監査記録用のer109層version(呼出元がer109純関数moduleを直接importしないための窓口)。"""
     import er109_asr_orthographic_equivalence_01 as e109
     return e109.LAYER_VERSION
+
+
+def token_regex():
+    """ASR-FLAP-T-PRODUCTION-WIRING-01(M1): Flap-T層が判定単位(数字・通貨・時刻・序数・分数・記号もtoken)をer109と揃えるための窓口。
+    呼出元がer109純関数moduleを直接importしない(scope module経由に限る)ための関数。"""
+    import er109_asr_orthographic_equivalence_01 as e109
+    return e109._TOKEN_RE
 
 
 def current_scope() -> Optional[str]:
@@ -159,6 +168,13 @@ def decision(canonical, text, *, lang: str = "en", sink: Optional[dict] = None) 
         if getattr(eq, "ukus_error", "") and sink is not None:
             sink.setdefault("orthographic_equivalence_errors", []).append("ukus_layer_error(v1判定へfail-closed): " + str(eq.ukus_error))
         if (not eq.equivalent) or eq.version != e109.LAYER_VERSION:
+            if not eq.equivalent:
+                # ASR-FLAP-T-PRODUCTION-WIRING-01: er109が『同値でない』ときだけ第3層(Flap-T)を評価する(er109の勝敗・ラベルは不変)。
+                # 判定objectのversionはer139専用 -> explain_protected は version 不一致でFalse=値DIFF/否定差を解除しない(最終ANDゲート不変)。
+                import er139_flapt_equivalence_01 as _flapt
+                _fe = _flapt.decide(canonical, text, sink=sink)
+                if _fe is not None:
+                    return OrthoDecision(canonical, text, _fe, (W_FLAPT,), _RUN_SCOPE)
             return None
         labels = tuple(dict.fromkeys(_WARNING_MAP.get(w, "ORTHO_" + str(w).upper()) for w in (eq.warnings or [])))
         return OrthoDecision(canonical, text, eq, labels, _RUN_SCOPE)
@@ -206,6 +222,31 @@ def ukus_contributed(aj) -> bool:
         if "ukus_spelling_variant" in (er.get("rules") or []) or er.get("ukus_pairs"):
             return True
     return bool(audits_missing and "_ukus" in str(oe.get("version") or ""))
+
+
+def flapt_contributed(aj) -> bool:
+    """ASR-FLAP-T-PRODUCTION-WIRING-01: この判定record(asr_judgement / asr_judgement_inherited)でFlap-T救済が合否に寄与したか。
+    site別er109 audit の rules に 'flap_t_equivalence' を含む、または warnings に FLAP_T_EQUIVALENT。Flap-Tを使っていないentryは常にFalse。"""
+    if not isinstance(aj, dict):
+        return False
+    if W_FLAPT in (aj.get("warnings") or []):
+        return True
+    oe = aj.get(AUDIT_KEY)
+    if not (isinstance(oe, dict) and oe.get("applied")):
+        return False
+    if W_FLAPT in (oe.get("warnings") or []):
+        return True
+    for st in (oe.get("sites") if isinstance(oe.get("sites"), list) else []):
+        er = st.get("er109") if isinstance(st, dict) else None
+        if isinstance(er, dict) and "flap_t_equivalence" in (er.get("rules") or []):
+            return True
+    vote = aj.get("vote")
+    if isinstance(vote, dict):
+        for side in ("primary", "secondary", "whisper"):
+            sub = vote.get(side)
+            if isinstance(sub, dict) and W_FLAPT in (sub.get("ortho_warnings") or []):
+                return True
+    return False
 
 
 def ortho_contributed(aj) -> bool:
