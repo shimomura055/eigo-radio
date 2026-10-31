@@ -5,11 +5,12 @@ import argparse, functools, json, socketserver, sys, threading
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 import er135_enduser_page_verify_01 as V   # Range対応ローカルサーバ・UAを再利用
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 ap = argparse.ArgumentParser()
 ap.add_argument("tree"); ap.add_argument("out"); ap.add_argument("--base-url"); ap.add_argument("--dirs"); ap.add_argument("--no-shots", action="store_true")
 ap.add_argument("--browser", default="chromium", choices=["chromium", "webkit"]); ap.add_argument("--views"); ap.add_argument("--levels", default="std,adv")
+ap.add_argument("--hard-timeout-s", type=float, default=1800.0, help="全体のhard timeout秒(超過でbrowserをkillしrc=124。PLAYWRIGHT-AUDIO-SAFETY-01)")
 a = ap.parse_args()
 out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
 DIRS = (a.dirs.split(",") if a.dirs else ["family_x_meta_waddle_world_01", "family_y_production_surname_choice_01", "family_z_melos_kphr_evidence_r3"])
@@ -33,6 +34,16 @@ CLICK = "(sid) => { const s = document.querySelector('[data-sid=\"'+sid+'\"]'); 
 
 def run_view(p, view, opts, base, d, lv, R, shots):
     br = p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"]) if a.browser == "chromium" else p.webkit.launch()
+    try:
+        _run_view_body(p, br, view, opts, base, d, lv, R, shots)
+    finally:
+        try:
+            br.close()
+        except Exception:
+            pass
+
+
+def _run_view_body(p, br, view, opts, base, d, lv, R, shots):
     ctx = br.new_context(**opts); page = ctx.new_page()
     errs = []
     page.on("pageerror", lambda e: errs.append(str(e)))
@@ -155,7 +166,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
     sh("08_after_level_switch")
     res["errors"] = errs; chk["no_console_or_http_errors"] = not errs
     res["checks"] = chk; R[f"{view}:{d}:{lv}"] = res
-    ctx.close(); br.close()
+    ctx.close()
 
 
 def main():
@@ -168,7 +179,7 @@ def main():
         threading.Thread(target=srv.serve_forever, daemon=True).start(); base = f"http://127.0.0.1:{srv.server_address[1]}"
     R = {}; shots = out / "shots"; shots.mkdir(exist_ok=True)
     try:
-        with sync_playwright() as p:
+        with sync_playwright(hard_timeout_s=a.hard_timeout_s) as p:
             for view, opts in VIEWS.items():
                 if a.views and view not in a.views.split(","):
                     continue

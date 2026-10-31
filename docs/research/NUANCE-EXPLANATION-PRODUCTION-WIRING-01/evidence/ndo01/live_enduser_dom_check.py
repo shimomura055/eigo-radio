@@ -1,5 +1,5 @@
 S=r'C:/Users/tensh/AppData/Local/Temp/claude/C--Users-tensh-eigo-radio/7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046/scratchpad'
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 U='https://shimomura055.github.io/eigo-radio/user_test/family_y_production_surname_choice_01/enduser/index.html'
 with sync_playwright() as p:
     b=p.chromium.launch(); pg=b.new_page(viewport={'width':430,'height':900}); pg.goto(U); pg.wait_for_timeout(2500)

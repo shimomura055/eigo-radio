@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """委任_05: 公開Pages上のStd試聴確認ページのPlaywright実再生evidence(API 0)。"""
 import json, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 URL, OUT = sys.argv[1], sys.argv[2]
 EXP = json.load(open("docs/research/FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01/std_preview_manifest_01.json", encoding="utf-8"))
 out = {"url": URL}

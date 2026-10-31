@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """委任_03 完成版Melos試聴ページ(GitHub Pages)Playwright実再生evidence。費用0円。"""
 import json, os, re, time, urllib.request, urllib.parse
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 BASE = "https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_01/"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "play_evidence_final.json")
 def status(u):

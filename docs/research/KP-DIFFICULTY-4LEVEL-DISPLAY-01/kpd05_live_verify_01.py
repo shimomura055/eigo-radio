@@ -2,7 +2,7 @@
 """KP-DIFFICULTY-4LEVEL-DISPLAY-01 委任_05: 公開(Pages)フォームの実表示確認。API 0。usage: python kpd05_live_verify_01.py <label> <base_url_form_dir> <mode: single|batch|absent>
 single: 6エントリ(?a=<slug>__<level>)をPC/mobileで開き、バッジ数=候補数・label一致・スクショ。batch: ?付き無しで一括画面を開き各set chipを切替えて確認。absent: エントリが404/非表示であること(除去確認)。"""
 import json, os, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 HERE = os.path.dirname(os.path.abspath(__file__))
 SHOTS = os.path.join(HERE, 'kpd05_shots'); os.makedirs(SHOTS, exist_ok=True)
 label, base, mode = sys.argv[1], sys.argv[2].rstrip('/'), sys.argv[3]

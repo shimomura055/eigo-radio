@@ -3,7 +3,7 @@
 自分が起動したローカルhttp.serverのみ。fixtureはroute差替え(本番data不変)。difficulty付与fixtureは一時dirに生成。
 出力: kpd02_verify_display_result.json / kpd02_shots/*.png"""
 import json, os, re, shutil, subprocess, sys, tempfile, time
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..'))

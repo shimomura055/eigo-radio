@@ -8,7 +8,8 @@ const base = process.argv[2];
 const chrome = process.argv[3];
 const port = Number(process.argv[4] || 9334);
 const udd = fs.mkdtempSync(path.join(os.tmpdir(), 'selform2-chrome-'));
-const proc = spawn(chrome, ['--headless=new', '--disable-gpu', '--no-first-run', `--remote-debugging-port=${port}`, `--user-data-dir=${udd}`, 'about:blank'], { stdio: 'ignore' });
+const proc = spawn(chrome, ['--headless=new', '--mute-audio', '--autoplay-policy=user-gesture-required', '--disable-gpu', '--no-first-run', `--remote-debugging-port=${port}`, `--user-data-dir=${udd}`, 'about:blank'], { stdio: 'ignore' });
+process.on('exit', () => { try { proc.kill(); } catch (e) {} });  // PLAYWRIGHT-AUDIO-SAFETY-01: 異常終了でもChromeを残さない
 const results = []; const consoleErrors = [];
 const rec = (name, ok, detail = '') => { results.push({ name, ok, detail }); console.log((ok ? 'PASS ' : 'FAIL ') + name + (detail ? ' :: ' + detail : '')); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));

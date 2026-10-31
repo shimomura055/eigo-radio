@@ -21,7 +21,7 @@ out["new_text2_count"]=h.count("ユーザー試聴PASS・公開承認 2026-10-29
 out["old_text_count"]=sum(h.count(k) for k in ["完成候補","試聴待ち","試聴PASSは未取得"])
 out["equals_count"]=h.count("=====")
 out["std_adv_audio_urls"]=len(re.findall(r"src='audio/[^']+'",h))
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 errs=[]
 with sync_playwright() as p:
     b=p.chromium.launch(); pg=b.new_page()

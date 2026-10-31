@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """委任_01B: Pages HTTP + Playwright実再生(課金APIなし)。Gate 7(l)(m)(n)の機械確認を含む。"""
 import json, urllib.request, time, re
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 B = "https://shimomura055.github.io/eigo-radio/user_test/coffee_tone_trial_01/keyphrases_jacomments/"
 html = urllib.request.urlopen(B + "index.html", timeout=60).read().decode("utf8")
 srcs = re.findall(r'src="([^"]+\.mp3)"', html)

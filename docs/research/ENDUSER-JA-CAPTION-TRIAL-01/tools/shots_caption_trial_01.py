@@ -2,7 +2,7 @@
 使い方: py -3.14 shots_caption_trial_01.py <base_url> <out_dir> [pages=x_adv,y_adv,z_adv,x_std,y_std,z_std]"""
 import json, sys, time
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
 VIEWS = {"pc": dict(viewport={"width": 1280, "height": 900}),

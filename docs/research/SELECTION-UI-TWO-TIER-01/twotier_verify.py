@@ -10,7 +10,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, '..', 'SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01'))
 import sub04_verify as V  # noqa: E402
-from playwright.sync_api import sync_playwright  # noqa: E402
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 check, R = V.check, V.R
 B_ONLY_EXCLUDE = ('moon_shrinking__a2', 'moon_shrinking__b1b', 'untidiness_family_resource__a2', 'untidiness_family_resource__b1b', 'melos__b1b')

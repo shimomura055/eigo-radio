@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """第2巡 試聴ページのGate 7(公開Pages上のPlaywright実再生evidence、API 0)。er019_bape_play_verify_04.py派生。"""
 import argparse, json
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 ap = argparse.ArgumentParser(); ap.add_argument("--url"); ap.add_argument("--out"); A = ap.parse_args()
 BASE = A.url.rsplit("index.html", 1)[0]

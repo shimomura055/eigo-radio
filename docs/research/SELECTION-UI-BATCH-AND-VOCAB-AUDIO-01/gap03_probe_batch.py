@@ -2,7 +2,7 @@
 """委任_03: 公開フォームの『実装済みだが未公開』を実証。公開JS/HTML/dataはそのまま、articles.jsonだけをroute差替えで batch 付きにして実操作(公開物は変更しない・API 0)。
 14セット(7記事x2レベル)で 一覧/進捗/Done/コメント/切替保持/一括コピー を PC+mobile で確認。出力 gap03_result_batch.json / gap03_shots/*"""
 import json, os, re, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright_noplay as sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 HERE = os.path.dirname(os.path.abspath(__file__)); SH = os.path.join(HERE, 'gap03_shots')
 BASE = 'https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/'
 PAGE = BASE + 'index.html'

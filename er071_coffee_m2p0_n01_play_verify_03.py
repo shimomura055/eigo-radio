@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03: 公開Pages上の試聴ページPlaywright実再生evidence(有料APIなし)。er057_coffee_final_v5_play_verify_01.py派生。"""
 import json, re, sys
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 BASE = "https://shimomura055.github.io/eigo-radio/user_test/coffee_m2p0_n01_01/"
 OUTP = "er071_output/m2p0_n01_production_wiring_01/coffee_evidence_02/pages_play_evidence_03.json"
 M = json.load(open("er071_output/m2p0_n01_production_wiring_01/coffee_build_02/assembly_manifest_m2p0_n01_02.json", encoding="utf-8"))["levels"]["adv"]

@@ -1,6 +1,6 @@
 # Playwright実再生evidence (Trial 01A)。全<audio>のHTTP200・metadata・実再生(currentTime進行)・combo通し再生・file:////C:\混入なし。
 import json, sys, time, re
-from playwright.sync_api import sync_playwright
+import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
 URL = sys.argv[1]
 OUT = sys.argv[2]

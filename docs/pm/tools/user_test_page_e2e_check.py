@@ -215,7 +215,7 @@ def main() -> int:
     ap.add_argument("--play-wait-seconds", type=float, default=4.0)
     args = ap.parse_args()
 
-    from playwright.sync_api import sync_playwright
+    import sys as _pws_sys, pathlib as _pws_p; _pws_sys.path.insert(0, str(next(_q for _q in _pws_p.Path(__file__).resolve().parents if (_q / "tools" / "playwright_safe_01.py").exists()) / "tools")); from playwright_safe_01 import sync_playwright  # PLAYWRIGHT-AUDIO-SAFETY-01: 無音+終了保証+hard timeout
 
     items = parse_urls_file(args.urls_file)
     if not items:
