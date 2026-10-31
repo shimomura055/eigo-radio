@@ -1,0 +1,41 @@
+{
+ "schema": "jaq_frozen_config_v1",
+ "frozen_at": "2026-10-31 16:35:54",
+ "model": "gpt-6-luna",
+ "method": "R6",
+ "method_name_ja": "分析→判定型一括検査(context_sense_en/figurative/established_term を先に書かせてから判定。level単位1call)",
+ "effort": "medium",
+ "rule": "R_default",
+ "ref_input": false,
+ "prompt": "v1 (PRINCIPLES + BATCH_NOTE + R6_NOTE)",
+ "developer_text_plus_schema_sha256": "d31ed1d157f9ffcfd4872289cf1bf6695026f59513289db1fa9efd5d014f2de5",
+ "developer_text": "あなたは英語学習教材の日本語訳レビュアーです。学習対象の英語表現(expression)について、現在の日本語訳(current_ja)が、本文のこの箇所での意味を学習者に適切に伝えているかを、記事全文と該当箇所の文脈に基づいて判定します。特定の語についての決まりごとはありません。毎回、本文の文脈から判断してください。各項目は互いに独立に判定し、前の項目の判定に引きずられないでください。訳が妥当なら warn=false にします。疑わしいだけで根拠が弱い場合や、好みの言い換えにすぎない場合も warn=false にします。warn=true にするのは、次のいずれかを具体的に説明できるときだけです。(1)本文の文脈での意味と合っていない (2)文脈上の意味でなく、一般的・辞書の第一義的な意味になっている (3)比喩やたとえの意味が変わってしまっている (4)確立した定訳・専門用語があるのに、定義文や別の語に不適切に置き換えている (5)日本語として不自然・冗長・分かりにくく、学習項目の訳として不適切。severity は、意味が変わる・定訳が消える場合は major、意味は概ね取れるが不自然・冗長などの場合は minor、問題なしは none。confidence は、その判定への確信度です。reason_ja は60字以内で具体的に書き、断定しすぎない表現にします。suggestion は、より適切な訳が明確にあるときだけ書き、なければ空文字にします。warn=false の項目は reason_ja と suggestion を空文字にします。次の複数項目を、同じ記事の文脈で一括して検査してください。出力の results には、入力した全ての id を1件ずつ、漏れなく含めてください。各項目で、判定の前に次の分析欄を先に書いてください。context_sense_en=本文のこの箇所でこの表現が実際に表している意味(英語1文以内)、figurative=この箇所で比喩・たとえ・慣用として使われているか、established_term=この意味に対して確立した日本語の定訳・専門用語があればその語、なければ空文字。その分析に基づいて current_ja を判定してください。",
+ "m8_check": {
+  "pass": true,
+  "hits": [],
+  "n_distinct_checked": 521,
+  "n_eval": 131,
+  "n_pool": 261
+ },
+ "main_config_designated": "R6/medium/R_default (主構成1つ)",
+ "reference_only": "M3/medium/R_loose(devのみ。held-out未実施・参考)",
+ "runs": [
+  "F_R6_med_r1",
+  "F_R6_med_r2"
+ ],
+ "reps": 2,
+ "reps_rule": "見込み総額≤¥52となる最大k∈{3,2,1}: 3rep≈¥57(超過)→2rep≈¥50",
+ "selection_evidence_dev": {
+  "R6_med_R_default": "P-dev 4/6 (66.7%) guardA 9/10",
+  "R6v2_rejected": "guardA max 8/10 (<9/10)",
+  "R6v2_ref": "v2採用せず→ref無効",
+  "effort": "low guardA<=7/10, high not better than medium"
+ },
+ "ledger_total_before_final_jpy": 36.0529,
+ "sha256": {
+  "units.json": "d3f7d12c5fee3cfb5ecc61c57dd7f7b370ebe5965e6da6ccb0c459e9869af214",
+  "batches_final.json": "21219fe9db67e9e63dc244d46efaa77012d8c7c7dcd6a4d944470d392598358d",
+  "labels_frozen_01.json": "e98e830d3da315507c3fc9832cdbae4f76c3e6a9d375762612761e8180833a85",
+  "labels_frozen_01.json_note": "LF正規化(git show)の値。作業ツリーはCRLF変換のため直接sha256は異なる"
+ }
+}
