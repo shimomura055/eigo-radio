@@ -478,8 +478,9 @@ _CAP_LAYOUT_JS = """() => { const cap = document.getElementById('jcap'), bar = d
           capScroll: cap.scrollHeight, capClient: cap.clientHeight, txt: t.textContent, aria: t.getAttribute('aria-pressed'), url: location.search, capText: document.getElementById('jcapT').textContent,
           paused: a.paused, t: a.currentTime, sel: (window.__EUP || {}).sel, mode: (window.__EUP || {}).mode}; }"""
 _CAP_CLICK_ALL_JS = """() => { const a = document.getElementById('aud'), t0 = a.currentTime, rows = [];
+  const cs0 = getComputedStyle(document.getElementById('jcap')), twoBox = 2 * parseFloat(cs0.lineHeight) + parseFloat(cs0.paddingTop) + parseFloat(cs0.paddingBottom) + parseFloat(cs0.borderTopWidth) + parseFloat(cs0.borderBottomWidth);   // 2行分の枠高さ
   document.querySelectorAll('.sent').forEach(s => { s.click(); const c = document.getElementById('jcap'); rows.push({sid: s.dataset.sid, cap: document.getElementById('jcapT').textContent,
-    barH: Math.round(document.getElementById('bar').getBoundingClientRect().height * 10) / 10, scr: c.scrollHeight, cli: c.clientHeight}); });
+    barH: Math.round(document.getElementById('bar').getBoundingClientRect().height * 10) / 10, scr: c.scrollHeight, cli: c.clientHeight, two: twoBox}); });
   return {rows, played: !a.paused, moved: Math.abs(a.currentTime - t0) > 0.05}; }"""
 
 
@@ -510,7 +511,7 @@ def caption_checks(page, view, lv, L, rec, open_lv):
     rec("CAP", pre + "click_stopped_caption_equals_ja_align_expected", bool(rows) and not badx and (not info["played"]) and (not info["moved"]),
         dict(sentences=len(rows), expected_blank=blank_exp, expected_nonblank=len(rows) - blank_exp, mismatch=badx[:3], played=info["played"], moved=info["moved"]))
     base_h = L0["barH"]
-    fit = [r for r in rows if r["scr"] <= r["cli"] + 1 and r["cli"] <= L0["capClient"] + 1]   # キャプションが最小枠(0〜2行)に収まる行
+    fit = [r for r in rows if r["scr"] <= r["two"] + 1]   # キャプション本文が2行以内に収まる行(枠は0〜2行で同じ高さでなければならない。Opus R-1。旧CSSの1行以下162/2行176の差を検出)
     badh = sorted({r["barH"] for r in fit if abs(r["barH"] - base_h) > 0.6})
     rec("CAP", pre + "bar_height_constant_0_to_2_lines", bool(fit) and not badh, dict(base=base_h, fit_rows=len(fit), over2_rows=len(rows) - len(fit), other_heights=badh[:4]))
     # OFF -> ON(停止中。選択状態を保持)

@@ -10,7 +10,7 @@
 | 書出し | `er135_enduser_page_01.py:1308` `write_enduser_page` | `ASSET_FILES=(index.html,app.js,style.css)`(:43)を`<dir>/enduser/`へLFで原子的にswap。`build_info.asset_build`は:1013、`assets/files`のshaは:1341-1342で記録 |
 | 訳の描画種別 | `er135_enduser_rules_01.py:22` `ASSET_TRANSLATION_KINDS[ASSET_BUILD_ID]`、`er135_enduser_page_01.py:820` | 現行assetが描画できるpart種別のみ生成対象 |
 | 検査 | `er135_enduser_page_01.py:1415-1422` `verify_consistency` | `public_dir`のasset shaを**現行ASSET_DIR**と照合。`FROZEN_ASSET_DIRS`(:45)の凍結dirだけ旧assetで照合。=ASSET_BUILD_ID更新後、旧assetのままの公開dirは`verify_consistency`が不合格になる(旧assetが「気づかれず残る」ことはない) |
-| asset生成 | `enduser_page_assets/derive_assets_01.py`(DEV rev01-e->rev01-h)。rev01-iは`docs/research/ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01/tools/build_rev01i_01.py`(rev01-hからの機械的派生) | rev01-e/f/g/hは残置(履歴) |
+| asset生成 | `enduser_page_assets/derive_assets_01.py`(DEV rev01-e->rev01-h)。rev01-iは`enduser_page_assets/build_rev01i_01.py`(rev01-hからの機械的派生。委任_02でresearch側から移設) | rev01-e/f/g/hは残置(履歴) |
 
 ## 2. 公開済みEnd Userページ(`enduser/index.html` build-id実測、origin/main時点)
 rev01-h配線済み = **9dir**(ユーザー原文の「対象9記事」と一致。数の差分なし):

@@ -23027,3 +23027,10 @@ JA-GLOSS-QUALITY-ALARM-TRIAL-01-DECISION-01: 案B3不採用・現行維持・独
 - 決定: (1)JA-GLOSS-NUANCE-01の案B3はREJECTED(副作用による既存訳の品質悪化リスク)。(2)現行の日本語訳生成Prompt・仕様は維持。(3)生成済み日本語訳を独立してチェックする品質アラーム機構のDEV/Trialを開始(OPEN-636)。(4)問題が疑われる訳はHuman Reviewページで警告表示(最終的に承認/修正はユーザー)。(5)品質チェックのモデルはgpt-6-luna(Luna 6.0)限定、他モデルの採用・比較Trialなし。(6)警告Precision目標80〜90%(保証でない、基準の途中緩和禁止)。(7)Production配線はユーザー正式承認まで禁止(到達可能Status=VALIDATED/REJECTED/USER_DECISION_REQUIRED)。
 - 範囲: 設計・Trial・DEV試作のみ。既存の品質基準・選定仕様・訳生成Promptは不変。個別辞書・特定語の例外ルールは設計に入れない。
 - 反映: OPEN-630(B3 REJECTED)、OPEN-636新規、docs/research/JA-GLOSS-NUANCE-01/TRIAL_01.md §9。原文=docs/pm/delegation_log/2026-10-31_JA-GLOSS-QUALITY-ALARM-TRIAL-01_USER.md。CURRENT_SPECは変更しない(Trial段階)。
+
+ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01-DECISION-01: 日本語キャプション方式(A案=既定ON+ON/OFF切替)のProduction配線 Status確定(ユーザー正式採用2026-10-31、到達=PRODUCTION_WIRED_PENDING_FABLE、2026-10-31)
+- 決定(ユーザー原文§1): ENDUSER-JA-CAPTION-TRIAL-01(OPEN-628)をA案(既定ON+ON/OFF切替)で正式採用(APPROVED_FOR_PRODUCTION)。対象=Family X/Y/Z x Std/Adv、量産時追加API費用0円、本文・翻訳・音声・TTS・Prompt変更なし。
+- 実装/到達: asset rev01-i(共通asset 1本)+`ASSET_BUILD_ID`切替(e25f16293)+公開9dir一括再produce(77babf1c5)を同一push(4df50f8bf、2026-10-31 17:15:15 JST)。正式runner X/Y/Z 3経路rc=0・公開URL(PC/スマホ/320px/WebKit)実操作PASS・unit PASS。Fable独立受入待ち(PRODUCTION_WIREDはFable受入後)。
+- Opus条件Aレビュー(OPUS_REVIEW_01.md)反映: R-1採用(バー高=border-box補正でTrial外観の最大占有は不変、0〜1行時+12〜14pxのみ増。原文2-3『不必要なレイアウト変動がない』との矛盾の是正=PM_GOVERNANCE 11-8の不具合是正、新仕様ではない)、R-4(ON時`caption`削除)、M-1(切替と再produceの同一push・動的列挙)、M-2(diff gate厳格化)、M-3/M-5(期待値ベース観測・verifyにCAP検査群)、R-5/R-6(resume証拠・build_rev01i移設・Trial dir案内化)、R-7/R-8(WebKit・320px記録)。
+- 間欠NG: vocab_each_itemは検査側競合(確定・再現)、glossary_linksは検査側競合(推定・未再現)をいずれも検査是正。再発時は製品側として別OPEN。
+- 反映: OPEN-628(PRODUCTION_WIRED_PENDING_FABLE)、CURRENT_SPEC End Userページ節に日本語キャプション仕様を追加。根拠: docs/research/ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01/{DESIGN_01,OPUS_REVIEW_01,RUNTIME_EVIDENCE_01}.md、evidence_02/、docs/pm/RESULT_PACKET_CAPW_02.md。原文=docs/pm/delegation_log/2026-10-31_ENDUSER-JA-CAPTION-PRODUCTION-WIRING-01_USER.md。

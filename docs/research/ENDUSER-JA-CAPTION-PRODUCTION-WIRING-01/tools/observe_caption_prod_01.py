@@ -19,7 +19,7 @@ VIEWS = {"pc": dict(viewport={"width": 1280, "height": 900}),
 
 SAMPLE = """() => { const e = window.__EUP || {}; const on = Array.from(document.querySelectorAll('.jhl.on')).map(x => x.textContent).join('');
  const cap = document.getElementById('jcapT').textContent; const A = document.getElementById('aud'); const b = document.getElementById('bar').getBoundingClientRect();
- return {cap, on, ok: cap === on, paused: A.paused, t: A.currentTime, mode: e.mode, sel: e.sel, barH: Math.round(b.height * 10) / 10, scrollH: document.documentElement.scrollHeight}; }"""
+ return {cap, on, ok: cap === on, paused: A.paused, t: A.currentTime, mode: e.mode, sel: e.sel, barH: Math.round(b.height * 10) / 10, gap: Math.round((innerHeight - b.bottom) * 10) / 10, scrollH: document.documentElement.scrollHeight}; }"""
 LAYOUT = """() => { const g = id => document.getElementById(id).getBoundingClientRect(); const cs = getComputedStyle(document.body);
  const bar = g('bar'), cap = document.getElementById('jcap'), cr = cap.getBoundingClientRect(), r2 = document.querySelector('.row2').getBoundingClientRect(), pp = g('pp'), tg = g('capToggle');
  const vw = document.documentElement.clientWidth;
@@ -53,7 +53,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
     chk["layout_ok_ON"] = L0["jcapBelowRow2"] and not L0["jcapOverlapPP"] and not L0["row2Overflow"] and not L0["hScroll"] and L0["barTop"] > 0
     info = page.evaluate("""() => { const A = document.getElementById('aud'); const t0 = A.currentTime; const rows = [];
       document.querySelectorAll('.sent').forEach(s => { s.click(); const cap = document.getElementById('jcapT').textContent; const on = Array.from(document.querySelectorAll('.jhl.on')).map(x => x.textContent).join('');
-        rows.push({sid: s.dataset.sid, cap, on, barH: Math.round(document.getElementById('bar').getBoundingClientRect().height * 10) / 10, scr: document.getElementById('jcap').scrollHeight, cli: document.getElementById('jcap').clientHeight}); });
+        rows.push({sid: s.dataset.sid, cap, on, barH: Math.round(document.getElementById('bar').getBoundingClientRect().height * 10) / 10, scr: document.getElementById('jcap').scrollHeight, cli: document.getElementById('jcap').clientHeight, two: (() => { const q = getComputedStyle(document.getElementById('jcap')); return 2 * parseFloat(q.lineHeight) + parseFloat(q.paddingTop) + parseFloat(q.paddingBottom) + parseFloat(q.borderTopWidth) + parseFloat(q.borderBottomWidth); })()}); });
       return {rows, played: !A.paused, moved: Math.abs(A.currentTime - t0) > 0.05}; }""")
     rows = info["rows"]; withcap = [r for r in rows if r["cap"]]; nocap = [r for r in rows if not r["cap"]]
     res["sentences"] = len(rows); res["with_caption"] = len(withcap); res["without_caption"] = len(nocap)
@@ -61,7 +61,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
     chk["click_cap_equals_jhl_on"] = all(r["cap"] == r["on"] for r in rows)
     chk["caption_equals_ja_align_expected_for_every_sentence"] = bool(rows) and all(r["cap"] == EXP.get(r["sid"], "") for r in rows)   # 期待値=ja_align由来(群なしsid・g.ja==null・ja無しpart・degraded=空欄)
     res["expected_blank_sentences"] = sum(1 for r in rows if EXP.get(r["sid"], "") == ""); res["expected_nonblank_sentences"] = sum(1 for r in rows if EXP.get(r["sid"], ""))
-    fit = [r for r in rows if r["scr"] <= r["cli"] + 1 and r["cli"] <= L0["jcapH"] + 1]
+    fit = [r for r in rows if r["scr"] <= r["two"] + 1]
     chk["bar_height_constant_0_to_2_lines"] = bool(fit) and all(abs(r["barH"] - L0["barH"]) <= 0.6 for r in fit); res["bar_rows"] = dict(fit=len(fit), over2=len(rows) - len(fit), base=L0["barH"])
     if withcap:
         mid = withcap[len(withcap) // 2]
@@ -88,7 +88,9 @@ def run_view(p, view, opts, base, d, lv, R, shots):
         sidcap = {r["sid"] for r in withcap}
         target = next((s for s in ss if s["sid"] in sidcap and s["start"] > 1), None)
         if target:
-            page.evaluate("(t) => { const A = document.getElementById('aud'); A.currentTime = Math.max(0, t - 0.4); A.play(); }", target["start"]); page.wait_for_timeout(1200)
+            page.evaluate("(t) => { const A = document.getElementById('aud'); A.currentTime = Math.max(0, t - 0.4); A.play().catch(() => {}); }", target["start"]); page.wait_for_timeout(1200)   # play()のAbortError(WebKitでsrc切替中に起きる検査側の拒否)を未処理にしない
+            if page.evaluate("() => document.getElementById('aud').paused"):   # 再生が始まらなかった場合は1回だけ再試行(検査側の起動競合。製品のplayNowはAbortErrorを握りつぶす=app.js playNow)
+                page.evaluate("() => document.getElementById('aud').play().catch(() => {})"); page.wait_for_timeout(1200)
             sh("06_playing"); res["nowlabel_states"].append(dict(state="playing", **{k: page.evaluate(LAYOUT)[k] for k in ("nowLabel", "nowLabelTrunc", "nowLabelW")}))
             samples = []
             for _ in range(80):
@@ -97,6 +99,7 @@ def run_view(p, view, opts, base, d, lv, R, shots):
             res["playing_8s"] = {"samples": len(samples), "mismatch": sum(1 for s in samples if not s["ok"]), "cap_changes": sum(1 for i in range(1, len(caps)) if caps[i] != caps[i-1]),
                                  "barH_values": sorted(set(s["barH"] for s in samples)), "scrollH_values": sorted(set(s["scrollH"] for s in samples)), "all_playing": all(not s["paused"] for s in samples)}
             chk["playing_cap_equals_jhl_on"] = res["playing_8s"]["mismatch"] == 0 and res["playing_8s"]["cap_changes"] >= 1
+            res["playing_8s"]["bar_bottom_gap_values"] = sorted(set(s["gap"] for s in samples)); chk["bar_at_viewport_bottom_while_playing"] = res["playing_8s"]["bar_bottom_gap_values"] == [0.0]
             chk["playing_content_no_reflow"] = len(res["playing_8s"]["scrollH_values"]) == 1   # 本文(documentの高さ)は再生中に動かない。バー高さ変動(OBS)はTrialと同一の固定バー上端の移動のみ
             res["OBS_bar_height_varies_with_caption_lines"] = res["playing_8s"]["barH_values"]
             T0 = page.evaluate(SAMPLE); page.click("#capToggle"); page.wait_for_timeout(300); T1 = page.evaluate(SAMPLE); page.click("#capToggle"); page.wait_for_timeout(300); T2 = page.evaluate(SAMPLE)

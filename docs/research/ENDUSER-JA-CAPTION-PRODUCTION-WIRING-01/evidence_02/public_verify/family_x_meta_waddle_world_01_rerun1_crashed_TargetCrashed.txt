@@ -1,0 +1,66 @@
+pc A all_audio_refs_200_or_206 OK 
+pc A asset_app.js_200 OK 
+pc A asset_style.css_200 OK 
+pc A asset_article.json_200 OK 
+pc B std_no_dev_or_placeholder_text OK 
+pc B std_no_internal_marks_or_article_switch OK 
+pc B std_no_horizontal_overflow OK 
+pc C std_notice_hidden_when_none OK 
+pc C std_translation_blocks_equal_approved_data OK 
+pc C std_blocks_without_approved_translation_show_none OK 
+pc D std_nuance_corner_abolished OK 
+pc D std_vocab_corner_shown OK 
+pc D std_grammar_corner_shown OK 
+pc D std_corner_order OK 
+pc D std_no_empty_cards OK 
+pc D std_corner_item_counts_equal_data OK 
+pc E std_vocab_quotes_have_bold OK 
+pc E std_no_bold_in_transcript_or_gloss OK 
+pc E std_bold_only_in_quote_dd OK 
+pc E std_quote_text_unchanged_by_bold OK 
+pc F std_highlight_follows_playhead_27_sampled OK 
+pc F std_sentence_click_does_not_play_or_seek OK 
+pc F std_seekbar_moves_to_50pct OK 
+pc F std_play_pause_button OK 
+pc F std_audio_no_error OK 
+Traceback (most recent call last):
+  File "C:\Users\tensh\AppData\Local\Temp\claude\C--Users-tensh-eigo-radio\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\scratchpad\wt_cap\er135_enduser_page_01.py", line 1982, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\tensh\AppData\Local\Temp\claude\C--Users-tensh-eigo-radio\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\scratchpad\wt_cap\er135_enduser_page_01.py", line 1974, in main
+    return V.run(a.public_dir, base_url=a.base_url, out=a.out, shots=a.shots)
+           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Temp\claude\C--Users-tensh-eigo-radio\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\scratchpad\wt_cap\er135_enduser_page_verify_01.py", line 149, in run
+    _run_view(p, view, opts, RES, art, syncs, page_url, base, shots_dir)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Temp\claude\C--Users-tensh-eigo-radio\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\scratchpad\wt_cap\er135_enduser_page_verify_01.py", line 309, in _run_view
+    s = A()
+  File "C:\Users\tensh\AppData\Local\Temp\claude\C--Users-tensh-eigo-radio\7eda59a9-ca6c-4f6c-9eb5-2b973c0ca046\scratchpad\wt_cap\er135_enduser_page_verify_01.py", line 194, in A
+    return page.evaluate("() => { const a=document.getElementById('aud'); return {t:a.currentTime, paused:a.paused, src:a.src, err:a.error?a.error.code:null, eup:window.__EUP}; }")
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\playwright\sync_api\_generated.py", line 9413, in evaluate
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.evaluate(expression=expression, arg=mapping.to_impl(arg))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\playwright\_impl\_page.py", line 474, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\playwright\_impl\_frame.py", line 346, in evaluate
+    await self._channel.send(
+    ...<6 lines>...
+    )
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: Target crashed 
