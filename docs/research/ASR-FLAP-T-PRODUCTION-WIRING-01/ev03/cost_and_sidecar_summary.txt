@@ -1,0 +1,20 @@
+== x_std cost (0.09464800000000001, {'openai': 0.01, 'gemini_batch': 0.05, 'openai_asr': 0.04})
+  batches.create in_one_line gemini-3.8-flash-lite-tts Aoede gemini_batch True 0.049
+  sidecar 2/2
+    generation in_one_line 782b26942d Aoede gemini-3.8-flash-lite-tts sdk_boundary_batch [] confirmed True []
+    generation in_one_line 5e1a3485e6 Aoede gemini-3.8-flash-lite-tts sdk_boundary_batch [{"kind": "atempo", "slowdown_pct": 6.0}] confirmed True []
+== y_std cost (0.13128800000000002, {'openai': 0.02, 'gemini_batch': 0.06, 'openai_asr': 0.05})
+  batches.create y_intro_1 gemini-3.8-flash-lite-tts Aoede gemini_batch True 0.029
+  batches.create y_voice_1 gemini-3.8-flash-lite-tts Puck gemini_batch True 0.029
+  sidecar 4/4
+    generation y_intro_1 0de1d77db0 Aoede gemini-3.8-flash-lite-tts sdk_boundary_batch [] confirmed True []
+    generation y_intro_1 ab72713688 Aoede gemini-3.8-flash-lite-tts sdk_boundary_batch [{"kind": "atempo", "slowdown_pct": 6.0}] confirmed True []
+    generation y_voice_1 77b77e92a8 Puck gemini-3.8-flash-lite-tts sdk_boundary_batch [] confirmed True []
+    generation y_voice_1 62cd085012 Puck gemini-3.8-flash-lite-tts sdk_boundary_batch [{"kind": "atempo", "slowdown_pct": 6.0}] confirmed True []
+== y_adv cost (0.10648000000000002, {'openai': 0.02, 'gemini_batch': 0.06, 'openai_asr': 0.02})
+  batches.create y_intro_1 gemini-3.8-flash-lite-tts Aoede gemini_batch True 0.029
+  batches.create y_voice_1 gemini-3.8-flash-lite-tts Puck gemini_batch True 0.03
+  sidecar 2/2
+    generation y_intro_1 9bad7330c2 Aoede gemini-3.8-flash-lite-tts sdk_boundary_batch [] confirmed True []
+    generation y_voice_1 221b633af5 Puck gemini-3.8-flash-lite-tts sdk_boundary_batch [] confirmed True []
+TOTAL_JPY_this_task_runs 0.332

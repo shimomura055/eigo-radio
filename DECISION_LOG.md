@@ -22984,3 +22984,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 実装: 形態B(新module er139_flapt_equivalence_01/er139_flapt_provenance_01+er109 decision()第3層分岐)。Voice/modelはAPI境界の実送信値を出自台帳(sha256(wav)束縛)で判定へ渡す。表=er139_flapt_voice_table_01.json(20行、Puck|pro=false)。flag既定ON(literal)、親flag=er109。Opus条件A必須修正1〜4+推奨+Fable追加(attempt audit tts_provenance)を反映。
 - 検証: 新規72 test PASS、既存67 file回帰=新規失敗0、保存11,181転写replay誤救済0、BATCH実run 3本(X Adv/Z Adv/Z Std)でsidecar 6/6=100%、費用約¥0.49。量産単価+0。
 - 未宣言: PRODUCTION_WIREDはFable受入判定。出自のない既存音声は適用外。証跡=docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/EVIDENCE_02.md。
+
+## ASR-FLAP-T-PRODUCTION-WIRING-01-DECISION-02: Flap-T救済のProduction配線 Status確定(Fable受入ACCEPTED+委任_03 runtime証拠、2026-10-31)
+- 判断: Fable受入=実装ACCEPTED(docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/FABLE_ACCEPTANCE_01.md)。ユーザー原文:122「PRODUCTION_WIREDの全条件を満たしたFamily・レベルのみ完了扱い」に従い、委任_02時点ではruntime証拠のなかったX Std・Y Std・Y Advを委任_03でBatch既定の実runにより証拠化した。新規仕様判断ではなく承認済み仕様(DECISION-01)のStatus確定。
+- Status(セル別): X Std/X Adv/Y Std/Y Adv/Z Std/Z Adv = 全て**PRODUCTION_WIRED**。X Adv/Z Std/Z Adv=委任_02 EVIDENCE_02 §5、X Std/Y Std/Y Adv=委任_03 EVIDENCE_03(batches.create model_id/voice・wav sha束縛[6%減速子登録transform 6.0含む]・sidecar 8/8=100%・attempt audit tts_provenance)。費用約¥0.40(個別Cap ¥5)、量産単価+0。
+- 適用外の区別: Puck|pro(confirmed=false)は承認仕様どおりの適用外(fail-closed、未完了Open Itemではない)。出自のない既存の保存音声・未確認Voiceも同様。自然なFlap転写は実run中に未発生(発火は保存attempt再判定+adapter実経路test、到達性は実Batch run)。
+- 反映: OPEN-627ステータス更新、CURRENT_SPEC Flap-T節見出し更新。根拠: docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/{EVIDENCE_02,EVIDENCE_03,FABLE_ACCEPTANCE_01}.md、docs/pm/RESULT_PACKET_FLAPTP_03.md。
