@@ -245,7 +245,43 @@ for c in conds:
             cand.append({"sid": sid, "kata": sorted(mk), "num": sorted(mn)})
     mix[c] = cand
 out["mix_candidates_counts"] = {c: len(v) for c, v in mix.items()}
+
+# R-11: 1回目の訳(verify前) と 最終訳 の関係(verify/再試行が結果を良くしたか悪くしたか)
+ff = {}
+for c in conds:
+    cnt = collections.Counter()
+    for sid in sinfo:
+        gf = gget(f"{c}:first", sid)
+        if gf is None or gf[0] == "x":
+            continue
+        fin = final_ja.get(c, {}).get(sid, "NA")
+        if fin == "NA":
+            continue
+        if fin is None:
+            cnt["first_ok_but_failclosed" if gf[0] <= 1 else "first_bad_failclosed"] += 1; continue
+        gl = gget(f"{c}:final", sid)
+        if gl is None or gl[0] == "x":
+            continue
+        if text_of.get((f"{c}:first", sid)) == text_of.get((f"{c}:final", sid)):
+            cnt["same_text"] += 1
+        elif gl[0] > gf[0]:
+            cnt["final_worse_than_first"] += 1
+        elif gl[0] < gf[0]:
+            cnt["final_better_than_first"] += 1
+        else:
+            cnt["changed_same_grade"] += 1
+    ff[c] = dict(cnt)
+out["first_vs_final"] = ff
 json.dump({"mix_candidates": mix}, open(os.path.join(a.evdir, f"mix_candidates_{a.split}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+
+detail = {}
+for M in conds:
+    if M == base:
+        continue
+    cm = compare(M, base)
+    detail[M] = [{"sid": sid, "status": v[0], "grade_M": v[1], "grade_A": v[2], "family": sinfo[sid]["family"], "level": sinfo[sid]["level"], "kind": sinfo[sid]["kind"], "stratum": sinfo[sid]["stratum"], "en": sinfo[sid]["en"],
+                  "ja_M": final_ja[M].get(sid), "ja_A": final_ja[base].get(sid)} for sid, v in cm.items() if v[0] in ("imp", "worse")]
+json.dump(detail, open(os.path.join(a.evdir, f"cmp_detail_{a.split}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
 json.dump(out, open(os.path.join(a.evdir, f"metrics_{a.split}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 # 要約出力
 print("missing grades", out["missing_grades"])
