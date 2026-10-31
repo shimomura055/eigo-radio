@@ -10,8 +10,8 @@ sets = json.load(open(a.sets, encoding="utf-8"))[a.split]
 sinfo = {}
 for e in sets:
     for s in e["sentences"]:
-        sinfo[s["sid"]] = {"slug": e["slug"], "family": e["family"], "level": e["level"], "part": e["part"], "kind": e["kind"], "stratum": e["stratum"], "en": s["en"]}
-part_sids = {(e["slug"], e["level"], e["part"]): [s["sid"] for s in e["sentences"]] for e in sets}
+        sinfo[e["slug"] + "|" + s["sid"]] = {"slug": e["slug"], "family": e["family"], "level": e["level"], "part": e["part"], "kind": e["kind"], "stratum": e["stratum"], "en": s["en"]}
+part_sids = {(e["slug"], e["level"], e["part"]): [e["slug"] + "|" + s["sid"] for s in e["sentences"]] for e in sets}
 key = json.load(open(os.path.join(a.evdir, f"sheet_key_{a.split}.json"), encoding="utf-8"))
 sheet = json.load(open(os.path.join(a.evdir, f"sheet_{a.split}.json"), encoding="utf-8"))
 sheet_by_row = {str(r["row"]): r for r in sheet}
@@ -22,7 +22,7 @@ for ln in open(a.grades, encoding="utf-8"):
         continue
     toks = ln.split()
     row = toks[0]
-    g = {}
+    g = {L: (0, "") for L in key[row]["map"]} if row in key else {}
     for t in toks[1:]:
         m = re.match(r"^([A-Z])([0-3x])([A-Za-z]?)$", t)
         if not m:
@@ -40,7 +40,7 @@ final_ja = {c: {} for c in conds}
 for c in conds:
     for r in rows[c]:
         for sid, ja in r["ja"].items():
-            final_ja[c][sid] = ja
+            final_ja[c][r["slug"] + "|" + sid] = ja
 # grade lookup: (cond, kind) -> sid -> (grade|'x'|None(未表示), type)
 G = collections.defaultdict(dict)
 text_of = {}
@@ -64,6 +64,8 @@ def compare(M, B, kind="final", mode="main"):
         bshown = final_ja.get(B, {}).get(sid) is not None if kind == "final" else gb is not None
         if kind == "final" and (M not in final_ja or B not in final_ja):
             continue
+        if kind == "first" and (gm is None or gb is None):
+            continue   # 1回目の訳が復元できない単位(parse不合格で再試行)は比較から除く
         if B == "PUB" and sid not in {s for s in G.get("PUB:final", {})}:
             continue
         if not mshown and not bshown:

@@ -11,12 +11,12 @@ sets = json.load(open(a.sets, encoding="utf-8"))[a.split]
 pool = json.load(open(a.pool, encoding="utf-8"))
 pub = {}
 for r in pool:
-    pub[r["sid"]] = r["ja"]
+    pub[r["dir"] + "|" + r["sid"]] = r["ja"]
 sent = {}   # sid -> {en, slug, level, part, kind, stratum, idx, prev, next}
 for e in sets:
     S = e["sentences"]
     for i, s in enumerate(S):
-        sent[s["sid"]] = {"en": s["en"], "slug": e["slug"], "level": e["level"], "part": e["part"], "kind": e["kind"], "stratum": e["stratum"], "family": e["family"],
+        sent[e["slug"] + "|" + s["sid"]] = {"en": s["en"], "slug": e["slug"], "level": e["level"], "part": e["part"], "kind": e["kind"], "stratum": e["stratum"], "family": e["family"],
                           "prev": [x["en"] for x in S[max(0, i - 2):i]], "next": [x["en"] for x in S[i + 1:i + 3]]}
 
 def first_translation(calls_log, unit_sents):
@@ -56,11 +56,12 @@ for cond in a.conds.split(","):
         order = [sid for p in r["parts"] for sid in p["sids"]]
         ft = first_translation(calls.get(r["unit"], []), order)
         for sid in order:
-            final[(cond, sid)] = r["ja"].get(sid)
-            add(sid, r["ja"].get(sid), f"{cond}:final")
+            g = r["slug"] + "|" + sid
+            final[(cond, g)] = r["ja"].get(sid)
+            add(g, r["ja"].get(sid), f"{cond}:final")
             if ft:
-                firstp[(cond, sid)] = ft.get(sid)
-                add(sid, ft.get(sid), f"{cond}:first")
+                firstp[(cond, g)] = ft.get(sid)
+                add(g, ft.get(sid), f"{cond}:first")
 for sid in sent:
     if sid in pub:
         add(sid, pub[sid], "PUB:final")
