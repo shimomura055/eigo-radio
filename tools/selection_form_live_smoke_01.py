@@ -144,8 +144,8 @@ def run_views(base, kind, batch_id, n_members, asset_version, shots_dir=None):
                     n_item = pg.locator('#candPhrase .item, #candWord .item').count()
                     n_occ = pg.locator('#candPhrase .occ[data-occ], #candWord .occ[data-occ]').count()
                     hint = pg.inner_text('#occHint') if pg.is_visible('#occHint') else ''
-                    warn = 'occwarn' in (pg.get_attribute('#occHint', 'class') or '')
-                    ck('%s: 出現回数 候補数==回数行数(または旧dataのページ単位案内)' % kind, (n_item > 0 and n_occ == n_item and bool(hint) and not warn) or (warn and n_occ == 0 and '集計できませんでした' in hint) or n_item == 0,
+                    warn = ('occwarn' in (pg.get_attribute('#occHint', 'class') or '')) or ('occnote' in (pg.get_attribute('#occHint', 'class') or ''))   # OCC-03: 旧データは中立色occnote(案内)、集計失敗はoccwarn
+                    ck('%s: 出現回数 候補数==回数行数(または旧dataのページ単位案内)' % kind, (n_item > 0 and n_occ == n_item and bool(hint) and not warn) or (warn and n_occ == 0 and ('集計できませんでした' in hint or '旧データ・出現回数なし' in hint)) or n_item == 0,
                        'items=%d occ=%d warn=%s hint=%s' % (n_item, n_occ, warn, hint[:40]))
                     ck('%s: 出現回数に「出現 0回」の断定表示なし' % kind, not any(('出現 0回' in t) for t in pg.locator('.occ').all_inner_texts()))
             ck('%s: pageerror 0' % kind, not errs, errs[:2])

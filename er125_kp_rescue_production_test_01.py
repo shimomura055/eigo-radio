@@ -750,5 +750,104 @@ class TestQuantifierGuardRegression(unittest.TestCase):
         self.assertIsNone(r.rescue_canonicalization_item(llm_item(1, "accept no responsibility"), o, "accepts no responsibility"))
 
 
+class TestQaRejudgeRevertSurfaceKey(unittest.TestCase):
+    """KP-RESCUE-REJUDGE-REVERT-SURFACE-FIX-01(OPEN-633): REVERT_SURFACEで表層形(gets heated)へ戻した項目のQA再判定で、
+    LLMが見出し形(get heated)を返しても同一項目として判定を採用する。無関係語・rank不一致・QA欄不正は従来どおりNOT_REJUDGED(fail-closed不変)。API 0。"""
+
+    TEXT = "The kids left toys everywhere. No wonder the kitchen meeting gets heated."
+
+    def _rescued(self):
+        u = core.build_sentence_units(self.TEXT)
+        v = ft.validate_and_resolve([{"phrase": "gets heated", "declared_word_count": None}], u)
+        o = ft.build_original_items(v["resolved"])[0]
+        o["rank"] = 1
+        parsed = r.postprocess_rescue({"items": [llm_item(1, "get heated")]}, [o])
+        self.assertEqual(parsed["items"][0]["kp_rescue"]["code"], r.R_REVERT)             # 前提: 実際にREVERT_SURFACEが起きる
+        self.assertEqual(parsed["items"][0]["key_phrase"], "gets heated")
+        merged = kc.merge_canonicalization_result([o], parsed["items"])
+        return o, parsed, merged
+
+    @staticmethod
+    def _call(ret_key, rank=1, **qa):
+        def call(msg):
+            it = llm_item(rank, ret_key, qa_fail=qa.get("qa_fail", ()))
+            return json.dumps({"items": [it]}), "gpt-fake", "r-qa"
+        return call
+
+    def _final(self, ret_key, **kw):
+        o, parsed, merged = self._rescued()
+        gl = lambda m, rk: TestFlowAndPersistence._gloss_ok(m, rk)
+        out = r.finalize_rescued_items(merged, parsed, [o], self.TEXT, gloss_realign_fn=gl, qa_call_fn=self._call(ret_key, **kw))
+        return out["items"][0]
+
+    def test_headword_form_from_llm_is_same_item(self):          # 3/3再現していた経路: surface=gets heated, LLM=get heated
+        it = self._final("get heated")
+        self.assertEqual(it["rescue"]["qa"]["status"], r.QA_REJUDGED_PASS)
+        self.assertEqual(it["qa_overall_status"], "PASS")
+        self.assertEqual(it["key_phrase"], "gets heated")                                  # keyは表層形のまま(承認済み救済仕様)
+
+    def test_surface_form_still_same_item(self):
+        self.assertEqual(self._final("gets heated")["rescue"]["qa"]["status"], r.QA_REJUDGED_PASS)
+
+    def test_unrelated_key_is_still_not_rejudged(self):
+        for bad in ("get hot", "heated", "get angry", ""):
+            q = self._final(bad)["rescue"]["qa"]
+            self.assertEqual(q["status"], r.QA_NOT_REJUDGED, bad)
+            self.assertEqual(q["error"], "key_mismatch_or_invalid_fields", bad)
+
+    def test_rank_mismatch_is_still_not_rejudged(self):
+        self.assertEqual(self._final("get heated", rank=2)["rescue"]["qa"]["status"], r.QA_NOT_REJUDGED)
+
+    def test_verdict_is_not_bypassed_qa_fail_is_kept(self):        # 一致しても無条件に通さない: QA FAILは落ちる(基準不変)
+        it = self._final("get heated", qa_fail=("qa_not_over_minimized",))
+        self.assertEqual(it["rescue"]["qa"]["status"], r.QA_REJUDGED_FAIL)
+        self.assertEqual(it["qa_overall_status"], "REVIEW_REQUIRED")
+
+    def test_invalid_qa_field_with_matching_headword_is_not_rejudged(self):
+        def call(msg):
+            it = llm_item(1, "get heated")
+            it["qa_not_over_minimized"] = "MAYBE"
+            return json.dumps({"items": [it]}), "gpt-fake", "r-qa"
+        o, parsed, merged = self._rescued()
+        out = r.finalize_rescued_items(merged, parsed, [o], self.TEXT, qa_call_fn=call)
+        self.assertEqual(out["items"][0]["rescue"]["qa"]["status"], r.QA_NOT_REJUDGED)
+
+    def test_non_revert_item_does_not_accept_headword(self):       # M1救済(表層形≠見出し語の別救済)・救済record無しの素のitemには適用されない
+        base = {"rank": 7, "key_phrase": "gets heated", "display_phrase": "gets heated", "source_span": "gets heated",
+                "source_sentence": "No wonder the kitchen meeting gets heated.", "normalization_reason": "none"}
+        res = r.qa_rejudge(self.TEXT, [dict(base)], self._call("get heated", rank=1), {7: ()})
+        self.assertEqual(res["by_rank"][7]["status"], r.QA_NOT_REJUDGED)                   # alt情報なし=旧挙動(従来どおり)
+        m1 = dict(base, kp_rescue={"code": r.R_M1, "llm_key_phrase": "get heated"})
+        self.assertEqual(r.qa_rejudge(self.TEXT, [m1], self._call("get heated", rank=1), {7: ()})["by_rank"][7]["status"], r.QA_NOT_REJUDGED)
+        rev = dict(base, kp_rescue={"code": r.R_REVERT, "llm_key_phrase": "get heated"})
+        self.assertEqual(r.qa_rejudge(self.TEXT, [rev], self._call("get heated", rank=1), {7: ()})["by_rank"][7]["status"], r.QA_REJUDGED_PASS)
+
+    def test_unrelated_original_key_is_not_a_headword_of_the_item(self):   # 救済recordの見出し形が表層形と無関係なら『同じ項目』として受けない
+        base = {"rank": 1, "key_phrase": "gets heated", "display_phrase": "gets heated", "source_span": "gets heated", "source_sentence": "s",
+                "normalization_reason": "none"}
+        for orig in ("totally different", "get angry", "heated", "get heated up"):
+            it = dict(base, kp_rescue={"code": r.R_REVERT, "llm_key_phrase": orig})
+            res = r.qa_rejudge(self.TEXT, [it], self._call(orig), {1: ()})
+            self.assertEqual(res["by_rank"][1]["status"], r.QA_NOT_REJUDGED, orig)
+
+    def test_headword_pairs_accepted_and_rejected(self):
+        ok = [("get heated", "gets heated"), ("limit the search to", "limited the search to"), ("count as having failed", "counted as having failed"),
+              ("rely", "relied"), ("take a sharp turn", "took a sharp turn"), ("be at odds", "was at odds"), ("push prices up", "pushed prices up")]
+        for a, b in ok:
+            self.assertTrue(r._headword_of_same_item(a, b), (a, b))
+        for a, b in [("totally different", "pushed prices up"), ("get angry", "gets heated"), ("heated", "gets heated"), ("", "gets heated"), ("go on", "went off")]:
+            self.assertFalse(r._headword_of_same_item(a, b), (a, b))
+
+    def test_alt_key_is_per_item_not_global(self):                # 別項目の見出し形は受け付けない(2項目バッチ)
+        a = {"rank": 3, "key_phrase": "gets heated", "display_phrase": "gets heated", "source_span": "gets heated", "source_sentence": "s", "normalization_reason": "none"}
+        b = {"rank": 4, "key_phrase": "relied", "display_phrase": "relied", "source_span": "relied", "source_sentence": "t", "normalization_reason": "none"}
+
+        def call(msg):
+            return json.dumps({"items": [llm_item(1, "get heated"), llm_item(2, "get heated")]}), "m", "i"   # 2項目目にも『get heated』
+        res = r.qa_rejudge("x", [a, b], call, {}, alt_keys_by_rank={3: "get heated", 4: "rely"})
+        self.assertEqual(res["by_rank"][3]["status"], r.QA_REJUDGED_PASS)
+        self.assertEqual(res["by_rank"][4]["status"], r.QA_NOT_REJUDGED)
+
+
 if __name__ == "__main__":
     unittest.main()

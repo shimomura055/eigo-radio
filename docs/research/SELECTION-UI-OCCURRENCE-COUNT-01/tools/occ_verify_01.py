@@ -198,7 +198,7 @@ def run(c, bid, old_ids, obs):
         sha_hidden = pg.evaluate("()=>document.getElementById('shaBanner').hidden")
         hint = pg.inner_text('#occHint') if pg.is_visible('#occHint') else ''
         rows = c.occ_rows()
-        check(c.tag('5 旧batch %s: 無変更dataがsha一致(警告なし)で表示・候補表示・回数なしはページ単位案内' % ob), sha_hidden and pg.locator('input[data-term]').count() > 0 and '集計できませんでした' in hint and all(r['state'] is None for r in rows),
+        check(c.tag('5 旧batch %s: 無変更dataがsha一致(警告なし)で表示・候補表示・回数なしはページ単位案内' % ob), sha_hidden and pg.locator('input[data-term]').count() > 0 and '旧データ・出現回数なし' in hint and all(r['state'] is None for r in rows),
               'sha_hidden=%s hint=%s rows=%d' % (sha_hidden, hint[:30], len(rows)))
         if ob == old_ids[0]:
             c.shot('O7_old_batch_set')

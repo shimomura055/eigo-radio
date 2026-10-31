@@ -500,9 +500,43 @@ def build_qa_rejudge_message(text: str, items: list, template: Optional[str] = N
     return kc.build_user_message(pseudo, text, template=template)
 
 
-def qa_rejudge(text: str, merged_items: list, call_fn: Callable, role_ok_by_rank: Optional[dict] = None) -> dict:
+_HEADWORD_MIN_COMMON_PREFIX = 3     # 活用差(get/gets, rely/relied, limit/limited)の語幹共通接頭辞の最小長
+
+
+def _headword_of_same_item(alt: str, surface: str) -> bool:
+    """alt(救済前の見出し形)がsurface(表層形key)の『同じ語句の活用差』か。語数が同じで、各トークンが同一/語幹共有(共通接頭辞>=3)/
+    既存の不規則形表(過去形・be/have/do系)の対応のどれか。無関係な語句を『同じ項目』として受けないための保守的な確認(決定論・辞書追加なし)。"""
+    a, b = [t.lower() for t in ft._norm_tokens(alt)], [t.lower() for t in ft._norm_tokens(surface)]
+    if not a or len(a) != len(b):
+        return False
+    irregular = (ft._PAST_ONLY_IRREGULAR, ft._AMBIGUOUS_IRREGULAR, ft._FUNCTION_VERB_FORMS)
+    for x, y in zip(a, b):
+        if x == y or any(tbl.get(y) == x for tbl in irregular):
+            continue
+        if len(os.path.commonprefix([x, y])) >= _HEADWORD_MIN_COMMON_PREFIX:
+            continue
+        return False
+    return True
+
+
+def _revert_origin_key(item: dict, alt_keys_by_rank: Optional[dict] = None) -> Optional[str]:
+    """REVERT_SURFACE救済したitemの『救済前の見出し形(canonicalizationのLLMが返したkey)』。REVERT以外/不明/表層形と無関係な語句はNone。
+    救済recordの値だけを使う(辞書・推測で作らない)。alt_keys_by_rank(rank->見出し形)を優先し、無ければitemのkp_rescueを見る。"""
+    alt = (alt_keys_by_rank or {}).get(item.get("rank"))
+    if not alt:
+        km = item.get("kp_rescue")
+        if isinstance(km, dict) and km.get("code") == R_REVERT:
+            alt = km.get("llm_key_phrase")
+    if isinstance(alt, str) and alt.strip() and _headword_of_same_item(alt, item.get("key_phrase") or ""):
+        return alt
+    return None
+
+
+def qa_rejudge(text: str, merged_items: list, call_fn: Callable, role_ok_by_rank: Optional[dict] = None,
+               alt_keys_by_rank: Optional[dict] = None) -> dict:
     """救済したmerged itemsのQA 12項目を再判定する(1 call・バッチ)。call_fn(user_message)->(raw_text, model_id, response_id)。
-    返却キー=元のrank。LLMが返したkeyが救済後keyと一致しない/QA欄が不正/例外 -> そのrankはNOT_REJUDGED(auto不可)。
+    返却キー=元のrank。LLMが返したkeyが救済後key(表層形)とも、同じ項目のREVERT_SURFACE元の見出し形(救済recordのllm_key_phrase。OPEN-633)とも
+    一致しない/QA欄が不正/例外 -> そのrankはNOT_REJUDGED(auto不可)。rank一致(pseudo rank=位置)は従来どおり必須。QA verdict判定・fail-closedは不変。
     qa_traceable_contiguous_span は実際の(key, display)組で承認済みの有効判定(_qa_field_effective_verdict)に再計算する。
     returns {"model_id","response_id","by_rank": {rank: {"status","qa":{field:verdict}}}}"""
     out = {"model_id": None, "response_id": None, "by_rank": {}}
@@ -523,7 +557,11 @@ def qa_rejudge(text: str, merged_items: list, call_fn: Callable, role_ok_by_rank
         r = by.get(n)
         rank = it["rank"]
         key = it["key_phrase"]
-        if not r or _norm_lc(r.get("key_phrase", "")) != _norm_lc(key) or any(r.get(f) not in kc.QA_VERDICTS for f in kc.QA_FIELDS):
+        accepted = [_norm_lc(key)]
+        origin = _revert_origin_key(it, alt_keys_by_rank)
+        if origin:
+            accepted.append(_norm_lc(origin))
+        if not r or _norm_lc(r.get("key_phrase", "")) not in accepted or any(r.get(f) not in kc.QA_VERDICTS for f in kc.QA_FIELDS):
             out["by_rank"][rank] = {"status": QA_NOT_REJUDGED, "qa": {}, "error": "key_mismatch_or_invalid_fields"}
             continue
         role_ok = frozenset((role_ok_by_rank or {}).get(rank) or ())
@@ -557,7 +595,8 @@ def finalize_rescued_items(merged: dict, parsed: dict, original_items: list, tex
     qa_res = {"by_rank": {}}
     if c_ranks and qa_call_fn is not None:
         qa_res = qa_rejudge(text, [it for it in out["items"] if it["rank"] in set(c_ranks)], qa_call_fn,
-                            {r: (canon_by_rank[r].get("validator_args") or {}).get("role_ok_poss") for r in c_ranks})
+                            {r: (canon_by_rank[r].get("validator_args") or {}).get("role_ok_poss") for r in c_ranks},
+                            {r: canon_by_rank[r].get("llm_key_phrase") for r in c_ranks if canon_by_rank[r].get("code") == R_REVERT})
     for it in out["items"]:
         rank = it["rank"]
         cm, sm = canon_by_rank.get(rank), sel_by_rank.get(rank)
