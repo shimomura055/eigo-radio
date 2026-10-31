@@ -22998,3 +22998,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - Status(セル別): X Std/X Adv/Y Std/Y Adv/Z Std/Z Adv = 全て**PRODUCTION_WIRED**。X Adv/Z Std/Z Adv=委任_02 EVIDENCE_02 §5、X Std/Y Std/Y Adv=委任_03 EVIDENCE_03(batches.create model_id/voice・wav sha束縛[6%減速子登録transform 6.0含む]・sidecar 8/8=100%・attempt audit tts_provenance)。費用約¥0.40(個別Cap ¥5)、量産単価+0。
 - 適用外の区別: Puck|pro(confirmed=false)は承認仕様どおりの適用外(fail-closed、未完了Open Itemではない)。出自のない既存の保存音声・未確認Voiceも同様。自然なFlap転写は実run中に未発生(発火は保存attempt再判定+adapter実経路test、到達性は実Batch run)。
 - 反映: OPEN-627ステータス更新、CURRENT_SPEC Flap-T節見出し更新。根拠: docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/{EVIDENCE_02,EVIDENCE_03,FABLE_ACCEPTANCE_01}.md、docs/pm/RESULT_PACKET_FLAPTP_03.md。
+
+JA-GLOSS-QUALITY-ALARM-TRIAL-01-DECISION-01: 案B3不採用・現行維持・独立品質アラーム機構Trial開始(ユーザー正式決定、2026-10-31)
+- 決定: (1)JA-GLOSS-NUANCE-01の案B3はREJECTED(副作用による既存訳の品質悪化リスク)。(2)現行の日本語訳生成Prompt・仕様は維持。(3)生成済み日本語訳を独立してチェックする品質アラーム機構のDEV/Trialを開始(OPEN-636)。(4)問題が疑われる訳はHuman Reviewページで警告表示(最終的に承認/修正はユーザー)。(5)品質チェックのモデルはgpt-6-luna(Luna 6.0)限定、他モデルの採用・比較Trialなし。(6)警告Precision目標80〜90%(保証でない、基準の途中緩和禁止)。(7)Production配線はユーザー正式承認まで禁止(到達可能Status=VALIDATED/REJECTED/USER_DECISION_REQUIRED)。
+- 範囲: 設計・Trial・DEV試作のみ。既存の品質基準・選定仕様・訳生成Promptは不変。個別辞書・特定語の例外ルールは設計に入れない。
+- 反映: OPEN-630(B3 REJECTED)、OPEN-636新規、docs/research/JA-GLOSS-NUANCE-01/TRIAL_01.md §9。原文=docs/pm/delegation_log/2026-10-31_JA-GLOSS-QUALITY-ALARM-TRIAL-01_USER.md。CURRENT_SPECは変更しない(Trial段階)。

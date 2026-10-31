@@ -137,3 +137,6 @@
 
 ## 8. 成果物
 trial_01/{PREREGISTRATION_01.md, plan_*.json, inputs/, out/(43 json), stage2/(3 json), ledger.json, blind_*.json, run_*.log}、tools/、data/。
+
+## 9. 結果の採否: REJECTED(ユーザー決定2026-10-31)
+案B3はREJECTED(不採用)。理由=副作用による既存訳の品質悪化リスク。現行の日本語訳生成Prompt・仕様は維持する。上記の数値・結論は決定前のTrial記録であり変更しない。後続=OPEN-636 JA-GLOSS-QUALITY-ALARM-TRIAL-01(独立の品質アラーム機構)。原文=docs/pm/delegation_log/2026-10-31_JA-GLOSS-QUALITY-ALARM-TRIAL-01_USER.md:7-14。
