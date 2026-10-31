@@ -1,0 +1,8 @@
+# CLOSEOUT_CACHE_01(OPEN-634 旧訳キャッシュ是正、2026-10-31、ENDUSER-TRANSLATION-CONTEXT-TRIAL-01 委任_01 ②)
+- 対象(メインツリーの当該1ファイルのみ、ユーザー承認の例外): `er019_output/family_x_audio_production_wiring_01/untidiness_family_resource__run_fx4_01/enduser_sync_cache/ja_generated.json`(未追跡run dir)。
+- 置換前の保存: `ev01/ja_generated_before_replace_01.json`(sha256先頭 b902dc7738c1…)。是正版 `ev01/ja_generated_corrected_01.json`(ca443577b9d9…)で置換、置換後のsha256一致を確認。
+- 差分(JSON構造diff): entry `691113f5…`(Adv Comment 4 `adv_19`)の `ja[0]`(「省かれたもの」→「出しっぱなしになっている物」)・`ja[1]`(段落3文のうち2文目の言い回し)・`generated_at` のみ。他のentry・schema差分0。
+- 再生成経路の確認(API 0): 経路=`er135_enduser_page_01.py:839 generate_missing_translations` → `er135_enduser_translate_01.py:491 translate_part`。キャッシュ鍵=段落の英語文群sha(`para_key` :120。Prompt sha・model・文脈は鍵に含めない)。`ev02/cache_regen_check_02.py`: 公開`article.json`(X untidiness)の`ja_source=generated`全7 part(Std oneline 1・Adv preview/comment/oneline 6)について、置換後キャッシュの**コピー**に対し本番`translate_part`を、**呼ばれたら例外を投げるLLM**で実行。結果=全7 partが全段落キャッシュhit(cache_hits=段落数)、translate/verify call 0、LLM呼出試行 **0**、再構築した`ja`と`ja_align`が公開dirの`article.json`と**完全一致**、adv_19 `ja[0]`=「この話は、出しっぱなしになっている物にも目的があるかもしれないので…」。= 同run dirでの再produceはAPI 0で正しい訳を維持する。結果=`ev02/cache_regen_result_02.json`。
+- 他の旧訳の有無: `省かれた`をメインツリー `er019_output/**`・`er121_output/**` の `ja_generated.json` と origin/main の公開10記事 `article.json` で走査 → 0件(`er026_output/.../kp_candidates.SUPERSEDED_*.json` の `省かれた` はZ KP候補の別物で本件と無関係)。他のX run dirのキャッシュ(ai_chat・jwst・meta_waddle・moon×2)にも旧訳なし。
+- 注意(別件): メインツリー(branch work/post-merge-01, 6ca3a5055)は origin/main より古く、`user_test/family_x_untidiness...`が無い。re-produceは最新コードのworktreeで行う。
+- OPEN-634の「再発注意」は解消。ただし**キャッシュ鍵に文脈が含まれない**構造は残る(CURRENT_STATE_01 §4)。恒久策は ENDUSER-TRANSLATION-CONTEXT-TRIAL-01(OPEN-638)で検討。
