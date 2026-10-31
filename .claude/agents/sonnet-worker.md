@@ -105,6 +105,7 @@ model: sonnet
   `er026_output/family_z_production_e2e_01/STOP_ALL`)を適用とみなす。
 - 容量(DISK-GUARD-AUTO-CLEANUP-01): 作業開始時に`tools/disk_guard_01.py --hook`を実行し、WARN以上(WARN/CRITICAL/ACTIVE_BIG)はRESULT_PACKET冒頭に記載する。
 - worktreeは`git worktree add --lock --reason "<管理ID>"`で作成し、完了報告時にunlockしない(Fableが回収時にunlock)。
+- Playwright(Python/Node)は `tools/playwright_safe_01.py`(Node側は`--mute-audio`+exit kill hook)経由のみ。`from playwright.sync_api import sync_playwright` の直接importは禁止。実音声が必要なtestは `allow_audio=True` と env `PW_SAFE_ALLOW_AUDIO=1` の二重明示に限り、委任文に明記された場合のみ(PLAYWRIGHT-AUDIO-SAFETY-01、2026-10-31)。
 - 対話型Pythonのbackground起動禁止。background出力は`| head -c 50M`等で上限を付ける。
 - 自分が起動したprocessが外部から停止された、または原因不明のrc≠0が2回続いた場合は、
   再起動せず即STOPして報告する。
