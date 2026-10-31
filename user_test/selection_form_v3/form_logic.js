@@ -150,7 +150,10 @@
   // ページ単位(Opus M6): 表示対象の候補に1件も occurrence が無い=集計されていないページ。
   function occurrencePage(d) {
     var items = allItems(d || {}), withOcc = items.filter(hasOccurrence).length;
-    return { n: items.length, withOcc: withOcc, anyHas: withOcc > 0, missingAll: items.length > 0 && withOcc === 0 };
+    var missingAll = items.length > 0 && withOcc === 0;
+    // OCC-03(残課題②): occurrence_meta が無い=出現回数表示の導入前に作られた旧データ(正常。legacy=案内表示)。meta があるのに回数が1件も無い=今回の集計が失敗(failed=警告)
+    var hasMeta = !!(d && d.occurrence_meta && typeof d.occurrence_meta === 'object');
+    return { n: items.length, withOcc: withOcc, anyHas: withOcc > 0, missingAll: missingAll, legacy: missingAll && !hasMeta, failed: missingAll && hasMeta };
   }
   function allItems(d) { return (d.phrases || []).concat(d.words || []); }
   function findItem(d, term) { return allItems(d).filter(function (x) { return x.term === term; })[0] || { term: term }; }
@@ -536,7 +539,7 @@
 
   // ======== 報告単位batch(SELECTION-UI-BATCH-AND-VOCAB-AUDIO-01 委任_04、DESIGN_03 + Opus M1-M14) ========
   // M13: UI資産の版。live smokeがローカルHEADと一致を確認する(index.htmlもこの値を表示)
-  var ASSET_VERSION = 'sel-v3-rev06-a';
+  var ASSET_VERSION = 'sel-v3-rev06-b';
   // M6: batch id。UI・publish tool・er128の3箇所で同一の正規表現(パストラバーサル対策)
   var BATCH_ID_RE = /^[a-z0-9][a-z0-9_-]{2,63}$/;
   function validBatchId(id) { return typeof id === 'string' && BATCH_ID_RE.test(id); }

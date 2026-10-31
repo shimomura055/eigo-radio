@@ -672,7 +672,8 @@ t('OCC 保留と未集計の表示: 「＋似た形N（未計上）」「※Comm
 });
 t('OCC M6: occurrence 欠落=ページ単位で扱う(候補行は出さない)。一部欠落=その候補だけ「確認できません」。不正値は0扱い', () => {
   const d = { phrases: [{ term: 'a' }, { term: 'b' }], words: [{ term: 'c' }] };
-  assert.deepStrictEqual(FL.occurrencePage(d), { n: 3, withOcc: 0, anyHas: false, missingAll: true });
+  assert.deepStrictEqual(FL.occurrencePage(d), { n: 3, withOcc: 0, anyHas: false, missingAll: true, legacy: true, failed: false });   // OCC-03: meta無し=旧データ(案内表示・警告でない)
+  assert.deepStrictEqual(FL.occurrencePage(Object.assign({}, d, { occurrence_meta: { error: 'sections_not_found' } })), { n: 3, withOcc: 0, anyHas: false, missingAll: true, legacy: false, failed: true });   // meta有り+回数0件=集計失敗(警告)
   assert.strictEqual(FL.occurrenceOf(d.phrases[0], false).has, false);
   const d2 = { phrases: [{ term: 'a', occurrence: { counts: { story: 1 } } }, { term: 'b' }], words: [] };
   assert.strictEqual(FL.occurrencePage(d2).anyHas, true); assert.strictEqual(FL.occurrencePage(d2).missingAll, false);
@@ -697,6 +698,7 @@ t('OCC index.html contract: 日本語訳の下・AI理由の上に1行、ペー�
   const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8'), js = fs.readFileSync(path.join(FD, 'form_logic.js'), 'utf8');
   assert.ok(h.indexOf('data-occ=') > h.indexOf('class="jatext"') && h.indexOf('data-occ=') < h.indexOf('<details class="why"'), '訳の下・理由の上');
   assert.ok(/id="occHint"/.test(h) && /出現回数を集計できませんでした/.test(h));
+  assert.ok(/旧データ・出現回数なし/.test(h) && /occPg\.legacy/.test(h) && /occnote/.test(h) && !/occwarn[^;]*旧データ/.test(h));   // OCC-03: 旧データは中立色の案内(赤字警告にしない)
   assert.ok(/occurrenceOf\(it,occPg\.anyHas\)/.test(h));
   ['buildText', 'buildStructured', 'buildReadable', 'doneSig', 'makeCode', 'selectRemaining'].forEach(fn => {
     const m = new RegExp('function ' + fn + '\\(').exec(js); assert.ok(m, fn);

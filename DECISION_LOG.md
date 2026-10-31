@@ -1,6 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
+- 2026-10-31 | KP-RESCUE-REJUDGE-REVERT-SURFACE-FIX-01 委任_01 KP救済REVERT_SURFACE済み項目のQA再判定key一致条件を是正(OPEN-633) | **不具合修正(承認済み救済仕様との矛盾の是正、PM_GOVERNANCE 11-8、新仕様ではなくユーザー判断不要)**。経緯: KP-N5-PHRASE-COVERAGE-AUDIT-01(OPEN-631)が、`gets heated`が既存Gate救済のQA再判定key不一致(REVERT_SURFACE後の表層形 vs LLMの見出し形)で決定論的に脱落(3/3再現・同種5件)と特定。承認済み救済仕様『活用形は表層形へ戻して候補を残す』が一致条件で常に無効化されていた。決定: `er125.qa_rejudge`の一致条件を『表層形key または 同じ項目のREVERT救済record(`kp_rescue.llm_key_phrase`)の見出し形』へ拡張(rank一致併用、REVERT項目のみ)。範囲外(しない): QA基準の緩和・新Gate・Rule7/canonicalization変更・N5 Prompt/選定基準変更・fail-closed/retry回数/HR経路の変更。実装=er125_kp_rescue_production_01.py(`_revert_origin_key`/`qa_rejudge`/`finalize_rescued_items`)、test=TestQaRejudgeRevertSurfaceKey 10件(同一項目の確認=語数同一・語幹共有/不規則形表、無関係な救済前keyは受けない)。検証: 単体10件+既存er125 58件PASS・関連既存testの失敗集合は前後同一、実データreplay(実API 4 call×2、約¥1.99)で5件がNOT_REJUDGED→QA再判定PASS(LLM判定に従う)、対照`rate at which`はQA FAILのまま除外、無関係語/rank不一致/QA FAIL/QA欄不正は従来どおり落ちる(test固定)。Status=修正完了・検証済み、Fable受入待ち。Production到達: 既定ON経路の不具合修正のため新flagなし(承認済み仕様の矛盾是正)。根拠: docs/research/KP-RESCUE-REJUDGE-REVERT-SURFACE-FIX-01/EVIDENCE_01.md、docs/pm/RESULT_PACKET_RRF_01.md。
 - 2026-10-30 | ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01-DECISION-02 英文クリック=英日選択ハイライトのみ(再生/シークなし)を実装・配線(asset rev01-h、既公開8dir再produce、runner 3経路実走、live確認) | **ユーザー正式決定の実装**(原文=docs/pm/delegation_log/2026-10-30_ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01_USER.md §1-3、DECISION-01のAPPROVED_FOR_PRODUCTION)。Fable確定: (1)凍結dir`family_z_in_a_grove_01`(rev01-e、不採用作品)は対象外・凍結維持 (2)位置操作でクリック選択を解除 (3)同一文再クリックはトグルせず選択維持 (4)⑨ Metaは今回対象外(別委任)。実装=`enduser_page_assets/rev01-h/`(rev01-gからderive、EDIT J37-J49)・`er135_enduser_rules_01.py ASSET_BUILD_ID=rev01-h`・`er135_enduser_page_verify_01.py` F(sentence_click_does_not_play_or_seek)/M7再構成/K検査(項目1,2,3,6)・static test `A9_ClickSelectOnly`。検証: Playwright PC+mobile(touch tap)8dir全NG0(254-270 check/dir)、er135+er136 test 334 PASS、live(Pages)8dir NG0、runner X/Y/Z pages段をrev01-hで各1回実走(X ai_chat run_fx4_01=NG0・Y surname run_02=NG0・Z yuki run_yo_prod_01=NG0、cost_log不変=API 0)。既存Regressionは`derive`差分(許可リスト)とdiff Gate(`tools/ech02_diff_gate_01.py`: dev index.html・音声・style.css・sync・英文・承認済み訳に差分0)で確認。**想定外1件**: Zメロスadv_14・Z雪女std_11の各1段落は03B時点で訳不成立(英語のみ)だったが、再produceの既存retry機構(translate+verify各1回、約¥0.99)で生成訳が成立し表示されるようになった(`ja_source=generated`、承認済み生成仕様OPEN-618/03Aの範囲内。委任_04の別方式の再翻訳とは独立)。累計費用約¥0.99/Cap¥10。PRODUCTION_WIRED判定はFable独立受入後(本記録はff84fdb7d時点で『実装・配線・live確認済み=PRODUCTION_WIRED_PENDING_FABLE』)。承認済み記事(Y姓・Z雪女)は表示機能の更新のみで再承認対象外。
 - 2026-10-30 | FAMILY-X-SELECTED-4-ARTICLES-PRODUCTION-01-DECISION-03 ⑨Meta Adv Vocabulary『latter』のHR承認反映と⑨完成(委任_10)=Family X選定4記事すべて完成 | **ユーザー正式決定(個別HR承認、APPROVED_FOR_PRODUCTION)**(原文=docs/pm/delegation_log/2026-10-30_FX4-LATTER-APPROVAL-AND-FLAP-T-TRIAL_USER.md §2): 「Ladderと聞こえるが、アメリカ英語ではlatterがほぼladderに聞こえるため、今回の音声はOKとする。」。反映=既存HR承認経路(fx4h_hr_adopt_meta_vocab3.py、sha 1c033d17…一致assert、API 0・TTS/ASR 0)。**ASR Gateの一般仕様は変更しない**(latter 1segment・1takeへの個別承認。原文§2最終段落)。Flap-T救済は別管理ID ASR-FLAP-T-EQUIVALENCE-TRIAL-01のTrial(未承認・Production未配線)。End User rev01-g再produce(生成訳¥0.94)、Playwright 246 NG0、diff Gate OK。根拠=CLOSEOUT_01.md、OPEN-612。
 - 2026-10-30 | FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01-DECISION-05 Family Y『夫が妻の姓を選ぶとき、それぞれの声』Std/Adv ユーザー最終承認・Closeout(OPEN-598 CLOSED) | **ユーザー正式決定**(原文=docs/pm/delegation_log/2026-10-30_ENDUSER-CLICK-HIGHLIGHT-NO-SEEK-01_USER.md §4:88-109): 「Standard／Advancedともに、ユーザーが最終版を正式承認した。記事本文：承認／音声：承認／学習表現 `hold someone back` の反映：現行完成候補の内容で承認／追加の本文・音声Trial：不要／再試聴要求：不要」「OPEN-598について、記事の最終承認待ちを解消し、必要な完成記録・Closeoutを実施すること」「今回の英日ハイライト変更やVocabulary音声ボタン追加は表示機能の更新であり、承認済み本文・音声の再生成や記事の再承認を要求しないこと」。承認対象=ニュアンス節撤去済み(NCA-01)・One Step Further未適用(REJECTED、OSF-04)の現行完成候補。累計約¥55.21/Cap170。Closeout=docs/research/FAMILY-Y-SURNAME-CHOICE-PRODUCTION-01/CLOSEOUT_01.md。API 0・本文/音声/ページ再生成0。UDR #223は不要化済み。
@@ -208,6 +209,10 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## DISK-GUARD-AUTO-CLEANUP-01-DECISION-01: Cドライブ容量監視・自動整理の運用方針(ユーザー承認済み、2026-10-31)
+
+**ユーザー決定(原文=docs/pm/delegation_log/2026-10-31_DISK-GUARD-AUTO-CLEANUP-01_USER.md §1-§4)**: 空き容量<20GBで予防警戒(原因列挙・安全整理可)、<10GBで自動整理を必ず実行、回復目標20GB以上。自動削除してよい対象は(1)終了済みClaude task一時出力(2)再取得可能なpip cache(3)Git上で完全に保存・push済みで未使用の作業用worktreeの3種のみ(個別に毎回承認不要)。禁止対象=Production成果物/SSOT/未commit・未pushのファイルとworktree/必要なTrial証拠/OS管理ファイル/安全性未確認のもの。worktreeは通常のGit管理コマンドで除去し強制削除禁止。安全と証明できなければ削除しない。実装=`tools/disk_guard_01.py`(許可リスト方式・dry-run既定・各条件をコードで検証)、状態=IMPLEMENTED_NOT_ACTIVATED(OPEN-637、有効化は委任_02でOpus安全レビュー後)。検証=sandbox模擬21/21 PASS(`docs/research/DISK-GUARD-AUTO-CLEANUP-01/EVIDENCE_01.md`)。保存仕様・保持期間は変更なし。
+
 ## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-01: 選定UI 出現回数表示 occ-v1 の実装・公開(集計規則はユーザー確認待ち、2026-10-31)
 
 - **内容**: Phrase・Wordの各候補へ記事内出現回数(本文・Comment・Preview・In One Line、Titleは別枠)を表示。exportが既定ONで決定論集計(AI API 0)し`occurrence`をdata JSONへ焼き込む。表示専用(選択条件・Done署名・照合コード・受領形式に入らない)。
@@ -215,6 +220,12 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **採用理由/比較**: 語境界+承認済みer105活用表で決定論(NLTK/spaCyは新規依存・再現性で不採用)。多義は判別しない(原文§4-4/§4-8・過剰設計回避)。判定できない形は保留として加算せず件数のみ併記(原文§4-8「推測で加算しない」)。data焼き込み(サイドカー案は整合管理が増えるため不採用)。
 - **Opus条件Aレビュー**: 必須6件(M1-M6)+推奨を全て反映(EVIDENCE_01.md §3の対応表)。公開済みbatchのdata fileは上書きしない(M4、exporter guard)。
 - **根拠**: docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/{DESIGN_01,PRECISION_01,RULES_01,EVIDENCE_01}.md。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。費用0。
+
+## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-02: 出現回数表示 occ-v1 APPROVED_FOR_PRODUCTION(2026-10-31)
+
+- **内容**: ユーザーが集計規則occ-v1を正式承認(APPROVED_FOR_PRODUCTION)。承認3項目=(1)`put it away`等 代名詞1語を挟む分離句動詞は確定計上、(2)`building`/`lay`/`goods`/`saw`等 別語にもなり得る活用形は確定計上せず保留表示、(3)`put the books away`等 名詞句・人名挿入は確定計上せず保留表示。X/Y/Z x Standard/Advancedの6水準でPRODUCTION_WIREDまで完了させる指示。残課題①既存テスト8件の原因確定②旧batchを赤字エラーでなく案内表示へ③ディスク(整理済み、再承認不要)。
+- **状態**: APPROVED_FOR_PRODUCTION。PRODUCTION_WIREDはFable独立受入後(委任_03)。
+- **根拠**: 原文=docs/pm/delegation_log/2026-10-31_SELECTION-UI-OCCURRENCE-COUNT-01_USER_02.md。規則=docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/RULES_01.md(無変更)。費用0。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。
 
 ## SELECTION-UI-TWO-TIER-01-DECISION-01: 学習項目選定UIの2階層化 APPROVED_FOR_PRODUCTION(2026-10-31)
 
@@ -23003,3 +23014,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 判断: 新規仕様判断ではなく不具合是正(PM_GOVERNANCE 11-8、委任範囲内)。生成訳(ja_source=generated)の1part(adv_19)を、既存の`er135_enduser_translate_01.translate_part`でPrompt雛形・検査・対訳照合を変えず、文脈欄(直前part英文)と既存retry指摘枠(語義注記)だけを追加して再実行し、既存手順`er135 produce`で再produceした。手打ちの直接編集なし。
 - 根拠: 日本語音声は無く(adv_19.mp3は英語のみ)TTS再生成不要。変更はarticle.json(adv_19 ja/ja_align)とbuild_infoのみ(ech02 diff gate OK、他part・英文・承認済み訳・sync・音声は不変)。公開確認(HTTP 200、表示、verify-only 268 NG 0)。費用約¥0.046。
 - 未決(ユーザー判断要の可能性): 生成訳の一般的な入力/Prompt変更(直前partを文脈に渡す)は本件の範囲外。mainツリー未追跡cacheは旧訳のまま(是正済みの写しをev01に保存)。証跡=docs/research/FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01/EVIDENCE_01.md、docs/pm/RESULT_PACKET_FXC4_01.md。
+JA-GLOSS-QUALITY-ALARM-TRIAL-01-DECISION-01: 案B3不採用・現行維持・独立品質アラーム機構Trial開始(ユーザー正式決定、2026-10-31)
+- 決定: (1)JA-GLOSS-NUANCE-01の案B3はREJECTED(副作用による既存訳の品質悪化リスク)。(2)現行の日本語訳生成Prompt・仕様は維持。(3)生成済み日本語訳を独立してチェックする品質アラーム機構のDEV/Trialを開始(OPEN-636)。(4)問題が疑われる訳はHuman Reviewページで警告表示(最終的に承認/修正はユーザー)。(5)品質チェックのモデルはgpt-6-luna(Luna 6.0)限定、他モデルの採用・比較Trialなし。(6)警告Precision目標80〜90%(保証でない、基準の途中緩和禁止)。(7)Production配線はユーザー正式承認まで禁止(到達可能Status=VALIDATED/REJECTED/USER_DECISION_REQUIRED)。
+- 範囲: 設計・Trial・DEV試作のみ。既存の品質基準・選定仕様・訳生成Promptは不変。個別辞書・特定語の例外ルールは設計に入れない。
+- 反映: OPEN-630(B3 REJECTED)、OPEN-636新規、docs/research/JA-GLOSS-NUANCE-01/TRIAL_01.md §9。原文=docs/pm/delegation_log/2026-10-31_JA-GLOSS-QUALITY-ALARM-TRIAL-01_USER.md。CURRENT_SPECは変更しない(Trial段階)。
