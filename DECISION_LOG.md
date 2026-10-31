@@ -208,6 +208,14 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## SELECTION-UI-OCCURRENCE-COUNT-01-DECISION-01: 選定UI 出現回数表示 occ-v1 の実装・公開(集計規則はユーザー確認待ち、2026-10-31)
+
+- **内容**: Phrase・Wordの各候補へ記事内出現回数(本文・Comment・Preview・In One Line、Titleは別枠)を表示。exportが既定ONで決定論集計(AI API 0)し`occurrence`をdata JSONへ焼き込む。表示専用(選択条件・Done署名・照合コード・受領形式に入らない)。
+- **状態**: 実装完了・公開URL検証済み・**集計規則のユーザー確認待ち(受入4)**。確認後PRODUCTION_WIRED。表示方針=ユーザー承認済み(原文=docs/pm/delegation_log/2026-10-31_LEARNING-ITEM-QUALITY-TRIO-01_USER.md §4)。exporter既定ONはFable判断(表示方針は承認済みのため)。
+- **採用理由/比較**: 語境界+承認済みer105活用表で決定論(NLTK/spaCyは新規依存・再現性で不採用)。多義は判別しない(原文§4-4/§4-8・過剰設計回避)。判定できない形は保留として加算せず件数のみ併記(原文§4-8「推測で加算しない」)。data焼き込み(サイドカー案は整合管理が増えるため不採用)。
+- **Opus条件Aレビュー**: 必須6件(M1-M6)+推奨を全て反映(EVIDENCE_01.md §3の対応表)。公開済みbatchのdata fileは上書きしない(M4、exporter guard)。
+- **根拠**: docs/research/SELECTION-UI-OCCURRENCE-COUNT-01/{DESIGN_01,PRECISION_01,RULES_01,EVIDENCE_01}.md。影響=CURRENT_SPEC選定フォームv3節・OPEN-632。費用0。
+
 ## SELECTION-UI-TWO-TIER-01-DECISION-01: 学習項目選定UIの2階層化 APPROVED_FOR_PRODUCTION(2026-10-31)
 
 - **内容**: トップ(一覧・進捗・一括コピー)と個別(1記事x1レベルのフォーム、上下に「Topへ戻る」)の2階層へ変更。選定仕様・ロジック・データ・コピー書式は無変更。共通テンプレート+`?set=`。

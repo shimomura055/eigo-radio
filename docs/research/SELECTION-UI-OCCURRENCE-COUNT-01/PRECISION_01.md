@@ -113,3 +113,9 @@ py -m unittest $T/occurrence_count_01_test_01.py                            # �
 - 既存runはN5(2026-10-30配線)以前で、候補docに `n5_generalization` が0件。N5形は単体test(スロット/下限保証)でのみ検証。委任_02の最初にN5配線後の新規runで再実測する。
 - 分離句動詞(`sep_*`)・名詞句スロットは、既存253項目の実本文では自然発生0件(ユーザー指定5表現と単体testで検証)。
 - 公開URL上のPC/スマホ実操作は本委任の範囲外(実装後)。
+
+## 8. 追記(委任_02、2026-10-31): oracleの限界と正式module(er140)での再検証
+- **oracleの限界(Opus推奨)**: §3-3 の「取りこぼし0」は、緩い基準oracle(内容語の語幹が全て同一文に在るのにヒットしない箇所)が**見つけた範囲で**0という意味。oracleは語幹の先頭4字一致で作った基準のため、(1)不規則活用(語幹が変わる `go→went`、`leave→left` 等は語幹先頭4字が一致せず拾えない)、(2)先頭の be/have/do の活用形(`was in the way` ← `be in the way`。委任_01時点では確定集合にも無く、oracleの語幹基準でも内容語が `way` だけになり判定できない)は、そもそも検出できない。この2系統は単体testで直接検証する(`er140_selection_occurrence_count_01_test_02.py` M3・Er105Snapshot)。M3(先頭be/have/do)はこの限界のため実データでは0件の差になる。
+- **正式module(er140_*)での再実測**(`tools/run_precision_02.py`、同一27 member・253項目・API 0): 確定335 / 保留3 / 誤カウント0 / 取りこぼし0(nearmiss 45行は委任_01と同一集合=人手分類を引き継ぎ、境界1) / 旧`occurrence_count`との不変条件251/253(不一致2=`surname_choice` adopted、既知)。**委任_01との差分(`evidence_02/diff_vs_01.tsv`)は0行**。理由: M1(除外表)・M2(前置詞兼用の不変化詞)・M3(be/have/do)・縮約's・sb/sth・人名スロット・S/U和集合は、既存253項目の実本文では自然発生しない(委任_01の§7「sep/slot系は自然発生0件」と同じ構造)。新規則の効きは単体test(64件)と、ユーザー指定5表現+単語 `leave` の実本文集計(`occ_userfive` member、`EVIDENCE_01.md`)で確認する。
+- **loaderの単位(Opus推奨「段落内改行の潰し」)**: 試作の `_paras`(`" ".join(p.split())`)は段落内の改行を空白に潰し、Yの見出し・話者ラベル行(`First to speak is ...` の次行)と本文1行目を連結していた。実データ(Y translate 40ファイル=240段落のうち120が複数行、Z writer r2.md/std.md 152ファイル=4,282段落は複数行0、X parts 1,733段落のうち9が複数行)で、複数行段落の全行が文末記号で終わることを確認(行途中の折り返し本文は0)。正式loaderは **1行=1 unit**(改行をまたぐ一致は規則どおり不成立)にした。件数は不変(上記diff 0行)。
+- **N5形(§7)**: 現行run dir(er019/er121/er026)の候補docに `n5_generalization` を持つものは0件のまま(grep確認)。N5形は単体test(`N5GeneralizedForms`・`UnionOfGeneralizedAndSurface`)で検証済み。N5配線後の新規runが出た時点でexport時の自己検査(`occurrence_selfcheck_mismatch`警告)が実表現の完全一致を候補docの値と突合するため、運用で検出できる。
