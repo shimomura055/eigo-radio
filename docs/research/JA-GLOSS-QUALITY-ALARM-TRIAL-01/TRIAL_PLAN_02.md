@@ -76,3 +76,28 @@ trial/ledger.json、trial/out/*.json、`frozen_config.json`、RESULTS_01.md(P-a'
 | 日付 | 変更 | 理由 |
 |---|---|---|
 | 2026-10-31 | v01→v02: 合否指標の一本化(主=P-a')、ガード(major・T1+T3')と未達=USER_DECISION_REQUIRED、事後裁定の廃止(ラベル凍結)、規則・effort・主構成の選択規則、TP厳格/寛容、T3'の追加、M-9/M-10/R-3/R-5〜R-11、Cap¥60 | Opus条件Aレビュー(OPUS_REVIEW_01.md)とFable決定。Trial実行前の変更であり、変更前の基準での結果はない |
+
+## 9. 委任_02B 実行前追記(事前登録・Trial実行前に確定。2026-10-31)
+### 9-1. Fable決定(02Aの判断候補への回答)
+1. P-a' Precision 80〜90%目標は**ユーザー基準のまま動かさない**。未達=`USER_DECISION_REQUIRED`(§1-2のとおり)。有病率3.7%下で必要FPR≤0.77%(正常208件中の誤警告約1.6件以下)であることは RESULT_02 に明記する。
+2. T1 severity は **rubric適用後**(凍結pool裁定。radius/equivalent width『光の線の特徴を表す幅』=major、culprit/equivalent width『スペクトル線の強さを示す等価幅』=minor)を主、agent案(items.json)を併記。`items.json` 本体は不変。実装: `tools/jaq02b_data.py` が mapped T1 の severity を pool 凍結値に差し替え、`severity_agent` に原値を保持。
+3. ガードA=major分母(held-out 7/8以上、dev 9/10以上)、ガードB=全件検出率併記。採用。
+4. Fable抜き取り20件(seed=20261101)=20/20一致(ADJUDICATION_01.md §8)。κの限界(同一裁定者)は維持。
+### 9-2. データ・バッチ構成(tools/jaq02b_data.py、決定論、seed=20261101)
+- 評価単位: eval項目(131)+プール261。eval項目のうち(slug・level・表現・現訳)が一致するT1/T2/T4は**pool項目に対応づけ**(`pool_uid`)、最終runでは自然batchの結果を使う(二重出現なし)。対応しないreal項目と合成T3/T3'(元項目と同一batch禁止)は評価batch(E)に入れ、**同slug・levelのpool候補で最大12件まで埋める**(R-3)。埋め草(filler)の結果は採点しない(dev段では dev・held-out対応のpool項目を優先的に避ける)。
+- dev: 23 batch(うち合成専用S 11)。final: 自然batch 27(プール261全件)+E 13。item idは不透明(c01…)、batch内順序はseed固定でshuffle(repごとに別seed)。
+- 母集団はTRIAL_PLAN_02 §1のとおり。P-c=held-out real(T1/T2/T4)。ガードAの分母=T1 major(rubric後)+T3' major。
+- 評価対象の信頼境界: `confidence` の列挙値は `low|mid|high`(`medium` はeval表現に実在するためM-8照合のため改名。意味は同じ)。M-8照合結果=`trial/m8_check_<sha12>.json`(expression/current_ja 521種、Prompt・schema全体との照合、PASS)。
+### 9-3. 方式の順位付けと選択(結果を見る前に固定)
+- R1(dev、effort=medium固定): M1(基準線、評価項目のみ1項目1call)/M2/M3/R6(分析→判定型)/M6(盲検再生成。段1:現訳を見せず推奨訳、段2:同等判定。現訳と推奨訳・別訳が文字一致なら段2省略)。M5=M2の出力に段2強制比較(A/B順は項目ごとにseed固定の乱択)を掛けた**同一段2呼出から** M5all(全警告=suggestionあり)/M5lim(確信がhighでない、またはminorのみ)の2案を後処理で作る(suggestion空の警告は段2に回さず維持)。段2で取り消された警告のうち凍結ラベルがproblemだった件数を記録。M7=ablationのみ。
+- 各方式の規則は§3-1(ガードA dev≥85%=9/10以上を満たす規則のうちP-devのPrecision最大、同点はRecall)。ガードAを満たす規則がない方式は順位対象外(参考表示)。
+- **方式の順位**: ガードA(dev)を満たす方式のみ対象 → P-dev Precision(lenient、問題項目=凍結problem)の降順 → 同点は dev全問題(real+T3'+T3)のRecall → なお同点は費用が低い方。上位2方式をR1bへ。主構成の第1候補は順位1位。
+- R1b(effort): M2と上位2方式を low/high でも実行(medium値はR1)。『上位effort(high)より全指標が5pt以上悪化しない最も低いeffort』。費用が止め線に近づく場合の縮退(事前登録): highはM2と順位1位方式のみ。縮退したら理由と金額を記録。
+- R-9(a)参考入力: 凍結候補構成にref入力(同記事の他levelの同表現の訳)を足した dev 1 run を比較。**devのFP数が増えず、ガードA検出数が減らない場合のみ凍結構成に含める**。それ以外は無効化し、類型6入力は『合成確認のみ』として報告(合否に使わない)。
+- 再現性(dev): 凍結候補で別shuffle(rep2)を1回。ガードA・P-devは rep1/rep2 の平均と最小を併記。
+- 凍結(`frozen_config.json`): 方式・Prompt sha256・effort・規則・ref有無・主構成1つ・M-8結果。held-out + プールは凍結構成で実施。反復回数は、凍結時点の費用実績から『見込み総額≤¥52』となる最大のk∈{3,2,1}(事前登録)。主指標=repごとのP-a'の平均と最小。
+### 9-4. 採点・報告の補足(事前登録)
+- 未検査(API error・JSON破損・id抜け)は『警告なし』に数えず別掲(R-10)。FP/Precisionの分母にも入れない。
+- 厳格TP/寛容TPは、警告されたproblem項目について凍結理由と警告理由を並べ人手(本Worker)で判定し全件を記録。凍結ラベルは変更しない。
+- 費用/記事セット = 自然batch 1本あたり平均費用×2(Std・Adv)。処理時間=batch平均所要。
+- 未実施・縮退した項目(M7等)は、その理由と金額を RESULT_02 に明記する(『実施した』と書かない)。

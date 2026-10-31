@@ -90,3 +90,7 @@ major 5件=verdict(Std・Adv)、charge、radius、equivalent width(Std)=**すべ
 ## 7. 備考
 - `tools/adj_build_pool_02a.py`(プール項目と前後文の抽出)・`tools/adj_mk_sheets_02a.py`(ブラインド連番化とシャッフル)・`tools/build_labels_frozen_02a.py`(集約)は、メインツリー(`C:/Users/tensh/eigo-radio/er*_output`)を読み取り専用で参照する。ブラインドシート本体はscratchに生成しており、再生成は `blind_map.json`/`order2.json` から可能。
 - T3'(16件)は裁定対象外(合成による確定)。`labels_frozen_01.json` の `t3prime` セクションに分けて収録。作成規則=`T3PRIME_RULES_02.md`。
+
+## 8. Fable抜き取り確認の結果(2026-10-31、委任_02Bでの追記。凍結ラベルは変更しない)
+- Fableが §6 の無作為20件(seed=20261101)を独立に確認した結果、**20/20一致**。problem 2件(BL-065 hold one's son back「足を引っ張る」[引き止める/束縛のニュアンス]、BL-229 equivalent width「光の線の特徴を表す幅」[定訳=等価幅])と、normal 18件。Fable判定として記録。
+- κ=0.964 の限界(第1〜3判定が同一裁定者)は維持する。Fable一致率(20/20)は補助証拠であり、独立した複数裁定者の代替ではない(problemが2件しか入っていないため、problem側の検証力は弱い)。
