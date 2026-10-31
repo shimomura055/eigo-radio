@@ -343,3 +343,6 @@ JA音声(`写真にはいない。でも光は届く！ JWSTの「宇宙捜査�
 - stop_scope_check rc=0(開始時・有料前)。作業基点=origin/main 89343d65e、一時worktree(C:/Users/tensh/fx10wt)。run dir実データ(wav等ignored)は作業木からコピー。
 - HR反映: fx4h_hr_adopt_meta_vocab3.py dry-run OK(sha 1c033d17一致)→--apply(承認原文=docs/pm/delegation_log/2026-10-30_FX4-LATTER-APPROVAL_STATEMENT.txt)→ vocab_audio.json complete=true・vocab_b1b_1〜4.mp3・review_lock RESOLVED/HUMAN_APPROVED。API 0。
 - End User: 1回目(.env無しでtranslate失敗7part)→2回目(.envコピー、生成訳14 call ¥0.94、7part生成)。起動時刻=run10/launch_times.txt。Playwright PC+mobile TOTAL 246 NG 0(run10/enduser_produce2.log)。ejh03b_diff_gate OK(build_info.ja_manuscript.sha256はworktreeのCRLF checkoutでの見かけ差分[LF正規化sha 4d8496fe…が従来値と同一]のため従来値に戻した)。dev index.html sha 7e455e2d…不変(LF正規化)。
+
+## 追記(2026-10-31、FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01 委任_01 / OPEN-634): ②untidiness Advanced Comment 4の訳是正
+- 公開End User版 adv_19(Comment 4)の生成訳「省かれたもの」を「出しっぱなしになっている物」へ是正(既存translate_part再実行+`er135 produce`再produce、TTS 0、API約¥0.046)。音声(dev audio)・英文・他partは不変(ech02 diff gate OK)。公開(commit 8fa6d811e)HTTP 200・表示確認・verify-only 268 NG 0。詳細=docs/research/FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01/EVIDENCE_01.md。

@@ -22990,3 +22990,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - Status(セル別): X Std/X Adv/Y Std/Y Adv/Z Std/Z Adv = 全て**PRODUCTION_WIRED**。X Adv/Z Std/Z Adv=委任_02 EVIDENCE_02 §5、X Std/Y Std/Y Adv=委任_03 EVIDENCE_03(batches.create model_id/voice・wav sha束縛[6%減速子登録transform 6.0含む]・sidecar 8/8=100%・attempt audit tts_provenance)。費用約¥0.40(個別Cap ¥5)、量産単価+0。
 - 適用外の区別: Puck|pro(confirmed=false)は承認仕様どおりの適用外(fail-closed、未完了Open Itemではない)。出自のない既存の保存音声・未確認Voiceも同様。自然なFlap転写は実run中に未発生(発火は保存attempt再判定+adapter実経路test、到達性は実Batch run)。
 - 反映: OPEN-627ステータス更新、CURRENT_SPEC Flap-T節見出し更新。根拠: docs/research/ASR-FLAP-T-PRODUCTION-WIRING-01/{EVIDENCE_02,EVIDENCE_03,FABLE_ACCEPTANCE_01}.md、docs/pm/RESULT_PACKET_FLAPTP_03.md。
+
+## FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01-DECISION-01: 公開済みX untidiness Adv Comment 4の生成訳の語義不一致を既存translate_part再実行で是正(2026-10-31、OPEN-634)
+- 判断: 新規仕様判断ではなく不具合是正(PM_GOVERNANCE 11-8、委任範囲内)。生成訳(ja_source=generated)の1part(adv_19)を、既存の`er135_enduser_translate_01.translate_part`でPrompt雛形・検査・対訳照合を変えず、文脈欄(直前part英文)と既存retry指摘枠(語義注記)だけを追加して再実行し、既存手順`er135 produce`で再produceした。手打ちの直接編集なし。
+- 根拠: 日本語音声は無く(adv_19.mp3は英語のみ)TTS再生成不要。変更はarticle.json(adv_19 ja/ja_align)とbuild_infoのみ(ech02 diff gate OK、他part・英文・承認済み訳・sync・音声は不変)。公開確認(HTTP 200、表示、verify-only 268 NG 0)。費用約¥0.046。
+- 未決(ユーザー判断要の可能性): 生成訳の一般的な入力/Prompt変更(直前partを文脈に渡す)は本件の範囲外。mainツリー未追跡cacheは旧訳のまま(是正済みの写しをev01に保存)。証跡=docs/research/FX-UNTIDINESS-COMMENT4-JA-GLOSS-FIX-01/EVIDENCE_01.md、docs/pm/RESULT_PACKET_FXC4_01.md。
