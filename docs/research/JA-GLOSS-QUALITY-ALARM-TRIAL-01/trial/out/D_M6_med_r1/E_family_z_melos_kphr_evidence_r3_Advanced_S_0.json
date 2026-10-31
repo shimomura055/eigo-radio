@@ -1,0 +1,200 @@
+{
+ "bid": "E|family_z_melos_kphr_evidence_r3|Advanced|S|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-T3-095",
+  "c02": "JAQ-P-087",
+  "c03": "JAQ-P-089",
+  "c04": "JAQ-P-092",
+  "c05": "JAQ-P-093",
+  "c06": "JAQ-P-086",
+  "c07": "JAQ-T3-094",
+  "c08": "JAQ-P-091",
+  "c09": "JAQ-P-085"
+ },
+ "scored": [
+  "JAQ-T3-094",
+  "JAQ-T3-095"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "信頼を勝ち得る",
+      "acceptable_alternatives": [
+       "信頼を得る"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "手を差し出す",
+      "acceptable_alternatives": [
+       "両手を差し出す"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "見捨てる",
+      "acceptable_alternatives": [
+       "見放す"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "血で汚す",
+      "acceptable_alternatives": [
+       "血に染める"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "言うことをきく",
+      "acceptable_alternatives": [
+       "従う"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "水中に引きずり込む",
+      "acceptable_alternatives": [
+       "水の中へ引き込む"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "処刑",
+      "acceptable_alternatives": [
+       "死刑執行"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "捕らえる",
+      "acceptable_alternatives": [
+       "取り押さえる"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "死刑を宣告する",
+      "acceptable_alternatives": [
+       "死刑に処する"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_05d69ed1e7f84717006ae597aca4a887d09084de522f72d953",
+   "usage": [
+    {
+     "input_tokens": 1588,
+     "output_tokens": 470,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.06300800000000001,
+   "elapsed": 5.0,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "earnは「得る・勝ち取る」で、「失う」は意味が逆です。",
+      "suggestion": "これほどの信頼を勝ち得る"
+     },
+     {
+      "id": "c02",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c04",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "mid",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c05",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c06",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c07",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "この文脈のexecutionは「実行」ではなく「処刑」です。",
+      "suggestion": "処刑"
+     },
+     {
+      "id": "c09",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_0e88e80cb2b39e24006ae597b1acd887d0b2ce0122096f44cd",
+   "usage": [
+    {
+     "input_tokens": 1900,
+     "output_tokens": 991,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.10968,
+   "elapsed": 10.4,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c03",
+  "c08"
+ ]
+}

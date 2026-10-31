@@ -254,7 +254,45 @@ def run_batch(U, b, method, effort, rep, ref, refd, slugs, outdir, base_dir=None
     return rec
 
 
+def main_multi(specs, workers):
+    """1回の起動で複数runを同時実行(起動間隔規則の遵守と待機短縮)。spec=name:method:effort:phase:rep:ref(0/1):base"""
+    chk = m8_check()
+    json.dump(chk, open(os.path.join(TRIAL, f"m8_check_{chk['prompt_sha256'][:12]}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    if not chk["pass"]:
+        print("M-8 FAIL", chk["hits"]); sys.exit(5)
+    print("M-8 PASS prompt_sha", chk["prompt_sha256"][:16])
+    U = load_all(); refd, slugs = build_ref(U)
+    throttle()
+    tasks = []
+    for sp in specs:
+        name, method, effort, phase, rep, ref, base = (sp.split(":") + [""] * 7)[:7]
+        B = J(os.path.join(TRIAL, f"batches_{phase}.json"))
+        outdir = os.path.join(TRIAL, "out", name); os.makedirs(outdir, exist_ok=True)
+        json.dump({"run": name, "spec": sp, "prompt_sha256": chk["prompt_sha256"], "model": MODEL, "t": time.strftime("%Y-%m-%d %H:%M:%S"), "n_batches": len(B)},
+                  open(os.path.join(outdir, "_run.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        base_dir = os.path.join(TRIAL, "out", base) if base else None
+        for b in B: tasks.append((name, b, method, effort, int(rep or 1), ref == "1", outdir, base_dir))
+    t0 = time.time(); rc = 0; done = 0
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futs = {ex.submit(run_batch, U, b, m, e, r, rf, refd, slugs, od, bd): (n, b["bid"]) for (n, b, m, e, r, rf, od, bd) in tasks}
+        for f in as_completed(futs):
+            try:
+                f.result(); done += 1
+            except RuntimeError as e:
+                print("STOP:", e); rc = 3
+            except Exception as e:
+                print("ERR", futs[f], repr(e)[:200]); rc = 1
+    print(f"multi done {done}/{len(tasks)} elapsed {time.time()-t0:.0f}s ledger_total {ledger_total():.3f}")
+    sys.exit(rc)
+
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "--multi":
+        w = 8
+        specs = [x for x in sys.argv[2:] if not x.startswith("--workers=")]
+        for x in sys.argv[2:]:
+            if x.startswith("--workers="): w = int(x.split("=")[1])
+        return main_multi(specs, w)
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True); ap.add_argument("--method", required=True); ap.add_argument("--effort", default="medium")
     ap.add_argument("--phase", default="dev"); ap.add_argument("--rep", type=int, default=1); ap.add_argument("--ref", action="store_true")

@@ -1,0 +1,212 @@
+{
+ "bid": "E|family_y_production_redelivery_fee_03|Advanced|R|0",
+ "method": "M6",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-T2-049",
+  "c02": "JAQ-P-157",
+  "c03": "JAQ-P-160",
+  "c04": "JAQ-T2-050",
+  "c05": "JAQ-T2-047",
+  "c06": "JAQ-P-159",
+  "c07": "JAQ-P-158",
+  "c08": "JAQ-P-161",
+  "c09": "JAQ-P-153",
+  "c10": "JAQ-T2-051",
+  "c11": "JAQ-T2-048"
+ },
+ "scored": [
+  "JAQ-T2-047",
+  "JAQ-T2-048",
+  "JAQ-T2-049",
+  "JAQ-T2-050",
+  "JAQ-T2-051"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "best_ja": "通常の送料に加えて",
+      "acceptable_alternatives": [
+       "通常の送料とは別に"
+      ]
+     },
+     {
+      "id": "c02",
+      "best_ja": "立ち去る",
+      "acceptable_alternatives": [
+       "次の家へ向かう"
+      ]
+     },
+     {
+      "id": "c03",
+      "best_ja": "用事",
+      "acceptable_alternatives": [
+       "ちょっとした用事"
+      ]
+     },
+     {
+      "id": "c04",
+      "best_ja": "自分の都合のよいときに",
+      "acceptable_alternatives": [
+       "自分の好きなタイミングで"
+      ]
+     },
+     {
+      "id": "c05",
+      "best_ja": "納得がいかない",
+      "acceptable_alternatives": [
+       "しっくりこない"
+      ]
+     },
+     {
+      "id": "c06",
+      "best_ja": "何度も不在になる",
+      "acceptable_alternatives": [
+       "繰り返し留守にする"
+      ]
+     },
+     {
+      "id": "c07",
+      "best_ja": "事前に",
+      "acceptable_alternatives": [
+       "あらかじめ"
+      ]
+     },
+     {
+      "id": "c08",
+      "best_ja": "促す",
+      "acceptable_alternatives": [
+       "意欲を起こさせる"
+      ]
+     },
+     {
+      "id": "c09",
+      "best_ja": "仕方がない",
+      "acceptable_alternatives": [
+       "やむを得ない"
+      ]
+     },
+     {
+      "id": "c10",
+      "best_ja": "結局、対面で受け取ることになる",
+      "acceptable_alternatives": [
+       "最終的には直接受け取ることになる"
+      ]
+     },
+     {
+      "id": "c11",
+      "best_ja": "わざわざ手間をかけて",
+      "acceptable_alternatives": [
+       "手間を惜しまず"
+      ]
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_075aa1eeae017db4006ae5979b0d9887d08056e5da35b5c199",
+   "usage": [
+    {
+     "input_tokens": 2802,
+     "output_tokens": 490,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.08403200000000001,
+   "elapsed": 4.5,
+   "attempts": 1
+  },
+  "s2": {
+   "ok": true,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c04",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c05",
+      "equivalent": false,
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "否定が抜け、「納得できる」という逆の意味になっています。",
+      "suggestion": "納得がいかない"
+     },
+     {
+      "id": "c06",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c10",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     },
+     {
+      "id": "c11",
+      "equivalent": true,
+      "warn": false,
+      "severity": "none",
+      "confidence": "high",
+      "category": "none",
+      "reason_ja": "",
+      "suggestion": ""
+     }
+    ]
+   },
+   "model": "gpt-6-luna",
+   "response_id": "resp_07ec8e0cdacbf7cc006ae5979f8b7087d09b5d838eeaf66649",
+   "usage": [
+    {
+     "input_tokens": 2570,
+     "output_tokens": 984,
+     "cached_input_tokens": 0
+    }
+   ],
+   "cost": 0.11984,
+   "elapsed": 10.1,
+   "attempts": 1
+  }
+ },
+ "model": "gpt-6-luna",
+ "m6_skipped_equal": [
+  "c02",
+  "c03",
+  "c07",
+  "c08",
+  "c09"
+ ]
+}

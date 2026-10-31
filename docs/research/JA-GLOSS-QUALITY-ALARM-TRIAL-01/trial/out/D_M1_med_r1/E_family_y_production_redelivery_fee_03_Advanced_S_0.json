@@ -1,0 +1,85 @@
+{
+ "bid": "E|family_y_production_redelivery_fee_03|Advanced|S|0",
+ "method": "M1",
+ "effort": "medium",
+ "rep": 1,
+ "ref": false,
+ "idmap": {
+  "c01": "JAQ-T3-091",
+  "c02": "JAQ-T3P-122",
+  "c03": "JAQ-T3P-123"
+ },
+ "scored": [
+  "JAQ-T3-091",
+  "JAQ-T3P-122",
+  "JAQ-T3P-123"
+ ],
+ "stages": {
+  "s1": {
+   "ok": true,
+   "outputs": {
+    "c01": {
+     "id": "c01",
+     "warn": true,
+     "severity": "major",
+     "confidence": "high",
+     "category": "meaning_mismatch",
+     "reason_ja": "ここでは「通常の送料に加えて」の意味で、物の上に置く意味ではありません。",
+     "suggestion": "通常の送料に加えて"
+    },
+    "c02": {
+     "id": "c02",
+     "warn": true,
+     "severity": "minor",
+     "confidence": "high",
+     "category": "unnatural_ja",
+     "reason_ja": "「結果的に最終的には」が重複し、「直接受け取る」も抜けています。",
+     "suggestion": "結局、直接受け取ることになることもある"
+    },
+    "c03": {
+     "id": "c03",
+     "warn": true,
+     "severity": "minor",
+     "confidence": "high",
+     "category": "unnatural_ja",
+     "reason_ja": "「都合がよいと言えるような状況」は回りくどく不自然です。",
+     "suggestion": "自分の都合のよいときに受け取れる"
+    }
+   },
+   "cost": 0.13619200000000004,
+   "elapsed": 9.899999999999999,
+   "output": {
+    "results": [
+     {
+      "id": "c01",
+      "warn": true,
+      "severity": "major",
+      "confidence": "high",
+      "category": "meaning_mismatch",
+      "reason_ja": "ここでは「通常の送料に加えて」の意味で、物の上に置く意味ではありません。",
+      "suggestion": "通常の送料に加えて"
+     },
+     {
+      "id": "c02",
+      "warn": true,
+      "severity": "minor",
+      "confidence": "high",
+      "category": "unnatural_ja",
+      "reason_ja": "「結果的に最終的には」が重複し、「直接受け取る」も抜けています。",
+      "suggestion": "結局、直接受け取ることになることもある"
+     },
+     {
+      "id": "c03",
+      "warn": true,
+      "severity": "minor",
+      "confidence": "high",
+      "category": "unnatural_ja",
+      "reason_ja": "「都合がよいと言えるような状況」は回りくどく不自然です。",
+      "suggestion": "自分の都合のよいときに受け取れる"
+     }
+    ]
+   }
+  }
+ },
+ "model": "gpt-6-luna"
+}
