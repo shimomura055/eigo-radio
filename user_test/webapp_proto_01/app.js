@@ -191,6 +191,14 @@
     if (isCur(slug) && cur.level === ST.level) { A.currentTime = t; playNow(); tick(); }
     else startPlay(slug, { at: t });
   }
+  function playFromStart(slug) {   // 「始めから聞く」(WEBAPP-PLAY-FROM-START-BUTTON-01・DEV): 既存のplayFrom/startPlayと同じ再生制御で現在記事・現在レベルを0:00から。保存位置より優先・速度/字幕は不変
+    follow = true; lastUserScroll = 0; solo = null; stopItemAudio(); clearManual('resume');
+    if (isCur(slug) && cur.level === ST.level) {
+      cur.startAt = 0; savePos(slug, cur.level, 0);
+      if (A.readyState >= 1) A.currentTime = 0; else onMeta(function () { A.currentTime = 0; });
+      playNow(); tick();
+    } else startPlay(slug, { at: 0 });
+  }
   function isCur(slug) { return !!(cur && cur.slug === slug && A.src); }
   function togglePlay() { solo = null; if (A.paused) { stopItemAudio(); clearManual('resume'); playNow(); } else A.pause(); }
   function nextInQueue() {
@@ -349,6 +357,7 @@
       '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + '<span class="kari">仮</span></span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
       '<div id="pnotice"></div>' + lvSeg('lvseg-player') + '<div class="nowlv" id="nowlv"></div>' +
       '<div class="modeseg" id="modeseg" role="group" aria-label="聴く/学ぶ"><button type="button" data-mode="listen" aria-pressed="' + (ST.mode === 'listen') + '">聴く</button><button type="button" data-mode="learn" aria-pressed="' + (ST.mode === 'learn') + '">学ぶ</button></div>' +
+      '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" data-fromstart aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' +
       '<div id="pcontent"><div class="empty">読み込み中…</div></div>' +
       '<a class="fullink" href="../' + slug + '/enduser/index.html?lv=' + ST.level + '" target="_blank" rel="noopener">既存の完全版ページを開く &#8250;</a>' +
       '<div class="backbottom"><button type="button" class="iconbtn backbtn big" data-back id="backbottom" aria-label="' + esc(backInfo().label) + '"><span class="ba" aria-hidden="true">&#8249;</span><span class="bl">' + esc(backInfo().label) + '</span></button></div>';
@@ -973,6 +982,7 @@
       var ms = $('modeseg'); if (ms) window.scrollTo(0, Math.max(0, ms.getBoundingClientRect().top + window.scrollY - 8));
       return;
     }
+    if ((b = t.closest('[data-fromstart]'))) { playFromStart(route.arg); return; }   // 始めから聞く(聴く画面の共通ボタン)
     if ((b = t.closest('[data-from]'))) { playFrom(route.arg, +b.dataset.from); return; }   // Part先頭から
     if ((b = t.closest('[data-solosid]'))) {   // 選択した文だけ(文末で停止)
       var sd0 = syncOf(route.arg, ST.level).filter(function (x) { return x.sid === b.dataset.solosid; })[0];
