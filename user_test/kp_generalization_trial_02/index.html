@@ -1,0 +1,620 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KP選定品質 追加Trial 比較</title><style>body{font-family:system-ui,"Yu Gothic",sans-serif;margin:0;padding:12px;max-width:1400px;background:#fafafa;color:#222;line-height:1.5}
+h1{font-size:1.4rem}h2{font-size:1.1rem;margin-top:26px;border-bottom:2px solid #345}table{border-collapse:collapse;width:100%;font-size:.85rem;background:#fff}
+th,td{border:1px solid #bbb;padding:4px 6px;vertical-align:top}th{background:#eef}.cols{display:grid;gap:8px}.col{background:#fff;border:1px solid #ccc;border-radius:6px;padding:5px}
+ul{list-style:none;padding:0;margin:0}li{border-left:5px solid #999;margin:3px 0;padding:2px 6px;background:#f6f6f6;font-size:.82rem}li.ok{border-color:#2a8a3a}li.ng{border-color:#c33;background:#fff2f2}
+.s{color:#777;font-size:.74rem}.why{color:#b00;font-size:.75rem}.note{background:#fff8e0;border:1px solid #ec9;padding:6px 10px;border-radius:6px;font-size:.85rem}</style></head><body>
+<h1>Key Phrase選定・一般化 追加Trial(D vs 改善版) 比較ページ</h1>
+<p class="note"><b>Trial(検証)です。Production(本番)は変更していません。採用はユーザー判断です。</b> 管理ID=KP-GENERALIZATION-CHUNK-VALUE-TRIAL-02。</p>
+<h2>1. 主評価(自由な組合せ混入率・一般化成功率・意味正確性・修正せず選べる率)</h2><table><tr><th>方式</th><th>ケース数</th><th>提示数</th><th>修正せず選べる</th><th>自由な組合せ混入</th><th>一般化成功(適用分)</th><th>意味・用法正確</th><th>3件以上(参考)</th><th>平均提示数(参考)</th><th>未判定</th></tr>
+<tr><td>D: 前回(Before基準)</td><td>14</td><td>71</td><td>60/71 (85%)</td><td>6/71 (8%)</td><td>40/42 (95%)</td><td>69/71 (97%)</td><td>12/14 (86%)</td><td>5.1</td><td>0</td></tr>
+<tr><td>E1L: Dの順序+塊判定強化(luna)</td><td>14</td><td>81</td><td>72/81 (89%)</td><td>2/81 (2%)</td><td>44/48 (92%)</td><td>78/81 (96%)</td><td>14/14 (100%)</td><td>5.8</td><td>0</td></tr>
+<tr><td>E1S: 同(塊判定sol)</td><td>4</td><td>21</td><td>17/21 (81%)</td><td>1/21 (5%)</td><td>13/14 (93%)</td><td>19/21 (90%)</td><td>4/4 (100%)</td><td>5.2</td><td>0</td></tr>
+<tr><td>E2: 一般化→塊判定(luna)</td><td>14</td><td>77</td><td>71/77 (92%)</td><td>5/77 (6%)</td><td>47/48 (98%)</td><td>77/77 (100%)</td><td>13/14 (93%)</td><td>5.5</td><td>0</td></tr>
+<tr><td>E3: E2+別系列ゲート</td><td>14</td><td>77</td><td>71/77 (92%)</td><td>5/77 (6%)</td><td>48/49 (98%)</td><td>77/77 (100%)</td><td>13/14 (93%)</td><td>5.5</td><td>0</td></tr>
+<tr><td>E4: E2(sol)+別系列ゲート</td><td>14</td><td>70</td><td>68/70 (97%)</td><td>0/70 (0%)</td><td>42/44 (95%)</td><td>70/70 (100%)</td><td>13/14 (93%)</td><td>5.0</td><td>0</td></tr>
+</table><p class='s'>母集団差: 方式ごとに実行済みのケース集合が異なる場合があります(ケース数列)。厳密比較は共通ケースの集計(kpg03_stats.pyの出力)を参照。易しい表現(rely on等)は不可の理由にしていません。</p>
+<h2>2. 記事×レベル別</h2>
+<h3>② 散らかり / Standard</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで話を聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開廷中である</div></li>
+<li class='ok'><b>not so fast</b> <span class='s'>[upper_intermediate]</span><div>そう急ぐな</div></li>
+<li class='ok'><b>get heated</b> <span class='s'>[upper_intermediate]</span><div>白熱する</div><div class='s'>本文の根拠: gets heated</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[upper_intermediate]</span><div>頼る</div><div class='s'>本文の根拠: relied on</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ng'><b>take away from</b> <span class='s'>[upper_intermediate]</span><div>〜の価値や効果を損なう</div><div class='s'>本文の根拠: take points away from</div><div class='why'>GEN</div></li>
+<li class='ok'><b>make something work</b> <span class='s'>[upper_intermediate]</span><div>〜をうまく機能させる</div><div class='s'>本文の根拠: make life work</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[upper_intermediate]</span><div>〜を頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>turn something into</b> <span class='s'>[upper_intermediate]</span><div>〜を別の形に変える</div><div class='s'>本文の根拠: turn the talk into</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[easy]</span><div>開廷中である</div></li>
+<li class='ok'><b>not so fast</b> <span class='s'>[easy]</span><div>そう急ぐな、まだ早い</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開会中である</div></li>
+<li class='ok'><b>not so fast</b> <span class='s'>[easy]</span><div>ちょっと待て</div></li>
+<li class='ok'><b>take up</b> <span class='s'>[easy]</span><div>場所や時間を占める</div><div class='s'>本文の根拠: take up space</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>頼る</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>turn something into</b> <span class='s'>[easy]</span><div>〜を別のものに変える</div><div class='s'>本文の根拠: turn the talk into</div></li>
+<li class='ok'><b>keep something in sight</b> <span class='s'>[easy]</span><div>見える状態に保つ</div><div class='s'>本文の根拠: keeping it in sight</div></li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>hear someone out</b> <span class='s'>[upper_intermediate]</span><div>（人）の言い分を最後まで聞く</div><div class='s'>本文の根拠: hear it out</div></li>
+<li class='ok'><b>take something away from</b> <span class='s'>[upper_intermediate]</span><div>〜から…を奪う、損なう</div><div class='s'>本文の根拠: take points away from</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[easy]</span><div>開廷中である</div></li>
+<li class='ok'><b>not so fast</b> <span class='s'>[easy]</span><div>そう急ぐな、待った</div></li>
+<li class='ok'><b>take up</b> <span class='s'>[easy]</span><div>場所や時間を占める</div><div class='s'>本文の根拠: take up space</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>〜を頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>turn something into</b> <span class='s'>[easy]</span><div>〜を別のものに変える</div><div class='s'>本文の根拠: turn the talk into</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>hear someone out</b> <span class='s'>[upper_intermediate]</span><div>（人の）言い分を最後まで聞く</div><div class='s'>本文の根拠: hear it out</div></li>
+<li class='ok'><b>take something away from</b> <span class='s'>[upper_intermediate]</span><div>〜から…を差し引く、奪う</div><div class='s'>本文の根拠: take points away from</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[easy]</span><div>開廷中である</div></li>
+<li class='ok'><b>not so fast</b> <span class='s'>[easy]</span><div>そう急ぐな、待った</div></li>
+<li class='ok'><b>take up</b> <span class='s'>[easy]</span><div>場所や時間を占める</div><div class='s'>本文の根拠: take up space</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>〜を頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>turn something into</b> <span class='s'>[easy]</span><div>〜を別のものに変える</div><div class='s'>本文の根拠: turn the talk into</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>言い分を最後まで聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>take something away from</b> <span class='s'>[upper_intermediate]</span><div>〜から…を奪う、差し引く</div><div class='s'>本文の根拠: take points away from</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開廷中である</div></li>
+<li class='ok'><b>not so fast</b> <span class='s'>[easy]</span><div>そう急ぐな、待った</div></li>
+<li class='ok'><b>take up</b> <span class='s'>[easy]</span><div>場所や時間を占める</div><div class='s'>本文の根拠: take up space</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>〜を頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>turn something into</b> <span class='s'>[easy]</span><div>〜を別のものに変える</div><div class='s'>本文の根拠: turn the talk into</div></li>
+</ul></div>
+</div>
+<h3>④ AI説得広告 / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>put the brakes on</b> <span class='s'>[upper_intermediate]</span><div>歯止めをかける</div><div class='s'>本文の根拠: putting the brakes on</div></li>
+<li class='ok'><b>or so it seems</b> <span class='s'>[upper_intermediate]</span><div>そう思われたが</div><div class='s'>本文の根拠: or so it seemed</div></li>
+<li class='ng'><b>need an instruction manual</b> <span class='s'>[upper_intermediate]</span><div>説明・解釈が必要である</div><div class='s'>本文の根拠: needs an instruction manual</div><div class='why'>FREE</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>put the brakes on</b> <span class='s'>[upper_intermediate]</span><div>抑制する、歯止めをかける</div><div class='s'>本文の根拠: putting the brakes on</div></li>
+<li class='ok'><b>or so it seems</b> <span class='s'>[upper_intermediate]</span><div>そう見えたが</div><div class='s'>本文の根拠: or so it seemed</div></li>
+<li class='ok'><b>sales pitch</b> <span class='s'>[easy]</span><div>売り込み文句</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中である</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li class='ok'><b>put the brakes on</b> <span class='s'>[upper_intermediate]</span><div>抑制する</div><div class='s'>本文の根拠: putting the brakes on</div></li>
+<li class='ok'><b>sales pitch</b> <span class='s'>[upper_intermediate]</span><div>売り込みの口上</div></li>
+<li class='ok'><b>or so it seems</b> <span class='s'>[upper_intermediate]</span><div>そう見えたようだが</div><div class='s'>本文の根拠: or so it seemed</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中である</div></li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>sales pitch</b> <span class='s'>[upper_intermediate]</span><div>営業トーク</div></li>
+<li class='ok'><b>count as</b> <span class='s'>[upper_intermediate]</span><div>〜と見なされる</div><div class='s'>本文の根拠: counted as having failed</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中で</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>sales pitch</b> <span class='s'>[upper_intermediate]</span><div>営業トーク</div></li>
+<li class='ok'><b>count as</b> <span class='s'>[upper_intermediate]</span><div>〜と見なす</div><div class='s'>本文の根拠: counted as having failed</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中で</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>sales pitch</b> <span class='s'>[upper_intermediate]</span><div>営業トーク</div></li>
+<li class='ok'><b>count as</b> <span class='s'>[upper_intermediate]</span><div>〜と見なす</div><div class='s'>本文の根拠: counted as having failed</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中で</div></li>
+</ul></div>
+</div>
+<h3>⑭ JWST謎の輝線 / Standard</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ng'><b>equivalent width</b> <span class='s'>[advanced]</span><div>スペクトル線の強さを示す幅</div><div class='why'>FREE</div></li>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>対象を絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>turn something around</b> <span class='s'>[upper_intermediate]</span><div>何かを逆の順序にする</div><div class='s'>本文の根拠: turned the usual steps around</div></li>
+<li class='ok'><b>too soon to say</b> <span class='s'>[upper_intermediate]</span><div>判断を下すにはまだ早い</div></li>
+<li class='ok'><b>take an unexpected turn</b> <span class='s'>[upper_intermediate]</span><div>予想外の展開になる</div><div class='s'>本文の根拠: took an unexpected turn</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>turn something around</b> <span class='s'>[upper_intermediate]</span><div>物事の順序や向きを逆にする</div><div class='s'>本文の根拠: turned the usual steps around</div></li>
+<li class='ng'><b>take a turn</b> <span class='s'>[upper_intermediate]</span><div>展開が変わる</div><div class='s'>本文の根拠: took an unexpected turn</div><div class='why'>MEAN</div></li>
+<li class='ng'><b>lower limit</b> <span class='s'>[easy]</span><div>下限</div><div class='why'>FREE</div></li>
+<li class='ok'><b>show up</b> <span class='s'>[easy]</span><div>現れる、確認できる</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>範囲を狭める</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>turn something around</b> <span class='s'>[upper_intermediate]</span><div>順序を逆にする</div><div class='s'>本文の根拠: turned the usual steps around</div></li>
+<li class='ng'><b>take a turn</b> <span class='s'>[upper_intermediate]</span><div>事態が転じる</div><div class='s'>本文の根拠: took an unexpected turn</div><div class='why'>MEAN</div></li>
+<li class='ok'><b>show up</b> <span class='s'>[easy]</span><div>現れる・見えるようになる</div></li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ng'><b>lower limit</b> <span class='s'>[upper_intermediate]</span><div>下限</div><div class='why'>FREE</div></li>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>turn something around</b> <span class='s'>[upper_intermediate]</span><div>逆にする</div><div class='s'>本文の根拠: turned the usual steps around</div></li>
+<li class='ng'><b>absence from</b> <span class='s'>[upper_intermediate]</span><div>〜にないこと</div><div class='s'>本文の根拠: line&#x27;s absence from images</div><div class='why'>FREE</div></li>
+<li class='ok'><b>show up</b> <span class='s'>[easy]</span><div>現れる</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ng'><b>lower limit</b> <span class='s'>[upper_intermediate]</span><div>下限</div><div class='why'>FREE</div></li>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>turn something around</b> <span class='s'>[upper_intermediate]</span><div>逆にする</div><div class='s'>本文の根拠: turned the usual steps around</div></li>
+<li class='ng'><b>absence from</b> <span class='s'>[upper_intermediate]</span><div>〜にないこと</div><div class='s'>本文の根拠: line&#x27;s absence from images</div><div class='why'>FREE</div></li>
+<li class='ok'><b>show up</b> <span class='s'>[easy]</span><div>現れる</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>turn something around</b> <span class='s'>[upper_intermediate]</span><div>逆にする</div><div class='s'>本文の根拠: turned the usual steps around</div></li>
+<li class='ok'><b>show up</b> <span class='s'>[easy]</span><div>現れる</div></li>
+</ul></div>
+</div>
+<h3>⑭ JWST謎の輝線 / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ng'><b>equivalent width</b> <span class='s'>[advanced]</span><div>スペクトル線の等価幅</div><div class='why'>FREE</div></li>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ng'><b>set a limit</b> <span class='s'>[upper_intermediate]</span><div>限界を設定する</div><div class='s'>本文の根拠: set a lower limit</div><div class='why'>MEAN</div></li>
+<li class='ng'><b>take a turn</b> <span class='s'>[upper_intermediate]</span><div>展開を迎える</div><div class='s'>本文の根拠: took an unexpected turn</div><div class='why'>MEAN</div></li>
+<li class='ng'><b>point-like object</b> <span class='s'>[upper_intermediate]</span><div>点状の天体</div><div class='why'>FREE</div></li>
+<li class='ng'><b>deep image</b> <span class='s'>[upper_intermediate]</span><div>高感度の観測画像</div><div class='why'>FREE</div></li>
+<li class='ng'><b>have yet to be spoken</b> <span class='s'>[upper_intermediate]</span><div>まだ語られていない</div><div class='s'>本文の根拠: has yet to be spoken</div><div class='why'>GEN</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>範囲を狭める</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ng'><b>set a limit</b> <span class='s'>[upper_intermediate]</span><div>限界を設定する</div><div class='s'>本文の根拠: set a lower limit</div><div class='why'>MEAN</div></li>
+<li class='ng'><b>take a turn</b> <span class='s'>[upper_intermediate]</span><div>展開が変わる</div><div class='s'>本文の根拠: took an unexpected turn</div><div class='why'>MEAN</div></li>
+<li class='ok'><b>upside down</b> <span class='s'>[upper_intermediate]</span><div>ひっくり返す</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[upper_intermediate]</span><div>頼る</div><div class='s'>本文の根拠: relying on a list</div></li>
+<li class='ok'><b>show up</b> <span class='s'>[upper_intermediate]</span><div>現れる</div><div class='s'>本文の根拠: doesn’t show up</div></li>
+<li class='ok'><b>pick up</b> <span class='s'>[upper_intermediate]</span><div>拾い上げる</div><div class='s'>本文の根拠: pick up clues</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>対象を絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ng'><b>set a lower limit</b> <span class='s'>[upper_intermediate]</span><div>下限を設定する</div><div class='why'>FREE</div></li>
+<li class='ng'><b>take a turn</b> <span class='s'>[upper_intermediate]</span><div>展開する</div><div class='s'>本文の根拠: took an unexpected turn</div><div class='why'>MEAN</div></li>
+<li class='ok'><b>pick up</b> <span class='s'>[upper_intermediate]</span><div>得る、気づく</div><div class='s'>本文の根拠: pick up clues</div></li>
+<li class='ok'><b>upside down</b> <span class='s'>[easy]</span><div>逆転して</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>頼りにする</div><div class='s'>本文の根拠: relying on a list</div></li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>〜を絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[upper_intermediate]</span><div>〜に頼る</div><div class='s'>本文の根拠: relying on a list</div></li>
+<li class='ng'><b>drop something</b> <span class='s'>[upper_intermediate]</span><div>〜を取りやめる</div><div class='s'>本文の根拠: dropped the rule</div><div class='why'>FREE</div></li>
+<li class='ng'><b>absence from</b> <span class='s'>[upper_intermediate]</span><div>〜に存在しないこと</div><div class='s'>本文の根拠: absence from the images</div><div class='why'>FREE</div></li>
+<li class='ok'><b>pick up</b> <span class='s'>[upper_intermediate]</span><div>〜を拾い上げる</div><div class='s'>本文の根拠: pick up clues</div></li>
+<li class='ok'><b>upside down</b> <span class='s'>[easy]</span><div>逆さまに</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>〜を絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[upper_intermediate]</span><div>〜に頼る</div><div class='s'>本文の根拠: relying on a list</div></li>
+<li class='ng'><b>drop something</b> <span class='s'>[upper_intermediate]</span><div>〜を取りやめる</div><div class='s'>本文の根拠: dropped the rule</div><div class='why'>FREE</div></li>
+<li class='ng'><b>absence from</b> <span class='s'>[upper_intermediate]</span><div>〜に存在しないこと</div><div class='s'>本文の根拠: absence from the images</div><div class='why'>FREE</div></li>
+<li class='ok'><b>pick up</b> <span class='s'>[upper_intermediate]</span><div>〜を拾い上げる</div><div class='s'>本文の根拠: pick up clues</div></li>
+<li class='ok'><b>upside down</b> <span class='s'>[easy]</span><div>逆さまに</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>narrow down</b> <span class='s'>[upper_intermediate]</span><div>〜を絞り込む</div><div class='s'>本文の根拠: narrow down the source</div></li>
+<li class='ok'><b>upside down</b> <span class='s'>[easy]</span><div>逆さまに</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>〜に頼る</div><div class='s'>本文の根拠: relying on a list</div></li>
+<li class='ok'><b>pick up</b> <span class='s'>[easy]</span><div>〜を拾い上げる</div><div class='s'>本文の根拠: pick up clues</div></li>
+</ul></div>
+</div>
+<h3>⑨ Meta Waddle World / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>pore over</b> <span class='s'>[upper_intermediate]</span><div>細かく調べる</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>～のための余地を作る</div></li>
+<li class='ok'><b>on the scale of</b> <span class='s'>[upper_intermediate]</span><div>～と同じ規模で</div></li>
+<li class='ok'><b>open question</b> <span class='s'>[upper_intermediate]</span><div>未解決の疑問</div></li>
+<li class='ok'><b>content rating</b> <span class='s'>[upper_intermediate]</span><div>コンテンツの年齢区分評価</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>pore over</b> <span class='s'>[upper_intermediate]</span><div>注意深く読む・調べる</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>〜のための余地を作る</div></li>
+<li class='ok'><b>on the scale of</b> <span class='s'>[upper_intermediate]</span><div>〜ほどの規模で</div></li>
+<li class='ok'><b>an open question</b> <span class='s'>[upper_intermediate]</span><div>未解決の問題</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>pore over</b> <span class='s'>[upper_intermediate]</span><div>細かく調べる</div></li>
+<li class='ok'><b>on the scale of</b> <span class='s'>[upper_intermediate]</span><div>〜と同じ規模で</div></li>
+<li class='ok'><b>an open question</b> <span class='s'>[upper_intermediate]</span><div>未解決の問題</div></li>
+<li class='ok'><b>lie in</b> <span class='s'>[upper_intermediate]</span><div>〜にある</div><div class='s'>本文の根拠: may lie less in</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[easy]</span><div>受け入れる余地を作る</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>pore over</b> <span class='s'>[upper_intermediate]</span><div>細かく調べる</div></li>
+<li class='ok'><b>on the scale of</b> <span class='s'>[upper_intermediate]</span><div>〜と同じ規模で</div></li>
+<li class='ok'><b>an open question</b> <span class='s'>[upper_intermediate]</span><div>未解決の問題</div></li>
+<li class='ok'><b>lie in</b> <span class='s'>[upper_intermediate]</span><div>〜にある</div><div class='s'>本文の根拠: may lie less in</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[easy]</span><div>受け入れる余地を作る</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>pore over</b> <span class='s'>[upper_intermediate]</span><div>細かく調べる</div></li>
+<li class='ok'><b>an open question</b> <span class='s'>[upper_intermediate]</span><div>未解決の問題</div></li>
+<li class='ok'><b>lie in</b> <span class='s'>[upper_intermediate]</span><div>〜にある</div><div class='s'>本文の根拠: may lie less in</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[easy]</span><div>受け入れる余地を作る</div></li>
+</ul></div>
+</div>
+<h3>② 散らかり / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>apply to</b> <span class='s'>[upper_intermediate]</span><div>〜に当てはまる</div><div class='s'>本文の根拠: applied to every household</div></li>
+<li class='ok'><b>hear someone out</b> <span class='s'>[upper_intermediate]</span><div>（人）の話を最後まで聞く</div><div class='s'>本文の根拠: hear it out</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開廷中である</div><div class='s'>本文の根拠: Now in Session</div></li>
+<li class='ok'><b>speak for</b> <span class='s'>[upper_intermediate]</span><div>〜を代表して発言する</div><div class='s'>本文の根拠: speaking for the side</div></li>
+<li class='ok'><b>in the way</b> <span class='s'>[upper_intermediate]</span><div>邪魔になって</div><div class='s'>本文の根拠: something in the way</div></li>
+<li class='ok'><b>on the job</b> <span class='s'>[upper_intermediate]</span><div>仕事中である</div><div class='s'>本文の根拠: still on the job</div></li>
+<li class='ok'><b>get heated</b> <span class='s'>[upper_intermediate]</span><div>白熱する</div><div class='s'>本文の根拠: gets heated</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>turn into</b> <span class='s'>[upper_intermediate]</span><div>別の状態へ変化する</div><div class='s'>本文の根拠: turn into an interrogation</div></li>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで耳を傾ける</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>get heated</b> <span class='s'>[upper_intermediate]</span><div>白熱する</div><div class='s'>本文の根拠: gets heated</div></li>
+<li class='ok'><b>take something away</b> <span class='s'>[upper_intermediate]</span><div>取り去る、差し引く</div><div class='s'>本文の根拠: taking points away</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[easy]</span><div>開廷中で、会期中で</div><div class='s'>本文の根拠: Now in Session</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>〜に頼る</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>take something seriously</b> <span class='s'>[easy]</span><div>真剣に受け止める</div><div class='s'>本文の根拠: taking its job quite seriously</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>apply to</b> <span class='s'>[upper_intermediate]</span><div>〜に当てはまる</div><div class='s'>本文の根拠: applied to every household</div></li>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開会中である</div><div class='s'>本文の根拠: Now in Session</div></li>
+<li class='ok'><b>get heated</b> <span class='s'>[upper_intermediate]</span><div>感情的になる</div><div class='s'>本文の根拠: gets heated</div></li>
+<li class='ok'><b>contribution to</b> <span class='s'>[upper_intermediate]</span><div>〜への貢献</div><div class='s'>本文の根拠: contribution to daily life</div></li>
+<li class='ok'><b>turn into</b> <span class='s'>[easy]</span><div>〜へと変わる</div><div class='s'>本文の根拠: turn into an interrogation</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>apply to</b> <span class='s'>[upper_intermediate]</span><div>〜に当てはまる</div><div class='s'>本文の根拠: applied to every household</div></li>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開会中である</div><div class='s'>本文の根拠: Now in Session</div></li>
+<li class='ok'><b>get heated</b> <span class='s'>[upper_intermediate]</span><div>感情的になる</div><div class='s'>本文の根拠: gets heated</div></li>
+<li class='ok'><b>contribution to</b> <span class='s'>[upper_intermediate]</span><div>貢献すること</div><div class='s'>本文の根拠: contribution to daily life</div></li>
+<li class='ok'><b>turn into</b> <span class='s'>[easy]</span><div>〜へと変わる</div><div class='s'>本文の根拠: turn into an interrogation</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ng'><b>hear something out</b> <span class='s'>[upper_intermediate]</span><div>最後まで聞く</div><div class='s'>本文の根拠: hear it out</div><div class='why'>GEN</div></li>
+<li class='ok'><b>in session</b> <span class='s'>[upper_intermediate]</span><div>開会中である</div><div class='s'>本文の根拠: Now in Session</div></li>
+<li class='ok'><b>get heated</b> <span class='s'>[upper_intermediate]</span><div>感情的になる</div><div class='s'>本文の根拠: gets heated</div></li>
+<li class='ok'><b>turn into</b> <span class='s'>[easy]</span><div>〜へと変わる</div><div class='s'>本文の根拠: turn into an interrogation</div></li>
+<li class='ok'><b>rely on</b> <span class='s'>[easy]</span><div>頼りにする</div><div class='s'>本文の根拠: relied on</div></li>
+<li class='ok'><b>take something away</b> <span class='s'>[easy]</span><div>取り去る</div><div class='s'>本文の根拠: taking points away</div></li>
+</ul></div>
+</div>
+<h3>④ AI説得広告 / Standard</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>sales pitch</b> <span class='s'>[upper_intermediate]</span><div>販売を促す説得的な話</div></li>
+<li class='ok'><b>blow a whistle</b> <span class='s'>[upper_intermediate]</span><div>危険を知らせる合図を出す</div></li>
+<li class='ok'><b>let something through</b> <span class='s'>[upper_intermediate]</span><div>妨げずに通す・受け入れる</div><div class='s'>本文の根拠: let the advice through</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>sales pitch</b> <span class='s'>[upper_intermediate]</span><div>売り込みの口上</div></li>
+<li class='ok'><b>let something through</b> <span class='s'>[upper_intermediate]</span><div>通過を許す</div><div class='s'>本文の根拠: let the advice through</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[upper_intermediate]</span><div>営業中である</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>let something through</b> <span class='s'>[easy]</span><div>〜を通す</div><div class='s'>本文の根拠: let the advice through</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中である</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>let something through</b> <span class='s'>[easy]</span><div>〜を通す</div><div class='s'>本文の根拠: let the advice through</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中である</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>let something through</b> <span class='s'>[easy]</span><div>〜を通す</div><div class='s'>本文の根拠: let the advice through</div></li>
+<li class='ok'><b>open for business</b> <span class='s'>[easy]</span><div>営業中である</div></li>
+</ul></div>
+</div>
+<h3>⑨ Meta Waddle World / Standard</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>at the time of</b> <span class='s'>[upper_intermediate]</span><div>〜の時点で</div><div class='s'>本文の根拠: At the time of writing</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>〜のための余地を作る</div></li>
+<li class='ok'><b>step toward</b> <span class='s'>[upper_intermediate]</span><div>〜に向けた一歩</div><div class='s'>本文の根拠: early step toward</div></li>
+<li class='ok'><b>content rating</b> <span class='s'>[upper_intermediate]</span><div>内容に関する評価区分</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>at the time of writing</b> <span class='s'>[upper_intermediate]</span><div>執筆時点で</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>〜を受け入れる余地を作る</div></li>
+<li class='ok'><b>make time for</b> <span class='s'>[upper_intermediate]</span><div>〜のために時間を割く</div><div class='s'>本文の根拠: make time for it</div></li>
+<li class='ok'><b>side by side</b> <span class='s'>[easy]</span><div>並べて</div></li>
+<li class='ng'><b>storage space</b> <span class='s'>[easy]</span><div>保存可能な容量</div><div class='why'>FREE</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>at the time of writing</b> <span class='s'>[upper_intermediate]</span><div>執筆時点では</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>〜のための余地を作る</div></li>
+<li class='ok'><b>side by side</b> <span class='s'>[easy]</span><div>並べて比較して</div></li>
+<li class='ng'><b>storage space</b> <span class='s'>[easy]</span><div>データ保存用の容量</div><div class='why'>FREE</div></li>
+<li class='ok'><b>make time for</b> <span class='s'>[easy]</span><div>〜のための時間を作る</div><div class='s'>本文の根拠: make time for it</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>at the time of writing</b> <span class='s'>[upper_intermediate]</span><div>執筆時点では</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>〜のための余地を作る</div></li>
+<li class='ok'><b>side by side</b> <span class='s'>[easy]</span><div>並べて比較して</div></li>
+<li class='ng'><b>storage space</b> <span class='s'>[easy]</span><div>データ保存用の容量</div><div class='why'>FREE</div></li>
+<li class='ok'><b>make time for</b> <span class='s'>[easy]</span><div>〜のための時間を作る</div><div class='s'>本文の根拠: make time for it</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>at the time of writing</b> <span class='s'>[upper_intermediate]</span><div>執筆時点では</div></li>
+<li class='ok'><b>make room for</b> <span class='s'>[upper_intermediate]</span><div>〜のための余地を作る</div></li>
+<li class='ok'><b>side by side</b> <span class='s'>[easy]</span><div>並べて比較して</div></li>
+<li class='ok'><b>make time for</b> <span class='s'>[easy]</span><div>〜のための時間を作る</div><div class='s'>本文の根拠: make time for it</div></li>
+</ul></div>
+</div>
+<h3>AI島 / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>carry over</b> <span class='s'>[upper_intermediate]</span><div>次の期間へ引き継がれる</div><div class='s'>本文の根拠: carried over</div></li>
+<li class='ok'><b>call on</b> <span class='s'>[upper_intermediate]</span><div>行動や役割を求める</div><div class='s'>本文の根拠: called on</div></li>
+<li class='ok'><b>card to play</b> <span class='s'>[upper_intermediate]</span><div>切り札として使える手段</div></li>
+<li class='ok'><b>one step ahead</b> <span class='s'>[upper_intermediate]</span><div>一歩先を行って有利である</div></li>
+<li class='ok'><b>wave a flag</b> <span class='s'>[upper_intermediate]</span><div>成功を宣言する</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>carry over</b> <span class='s'>[upper_intermediate]</span><div>次へ引き継ぐ</div><div class='s'>本文の根拠: carried over</div></li>
+<li class='ok'><b>call on</b> <span class='s'>[upper_intermediate]</span><div>人に役割を依頼する</div><div class='s'>本文の根拠: called on</div></li>
+<li class='ok'><b>take a detour</b> <span class='s'>[upper_intermediate]</span><div>遠回りをする</div><div class='s'>本文の根拠: taken a detour</div></li>
+<li class='ok'><b>card to play</b> <span class='s'>[upper_intermediate]</span><div>使える切り札</div></li>
+<li class='ok'><b>one step ahead</b> <span class='s'>[upper_intermediate]</span><div>一歩先んじている</div></li>
+<li class='ok'><b>one way around</b> <span class='s'>[easy]</span><div>回避する手段</div><div class='s'>本文の根拠: one way around it</div></li>
+<li class='ok'><b>obstacle course</b> <span class='s'>[easy]</span><div>障害物コース</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>carry over</b> <span class='s'>[upper_intermediate]</span><div>次の時間へ引き継ぐ</div><div class='s'>本文の根拠: carried over</div></li>
+<li class='ok'><b>call on</b> <span class='s'>[upper_intermediate]</span><div>役割を求める</div><div class='s'>本文の根拠: called on</div></li>
+<li class='ok'><b>card to play</b> <span class='s'>[upper_intermediate]</span><div>使える切り札</div></li>
+<li class='ok'><b>one step ahead</b> <span class='s'>[upper_intermediate]</span><div>一歩先を行く</div></li>
+<li class='ok'><b>look at</b> <span class='s'>[easy]</span><div>検討する</div><div class='s'>本文の根拠: looked at separately</div></li>
+<li class='ok'><b>obstacle course</b> <span class='s'>[easy]</span><div>障害物コース</div></li>
+<li class='ok'><b>no use</b> <span class='s'>[easy]</span><div>役に立たない</div><div class='s'>本文の根拠: no use right now</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>carry over</b> <span class='s'>[upper_intermediate]</span><div>持ち越す</div><div class='s'>本文の根拠: carried over</div></li>
+<li class='ok'><b>call on</b> <span class='s'>[upper_intermediate]</span><div>（人に）役割を求める</div><div class='s'>本文の根拠: called on</div></li>
+<li class='ok'><b>take a detour</b> <span class='s'>[upper_intermediate]</span><div>遠回りをする</div><div class='s'>本文の根拠: taken a detour</div></li>
+<li class='ok'><b>one step ahead</b> <span class='s'>[upper_intermediate]</span><div>一歩先を行く</div></li>
+<li class='ok'><b>look at</b> <span class='s'>[easy]</span><div>検討する</div><div class='s'>本文の根拠: looked at separately</div></li>
+<li class='ok'><b>obstacle course</b> <span class='s'>[easy]</span><div>障害物コース</div></li>
+<li class='ok'><b>no use</b> <span class='s'>[easy]</span><div>役に立たない</div><div class='s'>本文の根拠: no use right now</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>carry over</b> <span class='s'>[upper_intermediate]</span><div>持ち越す</div><div class='s'>本文の根拠: carried over</div></li>
+<li class='ok'><b>call on</b> <span class='s'>[upper_intermediate]</span><div>（人に）役割を求める</div><div class='s'>本文の根拠: called on</div></li>
+<li class='ok'><b>take a detour</b> <span class='s'>[upper_intermediate]</span><div>遠回りをする</div><div class='s'>本文の根拠: taken a detour</div></li>
+<li class='ok'><b>obstacle course</b> <span class='s'>[upper_intermediate]</span><div>障害物コース</div></li>
+<li class='ok'><b>look at</b> <span class='s'>[easy]</span><div>検討する</div><div class='s'>本文の根拠: looked at separately</div></li>
+<li class='ok'><b>one step ahead</b> <span class='s'>[easy]</span><div>一歩先を行く</div></li>
+<li class='ok'><b>no use</b> <span class='s'>[easy]</span><div>役に立たない</div><div class='s'>本文の根拠: no use right now</div></li>
+</ul></div>
+</div>
+<h3>夫が妻の姓を選ぶとき(Y) / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>take offense</b> <span class='s'>[upper_intermediate]</span><div>気を悪くする</div><div class='s'>本文の根拠: taking offense</div></li>
+<li class='ok'><b>let go of</b> <span class='s'>[upper_intermediate]</span><div>執着や関係を手放す</div></li>
+<li class='ok'><b>hold someone back</b> <span class='s'>[upper_intermediate]</span><div>人の行動や前進を妨げる</div><div class='s'>本文の根拠: hold my son back</div></li>
+<li class='ok'><b>at ease</b> <span class='s'>[upper_intermediate]</span><div>安心してくつろいだ状態である</div></li>
+<li class='ok'><b>only natural</b> <span class='s'>[upper_intermediate]</span><div>当然のことだ</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>take offense</b> <span class='s'>[upper_intermediate]</span><div>気分を害する</div><div class='s'>本文の根拠: taking offense</div></li>
+<li class='ok'><b>let go of</b> <span class='s'>[upper_intermediate]</span><div>手放す、執着をやめる</div></li>
+<li class='ok'><b>hold someone back</b> <span class='s'>[upper_intermediate]</span><div>（人）の前進を妨げる</div><div class='s'>本文の根拠: hold my son back</div></li>
+<li class='ok'><b>give something up</b> <span class='s'>[upper_intermediate]</span><div>放棄する、手放す</div><div class='s'>本文の根拠: giving something up</div></li>
+<li class='ng'><b>can&#x27;t help think</b> <span class='s'>[upper_intermediate]</span><div>思わず〜してしまう</div><div class='s'>本文の根拠: can’t help thinking</div><div class='why'>GEN</div></li>
+<li class='ok'><b>only natural</b> <span class='s'>[upper_intermediate]</span><div>当然だ、ごく自然だ</div></li>
+<li class='ok'><b>at ease</b> <span class='s'>[easy]</span><div>くつろいで、安心して</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>take offense</b> <span class='s'>[upper_intermediate]</span><div>気を悪くする</div><div class='s'>本文の根拠: taking offense</div></li>
+<li class='ok'><b>at ease</b> <span class='s'>[upper_intermediate]</span><div>くつろいでいる</div></li>
+<li class='ok'><b>let go of</b> <span class='s'>[easy]</span><div>執着を手放す</div></li>
+<li class='ok'><b>hold someone back</b> <span class='s'>[easy]</span><div>人の成長や行動を妨げる</div><div class='s'>本文の根拠: hold my son back</div></li>
+<li class='ok'><b>give something up</b> <span class='s'>[easy]</span><div>何かを手放す</div><div class='s'>本文の根拠: giving something up</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>take offense</b> <span class='s'>[upper_intermediate]</span><div>気を悪くする</div><div class='s'>本文の根拠: taking offense</div></li>
+<li class='ok'><b>at ease</b> <span class='s'>[upper_intermediate]</span><div>くつろいでいる</div></li>
+<li class='ok'><b>let go of</b> <span class='s'>[easy]</span><div>（人）を手放す・思い切る</div></li>
+<li class='ok'><b>hold someone back</b> <span class='s'>[easy]</span><div>人の成長や行動を妨げる</div><div class='s'>本文の根拠: hold my son back</div></li>
+<li class='ok'><b>give something up</b> <span class='s'>[easy]</span><div>何かを手放す</div><div class='s'>本文の根拠: giving something up</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>take offense</b> <span class='s'>[upper_intermediate]</span><div>気を悪くする</div><div class='s'>本文の根拠: taking offense</div></li>
+<li class='ok'><b>let go of</b> <span class='s'>[upper_intermediate]</span><div>執着を手放す</div></li>
+<li class='ok'><b>hold someone back</b> <span class='s'>[upper_intermediate]</span><div>人の成長や行動を妨げる</div><div class='s'>本文の根拠: hold my son back</div></li>
+<li class='ok'><b>at ease</b> <span class='s'>[upper_intermediate]</span><div>くつろいでいる</div></li>
+<li class='ok'><b>give something up</b> <span class='s'>[easy]</span><div>何かを手放す</div><div class='s'>本文の根拠: giving something up</div></li>
+</ul></div>
+</div>
+<h3>走れメロス(Z) / Standard</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>pull someone under</b> <span class='s'>[upper_intermediate]</span><div>（人を）水中に引きずり込む</div><div class='s'>本文の根拠: pulled him under</div></li>
+<li class='ok'><b>lose one&#x27;s trust in</b> <span class='s'>[upper_intermediate]</span><div>信頼を失う</div><div class='s'>本文の根拠: lost my trust in you</div></li>
+<li class='ok'><b>win trust</b> <span class='s'>[upper_intermediate]</span><div>信頼を得る</div><div class='s'>本文の根拠: win such trust</div></li>
+<li class='ok'><b>in someone&#x27;s place</b> <span class='s'>[upper_intermediate]</span><div>人の代わりに</div><div class='s'>本文の根拠: in your place</div></li>
+<li class='ok'><b>keep one&#x27;s eyes on</b> <span class='s'>[upper_intermediate]</span><div>〜を見続ける・見張る</div><div class='s'>本文の根拠: kept his eyes on them</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>pull someone under</b> <span class='s'>[upper_intermediate]</span><div>人を水中へ引きずり込む</div><div class='s'>本文の根拠: pulled him under</div></li>
+<li class='ok'><b>lose one&#x27;s trust in</b> <span class='s'>[upper_intermediate]</span><div>人への信頼を失う</div><div class='s'>本文の根拠: lost my trust in you</div></li>
+<li class='ok'><b>win trust</b> <span class='s'>[upper_intermediate]</span><div>信頼を得る</div><div class='s'>本文の根拠: win such trust</div></li>
+<li class='ok'><b>lose one&#x27;s life</b> <span class='s'>[upper_intermediate]</span><div>命を落とす</div><div class='s'>本文の根拠: lose his life</div></li>
+<li class='ok'><b>for once</b> <span class='s'>[upper_intermediate]</span><div>今回ばかりは</div></li>
+<li class='ok'><b>in someone&#x27;s place</b> <span class='s'>[easy]</span><div>人の代わりに</div><div class='s'>本文の根拠: in your place</div></li>
+<li class='ok'><b>keep one&#x27;s eyes on</b> <span class='s'>[easy]</span><div>〜を注視し続ける</div><div class='s'>本文の根拠: kept his eyes on them</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>pull someone under</b> <span class='s'>[upper_intermediate]</span><div>水中に引きずり込む</div><div class='s'>本文の根拠: pulled him under</div></li>
+<li class='ok'><b>lose one&#x27;s trust in</b> <span class='s'>[upper_intermediate]</span><div>人への信頼を失う</div><div class='s'>本文の根拠: lost my trust in you</div></li>
+<li class='ok'><b>win trust</b> <span class='s'>[upper_intermediate]</span><div>信頼を得る</div><div class='s'>本文の根拠: win such trust</div></li>
+<li class='ok'><b>rise above something</b> <span class='s'>[upper_intermediate]</span><div>～（音など）より大きく聞こえる</div><div class='s'>本文の根拠: rose above everyone’s voices</div></li>
+<li class='ok'><b>lose one&#x27;s life</b> <span class='s'>[upper_intermediate]</span><div>命を失う</div><div class='s'>本文の根拠: lose his life instead</div></li>
+<li class='ok'><b>keep one&#x27;s eyes on</b> <span class='s'>[upper_intermediate]</span><div>人を注視し続ける</div><div class='s'>本文の根拠: kept his eyes on them</div></li>
+<li class='ok'><b>in someone&#x27;s place</b> <span class='s'>[easy]</span><div>人の代わりに</div><div class='s'>本文の根拠: in your place</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>pull someone under</b> <span class='s'>[upper_intermediate]</span><div>水中に引きずり込む</div><div class='s'>本文の根拠: pulled him under</div></li>
+<li class='ok'><b>lose one&#x27;s trust in</b> <span class='s'>[upper_intermediate]</span><div>人への信頼を失う</div><div class='s'>本文の根拠: lost my trust in you</div></li>
+<li class='ok'><b>win trust</b> <span class='s'>[upper_intermediate]</span><div>信頼を得る</div><div class='s'>本文の根拠: win such trust</div></li>
+<li class='ok'><b>rise above</b> <span class='s'>[upper_intermediate]</span><div>～より大きく聞こえる</div><div class='s'>本文の根拠: rose above everyone’s voices</div></li>
+<li class='ok'><b>lose one&#x27;s life</b> <span class='s'>[upper_intermediate]</span><div>命を失う</div><div class='s'>本文の根拠: lose his life instead</div></li>
+<li class='ok'><b>keep one&#x27;s eyes on</b> <span class='s'>[upper_intermediate]</span><div>〜から目を離さない</div><div class='s'>本文の根拠: kept his eyes on them</div></li>
+<li class='ok'><b>in someone&#x27;s place</b> <span class='s'>[easy]</span><div>人の代わりに</div><div class='s'>本文の根拠: in your place</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>win trust</b> <span class='s'>[upper_intermediate]</span><div>信頼を得る</div><div class='s'>本文の根拠: win such trust</div></li>
+<li class='ok'><b>for once</b> <span class='s'>[upper_intermediate]</span><div>今回だけは珍しく</div></li>
+<li class='ok'><b>pull someone under</b> <span class='s'>[easy]</span><div>水中に引きずり込む</div><div class='s'>本文の根拠: pulled him under</div></li>
+<li class='ok'><b>lose one&#x27;s trust in</b> <span class='s'>[easy]</span><div>人への信頼を失う</div><div class='s'>本文の根拠: lost my trust in you</div></li>
+<li class='ok'><b>in someone&#x27;s place</b> <span class='s'>[easy]</span><div>人の代わりに</div><div class='s'>本文の根拠: in your place</div></li>
+<li class='ok'><b>block someone&#x27;s way</b> <span class='s'>[easy]</span><div>人の行く手を阻む</div><div class='s'>本文の根拠: blocked his way</div></li>
+<li class='ok'><b>lose one&#x27;s life</b> <span class='s'>[easy]</span><div>命を失う</div><div class='s'>本文の根拠: lose his life instead</div></li>
+</ul></div>
+</div>
+<h3>【未使用】イグ・ノーベル賞 / Standard</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ng'><b>protein crystal</b> <span class='s'>[advanced]</span><div>タンパク質の結晶</div><div class='s'>本文の根拠: protein crystals</div><div class='why'>FREE</div></li>
+<li class='ok'><b>jump into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を起こす</div></li>
+<li class='ok'><b>final boss</b> <span class='s'>[upper_intermediate]</span><div>究極の難敵</div></li>
+<li class='ok'><b>store something away</b> <span class='s'>[upper_intermediate]</span><div>しまって保存する</div><div class='s'>本文の根拠: storing them away</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>jump into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を開始する</div></li>
+<li class='ok'><b>final boss</b> <span class='s'>[upper_intermediate]</span><div>最後に立ちはだかる強敵</div></li>
+<li class='ok'><b>stick to</b> <span class='s'>[upper_intermediate]</span><div>〜に付着する</div><div class='s'>本文の根拠: stuck to the protein</div></li>
+<li class='ok'><b>on hold</b> <span class='s'>[easy]</span><div>保留中で</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>jump into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を起こす</div></li>
+<li class='ok'><b>packed with</b> <span class='s'>[upper_intermediate]</span><div>〜を豊富に含む</div><div class='s'>本文の根拠: packed with nutrition</div></li>
+<li class='ok'><b>stick to</b> <span class='s'>[upper_intermediate]</span><div>〜に付着する</div><div class='s'>本文の根拠: stuck to the protein</div></li>
+<li class='ok'><b>on hold</b> <span class='s'>[easy]</span><div>保留中で</div></li>
+<li class='ok'><b>final boss</b> <span class='s'>[easy]</span><div>最後に立ちはだかる強敵</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>jump into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を起こす</div></li>
+<li class='ok'><b>packed with</b> <span class='s'>[upper_intermediate]</span><div>〜を豊富に含む</div><div class='s'>本文の根拠: packed with nutrition</div></li>
+<li class='ok'><b>stick to</b> <span class='s'>[upper_intermediate]</span><div>〜に付着する</div><div class='s'>本文の根拠: stuck to the protein</div></li>
+<li class='ok'><b>on hold</b> <span class='s'>[easy]</span><div>保留中で</div></li>
+<li class='ok'><b>final boss</b> <span class='s'>[easy]</span><div>最後に立ちはだかる強敵</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>jump into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を起こす</div></li>
+<li class='ok'><b>final boss</b> <span class='s'>[upper_intermediate]</span><div>最後に立ちはだかる強敵</div></li>
+<li class='ok'><b>packed with</b> <span class='s'>[upper_intermediate]</span><div>〜を豊富に含む</div><div class='s'>本文の根拠: packed with nutrition</div></li>
+<li class='ok'><b>on hold</b> <span class='s'>[easy]</span><div>保留中で</div></li>
+<li class='ok'><b>stick to</b> <span class='s'>[easy]</span><div>〜に付着する</div><div class='s'>本文の根拠: stuck to the protein</div></li>
+<li class='ok'><b>compare with</b> <span class='s'>[easy]</span><div>〜と比較する</div><div class='s'>本文の根拠: Compared with what?</div></li>
+</ul></div>
+</div>
+<h3>【未使用】イグ・ノーベル賞 / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>make one&#x27;s debut</b> <span class='s'>[upper_intermediate]</span><div>初登場する</div><div class='s'>本文の根拠: made its debut</div></li>
+<li class='ok'><b>leap into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を始める</div></li>
+<li class='ok'><b>on one&#x27;s own</b> <span class='s'>[upper_intermediate]</span><div>単独で</div><div class='s'>本文の根拠: on its own</div></li>
+<li class='ok'><b>before you know it</b> <span class='s'>[upper_intermediate]</span><div>いつの間にか</div></li>
+<li class='ok'><b>store something away</b> <span class='s'>[upper_intermediate]</span><div>しまっておく</div><div class='s'>本文の根拠: storing them away</div></li>
+<li class='ok'><b>serve as</b> <span class='s'>[upper_intermediate]</span><div>〜の役割を果たす</div><div class='s'>本文の根拠: serve as a food store</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>make one&#x27;s debut</b> <span class='s'>[upper_intermediate]</span><div>初登場する</div><div class='s'>本文の根拠: made its debut</div></li>
+<li class='ok'><b>leap into action</b> <span class='s'>[upper_intermediate]</span><div>すぐに行動を始める</div></li>
+<li class='ok'><b>store something away</b> <span class='s'>[upper_intermediate]</span><div>しまっておく</div><div class='s'>本文の根拠: storing them away</div></li>
+<li class='ok'><b>come across something</b> <span class='s'>[upper_intermediate]</span><div>偶然見つける</div><div class='s'>本文の根拠: come across the phrase</div></li>
+<li class='ok'><b>on one&#x27;s own</b> <span class='s'>[easy]</span><div>単独で、他と切り離して</div><div class='s'>本文の根拠: on its own</div></li>
+<li class='ok'><b>before you know it</b> <span class='s'>[easy]</span><div>あっという間に</div></li>
+<li class='ok'><b>serve as</b> <span class='s'>[easy]</span><div>〜として機能する</div><div class='s'>本文の根拠: serve as a food store</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>make one&#x27;s debut</b> <span class='s'>[upper_intermediate]</span><div>デビューする</div><div class='s'>本文の根拠: made its debut</div></li>
+<li class='ok'><b>leap into action</b> <span class='s'>[upper_intermediate]</span><div>行動を起こす</div></li>
+<li class='ok'><b>before you know it</b> <span class='s'>[upper_intermediate]</span><div>あっという間に</div></li>
+<li class='ok'><b>store something away</b> <span class='s'>[upper_intermediate]</span><div>何かをしまっておく</div><div class='s'>本文の根拠: storing them away</div></li>
+<li class='ok'><b>serve as</b> <span class='s'>[upper_intermediate]</span><div>〜として機能する</div><div class='s'>本文の根拠: serve as a food store</div></li>
+<li class='ok'><b>come across something</b> <span class='s'>[upper_intermediate]</span><div>何かに出くわす</div><div class='s'>本文の根拠: come across the phrase</div></li>
+<li class='ok'><b>packed with</b> <span class='s'>[upper_intermediate]</span><div>〜が豊富に詰まっている</div><div class='s'>本文の根拠: packed with nutrition</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>make one&#x27;s debut</b> <span class='s'>[upper_intermediate]</span><div>デビューする</div><div class='s'>本文の根拠: made its debut</div></li>
+<li class='ok'><b>leap into action</b> <span class='s'>[upper_intermediate]</span><div>行動を起こす</div></li>
+<li class='ok'><b>before you know it</b> <span class='s'>[upper_intermediate]</span><div>あっという間に</div></li>
+<li class='ok'><b>store something away</b> <span class='s'>[upper_intermediate]</span><div>何かをしまっておく</div><div class='s'>本文の根拠: storing them away</div></li>
+<li class='ok'><b>serve as</b> <span class='s'>[upper_intermediate]</span><div>〜として機能する</div><div class='s'>本文の根拠: serve as a food store</div></li>
+<li class='ok'><b>come across</b> <span class='s'>[upper_intermediate]</span><div>出くわす</div><div class='s'>本文の根拠: come across the phrase</div></li>
+<li class='ok'><b>packed with</b> <span class='s'>[upper_intermediate]</span><div>〜が豊富に詰まっている</div><div class='s'>本文の根拠: packed with nutrition</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>make one&#x27;s debut</b> <span class='s'>[upper_intermediate]</span><div>デビューする</div><div class='s'>本文の根拠: made its debut</div></li>
+<li class='ok'><b>leap into action</b> <span class='s'>[upper_intermediate]</span><div>行動を起こす</div></li>
+<li class='ok'><b>before you know it</b> <span class='s'>[upper_intermediate]</span><div>あっという間に</div></li>
+<li class='ok'><b>serve as</b> <span class='s'>[upper_intermediate]</span><div>〜として機能する</div><div class='s'>本文の根拠: serve as a food store</div></li>
+<li class='ok'><b>packed with</b> <span class='s'>[upper_intermediate]</span><div>〜が豊富に詰まっている</div><div class='s'>本文の根拠: packed with nutrition</div></li>
+<li class='ok'><b>on one&#x27;s own</b> <span class='s'>[easy]</span><div>単独で</div><div class='s'>本文の根拠: on its own</div></li>
+<li class='ok'><b>store something away</b> <span class='s'>[easy]</span><div>何かをしまっておく</div><div class='s'>本文の根拠: storing them away</div></li>
+</ul></div>
+</div>
+<h3>【未使用】Tesla×SpaceX / Advanced</h3><div class='cols' style='grid-template-columns:repeat(6,1fr)'>
+<div class='col'><b>D: 前回(Before基準)</b><ul>
+<li class='ok'><b>articles of incorporation</b> <span class='s'>[advanced]</span><div>定款、会社の基本定款</div></li>
+<li class='ok'><b>turn something on its head</b> <span class='s'>[upper_intermediate]</span><div>〜を根底から覆す、〜をひっくり返す</div><div class='s'>本文の根拠: turned on its head</div></li>
+<li class='ok'><b>step on the gas</b> <span class='s'>[upper_intermediate]</span><div>加速する</div><div class='s'>本文の根拠: stepped on the gas</div></li>
+<li class='ok'><b>turn of events</b> <span class='s'>[upper_intermediate]</span><div>事態の展開、情勢の変化</div></li>
+<li class='ok'><b>jump to conclusions</b> <span class='s'>[upper_intermediate]</span><div>早まった結論を出す、早合点する</div></li>
+<li class='ng'><b>hurdle to clear</b> <span class='s'>[upper_intermediate]</span><div>乗り越えるべき障害</div><div class='s'>本文の根拠: hurdles to clear</div><div class='why'>NAT</div></li>
+<li class='ok'><b>step into the spotlight</b> <span class='s'>[upper_intermediate]</span><div>注目を浴びる場に出る</div><div class='s'>本文の根拠: steps into the spotlight</div></li>
+</ul></div>
+<div class='col'><b>E1L: Dの順序+塊判定強化(luna)</b><ul>
+<li class='ok'><b>articles of incorporation</b> <span class='s'>[advanced]</span><div>会社の定款</div></li>
+<li class='ok'><b>step on the gas</b> <span class='s'>[upper_intermediate]</span><div>加速する</div><div class='s'>本文の根拠: stepped on the gas</div></li>
+<li class='ok'><b>turn something on its head</b> <span class='s'>[upper_intermediate]</span><div>〜を根本から覆す</div><div class='s'>本文の根拠: turned on its head</div></li>
+<li class='ok'><b>turn of events</b> <span class='s'>[upper_intermediate]</span><div>事態の展開</div></li>
+<li class='ok'><b>step into the spotlight</b> <span class='s'>[upper_intermediate]</span><div>注目の的になる</div><div class='s'>本文の根拠: steps into the spotlight</div></li>
+<li class='ok'><b>build momentum</b> <span class='s'>[upper_intermediate]</span><div>勢いを増す</div></li>
+<li class='ok'><b>fire the starting gun</b> <span class='s'>[upper_intermediate]</span><div>物事を開始させる</div></li>
+</ul></div>
+<div class='col'><b>E1S: 同(塊判定sol)</b><ul>
+<li>(未実行)</li>
+</ul></div>
+<div class='col'><b>E2: 一般化→塊判定(luna)</b><ul>
+<li class='ok'><b>step on the gas</b> <span class='s'>[upper_intermediate]</span><div>アクセルを踏んで加速する</div><div class='s'>本文の根拠: stepped on the gas</div></li>
+<li class='ok'><b>turn something on its head</b> <span class='s'>[upper_intermediate]</span><div>〜を根本から覆す</div><div class='s'>本文の根拠: turned on its head</div></li>
+<li class='ok'><b>step into the spotlight</b> <span class='s'>[upper_intermediate]</span><div>注目の的になる</div><div class='s'>本文の根拠: steps into the spotlight</div></li>
+<li class='ok'><b>build momentum</b> <span class='s'>[upper_intermediate]</span><div>勢いを増す</div></li>
+<li class='ok'><b>fire the starting gun</b> <span class='s'>[upper_intermediate]</span><div>物事を始動させる</div></li>
+<li class='ok'><b>under review</b> <span class='s'>[easy]</span><div>検討・審査中である</div></li>
+</ul></div>
+<div class='col'><b>E3: E2+別系列ゲート</b><ul>
+<li class='ok'><b>step on the gas</b> <span class='s'>[upper_intermediate]</span><div>アクセルを踏んで加速する</div><div class='s'>本文の根拠: stepped on the gas</div></li>
+<li class='ok'><b>turn something on its head</b> <span class='s'>[upper_intermediate]</span><div>〜を根本から覆す</div><div class='s'>本文の根拠: turned on its head</div></li>
+<li class='ok'><b>step into the spotlight</b> <span class='s'>[upper_intermediate]</span><div>注目の的になる</div><div class='s'>本文の根拠: steps into the spotlight</div></li>
+<li class='ok'><b>build momentum</b> <span class='s'>[upper_intermediate]</span><div>勢いを増す</div></li>
+<li class='ok'><b>fire the starting gun</b> <span class='s'>[upper_intermediate]</span><div>物事を始動させる</div></li>
+<li class='ok'><b>under review</b> <span class='s'>[easy]</span><div>検討・審査中である</div></li>
+</ul></div>
+<div class='col'><b>E4: E2(sol)+別系列ゲート</b><ul>
+<li class='ok'><b>step into the spotlight</b> <span class='s'>[upper_intermediate]</span><div>注目の的になる</div><div class='s'>本文の根拠: steps into the spotlight</div></li>
+<li class='ok'><b>build momentum</b> <span class='s'>[upper_intermediate]</span><div>勢いを増す</div></li>
+<li class='ok'><b>fire the starting gun</b> <span class='s'>[upper_intermediate]</span><div>物事を始動させる</div></li>
+<li class='ok'><b>under review</b> <span class='s'>[upper_intermediate]</span><div>検討・審査中である</div></li>
+<li class='ok'><b>step on the gas</b> <span class='s'>[easy]</span><div>アクセルを踏んで加速する</div><div class='s'>本文の根拠: stepped on the gas</div></li>
+</ul></div>
+</div>
+</body></html>

@@ -1,0 +1,36 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>KP 3-ASR多数決 判定変化4本の試聴(運営者向け・任意)</title>
+<style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em}section{border:1px solid #ccc;border-radius:8px;padding:1em;margin:1.2em 0}
+table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 10px}.note{background:#fff8dc;padding:.5em;border-radius:6px}</style></head><body>
+<h1>KP 3-ASR多数決: 旧方式NG→新方式PASSに変わった4本(運営者向け・任意試聴)</h1>
+<p>これはユーザーの承認依頼ではありません。多数決(OpenAI・Azure・Whisper 2/3)で旧「両方PASS必須」から判定が変わった音声を、運営者が任意で聴いて確認するためのページです。
+判定は本番adapter経路(<code>stored_audio_reeval_02.json</code>)の再評価結果です(API 0)。</p>
+<section><h2>think up <small>(think up)</small></h2>
+<audio controls preload="none" src="audio/think_up_think_up.mp3"></audio>
+<table><tr><th>系統</th><th>転写</th></tr>
+<tr><td>OpenAI(Primary)</td><td>ThinkUp. <b>[PASS]</b></td></tr>
+<tr><td>Azure(Secondary)</td><td>Think. <b>[NG]</b></td></tr>
+<tr><td>Whisper small(local)</td><td>Think up. <b>[PASS]</b></td></tr></table>
+<p>旧方式(両方PASS必須)=NG / 新方式(3-ASR多数決, 本番adapter経路)=<b>PASS</b> (行=P+W, state=PASS_VOTE_2OF3, warnings=[])</p>
+<p class="note">ユーザー試聴(2026-10-22): PASS(正しく聞こえる)。旧方式=NG(Azureが『Think.』)・多数決=PASS(OpenAI+Whisper)。</p></section><section><h2>blurt <small>(blurt)</small></h2>
+<audio controls preload="none" src="audio/blurt_blurt.mp3"></audio>
+<table><tr><th>系統</th><th>転写</th></tr>
+<tr><td>OpenAI(Primary)</td><td>Blur. <b>[NG]</b></td></tr>
+<tr><td>Azure(Secondary)</td><td>Blurt. <b>[PASS]</b></td></tr>
+<tr><td>Whisper small(local)</td><td>Blurt <b>[PASS]</b></td></tr></table>
+<p>旧方式(両方PASS必須)=NG / 新方式(3-ASR多数決, 本番adapter経路)=<b>PASS</b> (行=S+W, state=PASS_VOTE_2OF3, warnings=[&#x27;SECONDARY_CONFIRMED&#x27;])</p>
+<p class="note">ユーザー試聴(2026-10-22): 語末のt音が聞こえず発音に懸念。ASR 2/3 PASS(Azure+Whisper)でも人間は聞こえなかった事例=多数決方式の限界(品質知見、仕様変更なし)。行4=SECONDARY_CONFIRMED警告で事後試聴リスト対象。</p></section><section><h2>cause a stir <small>(kp22#3)</small></h2>
+<audio controls preload="none" src="audio/cause_a_stir_kp22_3.mp3"></audio>
+<table><tr><th>系統</th><th>転写</th></tr>
+<tr><td>OpenAI(Primary)</td><td>Causeister <b>[NG]</b></td></tr>
+<tr><td>Azure(Secondary)</td><td>Cause a stir. <b>[PASS]</b></td></tr>
+<tr><td>Whisper small(local)</td><td>Cause a stir. <b>[PASS]</b></td></tr></table>
+<p>旧方式(両方PASS必須)=NG / 新方式(3-ASR多数決, 本番adapter経路)=<b>PASS</b> (行=S+W, state=PASS_VOTE_2OF3, warnings=[&#x27;SECONDARY_CONFIRMED&#x27;])</p>
+<p class="note">人間聴取ラベルなし(Production生成物)。OpenAIのみ『Causeister』、Azure・Whisperは『Cause a stir』。PASSの妥当性は未聴取。</p></section><section><h2>cause a stir <small>(kp22#4)</small></h2>
+<audio controls preload="none" src="audio/cause_a_stir_kp22_4.mp3"></audio>
+<table><tr><th>系統</th><th>転写</th></tr>
+<tr><td>OpenAI(Primary)</td><td>Cause of stir. <b>[NG]</b></td></tr>
+<tr><td>Azure(Secondary)</td><td>Cause a stir. <b>[PASS]</b></td></tr>
+<tr><td>Whisper small(local)</td><td>cause a stir <b>[PASS]</b></td></tr></table>
+<p>旧方式(両方PASS必須)=NG / 新方式(3-ASR多数決, 本番adapter経路)=<b>PASS</b> (行=S+W, state=PASS_VOTE_2OF3, warnings=[&#x27;SECONDARY_CONFIRMED&#x27;])</p>
+<p class="note">人間聴取ラベルなし(Production生成物)。OpenAIのみ『Cause of stir.』、Azure・Whisperは『Cause a stir』。PASSの妥当性は未聴取。</p></section>
+</body></html>

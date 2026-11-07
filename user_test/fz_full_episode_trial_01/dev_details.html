@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow'><meta name='viewport' content='width=device-width, initial-scale=1'><title>dev details</title><style>body{font-family:sans-serif;max-width:980px;margin:16px auto;padding:0 12px;color:#222}
+h1{font-size:1.25rem}.note{background:#fff8e1;border:1px solid #e6c200;padding:8px 12px;border-radius:6px;font-size:.9rem;margin:8px 0}
+.card{border:1px solid #ccc;border-radius:8px;padding:10px 14px;margin:14px 0}.card h2{font-size:1rem;margin:0 0 4px}
+.scene{color:#444;font-size:.92rem;margin:4px 0}.en{font-size:1.05rem;font-weight:bold;margin:6px 0}.llm{background:#eef6ff;border-radius:6px;padding:4px 8px;font-size:.88rem;margin:4px 0}
+.row{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}.col{flex:1;min-width:260px}.lab{font-size:.85rem;color:#555}
+.na{color:#a00;font-size:.85rem}details{margin:6px 0;font-size:.88rem}audio{width:100%}.nowprod{background:#fff0f0;border:1px solid #d99;border-radius:6px;padding:6px 10px;font-size:.9rem}.ctxbox{background:#f7f7f7;border-radius:6px;padding:4px 8px;font-size:.85rem;margin:4px 0}.btn{font-size:.8rem;margin:2px 4px 2px 0;padding:2px 8px}table.s{border-collapse:collapse;font-size:.88rem}table.s td,table.s th{border:1px solid #bbb;padding:3px 8px}</style></head><body><h1>開発者向け詳細（Trial）</h1><p>状態候補: REJECTED候補(単位別に分かれる: status_by_unit参照)</p><pre style='white-space:pre-wrap;font-size:.78rem'>{
+ &quot;analysis_all&quot;: {
+  &quot;managed_id&quot;: &quot;FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01&quot;,
+  &quot;status_candidate&quot;: &quot;REJECTED候補(単位別に分かれる: status_by_unit参照)&quot;,
+  &quot;status_by_unit&quot;: {
+   &quot;monkeys_paw/a2&quot;: {
+    &quot;status&quot;: &quot;PHASE1B_DONE_USER_LISTENING_PENDING&quot;,
+    &quot;failed_conditions&quot;: [],
+    &quot;n_ng&quot;: 0,
+    &quot;n_hold&quot;: 0
+   },
+   &quot;monkeys_paw/b1b&quot;: {
+    &quot;status&quot;: &quot;PHASE1B_DONE_USER_LISTENING_PENDING&quot;,
+    &quot;failed_conditions&quot;: [],
+    &quot;n_ng&quot;: 0,
+    &quot;n_hold&quot;: 0
+   },
+   &quot;melos/a2&quot;: {
+    &quot;status&quot;: &quot;REJECTED候補(比較条件不成立: C5_ii_m5)&quot;,
+    &quot;failed_conditions&quot;: [
+     &quot;C5_ii_m5&quot;
+    ],
+    &quot;n_ng&quot;: 1,
+    &quot;n_hold&quot;: 0
+   },
+   &quot;melos/b1b&quot;: {
+    &quot;status&quot;: &quot;PHASE1B_DONE_USER_LISTENING_PENDING&quot;,
+    &quot;failed_conditions&quot;: [],
+    &quot;n_ng&quot;: 0,
+    &quot;n_hold&quot;: 0
+   }
+  },
+  &quot;n_clips&quot;: 53,
+  &quot;n_ng&quot;: 1,
+  &quot;n_hold&quot;: 0,
+  &quot;conditions_all_units&quot;: {
+   &quot;C4_adopted_comparison_valid&quot;: true,
+   &quot;C5_i_selfcheck&quot;: true,
+   &quot;C5_ii_m5&quot;: false,
+   &quot;C5_iii_peak_ok&quot;: true,
+   &quot;C6_gate&quot;: true,
+   &quot;C7_gen_snapshot_diff_empty&quot;: true,
+   &quot;C7_no_store_contamination&quot;: true,
+   &quot;C7_mtime_z_hits_empty&quot;: true,
+   &quot;C7_isolation_ok&quot;: true
+  },
+  &quot;c1_recorded&quot;: true,
+  &quot;spent_phase1b_jpy_by_kind&quot;: {
+   &quot;tts&quot;: 24.1584,
+   &quot;asr_openai&quot;: 1.2826,
+   &quot;asr_azure&quot;: 0.1399
+  },
+  &quot;spent_phase1b_total_jpy&quot;: 25.581,
+  &quot;llm_cost_per_call_jpy_phase1a&quot;: 0.135,
+  &quot;r2_base_k&quot;: {
+   &quot;base_t1_clips&quot;: 24,
+   &quot;base_t1_tts_calls&quot;: 26,
+   &quot;k_r2_base&quot;: 1.0833
+  },
+  &quot;k_ctx_by_unit&quot;: {
+   &quot;monkeys_paw/a2&quot;: 1.0,
+   &quot;monkeys_paw/b1b&quot;: 1.0,
+   &quot;melos/a2&quot;: 1.3,
+   &quot;melos/b1b&quot;: 1.0
+  },
+  &quot;k_ctx_overall&quot;: 1.0566,
+  &quot;first_try_rate_overall&quot;: 0.9623,
+  &quot;production_k&quot;: 1.019,
+  &quot;delta_per_set&quot;: {
+   &quot;monkeys_paw&quot;: {
+    &quot;levels&quot;: {
+     &quot;a2&quot;: {
+      &quot;n&quot;: 15,
+      &quot;k_ctx&quot;: 1.0,
+      &quot;c_ctx_per_call&quot;: 0.4503,
+      &quot;c_base_per_call_est&quot;: 0.37,
+      &quot;c_asr_per_call&quot;: 0.0168
+     },
+     &quot;b1b&quot;: {
+      &quot;n&quot;: 17,
+      &quot;k_ctx&quot;: 1.0,
+      &quot;c_ctx_per_call&quot;: 0.3986,
+      &quot;c_base_per_call_est&quot;: 0.3211,
+      &quot;c_asr_per_call&quot;: 0.0361
+     }
+    },
+    &quot;k_prod_1.019&quot;: 2.566,
+    &quot;k_r2_base&quot;: 1.802,
+    &quot;llm_2calls_jpy&quot;: 0.27,
+    &quot;share_of_70yen&quot;: {
+     &quot;k_prod_1.019&quot;: 0.0367,
+     &quot;k_r2_base&quot;: 0.0257
+    }
+   },
+   &quot;melos&quot;: {
+    &quot;levels&quot;: {
+     &quot;a2&quot;: {
+      &quot;n&quot;: 10,
+      &quot;k_ctx&quot;: 1.3,
+      &quot;c_ctx_per_call&quot;: 0.4753,
+      &quot;c_base_per_call_est&quot;: 0.3917,
+      &quot;c_asr_per_call&quot;: 0.018
+     },
+     &quot;b1b&quot;: {
+      &quot;n&quot;: 11,
+      &quot;k_ctx&quot;: 1.0,
+      &quot;c_ctx_per_call&quot;: 0.4044,
+      &quot;c_base_per_call_est&quot;: 0.3293,
+      &quot;c_asr_per_call&quot;: 0.0294
+     }
+    },
+    &quot;k_prod_1.019&quot;: 3.259,
+    &quot;k_r2_base&quot;: 2.742,
+    &quot;llm_2calls_jpy&quot;: 0.27,
+    &quot;share_of_70yen&quot;: {
+     &quot;k_prod_1.019&quot;: 0.0466,
+     &quot;k_r2_base&quot;: 0.0392
+    }
+   }
+  },
+  &quot;gen_wall_s_total&quot;: 515.9,
+  &quot;n3_over_3db_total&quot;: {
+   &quot;monkeys_paw/a2&quot;: &quot;4/26&quot;,
+   &quot;monkeys_paw/b1b&quot;: &quot;6/30&quot;,
+   &quot;melos/a2&quot;: &quot;2/20&quot;,
+   &quot;melos/b1b&quot;: &quot;8/22&quot;
+  },
+  &quot;n2_flags&quot;: {
+   &quot;monkeys_paw/a2&quot;: {
+    &quot;N2a_new_long_pause&quot;: [
+     &quot;full_story_part2_c8&quot;
+    ],
+    &quot;N2b_wpm_outside&quot;: [],
+    &quot;N2c_length_listen&quot;: [
+     &quot;full_story_part2_c8&quot;
+    ]
+   },
+   &quot;monkeys_paw/b1b&quot;: {
+    &quot;N2a_new_long_pause&quot;: [],
+    &quot;N2b_wpm_outside&quot;: [
+     &quot;full_story_part2_c11&quot;
+    ],
+    &quot;N2c_length_listen&quot;: [
+     &quot;full_story_part2_c11&quot;
+    ]
+   },
+   &quot;melos/a2&quot;: {
+    &quot;N2a_new_long_pause&quot;: [
+     &quot;full_story_part3_c4&quot;
+    ],
+    &quot;N2b_wpm_outside&quot;: [],
+    &quot;N2c_length_listen&quot;: [
+     &quot;full_story_part3_c4&quot;
+    ]
+   },
+   &quot;melos/b1b&quot;: {
+    &quot;N2a_new_long_pause&quot;: [],
+    &quot;N2b_wpm_outside&quot;: [],
+    &quot;N2c_length_listen&quot;: []
+   }
+  },
+  &quot;n1_unstable_speakers&quot;: {
+   &quot;monkeys_paw/a2&quot;: [],
+   &quot;monkeys_paw/b1b&quot;: [
+    &quot;mrs_white&quot;
+   ],
+   &quot;melos/a2&quot;: [],
+   &quot;melos/b1b&quot;: []
+  },
+  &quot;saved_at&quot;: &quot;2026-10-26T10:07:35+09:00&quot;
+ },
+ &quot;units&quot;: {
+  &quot;monkeys_paw/a2&quot;: {
+   &quot;conditions&quot;: {
+    &quot;C1_ng_count&quot;: [],
+    &quot;C1_ok_all_adopted_or_recorded&quot;: true,
+    &quot;C2_all_production_pass_and_repetition_qa&quot;: true,
+    &quot;C3_hold_clips&quot;: [],
+    &quot;C4_all_comparison_valid&quot;: true,
+    &quot;C4_adopted_comparison_valid&quot;: true,
+    &quot;C5_i_selfcheck&quot;: true,
+    &quot;C5_ii_m5&quot;: true,
+    &quot;C5_iii_peak_ok&quot;: true,
+    &quot;C6_gate&quot;: true,
+    &quot;C7_gen_snapshot_diff_empty&quot;: true,
+    &quot;C7_no_store_contamination&quot;: true,
+    &quot;C7_mtime_z_hits_empty&quot;: true,
+    &quot;C7_isolation_ok&quot;: true
+   },
+   &quot;N2&quot;: {
+    &quot;N2a_new_long_pause&quot;: [
+     &quot;full_story_part2_c8&quot;
+    ],
+    &quot;N2b_wpm_outside&quot;: [],
+    &quot;N2c_length_listen&quot;: [
+     &quot;full_story_part2_c8&quot;
+    ]
+   },
+   &quot;N3&quot;: {
+    &quot;n_boundaries&quot;: 26,
+    &quot;n_over_3db&quot;: 4
+   },
+   &quot;N5&quot;: {
+    &quot;k_ctx&quot;: 1.0,
+    &quot;first_try_rate&quot;: 1.0,
+    &quot;regen_clips&quot;: {},
+    &quot;ng_clips&quot;: [],
+    &quot;hold_clips&quot;: []
+   }
+  },
+  &quot;monkeys_paw/b1b&quot;: {
+   &quot;conditions&quot;: {
+    &quot;C1_ng_count&quot;: [],
+    &quot;C1_ok_all_adopted_or_recorded&quot;: true,
+    &quot;C2_all_production_pass_and_repetition_qa&quot;: true,
+    &quot;C3_hold_clips&quot;: [],
+    &quot;C4_all_comparison_valid&quot;: true,
+    &quot;C4_adopted_comparison_valid&quot;: true,
+    &quot;C5_i_selfcheck&quot;: true,
+    &quot;C5_ii_m5&quot;: true,
+    &quot;C5_iii_peak_ok&quot;: true,
+    &quot;C6_gate&quot;: true,
+    &quot;C7_gen_snapshot_diff_empty&quot;: true,
+    &quot;C7_no_store_contamination&quot;: true,
+    &quot;C7_mtime_z_hits_empty&quot;: true,
+    &quot;C7_isolation_ok&quot;: true
+   },
+   &quot;N2&quot;: {
+    &quot;N2a_new_long_pause&quot;: [],
+    &quot;N2b_wpm_outside&quot;: [
+     &quot;full_story_part2_c11&quot;
+    ],
+    &quot;N2c_length_listen&quot;: [
+     &quot;full_story_part2_c11&quot;
+    ]
+   },
+   &quot;N3&quot;: {
+    &quot;n_boundaries&quot;: 30,
+    &quot;n_over_3db&quot;: 6
+   },
+   &quot;N5&quot;: {
+    &quot;k_ctx&quot;: 1.0,
+    &quot;first_try_rate&quot;: 1.0,
+    &quot;regen_clips&quot;: {},
+    &quot;ng_clips&quot;: [],
+    &quot;hold_clips&quot;: []
+   }
+  },
+  &quot;melos/a2&quot;: {
+   &quot;conditions&quot;: {
+    &quot;C1_ng_count&quot;: [
+     &quot;full_story_part3_c10&quot;
+    ],
+    &quot;C1_ok_all_adopted_or_recorded&quot;: true,
+    &quot;C2_all_production_pass_and_repetition_qa&quot;: false,
+    &quot;C3_hold_clips&quot;: [],
+    &quot;C4_all_comparison_valid&quot;: false,
+    &quot;C4_adopted_comparison_valid&quot;: true,
+    &quot;C5_i_selfcheck&quot;: true,
+    &quot;C5_ii_m5&quot;: false,
+    &quot;C5_iii_peak_ok&quot;: true,
+    &quot;C6_gate&quot;: true,
+    &quot;C7_gen_snapshot_diff_empty&quot;: true,
+    &quot;C7_no_store_contamination&quot;: true,
+    &quot;C7_mtime_z_hits_empty&quot;: true,
+    &quot;C7_isolation_ok&quot;: true
+   },
+   &quot;N2&quot;: {
+    &quot;N2a_new_long_pause&quot;: [
+     &quot;full_story_part3_c4&quot;
+    ],
+    &quot;N2b_wpm_outside&quot;: [],
+    &quot;N2c_length_listen&quot;: [
+     &quot;full_story_part3_c4&quot;
+    ]
+   },
+   &quot;N3&quot;: {
+    &quot;n_boundaries&quot;: 20,
+    &quot;n_over_3db&quot;: 2
+   },
+   &quot;N5&quot;: {
+    &quot;k_ctx&quot;: 1.3,
+    &quot;first_try_rate&quot;: 0.8,
+    &quot;regen_clips&quot;: {
+     &quot;full_story_part1_c8&quot;: 2,
+     &quot;full_story_part3_c10&quot;: 3
+    },
+    &quot;ng_clips&quot;: [
+     &quot;full_story_part3_c10&quot;
+    ],
+    &quot;hold_clips&quot;: []
+   }
+  },
+  &quot;melos/b1b&quot;: {
+   &quot;conditions&quot;: {
+    &quot;C1_ng_count&quot;: [],
+    &quot;C1_ok_all_adopted_or_recorded&quot;: true,
+    &quot;C2_all_production_pass_and_repetition_qa&quot;: true,
+    &quot;C3_hold_clips&quot;: [],
+    &quot;C4_all_comparison_valid&quot;: true,
+    &quot;C4_adopted_comparison_valid&quot;: true,
+    &quot;C5_i_selfcheck&quot;: true,
+    &quot;C5_ii_m5&quot;: true,
+    &quot;C5_iii_peak_ok&quot;: true,
+    &quot;C6_gate&quot;: true,
+    &quot;C7_gen_snapshot_diff_empty&quot;: true,
+    &quot;C7_no_store_contamination&quot;: true,
+    &quot;C7_mtime_z_hits_empty&quot;: true,
+    &quot;C7_isolation_ok&quot;: true
+   },
+   &quot;N2&quot;: {
+    &quot;N2a_new_long_pause&quot;: [],
+    &quot;N2b_wpm_outside&quot;: [],
+    &quot;N2c_length_listen&quot;: []
+   },
+   &quot;N3&quot;: {
+    &quot;n_boundaries&quot;: 22,
+    &quot;n_over_3db&quot;: 8
+   },
+   &quot;N5&quot;: {
+    &quot;k_ctx&quot;: 1.0,
+    &quot;first_try_rate&quot;: 1.0,
+    &quot;regen_clips&quot;: {},
+    &quot;ng_clips&quot;: [],
+    &quot;hold_clips&quot;: []
+   }
+  }
+ }
+}</pre><script>function seek(id,s){var a=document.getElementById(id);if(!a)return;a.currentTime=s;a.play();}</script></body></html>

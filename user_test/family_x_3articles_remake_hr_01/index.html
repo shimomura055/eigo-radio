@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>再制作版 要判断2音声(Human Review)</title>
+<style>body{font-family:sans-serif;max-width:760px;margin:1em auto;padding:0 1em;line-height:1.6}.note{background:#fff7e0;padding:.6em;border-radius:6px}audio{width:100%}h2{border-bottom:1px solid #ccc}</style></head><body>
+<h1>Human Review用・正式公開ではありません</h1>
+<p class="note">再制作版(最新仕様)6本のうち、自動の音声検査(ASR)が通らず最終的に止まった2つの音声です。聴いて判断してください(ここに載せたのは判断対象の2音声だけ)。</p>
+<h2>1. 「出しっぱなし」裁判(散らかり) Advanced ／ 本文の1ブロック(約20秒)</h2>
+<p><b>聴いてほしい点</b>: 3文目が <b>"What we see in this household's story is a standard."</b>(household&#39;s = ハウスホウルズ)と読めているか。自動検査はすべての試行で <i>household story</i>(&#39;s が無い)と認識しました(OpenAI ASR)。耳で &#39;s が聞こえれば自動検査側の聞き落とし、聞こえなければ読み誤りです。</p>
+<p><audio controls preload="none" src="audio/untidiness_adv_full_story_part1_k3.mp3"></audio><br>最終試行(試行3)の音声</p>
+<p>正しい英文(原稿): What matters is not how messy it is, but where the passing mark is. This is not a scorecard where an empty counter gets 100 points and a pen left behind means points off. What we see in this household's story is a standard. If there is a place to eat, the rest can stay as it is.</p>
+<h2>2. AIペットは無料。でも…(Meta) Standard ／ 日本語コメント comment_4(約13秒)</h2>
+<p><b>聴いてほしい点</b>: 原稿どおりの内容で読めているか。原稿は「自分の<b>一日</b>」「まだ<b>分かり</b>ませんが」。自動検査は「1日」「わかりません」と書き起こしたため(数字の表記が違う)内容不一致とみなして止まりました。Azureの書き起こしは「自分の一日」でほぼ原稿どおりです。内容が原稿どおりに聞こえれば問題ありません。</p>
+<p><audio controls preload="none" src="audio/meta_std_comment_4.mp3"></audio><br>最終試行(試行3)の音声</p>
+<p>原稿: このアプリでは、ペットの世話をしながら、自分の一日も話して記録できます。大きな人気になるかはまだ分かりませんが、最後に、この記事の要点を英語で振り返ります。</p>
+<h2>お願い</h2>
+<ol><li><b>採用</b>: 聞こえ方に問題がなければ、それぞれ「採用」と伝えてください。採用後に組立→公開ページ(開発者向け・End User)を作ります。</li>
+<li><b>再生成を承認</b>: 不自然・読み誤りがあれば「再生成」と伝えてください(別takeの有料再生成はご指示後に実施します)。</li></ol>
+<p><small>自動検査の事実の並記であり、音声の良否の断定ではありません。他の試行(試行1〜2)は同じ理由でNGのため載せていません(内部記録に保持)。</small></p></body></html>

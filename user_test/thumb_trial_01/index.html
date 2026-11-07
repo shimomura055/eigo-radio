@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>サムネイルAI画像 比較Trial(WUT 02b)</title>
+<style>
+:root{--navy:#0b2a5b;--blue:#2f6fe4;--sky:#eaf2ff;--line:#d5e1f5}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Hiragino Sans","Yu Gothic",sans-serif;background:#f5f8ff;color:#12264d;line-height:1.5}
+header{background:var(--navy);color:#fff;padding:10px 14px}header h1{font-size:16px;margin:0}header small{opacity:.85;font-size:11px}
+.trial{background:#fff3cd;color:#7a5b00;font-size:12px;padding:4px 14px;border-bottom:1px solid #f0d98a}
+nav{display:flex;gap:4px;overflow-x:auto;padding:8px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--sky);border-radius:16px;padding:6px 12px;font-size:13px;color:var(--navy)}
+nav button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+section{display:none;padding:10px}section.on{display:block}
+.art{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:12px}
+.art h3{font-size:14px;margin:0 0 2px}.art p{font-size:11px;margin:0 0 6px;color:#58698c}
+.trio{display:flex;gap:6px}.cell{flex:1;min-width:0;text-align:center}
+.cell img.big{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;background:#fff}
+.lab{font-weight:700;font-size:13px}.sub{font-size:10px;color:#58698c;min-height:14px}
+.sm{display:flex;gap:6px;justify-content:center;margin-top:4px;align-items:flex-end}.sm img{border-radius:6px;border:1px solid var(--line);max-width:30%;height:auto}
+.rate{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:4px;font-size:10px}
+.rate b{width:100%;font-weight:400;color:#58698c}.rate button{width:24px;height:24px;border:1px solid var(--line);background:#fff;border-radius:5px;font-size:12px}
+.rate button.on{background:var(--blue);color:#fff}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px;align-items:center;font-size:13px}.ctl button,.act{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font-size:13px}
+.ctl button.on{background:var(--blue);color:#fff}
+.card{display:flex;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:6px;align-items:center}
+.card img{border-radius:8px;flex:0 0 auto}.card .t{font-size:13px;font-weight:600}.card .m{font-size:11px;color:#58698c}
+.badge{display:inline-block;background:var(--sky);color:var(--blue);border-radius:10px;padding:0 6px;font-size:10px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:12px}.grid img{width:100%;border-radius:6px;cursor:zoom-in}
+#modal{position:fixed;inset:0;background:rgba(5,15,40,.88);display:none;z-index:20;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+#modal img{max-width:96vw;max-height:78vh;border-radius:8px}#modal .nv{margin-top:8px;display:flex;gap:10px;align-items:center}#modal button{padding:8px 14px;border-radius:8px;border:0}
+.ok{color:#0a7a3d}.ng{color:#c0392b}code{background:#eef3fc;padding:0 3px;border-radius:3px;word-break:break-all}
+.pub{font-size:11px;background:#f0f6ff;border-radius:6px;padding:3px;margin-top:4px}
+footer{padding:14px;font-size:11px;color:#58698c;text-align:center}
+</style></head><body>
+<header><h1>記事サムネイルAI画像 比較Trial</h1><small>WEBAPP-UI-PROTOTYPE-AND-THUMBNAIL-TRIAL-01 委任_02b / 10記事×3条件=30枚 / 既定=ブラインド(モデル名非表示)</small></header>
+<div class="trial">Trial・試作・未承認(Production採用なし)。AI画像生成Trialの比較用ページです。</div>
+<nav id="nav"></nav>
+<section id="s_blind"></section><section id="s_app"></section><section id="s_grid"></section><section id="s_eval"></section><section id="s_reveal"></section>
+<div id="modal"><img id="mimg" alt=""><div class="nv"><button id="mprev">◀</button><span id="mcap"></span><button id="mnext">▶</button><button id="mclose">閉じる</button></div></div>
+<footer>Trial・試作・未承認 / 画像はAI生成(gpt-image-1-mini / gpt-image-2)。実写ではありません。</footer>
+<script>
+const KEY_SHA="2f7e85cda5bb3c8f6d3590621c2b6f52116164515eeb8e23d2fa997d595ed626";
+let META=null, KEY=null, revealed=false, tab='blind';
+const $=s=>document.querySelector(s), el=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+const TABS=[['blind','①ブラインド比較'],['app','②アプリ内縮小'],['grid','③10記事グリッド'],['eval','④評価入力'],['reveal','⑤答え合わせ(公開)']];
+const SL=['S1','S2','S3'], GL=['G1','G2','G3'];
+let EV=JSON.parse(localStorage.getItem('thumb_eval_v1')||'{}');
+function ssave(){localStorage.setItem('thumb_eval_v1',JSON.stringify(EV))}
+function condName(c){return META.conditions[c]}
+function labelOf(art,sl){return revealed?(KEY.per_article[art][sl]+': '+condName(KEY.per_article[art][sl])):sl}
+function gLabel(gl){return revealed?(gl+' = '+KEY.grid_labels[gl]+': '+condName(KEY.grid_labels[gl])):gl}
+function bimg(art,sl,n){return 'b/'+art+'_'+sl+'_'+n+(n===1024?'.jpg':'.png')}
+function gimg(gl,art,n){return 'b/'+gl+'_'+art+'_'+n+'.png'}
+function arts(){return Object.keys(META.articles)}
+function renderNav(){const n=$('#nav');n.innerHTML='';TABS.forEach(([k,t])=>{const b=el('<button class="'+(k===tab?'on':'')+'">'+t+'</button>');b.onclick=()=>{tab=k;render()};n.appendChild(b)})}
+function render(){renderNav();document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));$('#s_'+tab).classList.add('on');({blind:rBlind,app:rApp,grid:rGrid,eval:rEval,reveal:rReveal})[tab]()}
+function cellPub(art,sl){if(!revealed)return '';const c=KEY.per_article[art][sl];const r=(META.cells[c][art]||[]).find(x=>x.tag==='base');return r?'<div class="pub">'+condName(c)+'<br>'+r.seconds+'秒 / 約¥'+r.cost_jpy_token.toFixed(2)+'(表¥'+r.cost_jpy_table.toFixed(2)+')</div>':''}
+function rBlind(){const s=$('#s_blind');s.innerHTML='<p style="font-size:12px">記事ごとにS1〜S3の割付はランダム(固定seed)です。鍵はページに含まれず、⑤で答え合わせするまで条件は不明です。画像クリックで拡大(←→で切替)。</p>';
+ arts().forEach(a=>{const m=META.articles[a];const d=el('<div class="art"><h3>'+m.title_ja+'</h3><p>'+m.kind+' / <code>'+a+'</code></p><div class="trio"></div></div>');
+  SL.forEach(sl=>{const c=el('<div class="cell"><div class="lab">'+labelOf(a,sl)+'</div><img class="big" loading="lazy" src="'+bimg(a,sl,320)+'" alt="'+a+' '+sl+'"><div class="sm"><img src="'+bimg(a,sl,160)+'" width="160" height="160" alt=""><img src="'+bimg(a,sl,96)+'" width="96" height="96" alt=""><img src="'+bimg(a,sl,72)+'" width="72" height="72" alt=""></div><div class="sub">縮小見本 160/96/72px(幅により縮小)</div>'+cellPub(a,sl)+'</div>');
+   c.querySelector('.big').onclick=()=>openModal(a,sl);d.querySelector('.trio').appendChild(c)});s.appendChild(d)})}
+let appCond='G1',appSize=96;
+function rApp(){const s=$('#s_app');s.innerHTML='';const ctl=el('<div class="ctl"></div>');
+ GL.forEach(g=>{const b=el('<button class="'+(g===appCond?'on':'')+'">'+gLabel(g)+'</button>');b.onclick=()=>{appCond=g;rApp()};ctl.appendChild(b)});
+ [72,96,160].forEach(n=>{const b=el('<button class="'+(n===appSize?'on':'')+'">'+n+'px</button>');b.onclick=()=>{appSize=n;rApp()};ctl.appendChild(b)});s.appendChild(ctl);
+ const card=a=>'<div class="card"><img src="'+gimg(appCond,a,appSize)+'" width="'+appSize+'" height="'+appSize+'" alt=""><div><div class="t">'+META.articles[a].title_ja+'</div><div class="m"><span class="badge">仮</span> '+META.articles[a].kind+' ・ Std/Adv</div></div></div>';
+ s.appendChild(el('<p style="font-size:12px">試作アプリで実画面を見る(条件のモデル対応は⑤答え合わせで公開): <a href="../webapp_proto_01/index.html?thumb=A">条件A</a> / <a href="../webapp_proto_01/index.html?thumb=B">条件B</a> / <a href="../webapp_proto_01/index.html?thumb=C">条件C(試作の既定)</a> / <a href="../webapp_proto_01/index.html?thumb=none">画像なし</a></p>'));
+ s.appendChild(el('<h3>ホーム 新着(再現・仮)</h3>'));arts().slice(0,5).forEach(a=>s.insertAdjacentHTML('beforeend',card(a)));
+ s.appendChild(el('<h3>ジャンル一覧(再現・仮)</h3>'));arts().forEach(a=>s.insertAdjacentHTML('beforeend',card(a)))}
+function rGrid(){const s=$('#s_grid');s.innerHTML='<p style="font-size:12px">条件ごとに10記事を並置(統一感の確認)。クリックで拡大。</p>';
+ GL.forEach(g=>{s.appendChild(el('<h3>'+gLabel(g)+'</h3>'));const gr=el('<div class="grid"></div>');arts().forEach(a=>{const i=el('<img src="'+gimg(g,a,160)+'" alt="'+g+' '+a+'" loading="lazy">');i.onclick=()=>openModalG(g,a);gr.appendChild(i)});s.appendChild(gr)})}
+function rate(cur,cb){const w=el('<div class="rate"></div>');for(let i=1;i<=5;i++){const b=el('<button class="'+(cur===i?'on':'')+'">'+i+'</button>');b.onclick=()=>cb(i);w.appendChild(b)}return w}
+function rEval(){const s=$('#s_eval');s.innerHTML='<p style="font-size:12px">各画像を1〜5点で評価(軸1 内容が伝わる/軸2 小サイズ/軸3 安っぽくない/軸5 内容と矛盾しない)。軸4=条件ごとの統一感。軸6は機械記録、軸7は欠陥チェック。localStorageに保存、JSONで書き出せます。</p>';
+ const AX=[['a1','軸1 内容'],['a2','軸2 小サイズ'],['a3','軸3 安っぽくない'],['a5','軸5 整合']];
+ arts().forEach(a=>{const d=el('<div class="art"><h3>'+META.articles[a].title_ja+'</h3><div class="trio"></div></div>');
+  SL.forEach(sl=>{const k=a+'|'+sl;EV[k]=EV[k]||{};const c=el('<div class="cell"><div class="lab">'+sl+'</div><img class="big" src="'+bimg(a,sl,160)+'" style="cursor:default" alt=""></div>');
+   AX.forEach(([ax,nm])=>{const r=rate(EV[k][ax],v=>{EV[k][ax]=v;ssave();rEval()});r.insertAdjacentHTML('afterbegin','<b>'+nm+'</b>');c.appendChild(r)});
+   const cb=el('<label style="font-size:11px"><input type="checkbox" '+(EV[k].defect?'checked':'')+'> 欠陥(文字混入/不適切/無関係)</label>');cb.querySelector('input').onchange=e=>{EV[k].defect=e.target.checked;ssave()};c.appendChild(cb);d.querySelector('.trio').appendChild(c)});s.appendChild(d)});
+ const g=el('<div class="art"><h3>軸4 10記事の統一感(条件単位)</h3><div class="trio"></div></div>');
+ GL.forEach(gl=>{const k='grid|'+gl;EV[k]=EV[k]||{};const c=el('<div class="cell"><div class="lab">'+gl+'</div></div>');c.appendChild(rate(EV[k].a4,v=>{EV[k].a4=v;ssave();rEval()}));g.querySelector('.trio').appendChild(c)});s.appendChild(g);
+ const ex=el('<button class="act">評価をJSONで書き出す</button>');ex.onclick=()=>{const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),key_sha256:KEY_SHA,evaluations:EV},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='thumb_eval_user.json';a.click()};s.appendChild(ex)}
+async function sha256hex(buf){const h=await crypto.subtle.digest('SHA-256',buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+function rReveal(){const s=$('#s_reveal');s.innerHTML='<p style="font-size:13px">評価前の鍵ファイルの封印: <code>sealed_key_01.json</code> のsha256(Git保存=LF改行) = <code>'+KEY_SHA+'</code>(作業時のCRLF版はeb19c21352d0ecaad08b7e2dae1fe7aa553154512fcfabefb27fabe537e32ce4、改行のみの差)。「答え合わせ」で鍵を読み込み、sha256が一致した場合のみ開示します。</p>';
+ const b=el('<button class="act">'+(revealed?'開示済み(再読込で再封印)':'答え合わせ(鍵を開示)')+'</button>');s.appendChild(b);const msg=el('<div id="rmsg" style="margin:8px 0;font-size:13px"></div>');s.appendChild(msg);
+ if(revealed)showReveal(s,msg);
+ b.onclick=async()=>{try{const r=await fetch('../../docs/research/WEBAPP-UI-PROTOTYPE-AND-THUMBNAIL-TRIAL-01/sealed_key_01.json',{cache:'no-store'});const buf=await r.arrayBuffer();const h=await sha256hex(buf);
+  if(h!==KEY_SHA){msg.innerHTML='<span class="ng">sha256不一致: 鍵が改変されている可能性。開示しません。</span>';return}
+  KEY=JSON.parse(new TextDecoder().decode(buf));revealed=true;render()}catch(e){msg.innerHTML='<span class="ng">鍵の読込に失敗: '+e+'</span>'}}}
+function showReveal(s,msg){msg.innerHTML='<span class="ok">sha256一致=封印は評価前から未改変。開示しました。</span>';
+ const t=['<table border=1 cellpadding=4 style="border-collapse:collapse;font-size:12px;background:#fff"><tr><th>記事</th><th>S1</th><th>S2</th><th>S3</th></tr>'];
+ arts().forEach(a=>t.push('<tr><td>'+a+'</td>'+SL.map(sl=>'<td>'+KEY.per_article[a][sl]+'</td>').join('')+'</tr>'));t.push('</table>');
+ s.insertAdjacentHTML('beforeend','<h3>グリッド割付</h3><p>'+GL.map(g=>g+'='+KEY.grid_labels[g]).join(' / ')+'</p><h3>条件</h3><p>'+Object.entries(META.conditions).map(([k,v])=>k+': '+v).join('<br>')+'</p><h3>S割付</h3>'+t.join(''));
+ const rg=[];Object.entries(META.cells).forEach(([c,m])=>Object.entries(m).forEach(([a,l])=>l.forEach(r=>{if(r.tag!=='base')rg.push([c,a,r])})));
+ s.insertAdjacentHTML('beforeend','<h3>再生成/概要付き再生成(開示後のみ表示、原寸)</h3>');
+ const w=el('<div class="trio" style="flex-wrap:wrap"></div>');rg.forEach(([c,a,r])=>w.insertAdjacentHTML('beforeend','<div class="cell" style="flex:0 0 31%"><img class="big" style="cursor:default" src="'+r.file.replace('user_test/thumb_trial_01/','')+'" alt=""><div class="sub">'+a+'<br>'+c+' '+(r.tag==='ov'?'概要付きPrompt':'欠陥再生成(同一Prompt)')+'<br>'+r.seconds+'秒 ¥'+r.cost_jpy_token.toFixed(2)+'</div></div>'));s.appendChild(w)}
+let M={list:[],i:0};
+function openModal(a,sl){M.list=SL.map(x=>({src:revealed?'img/'+a+'_'+KEY.per_article[a][x]+'.png':bimg(a,x,1024),cap:a+' '+labelOf(a,x)}));M.i=SL.indexOf(sl);showM()}
+function openModalG(g,a){M.list=GL.map(x=>({src:gimg(x,a,320),cap:a+' '+gLabel(x)}));M.i=GL.indexOf(g);showM()}
+function showM(){const m=M.list[M.i];$('#mimg').src=m.src;$('#mcap').textContent=m.cap;$('#modal').style.display='flex'}
+$('#mclose').onclick=()=>$('#modal').style.display='none';$('#mprev').onclick=()=>{M.i=(M.i+2)%3;showM()};$('#mnext').onclick=()=>{M.i=(M.i+1)%3;showM()};
+document.addEventListener('keydown',e=>{if($('#modal').style.display==='flex'){if(e.key==='ArrowLeft')$('#mprev').onclick();if(e.key==='ArrowRight')$('#mnext').onclick();if(e.key==='Escape')$('#mclose').onclick()}});
+fetch('public_meta_01.json').then(r=>r.json()).then(m=>{META=m;render()});
+</script></body></html>

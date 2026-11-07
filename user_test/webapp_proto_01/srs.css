@@ -1,0 +1,51 @@
+/* srs.css — 復習帳(review.js)専用。style.css は編集しない。接続(link追加)は後続S5。DEV/Trial専用 */
+.srs-h{margin:4px 0 8px;color:var(--navy)}
+.srs-h3{margin:16px 0 6px;font-size:15px;color:var(--navy)}
+.srs-today{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin:8px 0 12px;color:var(--navy);font-size:18px}
+.srs-sub{font-size:13px;color:var(--muted)}
+.srs-start{width:100%;justify-content:center;margin-bottom:12px}
+.srs-warn{background:#fff6e0;border:1px solid #f0d28a;color:#6b4b00;border-radius:12px;padding:10px 12px;margin:8px 0;font-size:14px;line-height:1.5}
+.srs-note{background:var(--soft);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px;color:var(--navy)}
+.srs-link{border:0;background:transparent;color:var(--blue2);font-weight:700;text-decoration:underline;cursor:pointer;min-height:44px;padding:0 8px;font-size:14px}
+.srs-row .srs-rowen{overflow-wrap:anywhere;min-width:0}
+.srs-orph{opacity:.7;border-style:dashed}
+/* 出題・解答: 上部=進捗 / 中央=内部スクロール / 下部=4段階ボタン固定(nav直上) */
+.srs-sess{display:block;min-height:0}   /* WUG A-7: 全画面高さの予約(下寄せの原因)を廃止し、上寄せの自然な流れにする */
+.srs-prog{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px;padding:2px 0}
+.srs-prog b{color:var(--navy);font-size:18px}
+.srs-body{padding:2px 2px 4px}   /* ECUI A-2(rev08): 上寄せ・余白を適度に縮小 */
+.srs-q{text-align:left;background:var(--soft2);border:1px solid var(--line);border-radius:18px;padding:12px 14px 14px;margin-top:4px}   /* WUG2 改善②: 出題語を囲む薄いカード(Std/Adv共通・表示のみ) */
+.srs-en{font-size:clamp(26px,7.6vw,34px);font-weight:800;color:var(--navy);line-height:1.25;letter-spacing:-.01em;margin:0;overflow-wrap:anywhere;word-break:break-word;text-wrap:balance}
+.srs-en.len-s{font-size:clamp(32px,10vw,44px)}
+.srs-en.len-m{font-size:clamp(26px,7.6vw,34px)}
+.srs-en.len-l{font-size:clamp(21px,6.2vw,26px)}
+.srs-card{margin-top:8px;font-size:15px;line-height:1.6;overflow-wrap:anywhere}
+.srs-ja{font-size:17px;font-weight:700;color:var(--text);margin:6px 0}
+.srs-pending{color:var(--muted);font-weight:400}
+.srs-det{margin:6px 0}
+.srs-bar{position:sticky;bottom:var(--nav-total,64px);background:var(--bg);padding:6px 0 8px;z-index:5;border-top:1px solid var(--line)}   /* 解説の直後に置き、解説が長い時だけナビ直上に留まる */
+body:not(.nomini) .srs-bar{bottom:calc(var(--nav-total,64px) + var(--mini-h,62px))}
+.srs-askbar{position:fixed;left:50%;transform:translateX(-50%);width:min(100%,var(--colw));box-sizing:border-box;bottom:var(--nav-total,64px);padding:6px 16px 8px;z-index:31;border-top:1px solid var(--line)}   /* WUG2 改善③: nav直上(mini無し)。#miniと被らないよう+68px(下padding 6px込み) */
+body:not(.nomini) .srs-askbar{bottom:calc(var(--nav-total,64px) + var(--mini-h,62px) + 6px)}
+.srs-sess[data-srs-view=ask]{padding-bottom:96px}   /* 固定バー分の逃げ(長いPhraseでもバー裏に隠れない)。全画面高さの予約は復活させない */
+.srs-show{width:100%;justify-content:center}
+.srs-grades{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.srs-g{min-height:48px;border:1.5px solid #b9cdf7;background:#fff;border-radius:14px;color:var(--navy);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 6px;font-weight:800}
+.srs-gl{font-size:16px;line-height:1.2}
+.srs-gs{font-size:12px;font-weight:600;color:var(--muted)}
+.srs-g-again{border-color:#f0b4b4}
+.srs-g-good{background:var(--soft)}
+.srs-g-easy{border-color:#9bd3b0}
+.srs-done{text-align:center;padding:24px 8px}
+@media (max-height:420px){.srs-g{min-height:44px}}
+@media (orientation:landscape) and (max-height:450px){.srs-askbar{padding:4px 16px 6px}.srs-askbar .srs-show{min-height:44px;padding-top:6px;padding-bottom:6px}.srs-q{padding:10px 14px 12px;margin-top:6px}.srs-sess[data-srs-view=ask]{padding-bottom:84px}}
+/* ECUI A-2(rev08): 出題・解答中は上部ロゴバーを圧縮(出題語を上寄せ。ロゴ・?ボタンは維持)。:has未対応の旧Safariでは従来表示のまま */
+#view:has(.srs-sess) .top{min-height:48px;padding:2px 0 0}
+
+/* WUI4 改善②: 復習カードのスピーカー再生ボタン(英語表記の右側)。高さは行内に収め、375x553の1画面収容を変えない */
+.srs-enrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.srs-enrow .srs-en{flex:1 1 auto;min-width:0}
+.srs-spk{flex:0 0 auto;width:44px;height:44px;margin:-6px -6px -6px 0;border:0;border-radius:50%;background:var(--soft);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.srs-spk svg{width:24px;height:24px;fill:currentColor}
+.srs-spk:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.srs-spk[disabled]{background:transparent;color:#9aa6bd;cursor:not-allowed;opacity:.7}

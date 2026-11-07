@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>One Step Further Trial 開発ログ・内部評価</title><style>body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;max-width:980px;margin:1em auto;padding:0 1em;line-height:1.7;color:#222}h1{font-size:1.4em}h2{border-bottom:3px solid #35a;padding-bottom:4px;margin-top:2.2em}h3{background:#eef;padding:6px 10px;margin-top:1.6em}
+.note{background:#fff8e0;border:1px solid #cb8;padding:10px;margin:1em 0}.item{border:1px solid #ccd;border-radius:8px;padding:8px 14px;margin:12px 0;background:#fcfcff}.num{color:#35a;font-weight:bold;font-size:.9em}
+.pair{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}.base,.further{flex:1;min-width:250px;padding:8px 12px;border-radius:6px}.base{background:#f2f2f2}.further{background:#e6f4e6;border:2px solid #4a4}.arrow{align-self:center;font-size:1.6em;color:#35a}
+.lab{font-size:.8em;color:#555;font-weight:bold}.en{font-size:1.1em;margin:.2em 0}.ja{color:#444}.core{margin-top:.4em;font-size:.95em}.hook{background:#f7f7ff;padding:6px 10px;border-left:4px solid #88a}.shift{color:#333;background:#fff7e8;padding:6px 10px}.why{color:#444}
+.sec{color:#666;font-size:.9em}.q{background:#f1f1f1;padding:6px 10px;margin:4px 0}details{margin:8px 0}summary{cursor:pointer;color:#036}table{border-collapse:collapse}td,th{border:1px solid #bbb;padding:3px 8px;font-size:.9em}</style></head><body>
+<h1>開発ログ・内部評価(学習コンテンツ本体ではありません)</h1><p><a href='index.html'>← 比較ページ(学習コンテンツ)へ</a></p>
+<h2>1. 独立監査の集計(gpt-6.1-sol・匿名・順序シャッフル、1〜5点)</h2><table><tr><th>条件</th><th>n</th><th>学習価値</th><th>正確性</th><th>日本語</th><th>関連性</th><th>レベル適合</th><th>捏造</th><th>KP重複</th><th>既知で新味薄</th></tr>
+<tr><td>v2 sol(主候補)</td><td>7</td><td>5.0</td><td>4.86</td><td>4.71</td><td>4.71</td><td>4.71</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>v1 sol</td><td>8</td><td>4.88</td><td>4.75</td><td>5.0</td><td>5.0</td><td>4.88</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>v2 luna(1回目)</td><td>10</td><td>4.4</td><td>4.6</td><td>4.2</td><td>4.5</td><td>3.7</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>v2 luna(2回目)</td><td>11</td><td>4.09</td><td>4.45</td><td>4.36</td><td>4.82</td><td>3.64</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>v1 luna</td><td>9</td><td>4.22</td><td>4.56</td><td>4.67</td><td>5.0</td><td>4.44</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>現行ニュアンス解説(Y採用文)</td><td>2</td><td>2.5</td><td>3.5</td><td>4.5</td><td>5.0</td><td>4.0</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>ニュアンス改善Trial v3(X/Z)</td><td>4</td><td>2.25</td><td>4.25</td><td>4.0</td><td>5.0</td><td>4.0</td><td>0</td><td>0</td><td>2</td></tr>
+</table><p class=sec>監査者はsol。sol生成物をsolが採点するため自己評価の甘さが入りうる(luna生成物も同じ基準で採点されている)。最終判断はユーザー・Fable。</p>
+<h2>2. 全案の個別スコア</h2><table><tr><th>記事</th><th>ID</th><th>由来</th><th>核の表現</th><th>学習</th><th>正確</th><th>日本語</th><th>関連</th><th>Lv適合</th><th>指摘</th></tr>
+<tr><td>y</td><td>S1</td><td>v1/l1/2</td><td>see where someone is coming from</td><td>5</td><td>4</td><td>5</td><td>5</td><td>4</td><td>「背景を理解」は基本文のwhyにも含まれる</td></tr>
+<tr><td>y</td><td>S2</td><td>v2/l2/1</td><td>come to terms with something</td><td>5</td><td>5</td><td>5</td><td>5</td><td>3</td><td>come to terms withはA2には習得負荷が高い</td></tr>
+<tr><td>y</td><td>S3</td><td>v1/s1/1</td><td>give someone some space</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>y</td><td>S4</td><td>v1/l1/1</td><td>stand in the way of A</td><td>4</td><td>5</td><td>5</td><td>5</td><td>4</td><td></td></tr>
+<tr><td>y</td><td>S5</td><td>v2/l1/2</td><td>make it all about someone</td><td>5</td><td>5</td><td>4</td><td>5</td><td>4</td><td>基本・発展とも長く、核表現の練習が埋もれる</td></tr>
+<tr><td>y</td><td>S6</td><td>v2/l1/1</td><td>see where someone is coming from</td><td>5</td><td>4</td><td>5</td><td>4</td><td>4</td><td>「同意を示す表現ではない」は断定しすぎ</td></tr>
+<tr><td>y</td><td>S7</td><td>v2/s1/1</td><td>It&#x27;s not someone&#x27;s decision to make.</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>y</td><td>S8</td><td>nuance:現行Production採用文</td><td>at least a little</td><td>3</td><td>4</td><td>5</td><td>5</td><td>5</td><td>「控えめな要求」より不満が強く響く場合もある</td></tr>
+<tr><td>y</td><td>S9</td><td>v2/l2/2</td><td>make this about me</td><td>5</td><td>5</td><td>4</td><td>5</td><td>4</td><td>「thisが話題、meが中心」は説明が抽象的</td></tr>
+<tr><td>y</td><td>A1</td><td>v1/s1/2</td><td>take something for granted</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>y</td><td>A2</td><td>v1/s1/1</td><td>come to terms with something</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>y</td><td>A3</td><td>v1/l1/1</td><td>there&#x27;s more to A than B</td><td>4</td><td>5</td><td>4</td><td>5</td><td>4</td><td>発展文が長く説明的で、会話への転用に一工夫必要</td></tr>
+<tr><td>y</td><td>A4</td><td>v2/l2/1</td><td>carry emotional weight</td><td>4</td><td>5</td><td>4</td><td>5</td><td>4</td><td>「感情的意味」は硬く、思い入れの具体像が薄い</td></tr>
+<tr><td>y</td><td>A5</td><td>v2/s1/1</td><td>make something about someone</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>y</td><td>A6</td><td>v2/l1/1</td><td>there&#x27;s a lot wrapped up in A</td><td>4</td><td>5</td><td>3</td><td>5</td><td>3</td><td>「思いが結びついている対象」では使い方が曖昧 / 発展文が抽象的で、B1には再利用の負荷が高い</td></tr>
+<tr><td>y</td><td>A7</td><td>v2/l2/2</td><td>let A dictate B</td><td>2</td><td>3</td><td>4</td><td>5</td><td>3</td><td>核の「let A dictate B」が例文にない / decideをdictateに替える難語紹介に寄る</td></tr>
+<tr><td>y</td><td>A8</td><td>nuance:現行Production採用文</td><td>at least</td><td>2</td><td>3</td><td>4</td><td>5</td><td>3</td><td>比較文ではa littleも消え、at leastを検証できない / 要求を弱めるのは主にa littleで、説明が混同</td></tr>
+<tr><td>x</td><td>S1</td><td>v2/s1/1</td><td>give someone something to work with</td><td>5</td><td>5</td><td>5</td><td>5</td><td>4</td><td></td></tr>
+<tr><td>x</td><td>S2</td><td>v1/s1/1</td><td>come in handy</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>x</td><td>S3</td><td>v1/l1/1</td><td>come in handy</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td>「help以外で自然に言える」では言い換え中心に見える</td></tr>
+<tr><td>x</td><td>S4</td><td>nuance:ニュアンス改善Trial v3</td><td>at least</td><td>3</td><td>5</td><td>4</td><td>5</td><td>4</td><td>本文の読解に閉じ、自分で使う場面の提示がない</td></tr>
+<tr><td>x</td><td>S5</td><td>v2/l2/1</td><td>make a case for ~ing</td><td>3</td><td>4</td><td>3</td><td>4</td><td>2</td><td>「The results」と「the two findings」が冗長 / 「make a case for」はA2には抽象度が高い</td></tr>
+<tr><td>x</td><td>S6</td><td>v2/l1/1</td><td>file something away for later</td><td>4</td><td>4</td><td>4</td><td>4</td><td>3</td><td>「I remembered it」は意図的に記憶する意味とは限らない / 「file」は物理的な整理との違いを補足したい</td></tr>
+<tr><td>x</td><td>A1</td><td>v1/l1/2</td><td>build on A</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>x</td><td>A2</td><td>v2/l1/2</td><td>draw a distinction between A and B</td><td>3</td><td>5</td><td>4</td><td>3</td><td>4</td><td>「練習と才能」は記事から離れ、導入の橋渡しが弱い / 区別して何を伝えたいかがなく、定型的な語義紹介に近い</td></tr>
+<tr><td>x</td><td>A3</td><td>v1/s1/1</td><td>That&#x27;s not to say (that) A</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>x</td><td>A4</td><td>v1/l1/1</td><td>A come in handy</td><td>4</td><td>5</td><td>4</td><td>5</td><td>4</td><td>「意味の違い」が空欄 / 「usefulの代わり」中心で、使う動機の説明が弱い</td></tr>
+<tr><td>x</td><td>A5</td><td>v2/l1/1</td><td>translate into A</td><td>4</td><td>5</td><td>4</td><td>5</td><td>4</td><td>「別の成果へ移っていく」は意味をつかみにくい</td></tr>
+<tr><td>x</td><td>A6</td><td>v2/s1/2</td><td>see where something takes someone</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>x</td><td>A7</td><td>v2/s1/1</td><td>have something to show for something</td><td>5</td><td>4</td><td>4</td><td>4</td><td>4</td><td>「労力に見合う」ほど十分な成果があるとは限らない / 発展文が長く、核の表現を取り出して覚えにくい</td></tr>
+<tr><td>x</td><td>A8</td><td>nuance:ニュアンス改善Trial v3</td><td>At least for this AI vs For this AI</td><td>3</td><td>4</td><td>4</td><td>5</td><td>4</td><td>「限定する響きはありません」は強すぎる対比 / 説明が反復的で、他場面で使うための例がない</td></tr>
+<tr><td>x</td><td>A9</td><td>v2/l2/2</td><td>translate into + result</td><td>4</td><td>4</td><td>4</td><td>5</td><td>4</td><td>「とは限らない」は核でなく否定とautomaticallyの働き / 「may not」と「自動的にはつながらない」の差が説明不足</td></tr>
+<tr><td>x</td><td>A10</td><td>v2/l2/1</td><td>stand up to scrutiny</td><td>3</td><td>5</td><td>4</td><td>5</td><td>2</td><td>「scrutiny」の負荷が高く、B1目標から外れやすい / 硬い評価表現で、日常的な発話への転用範囲が狭い</td></tr>
+<tr><td>z</td><td>S1</td><td>v1/l1/2</td><td>get the impression that ...</td><td>4</td><td>4</td><td>5</td><td>5</td><td>4</td><td>「I thought」も断定ではなく、確信度の差は文脈次第。</td></tr>
+<tr><td>z</td><td>S2</td><td>v2/l2/1</td><td>something gets to someone</td><td>5</td><td>4</td><td>5</td><td>5</td><td>5</td><td>「徐々に」はget to自体の必須の意味ではない。</td></tr>
+<tr><td>z</td><td>S3</td><td>v1/s1/1</td><td>jump to conclusions</td><td>5</td><td>4</td><td>5</td><td>5</td><td>4</td><td>「やんわり」はLet&#x27;s notの効果で、表現自体は批判にもなる。</td></tr>
+<tr><td>z</td><td>S4</td><td>v1/l1/1</td><td>be on edge</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>z</td><td>S5</td><td>v2/l1/2</td><td>can&#x27;t shake the feeling that ...</td><td>5</td><td>5</td><td>5</td><td>4</td><td>3</td><td>「can&#x27;t shake the feeling that」はA2には負荷が高い。 / 本文の音の再発と、拭えない疑念との接続はやや間接的。</td></tr>
+<tr><td>z</td><td>S6</td><td>v2/l1/1</td><td>read too much into A</td><td>5</td><td>5</td><td>4</td><td>5</td><td>3</td><td>「read too much into」に留保節も重ね、A2には重い。 / 基本文にない「怒っている」という判断も追加している。</td></tr>
+<tr><td>z</td><td>S7</td><td>v2/s1/1</td><td>let something show</td><td>5</td><td>5</td><td>4</td><td>4</td><td>5</td><td>「にじみ出るままにする」は、letの説明としてやや回りくどい。 / 本文の最初の笑顔は、不安を隠す行動とは明記されていない。</td></tr>
+<tr><td>z</td><td>S8</td><td>nuance:ニュアンス改善Trial v3</td><td>everything vs almost everything</td><td>1</td><td>4</td><td>4</td><td>5</td><td>4</td><td>「almost」で全体の範囲を狭めるだけで、新しい表現が乏しい。 / 「聞こえる物」より「音」の方が説明として適切。</td></tr>
+<tr><td>z</td><td>S9</td><td>v2/l2/2</td><td>make a point of doing something</td><td>4</td><td>4</td><td>5</td><td>5</td><td>3</td><td>「大切にしている気持ち」は必須でなく、意図的な実行が核。 / 発展文が長く、A2向けには習慣の例を短くしたい。</td></tr>
+<tr><td>z</td><td>A1</td><td>v1/l1/1</td><td>read too much into something</td><td>5</td><td>3</td><td>4</td><td>5</td><td>5</td><td>「I was reading」は深読みを認める断言で、可能性ではない。 / 「基本表現」もI thoughtであり、「笑われた」との断定ではない。</td></tr>
+<tr><td>z</td><td>A2</td><td>v2/l2/1</td><td>read too much into A</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>z</td><td>A3</td><td>v1/s1/1</td><td>jump to conclusions</td><td>4</td><td>4</td><td>5</td><td>5</td><td>5</td><td>「意味の違い」が適用範囲中心で、性急な判断という核が薄い。</td></tr>
+<tr><td>z</td><td>A4</td><td>v1/s1/2</td><td>get the better of someone</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>z</td><td>A5</td><td>v2/l1/2</td><td>spiral out of control</td><td>4</td><td>4</td><td>4</td><td>5</td><td>4</td><td>「My worry」も可能だが、ここではMy anxietyがより自然。 / 「一段ずつ」は不要で、急激な悪化にも使える。</td></tr>
+<tr><td>z</td><td>A6</td><td>v2/l1/1</td><td>read too much into something</td><td>5</td><td>4</td><td>5</td><td>5</td><td>5</td><td>「misunderstood」は過去、「may be reading」は現在で時点がずれる。</td></tr>
+<tr><td>z</td><td>A7</td><td>v2/s1/1</td><td>read too much into something</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td></tr>
+<tr><td>z</td><td>A8</td><td>nuance:ニュアンス改善Trial v3</td><td>none vs not ... any</td><td>2</td><td>4</td><td>4</td><td>5</td><td>4</td><td>「none」が常に強く、not anyが淡々とするわけではない。 / 語調の比較にとどまり、使える表現の増加が小さい。</td></tr>
+<tr><td>z</td><td>A9</td><td>v2/l2/2</td><td>A keeps replaying in someone&#x27;s head</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td>本文の鼓動は、過去の音の記憶を再生しているとは明記されない。</td></tr>
+</table>
+<h2>3. 再現性(同条件の生成ごとの選定表現)</h2><table><tr><th>セル</th><th>v1 sol</th><th>v1 luna1</th><th>v1 luna2</th><th>v2 sol</th><th>v2 luna1</th><th>v2 luna2</th></tr>
+<tr><td>y_std</td><td>give someone some space</td><td>stand in the way of A / see where someone is coming from</td><td>see where someone is coming from / give someone space</td><td>It&#x27;s not someone&#x27;s decision to make.</td><td>see where someone is coming from / make it all about someone</td><td>come to terms with something / make this about me</td></tr>
+<tr><td>y_adv</td><td>come to terms with something / take something for granted</td><td>there&#x27;s more to A than B</td><td>find common ground (with someone) / see where someone is coming from</td><td>make something about someone</td><td>there&#x27;s a lot wrapped up in A</td><td>carry emotional weight / let A dictate B</td></tr>
+<tr><td>x_std</td><td>come in handy</td><td>come in handy</td><td>come in handy</td><td>give someone something to work with</td><td>file something away for later</td><td>make a case for ~ing</td></tr>
+<tr><td>x_adv</td><td>That&#x27;s not to say (that) A</td><td>A come in handy / build on A</td><td>pay off / It remains to be seen whether A</td><td>have something to show for something / see where something takes someone</td><td>translate into A / draw a distinction between A and B</td><td>stand up to scrutiny / translate into + result</td></tr>
+<tr><td>z_std</td><td>jump to conclusions</td><td>be on edge / get the impression that ...</td><td>get to someone / read too much into A</td><td>let something show</td><td>read too much into A / can&#x27;t shake the feeling that ...</td><td>something gets to someone / make a point of doing something</td></tr>
+<tr><td>z_adv</td><td>jump to conclusions / get the better of someone</td><td>read too much into something</td><td>can&#x27;t shake the feeling that ... / keep up appearances</td><td>read too much into something</td><td>read too much into something / spiral out of control</td><td>read too much into A / A keeps replaying in someone&#x27;s head</td></tr>
+</table><h2>4. 費用・時間(1セル=1記事×1レベルの生成1回)</h2><table><tr><th>条件</th><th>1セル平均費用</th><th>1記事セット(2レベル)</th><th>平均秒</th><th>入力tok</th><th>出力tok</th></tr>
+<tr><td>v1 sol</td><td>¥2.907</td><td>¥5.81</td><td>33.6</td><td>2216</td><td>1373</td></tr>
+<tr><td>v1 luna1</td><td>¥0.177</td><td>¥0.35</td><td>23.4</td><td>2216</td><td>2034</td></tr>
+<tr><td>v1 luna2</td><td>¥0.176</td><td>¥0.35</td><td>21.5</td><td>2216</td><td>1889</td></tr>
+<tr><td>v2 sol</td><td>¥3.268</td><td>¥6.54</td><td>36.9</td><td>2521</td><td>1538</td></tr>
+<tr><td>v2 luna1</td><td>¥0.184</td><td>¥0.37</td><td>26.3</td><td>2521</td><td>2094</td></tr>
+<tr><td>v2 luna2</td><td>¥0.249</td><td>¥0.50</td><td>33.8</td><td>2521</td><td>2758</td></tr>
+</table><p>独立監査 3回 ¥18.17。Trial総費用 ¥59.93(呼出39回)。</p><!--OSF02-->
+<hr><h1 id='osf02'>委任_02 の生成・監査(上は委任_01の記録そのまま)</h1>
+<h2>A. 条件別の独立監査(gpt-6.1-sol・匿名・順序シャッフル、38案を1回で採点)</h2><table><tr><th>条件</th><th>n</th><th>学習価値</th><th>正確性</th><th>例文の自然さ</th><th>日本語</th><th>関連性</th><th>レベル適合</th><th>3点以下(学習/正確/Lv)</th><th>捏造</th><th>KP重複</th></tr>
+<tr><td>luna v3 全6セル</td><td>9</td><td>4.44</td><td>4.44</td><td>4.67</td><td>4.78</td><td>4.44</td><td>4.44</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>luna v3 Standard</td><td>4</td><td>4.5</td><td>4.5</td><td>4.75</td><td>4.75</td><td>5.0</td><td>4.75</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>luna v3 Advanced</td><td>5</td><td>4.4</td><td>4.4</td><td>4.6</td><td>4.8</td><td>4.0</td><td>4.2</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>sol v2 主候補(委任_01)</td><td>7</td><td>5.0</td><td>4.57</td><td>5.0</td><td>4.57</td><td>4.86</td><td>4.86</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>sol 3候補方式(Y)</td><td>6</td><td>4.83</td><td>5.0</td><td>5.0</td><td>5.0</td><td>5.0</td><td>4.83</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>luna 3候補方式(Y、2回)</td><td>12</td><td>4.33</td><td>3.92</td><td>4.75</td><td>4.08</td><td>4.67</td><td>4.5</td><td>4</td><td>0</td><td>1</td></tr>
+<tr><td>sol v2 Y Adv再生成</td><td>2</td><td>5.0</td><td>5.0</td><td>5.0</td><td>5.0</td><td>4.5</td><td>5.0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>学習ポイント修正版(X Adv/Z Std)</td><td>2</td><td>5.0</td><td>5.0</td><td>5.0</td><td>4.5</td><td>4.5</td><td>5.0</td><td>0</td><td>0</td><td>0</td></tr>
+</table><p class=sec>監査者はsol(sol生成物は自己評価の甘さがありうる)。luna v2(委任_01)のStandardレベル適合は3.7で、v3で上がったかを見るのが主目的。nが小さいので傾向として読む。</p>
+<h2>B. 全案の個別スコア(38案)</h2><table><tr><th>セル</th><th>由来</th><th>核の表現</th><th>学習</th><th>正確</th><th>例文自然</th><th>日本語</th><th>関連</th><th>Lv適合</th><th>KP重複</th><th>既知</th><th>指摘</th></tr>
+<tr><td>x_adv</td><td>luna_v3/1</td><td>hold up under scrutiny</td><td>3</td><td>3</td><td>3</td><td>4</td><td>2</td><td>2</td><td></td><td></td><td>因果解釈の限界を、結果自体の信頼性への疑いに変更 / 「under closer scrutiny」は日常例文として硬い</td></tr>
+<tr><td>x_adv</td><td>sol_v2_primary(委任_01)</td><td>see where something takes someone</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td>5</td><td></td><td></td><td>「thisには今始める活動を受けます」は助詞が不自然</td></tr>
+<tr><td>x_adv</td><td>sol_v2_primary(委任_01)</td><td>have something to show for something</td><td>5</td><td>3</td><td>5</td><td>4</td><td>4</td><td>5</td><td></td><td></td><td>「労力に見合う」は成果の十分さまで含めてしまう / 核に比べて例文が長く、再利用しにくい</td></tr>
+<tr><td>x_adv</td><td>sol_v2_primary+pointfix(委任_02)</td><td>have something to show for something</td><td>5</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>x_std</td><td>luna_v3/1</td><td>build on A</td><td>4</td><td>5</td><td>5</td><td>4</td><td>5</td><td>5</td><td></td><td></td><td>「basic_en」は編集用ラベルの混入</td></tr>
+<tr><td>x_std</td><td>sol_v2_primary(委任_01)</td><td>give someone something to work with</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>4</td><td></td><td></td><td>A2には例文が長く、核の型もやや重い</td></tr>
+<tr><td>y_adv</td><td>luna_c3_run1/rank1</td><td>not so much A as B</td><td>4</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td>○</td><td></td><td>発展文が既存の強調構文練習と重なる / 基本文は改姓容認、発展文は相対比較で意味が違う</td></tr>
+<tr><td>y_adv</td><td>luna_c3_run1/rank2</td><td>be mindful of A</td><td>3</td><td>4</td><td>4</td><td>4</td><td>5</td><td>4</td><td></td><td></td><td>「確かめて」は英文には含まれない / 新しい形容詞と複雑な節が中心で、即用性が弱い</td></tr>
+<tr><td>y_adv</td><td>luna_c3_run1/rank3</td><td>put someone on the spot</td><td>5</td><td>4</td><td>5</td><td>5</td><td>4</td><td>5</td><td></td><td></td><td>「すぐ答えたり、決断したり」に意味を限定しすぎる</td></tr>
+<tr><td>y_adv</td><td>luna_c3_run2/rank1</td><td>make room for A</td><td>4</td><td>4</td><td>4</td><td>4</td><td>5</td><td>4</td><td></td><td></td><td>決定権の線引きはmake room for自体の意味ではない / 長い後半節が学習の核を埋もれさせる</td></tr>
+<tr><td>y_adv</td><td>luna_c3_run2/rank2</td><td>It dawns on someone that ...</td><td>4</td><td>4</td><td>4</td><td>4</td><td>5</td><td>4</td><td></td><td></td><td>realizeにも「ふと気づく」場面はあり対比が弱い / 比較表現まで加わり、核に対して例文が重い</td></tr>
+<tr><td>y_adv</td><td>luna_c3_run2/rank3</td><td>have a say in A</td><td>4</td><td>3</td><td>5</td><td>4</td><td>3</td><td>5</td><td></td><td></td><td>「決定権を持つのではなく」は限定しすぎ / 気持ちの共有から決定への影響要求へ踏み込みすぎる</td></tr>
+<tr><td>y_adv</td><td>luna_v3/1</td><td>it&#x27;s less about A and more about B</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_adv</td><td>luna_v3/2</td><td>see where someone is coming from</td><td>5</td><td>4</td><td>5</td><td>5</td><td>4</td><td>5</td><td></td><td></td><td>親の発言なら「we decide」は共同決定を示唆する</td></tr>
+<tr><td>y_adv</td><td>sol_c3/rank1</td><td>It&#x27;s less about A and more about B.</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_adv</td><td>sol_c3/rank2</td><td>It&#x27;s not my place to do something.</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_adv</td><td>sol_c3/rank3</td><td>what works for someone</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_adv</td><td>sol_v2_primary(委任_01)</td><td>make something about someone</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td>5</td><td></td><td></td><td>「私自身の気持ちをめぐる話」は説明的で長い</td></tr>
+<tr><td>y_adv</td><td>sol_v2_regen/1</td><td>make something about someone</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_adv</td><td>sol_v2_regen/2</td><td>It&#x27;s not my place to do something</td><td>5</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td></td><td></td><td>「I disagree」は本文の容認姿勢より対立的</td></tr>
+<tr><td>y_std</td><td>luna_c3_run1/rank1</td><td>make it all about A</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td>4</td><td></td><td></td><td></td></tr>
+<tr><td>y_std</td><td>luna_c3_run1/rank2</td><td>give A some space</td><td>5</td><td>3</td><td>5</td><td>3</td><td>5</td><td>5</td><td></td><td></td><td>「距離を置かせてあげたい」は使役的で訳がずれる</td></tr>
+<tr><td>y_std</td><td>luna_c3_run1/rank3</td><td>hear A out</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_std</td><td>luna_c3_run2/rank1</td><td>talk A through</td><td>5</td><td>3</td><td>5</td><td>4</td><td>5</td><td>5</td><td></td><td></td><td>「talk A through」はAが話題であることを明記したい / 人を目的語にする別用法との区別が不十分</td></tr>
+<tr><td>y_std</td><td>luna_c3_run2/rank2</td><td>find my place</td><td>4</td><td>4</td><td>5</td><td>4</td><td>4</td><td>4</td><td></td><td></td><td>「見つかったと言いたいとき」では探索中の用法を落とす / 習慣への適応から所属感へ、意味の移動が大きい</td></tr>
+<tr><td>y_std</td><td>luna_c3_run2/rank3</td><td>mean a lot</td><td>4</td><td>4</td><td>5</td><td>3</td><td>5</td><td>4</td><td></td><td></td><td>「私にはとても大きな意味があります」は直訳調 / 「命令ではなく」は基本文にも当てはまる</td></tr>
+<tr><td>y_std</td><td>luna_v3/1</td><td>sit right with someone</td><td>5</td><td>4</td><td>4</td><td>5</td><td>5</td><td>4</td><td></td><td></td><td>「assume that」だけでは「当然と思う」を保証しない / 例文単独ではthatの指示内容が不明</td></tr>
+<tr><td>y_std</td><td>luna_v3/2</td><td>give someone space</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_std</td><td>sol_c3/rank1</td><td>run A by someone</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>4</td><td></td><td></td><td></td></tr>
+<tr><td>y_std</td><td>sol_c3/rank2</td><td>give someone space</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_std</td><td>sol_c3/rank3</td><td>could use A</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>y_std</td><td>sol_v2_primary(委任_01)</td><td>It&#x27;s not someone&#x27;s decision to make.</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>z_adv</td><td>luna_v3/1</td><td>can&#x27;t get A out of one&#x27;s head</td><td>4</td><td>5</td><td>5</td><td>5</td><td>4</td><td>4</td><td></td><td></td><td>Advancedでは比較的平易で、発見の大きさは控えめ</td></tr>
+<tr><td>z_adv</td><td>luna_v3/2</td><td>A gets the better of someone</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>z_adv</td><td>sol_v2_primary(委任_01)</td><td>read too much into something</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td></td></tr>
+<tr><td>z_std</td><td>luna_v3/1</td><td>be on edge</td><td>4</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td>「ずっと」「緊張が続き」は表現自体には含まれない</td></tr>
+<tr><td>z_std</td><td>sol_v2_primary(委任_01)</td><td>let something show</td><td>5</td><td>4</td><td>5</td><td>5</td><td>5</td><td>5</td><td></td><td></td><td>「にじみ出るままにする」はletの意味を狭めすぎる</td></tr>
+<tr><td>z_std</td><td>sol_v2_primary+pointfix(委任_02)</td><td>let something show</td><td>5</td><td>5</td><td>5</td><td>4</td><td>5</td><td>5</td><td></td><td></td><td>「表に出す」の語義説明が反復され、やや辞書的</td></tr>
+</table>
+<h2>C. Y Advanced 例文の自然さ(差替え前後)</h2><p>差替え前(委任_01の主候補、sol v2 1回目): <b>I&#x27;m sad, but I don&#x27;t want to make their decision about me.</b> / 寂しいけれど、二人の決断を、私自身の気持ちをめぐる話にはしたくありません。<br>再生成(sol v2、同一Prompt、2回目の生成): <br>・<b>make something about someone</b>: I&#x27;m sad, but I don&#x27;t want to make this about me. / 寂しいけれど、自分の気持ちを話の中心にしたくはない。<br>・<b>It&#x27;s not my place to do something</b>: I disagree, but it&#x27;s not my place to tell them what to do. / 私は賛成ではないけれど、本人たちにどうすべきか指図する立場ではない。<br>→ 再生成1件目(I'm sad, but I don't want to make this about me.)は監査で全項目5(例文自然さ5)。比較ページの主候補をこれに差し替えた。</p>
+<h2>D. 学習ポイント文のみ再生成(X Adv / Z Std、各1回)</h2>
+<h3>x_adv: have something to show for something</h3><p><b>修正前</b>: 費やした時間や労力に見合う「成果が手元に残った」と言う表現です。単なる進歩ではなく、努力が無駄ではなかったと評価できます。仕事や勉強の振り返りに使え、forの後に費やしたものを置きます。<br><b>修正後</b>: 費やした時間や労力に対して「成果として示せるものがある」と言う表現です。forの後に、費やした時間や労力、取り組んだ活動を置きます。労力に見合うほど十分な成果があるとは限りません。</p>
+<h3>z_std: let something show</h3><p><b>修正前</b>: 感情を表情や態度に出したくないときに使えます。感情そのものと、外に見せる様子を分けて伝える表現です。面接の緊張や、がっかりした気持ちにも使え、itは直前の感情を指します。<br><b>修正後</b>: let something showは、感情などを表情や態度に出すことを表します。notと組み合わせると、感情を表に出さないことを表せます。この文のitは緊張を指し、tryingがあるため、実際に隠せているとは限りません。</p>
+<h2>E. 表現固定の方式検証(Y、候補3件+選別)</h2><table><tr><th>セル</th><th>生成</th><th>rank1</th><th>rank2</th><th>rank3</th></tr>
+<tr><td>y_std</td><td>sol 1回</td><td>run A by someone<br><span class=sec>I&#x27;ll run the idea by my parents first.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 4, &#x27;natural&#x27;: 5}</span></td><td>give someone space<br><span class=sec>I&#x27;ll give her some space.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>could use A<br><span class=sec>I could use some time to myself.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td></tr>
+<tr><td>y_std</td><td>luna 1回目</td><td>make it all about A<br><span class=sec>I don&#x27;t want to make this all about me.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>give A some space<br><span class=sec>I want to be kind to them but give them some space.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>hear A out<br><span class=sec>I want to hear my parents out before I choose.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td></tr>
+<tr><td>y_std</td><td>luna 2回目</td><td>talk A through<br><span class=sec>I&#x27;d like to talk it through with him first.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>find my place<br><span class=sec>It took me time to find my place in her family.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>mean a lot<br><span class=sec>It would mean a lot if they thanked him, too.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td></tr>
+<tr><td>y_adv</td><td>sol 1回</td><td>It&#x27;s less about A and more about B.<br><span class=sec>It&#x27;s less about the name change and more about wanting my son nearby.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>It&#x27;s not my place to do something.<br><span class=sec>It&#x27;s not my place to tell them what to do.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 4, &#x27;natural&#x27;: 5}</span></td><td>what works for someone<br><span class=sec>What works for one family doesn&#x27;t necessarily work for another.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 4, &#x27;natural&#x27;: 5}</span></td></tr>
+<tr><td>y_adv</td><td>luna 1回目</td><td>not so much A as B<br><span class=sec>It&#x27;s not so much the name change as the distance that bothers me.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 4, &#x27;natural&#x27;: 5}</span></td><td>be mindful of A<br><span class=sec>I want to be mindful of how involved they want me to be.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 4, &#x27;natural&#x27;: 5}</span></td><td>put someone on the spot<br><span class=sec>I want to bring it up without putting them on the spot.<br>自己採点{&#x27;learning_value&#x27;: 4, &#x27;level_fit&#x27;: 4, &#x27;natural&#x27;: 5}</span></td></tr>
+<tr><td>y_adv</td><td>luna 2回目</td><td>make room for A<br><span class=sec>We need to make room for both families’ feelings without letting them decide for the couple.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>It dawns on someone that ...<br><span class=sec>It dawned on me that I was less upset about the name than about him moving away.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td><td>have a say in A<br><span class=sec>I don&#x27;t expect to make the final decision, but I&#x27;d like to have a say in it.<br>自己採点{&#x27;learning_value&#x27;: 5, &#x27;level_fit&#x27;: 5, &#x27;natural&#x27;: 5}</span></td></tr>
+</table>
+<h2>F. 費用・時間(委任_02、usage_log_02.jsonl)</h2><table><tr><th>呼出</th><th>費用</th><th>秒</th><th>入力tok</th><th>出力tok</th></tr>
+<tr><td>x_adv__pointfix__s1</td><td>¥1.318</td><td>10.6</td><td>1305</td><td>563</td></tr>
+<tr><td>z_std__pointfix__s1</td><td>¥1.326</td><td>12.2</td><td>1224</td><td>584</td></tr>
+<tr><td>x_adv__v3__l1</td><td>¥0.167</td><td>18.7</td><td>2694</td><td>1542</td></tr>
+<tr><td>x_std__v3__l1</td><td>¥0.206</td><td>22.8</td><td>2652</td><td>2039</td></tr>
+<tr><td>y_adv__v3__l1</td><td>¥0.242</td><td>25.7</td><td>2934</td><td>2436</td></tr>
+<tr><td>z_std__v3__l1</td><td>¥0.219</td><td>25.8</td><td>2600</td><td>2218</td></tr>
+<tr><td>y_std__v3__l1</td><td>¥0.264</td><td>29.1</td><td>2905</td><td>2723</td></tr>
+<tr><td>z_adv__v3__l1</td><td>¥0.266</td><td>32.6</td><td>2617</td><td>2802</td></tr>
+<tr><td>y_adv__c3__l1</td><td>¥0.301</td><td>35.4</td><td>2943</td><td>3176</td></tr>
+<tr><td>y_adv__v2__s2</td><td>¥3.761</td><td>37.5</td><td>2722</td><td>1806</td></tr>
+<tr><td>y_std__c3__l2</td><td>¥0.320</td><td>42.1</td><td>2914</td><td>3940</td></tr>
+<tr><td>y_std__c3__s1</td><td>¥4.632</td><td>48.4</td><td>2914</td><td>2312</td></tr>
+<tr><td>y_std__c3__l1</td><td>¥0.500</td><td>55.2</td><td>2914</td><td>5667</td></tr>
+<tr><td>y_adv__c3__l2</td><td>¥0.461</td><td>63.9</td><td>2943</td><td>5707</td></tr>
+<tr><td>y_adv__c3__s1</td><td>¥5.673</td><td>69.2</td><td>2943</td><td>2957</td></tr>
+<tr><td>osf02__AUDIT</td><td>¥12.577</td><td>48.6</td><td>16448</td><td>4571</td></tr>
+</table><p>委任_02の費用合計 ¥32.23(呼出16回)。Trial累計(委任_01 ¥59.93 + 委任_02) = ¥92.16。</p></body></html>

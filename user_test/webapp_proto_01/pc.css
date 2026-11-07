@@ -1,0 +1,49 @@
+/* pc.css — ECUI Workstream B(PC対応、案B1'): 最後に読み込む追加CSS。DOMは不変。
+   方針: 下部固定スタック(上=日本語キャプチャ -> 中=再生操作 -> 下=ナビ。UDR #244)を >=1024px でも維持し、本文列と同幅(--colw)で中央に置く。サイドレールは採用しない。
+   幅の唯一の源は :root の --colw(style.css/srs.css の #app/#nav/#mini/#dock/#floatstack/.srs-askbar が参照)。layoutDock の --nav-total/--dock-h 実測に依存する要素は構造を変えない。
+   ブレークポイント: <600 は従来のスマホ(480px列)のまま。600-1023 は 680px 列、>=1024 は 720px 列。横向きスマホ(高さ<=450px)は従来のまま(幅だけで広げない)。 */
+@media (min-width:600px) and (min-height:451px){:root{--colw:680px}}
+@media (min-width:1024px) and (min-height:451px){:root{--colw:720px}}
+
+/* キーボード操作の可視化(フォーカスリング)。タッチ操作では :focus-visible は出ない */
+a:focus-visible,button:focus-visible,summary:focus-visible,.card:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+input[type=range]:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:8px}
+#nav a:focus-visible{outline-offset:-3px}
+.search input:focus-visible{outline:0}
+.search:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,79,216,.2)}
+.bigbtn:focus-visible,.lvseg button:focus-visible,.modeseg button:focus-visible{outline-color:var(--navy);outline-offset:3px}
+
+/* マウス hover(ポインタ+hover可能な環境のみ。スマホには影響しない) */
+@media (hover:hover) and (pointer:fine){
+  .card:hover{border-color:#9dbdf5;box-shadow:0 6px 18px rgba(16,40,94,.14)}
+  .row:hover{border-color:#9dbdf5;background:var(--soft2)}
+  .row.all:hover{filter:brightness(1.08);background:linear-gradient(135deg,var(--blue),var(--blue2))}
+  .bigbtn:hover{filter:brightness(1.08)}
+  .bigbtn.ghost:hover{background:var(--soft2);filter:none}
+  .iconbtn:hover{background:var(--soft)}
+  .iconbtn.backbtn:hover{background:var(--soft2)}
+  .cardplay:hover,.pwplay:hover{background:#d3e3ff}
+  .cardplay.on:hover,.pwplay.on:hover{background:var(--blue2)}
+  .lvseg button:not([aria-pressed=true]):hover,.modeseg button:not([aria-pressed=true]):hover{background:rgba(29,79,216,.1)}
+  .ctrl button:not(.pp):hover{background:var(--soft2);border-color:var(--blue)}
+  .ctrl .pp:hover{filter:brightness(1.1)}
+  .ctrl .capsw[aria-pressed=false]:hover{background:#e6eaf1}
+  #nav a:hover:not([aria-current=page]){background:var(--soft2);color:var(--blue2)}
+  .setrow:hover,.save:hover,.from:hover,.pwtog:hover,.linkbtn:hover,.srs-link:hover,.bub-more:hover{background-color:var(--soft2)}
+  .save.on:hover{background:var(--blue2)}
+  .miniin .mt:hover b{text-decoration:underline}
+  .miniin .mpp:hover{background:var(--blue2)}
+  #ratepop button:hover{background:#d3e3ff}
+  #ratepop button.on:hover{background:linear-gradient(135deg,var(--blue),var(--blue2))}
+  .sent:not(.hl):hover{background:#f1f5ff}
+  .wk:hover{background:#e6efff}
+  .srs-g:hover{border-color:var(--blue);background:var(--soft2)}
+  .srs-g-good:hover{background:#d3e3ff}
+  details.vi summary:hover,.te-ans>summary:hover{text-decoration:underline}
+}
+
+/* PC(>=1024px): 復習帳の評価は4列1行(1-4キーと対応)。mobile(2x2)は不変 */
+@media (min-width:1024px) and (min-height:451px){
+  .srs-grades{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #view{padding:0 20px}
+}
