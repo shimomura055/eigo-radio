@@ -194,6 +194,10 @@
     }
     for (var i = 0; i < qt.length; i++) rec(0, i, [], 0);
     var seen = {}, uniq = hits.filter(function (h) { var k = h.map(function (r) { return r[0]; }).join(','); if (seen[k]) return false; seen[k] = 1; return true; });
+    if (uniq.length > 1 && heading.indexOf('-') < 0) {   // rev01-v EM14: 見出しにハイフンが無いとき、ハイフン連結の複合語(behind-the-scenes)の候補を除外して絞り込む(残りが1件のときだけ採用。0件・2件以上は従来どおり曖昧)
+      var sp = uniq.filter(function (h) { return h.every(function (r, i) { return i === 0 || text.slice(h[i - 1][1], r[0]).indexOf('-') < 0; }); });
+      if (sp.length === 1) uniq = sp;
+    }
     if (uniq.length !== 1) return { n: uniq.length, ranges: [] };
     var out = [], cur = null, prevEnd = -1;   // 隣接トークン(間が空白のみ)は1つの太字にまとめる
     uniq[0].forEach(function (r) { if (cur && /^\s*$/.test(text.slice(prevEnd, r[0]))) cur[1] = r[1]; else { cur = [r[0], r[1]]; out.push(cur); } prevEnd = r[1]; });
