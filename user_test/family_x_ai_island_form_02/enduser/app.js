@@ -74,7 +74,7 @@
       out += card('Intro', intro.map(function (p) {
         var ja = p.kind === 'jtitle';
         return '<div class="subblk" data-part="' + p.idx + '"><div class="sectionhead"><span class="note">' + (ja ? '日本語タイトル' : 'Topic') + '</span>' + btns(p) + '</div>' +
-               (ja ? '<div class="jp">' + sentHtml(p) + '</div>' : sentHtml(p)) + '</div>';
+               (ja ? '<div class="jp">' + sentHtml(p) + '</div>' : sentHtml(p) + glossHtml(p)) + '</div>';
       }).join(''), { label: 'INTRO' });
     }
     by('preview').forEach(function (p) {
