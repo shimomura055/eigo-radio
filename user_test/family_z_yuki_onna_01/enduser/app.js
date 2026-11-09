@@ -60,6 +60,13 @@
         (g.vi != null ? '<a class="glink" href="#vi-' + lv + '-' + g.vi + '" data-vi="' + g.vi + '">解説</a>' : '') + '</li>';
     }).join('') + '</ul></div>';
   }
+  /* rev01-x(③): KPカードの「解説」リンクの移動先。kp_rankが一致するVocabulary項目がちょうど1件のときだけそのindex、それ以外は-1(リンクを出さない) */
+  function kpVi(k) {
+    if (k.kp_rank == null || !L || !L.vocab) return -1;
+    var m = [];
+    L.vocab.forEach(function (v, i) { if (v.kp_rank === k.kp_rank) m.push(i); });
+    return m.length === 1 ? m[0] : -1;
+  }
   function card(title, body, opts) {
     opts = opts || {};
     return '<section class="card' + (opts.cls ? ' ' + opts.cls : '') + '"' + (opts.part != null ? ' data-part="' + opts.part + '"' : '') + (opts.id ? ' id="' + opts.id + '"' : '') + '>' +
@@ -74,7 +81,7 @@
       out += card('Intro', intro.map(function (p) {
         var ja = p.kind === 'jtitle';
         return '<div class="subblk" data-part="' + p.idx + '"><div class="sectionhead"><span class="note">' + (ja ? '日本語タイトル' : 'Topic') + '</span>' + btns(p) + '</div>' +
-               (ja ? '<div class="jp">' + sentHtml(p) + '</div>' : sentHtml(p)) + '</div>';
+               (ja ? '<div class="jp">' + sentHtml(p) + '</div>' : sentHtml(p) + glossHtml(p)) + '</div>';
       }).join(''), { label: 'INTRO' });
     }
     by('preview').forEach(function (p) {
@@ -88,9 +95,10 @@
         return p.kp.map(function (k) {
           return '<div class="kpitem" data-part="' + p.idx + '"><div><span class="th">' + esc(hdr[0]) + '</span><b>' + esc(k.en) + '</b></div>' +
                  (k.japanese_gloss ? '<div class="def"><span class="th">日本語訳</span>' + esc(k.japanese_gloss) + '</div><details class="kpdet"><summary>詳しい解説を見る</summary><div class="def"><span class="th">' + esc((k.text2 ? hdr[2] : hdr[1]) || '') + '</span>' + esc(k.text2 ? k.text2 : k.text) + '</div></details>' : '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + (k.text2 ? '<span class="th th2">' + esc(hdr[2] || '') + '</span>' + esc(k.text2) : '') + '</div>') +
-                 '<button type="button" class="seek part" data-act="kp" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button></div>';
+                 '<div class="kpact"><button type="button" class="seek part" data-act="kp" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button>' +
+                 (kpVi(k) >= 0 ? '<a class="glink kpglink" href="#vi-' + lv + '-' + kpVi(k) + '" data-vi="' + kpVi(k) + '" aria-label="' + esc(k.en) + ' の解説へ移動">解説</a>' : '') + '</div></div>';
         }).join('');
-      }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、下線付きで表示されます。</p>';
+      }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、二重下線付きで表示されます。</p>';
       out += card('Key Phrases', body, { label: 'KEY PHRASES' });
     }
     var full = parts.filter(function (p) { return p.kind === 'comment' || p.kind === 'story'; });
@@ -153,7 +161,7 @@
 
   /* ---------- rev01-e: 学習ブロック引用英文内の解説対象語句を太字化(表示時のみ。データの英文は不変・記事非依存) ---------- */
   var IRR = (function () {
-    var g = 'get got gotten|give gave given|hold held|go went gone|take took taken|make made|come came|do did done|have has had|be is are was were been am|say said|see saw seen|know knew known|think thought|feel felt|leave left|keep kept|find found|tell told|bring brought|buy bought|run ran|write wrote written|speak spoke spoken|break broke broken|choose chose chosen|fall fell fallen|grow grew grown|let|put|cut|set|read|lose lost|mean meant|meet met|pay paid|sell sold|send sent|sit sat|stand stood|win won|begin began begun|catch caught|teach taught|forget forgot forgotten|arise arose arisen|awake awoke awoken|bear bore borne|beat beat beaten|bend bent|bet|bind bound|bite bit bitten|bleed bled|blow blew blown|breed bred|build built|burn burnt|burst|cast|cling clung|creep crept|deal dealt|dig dug|draw drew drawn|dream dreamt|drink drank drunk|drive drove driven|eat ate eaten|feed fed|fight fought|flee fled|fling flung|fly flew flown|forbid forbade forbidden|forgive forgave forgiven|freeze froze frozen|hang hung|hear heard|hide hid hidden|hit|hurt|kneel knelt|lay laid|lead led|lean leant|leap leapt|lend lent|lie lay lain|light lit|ride rode ridden|ring rang rung|rise rose risen|seek sought|shake shook shaken|shine shone|shoot shot|show showed shown|shrink shrank shrunk|shut|sing sang sung|sink sank sunk sunken|sleep slept|slide slid|speed sped|spend spent|spin spun|spit spat|split|spread|spring sprang sprung|steal stole stolen|stick stuck|sting stung|strike struck stricken|swear swore sworn|sweep swept|swim swam swum|swing swung|tear tore torn|throw threw thrown|understand understood|wake woke woken|wear wore worn|weave wove woven|weep wept|wind wound|withdraw withdrew withdrawn|undergo underwent undergone|overcome overcame|become became|forecast|rebuild rebuilt|retell retold|rewrite rewrote rewritten|upset|bid|broadcast|shed|sew sewed sewn|swell swelled swollen|thrust|tread trod trodden|stride strode stridden|mistake mistook mistaken|overtake overtook overtaken|undertake undertook undertaken|outgrow outgrew outgrown|withhold withheld|uphold upheld|lead led'.split('|'), m = {};
+    var g = 'get got gotten|give gave given|hold held|go went gone|take took taken|make made|come came|do did done|have has had|be is are was were been am|say said|see saw seen|know knew known|think thought|feel felt|leave left|keep kept|find found|tell told|bring brought|buy bought|run ran|write wrote written|speak spoke spoken|break broke broken|choose chose chosen|fall fell fallen|grow grew grown|let|put|cut|set|read|lose lost|mean meant|meet met|pay paid|sell sold|send sent|sit sat|stand stood|win won|begin began begun|catch caught|teach taught|forget forgot forgotten|arise arose arisen|awake awoke awoken|bear bore borne|beat beat beaten|bend bent|bet|bind bound|bite bit bitten|bleed bled|blow blew blown|breed bred|build built|burn burnt burned|burst|cast|cling clung|creep crept|deal dealt|dig dug|draw drew drawn|dream dreamt dreamed|drink drank drunk|drive drove driven|eat ate eaten|feed fed|fight fought|flee fled|fling flung|fly flew flown|forbid forbade forbidden|forgive forgave forgiven|freeze froze frozen|hang hung|hear heard|hide hid hidden|hit|hurt|kneel knelt kneeled|lay laid|lead led|lean leant leaned|leap leapt leaped|lend lent|lie lay lain|light lit|ride rode ridden|ring rang rung|rise rose risen|seek sought|shake shook shaken|shine shone|shoot shot|show showed shown|shrink shrank shrunk|shut|sing sang sung|sink sank sunk sunken|sleep slept|slide slid|speed sped|spend spent|spin spun|spit spat|split|spread|spring sprang sprung|steal stole stolen|stick stuck|sting stung|strike struck stricken|swear swore sworn|sweep swept|swim swam swum|swing swung|tear tore torn|throw threw thrown|understand understood|wake woke woken|wear wore worn|weave wove woven|weep wept|wind wound|withdraw withdrew withdrawn|undergo underwent undergone|overcome overcame|become became|forecast|rebuild rebuilt|retell retold|rewrite rewrote rewritten|upset|bid|broadcast|shed|sew sewed sewn|swell swelled swollen|thrust|tread trod trodden|stride strode stridden|mistake mistook mistaken|overtake overtook overtaken|undertake undertook undertaken|outgrow outgrew outgrown|withhold withheld|uphold upheld|lead led'.split('|'), m = {};
     g.forEach(function (x) { var w = x.split(' '); w.forEach(function (a) { m[a] = m[a] ? m[a].concat(w) : w; }); });
     return m;
   })();
@@ -173,6 +181,7 @@
     var last = w.charAt(w.length - 1), pre = w.slice(0, -1), cons = !/[aeiou]/.test(last);
     f.push(w + 's', w + 'es', w + 'ed', w + 'd', w + 'ing', w + 'er', w + 'est');
     if (last === 'e') f.push(pre + 'ing');
+    if (last === 'e' && w.length >= 4 && !/[aeiou]/.test(w.charAt(w.length - 2))) f.push(w + 'r', w + 'st');   // rev01-u EM12: 語末-eの形容詞の比較級・最上級(close->closer/closest)
     if (last === 'y' && !/[aeiou]/.test(w.charAt(w.length - 2))) f.push(pre + 'ies', pre + 'ied', pre + 'ier', pre + 'iest');
     if (cons && /[aeiou]/.test(w.charAt(w.length - 2)) && w.length < 7) f.push(w + last + 'ed', w + last + 'ing', w + last + 'er');
     return f;
@@ -193,6 +202,10 @@
     }
     for (var i = 0; i < qt.length; i++) rec(0, i, [], 0);
     var seen = {}, uniq = hits.filter(function (h) { var k = h.map(function (r) { return r[0]; }).join(','); if (seen[k]) return false; seen[k] = 1; return true; });
+    if (uniq.length > 1 && heading.indexOf('-') < 0) {   // rev01-v EM14: 見出しにハイフンが無いとき、ハイフン連結の複合語(behind-the-scenes)の候補を除外して絞り込む(残りが1件のときだけ採用。0件・2件以上は従来どおり曖昧)
+      var sp = uniq.filter(function (h) { return h.every(function (r, i) { return i === 0 || text.slice(h[i - 1][1], r[0]).indexOf('-') < 0; }); });
+      if (sp.length === 1) uniq = sp;
+    }
     if (uniq.length !== 1) return { n: uniq.length, ranges: [] };
     var out = [], cur = null, prevEnd = -1;   // 隣接トークン(間が空白のみ)は1つの太字にまとめる
     uniq[0].forEach(function (r) { if (cur && /^\s*$/.test(text.slice(prevEnd, r[0]))) cur[1] = r[1]; else { cur = [r[0], r[1]]; out.push(cur); } prevEnd = r[1]; });

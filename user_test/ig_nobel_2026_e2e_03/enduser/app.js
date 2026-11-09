@@ -60,6 +60,13 @@
         (g.vi != null ? '<a class="glink" href="#vi-' + lv + '-' + g.vi + '" data-vi="' + g.vi + '">解説</a>' : '') + '</li>';
     }).join('') + '</ul></div>';
   }
+  /* rev01-x(③): KPカードの「解説」リンクの移動先。kp_rankが一致するVocabulary項目がちょうど1件のときだけそのindex、それ以外は-1(リンクを出さない) */
+  function kpVi(k) {
+    if (k.kp_rank == null || !L || !L.vocab) return -1;
+    var m = [];
+    L.vocab.forEach(function (v, i) { if (v.kp_rank === k.kp_rank) m.push(i); });
+    return m.length === 1 ? m[0] : -1;
+  }
   function card(title, body, opts) {
     opts = opts || {};
     return '<section class="card' + (opts.cls ? ' ' + opts.cls : '') + '"' + (opts.part != null ? ' data-part="' + opts.part + '"' : '') + (opts.id ? ' id="' + opts.id + '"' : '') + '>' +
@@ -88,9 +95,10 @@
         return p.kp.map(function (k) {
           return '<div class="kpitem" data-part="' + p.idx + '"><div><span class="th">' + esc(hdr[0]) + '</span><b>' + esc(k.en) + '</b></div>' +
                  (k.japanese_gloss ? '<div class="def"><span class="th">日本語訳</span>' + esc(k.japanese_gloss) + '</div><details class="kpdet"><summary>詳しい解説を見る</summary><div class="def"><span class="th">' + esc((k.text2 ? hdr[2] : hdr[1]) || '') + '</span>' + esc(k.text2 ? k.text2 : k.text) + '</div></details>' : '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + (k.text2 ? '<span class="th th2">' + esc(hdr[2] || '') + '</span>' + esc(k.text2) : '') + '</div>') +
-                 '<button type="button" class="seek part" data-act="kp" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button></div>';
+                 '<div class="kpact"><button type="button" class="seek part" data-act="kp" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button>' +
+                 (kpVi(k) >= 0 ? '<a class="glink kpglink" href="#vi-' + lv + '-' + kpVi(k) + '" data-vi="' + kpVi(k) + '" aria-label="' + esc(k.en) + ' の解説へ移動">解説</a>' : '') + '</div></div>';
         }).join('');
-      }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、下線付きで表示されます。</p>';
+      }).join('') + '</div><p class="note" style="margin-top:10px">Full Storyの本文中では、二重下線付きで表示されます。</p>';
       out += card('Key Phrases', body, { label: 'KEY PHRASES' });
     }
     var full = parts.filter(function (p) { return p.kind === 'comment' || p.kind === 'story'; });
