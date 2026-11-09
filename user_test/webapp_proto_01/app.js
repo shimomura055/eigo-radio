@@ -8,10 +8,10 @@
   var LV = { std: 'Standard', adv: 'Advanced' };
   var CAPON = true;   // ECUI B(REF承継): 日本語字幕(dockの日本語キャプチャ)。既定ON。設定=端末保存(wut01.caption)、URL ?caption=0 はそのrouteの間だけ上書き
   var LV_HINT = { std: 'TOEIC 800点未満／英検2級程度を目安', adv: 'TOEIC 800点以上／英検準1級以上を目安' };   // 原文§4-4(ユーザー決定)
-  var RATES = [0.5, 0.8, 0.9, 1, 1.1, 1.2];   // 原文§1-2: 6種(1.5倍以上は不要)
-  function normRate(v) {   // 保存済みの旧値(0.75/1.25/1.5等)は最も近い許容値へ丸める(0.75→0.8, 1.25→1.2, 1.5→1.2)。数値でなければ1.0
+  var RATE_MIN = 0.5, RATE_MAX = 1.2, RATE_STEP = 0.05;   // PLAYBACK-SPEED-SLIDER-PRODUCTION-01: 6段階ボタン→スライダー(ユーザー承認範囲0.5〜1.2倍・0.05刻み)
+  function normRate(v) {   // 保存済み値(旧6段階値0.8/0.9等・旧0.75/1.25/1.5等を含む)を0.5〜1.2へclampし0.05刻みへ丸める。数値でなければ1.0。旧6段階値は全て0.05格子上なので不変
     v = Number(v); if (!isFinite(v) || v <= 0) return 1;
-    return RATES.reduce(function (b, r) { return Math.abs(r - v) < Math.abs(b - v) - 1e-9 ? r : b; }, RATES[0]);
+    return Math.round(Math.round(Math.min(RATE_MAX, Math.max(RATE_MIN, v)) / RATE_STEP) * RATE_STEP * 100) / 100;
   }
   var SKIP = 10;   // 既存End Userと同じ±10秒(H-4)
   var K_LEVEL = 'wut01.level', K_TUT = 'wut01.tutorial_done', K_SAVED = 'wut01.saved', K_STATS = 'wut01.stats', K_RATE = 'wut01.rate', K_CAP = 'wut01.caption';
@@ -585,7 +585,7 @@
     r.setProperty('--dock-res', res + 'px');
   }
   function setRatePop(open) { var p = $('ratepop'), b = $('speedbtn'); if (!p || !b) return; p.hidden = !open; b.setAttribute('aria-expanded', String(open)); }
-  function pickRate(v) { ST.rate = normRate(v); lsSet(K_RATE, ST.rate); setRate(); setRatePop(false); updatePlayerUI(); tick(); }
+  function pickRate(v) { ST.rate = normRate(v); lsSet(K_RATE, ST.rate); setRate(); updatePlayerUI(); tick(); }   // スライダー/1.0戻しボタン共通。ポップオーバーは開いたまま(ドラッグ継続・外タップ/Escapeで閉じる)
   /* WUG2 改善①: 文再生の2ボタンは本文へ挿入せず、固定の#floatstack内#sp(dock上端+12px基準)に常設。選択文が変わってもDOM・座標は不変(リフロー0)。 */
   function placePanel(force) {   // 選択した文の「この文だけ再生」「ここから再生」を#spに出す(文クリック自体は再生しない=REF)
     var tgt = ST.sel, sp = $('sp'); if (!sp) return;
@@ -648,8 +648,10 @@
     $('tcur').textContent = fmt(on ? A.currentTime : sp); $('ttot').textContent = fmt(d);
     $('pp').innerHTML = playing ? IC.pause : IC.play; $('pp').setAttribute('aria-label', playing ? '一時停止' : '再生');
     $('back10').disabled = $('fwd10').disabled = !on;
-    $('speedbtn').textContent = ST.rate.toFixed(1) + 'x';
-    Array.prototype.forEach.call(document.querySelectorAll('#ratepop [data-rate]'), function (c) { var on = +c.dataset.rate === ST.rate; c.setAttribute('aria-checked', String(on)); c.classList.toggle('on', on); });
+    var rtxt = ST.rate.toFixed(2) + 'x'; $('speedbtn').textContent = rtxt; $('speedbtn').setAttribute('aria-label', '再生速度 ' + rtxt);
+    var rs = $('ratespd'); if (rs) { if (document.activeElement !== rs || +rs.value !== ST.rate) rs.value = String(ST.rate); rs.setAttribute('aria-valuetext', '再生速度 ' + rtxt); }
+    var rv = $('rateval'); if (rv) rv.textContent = rtxt;
+    var rr = $('ratereset'); if (rr) rr.classList.toggle('on', ST.rate === 1);
     var chip = '<span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '">' + LV[ST.level] + '</span>';
     $('nowlv').innerHTML = on ? ('再生中のレベル: ' + chip) : (chip + (sp > 1 ? ' 前回の続き(' + fmt(sp) + ')から再生します <button type="button" class="linkbtn" data-restart="1">最初から</button>' : ' 先頭から再生します'));
   }
@@ -814,6 +816,7 @@
     document.addEventListener(ev, function (e) { var b = e.target && e.target.closest && e.target.closest('[data-play]'); if (b && ST.cat && item(b.dataset.play)) ensureArt(b.dataset.play).catch(function () { }); }, { passive: true });
   });
   window.addEventListener('keydown', function (e) { if (e.key === 'Escape' && bubbleOpen()) { closeBubble(); return; } if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('wk')) { e.preventDefault(); e.target.click(); } });
+  document.addEventListener('input', function (e) { var t = e.target; if (t && t.id === 'ratespd') pickRate(t.value); });   // ドラッグ中も即時に再生速度へ反映(停止・再開始なし)
   window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var rp = $('ratepop'); if (rp && !rp.hidden) { setRatePop(false); var sb = $('speedbtn'); if (sb) sb.focus(); } } });
   window.addEventListener('pagehide', function () { persistPos(true); statFlush(); });
   document.addEventListener('visibilitychange', function () { if (document.hidden) persistPos(true); });
@@ -948,7 +951,7 @@
       return;
     }
     var rp = $('ratepop'); if (rp && !rp.hidden && !t.closest('#ratepop,#speedbtn')) setRatePop(false);   // 外タップで閉じる
-    var rb = t.closest('#ratepop [data-rate]'); if (rb) { pickRate(rb.dataset.rate); return; }
+    var rb = t.closest('#ratereset'); if (rb) { pickRate(1); return; }   // 1.0xへ戻すボタン(1案)
     if (tutOn && !t.closest('#tut')) return;
     if ((b = t.closest('[data-lv]'))) { setLevel(b.dataset.lv); return; }
     if ((b = t.closest('[data-play]'))) {   // 記事カードの再生: ワンタップ・選択中レベル・中間画面なし
@@ -1211,6 +1214,6 @@
     ST.cat = r;
     setRate(); onRoute(); migrateSaved();
     if (!lsGet(K_TUT, false) && !QS.get('notut')) setTimeout(startTutorial, 300);
-    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATES: RATES, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); } };
+    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); } };
   }).catch(function (e) { $('view').innerHTML = '<div class="empty" role="alert" data-load-error="1">一覧データ(catalog_auto.json)を読み込めませんでした: ' + esc(e.message) + '</div>'; });
 })();

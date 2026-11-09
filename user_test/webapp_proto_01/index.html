@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>eigo-radio(Trial試作)</title>
-<link rel="stylesheet" href="style.css?v=rev12">
+<link rel="stylesheet" href="style.css?v=rev12-spd1">
 <link rel="stylesheet" href="srs.css?v=rev12">
 <link rel="stylesheet" href="pc.css?v=rev12">
 </head>
@@ -19,9 +19,9 @@
   <div class="capwrap" id="capwrap"><div id="jacap" class="jacap" lang="ja" aria-live="polite"></div><i class="capbar" aria-hidden="true"><b></b></i><i class="capfade" aria-hidden="true"></i></div>
   <div id="ctl" class="panel">
     <div class="seekrow"><span id="tcur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="再生位置"><span id="ttot">0:00</span></div>
-    <div class="ctrl"><button type="button" class="capsw" id="capsw" aria-pressed="true" aria-label="日本語字幕 ON/OFF"><span>字幕</span><b>ON</b></button><button type="button" class="speed" id="speedbtn" aria-label="再生速度" aria-haspopup="true" aria-expanded="false">1.0x</button><button type="button" class="skip" id="back10" aria-label="10秒戻る">&minus;10</button><button type="button" class="pp" id="pp" aria-label="再生"></button><button type="button" class="skip" id="fwd10" aria-label="10秒進む">+10</button></div>
+    <div class="ctrl"><button type="button" class="capsw" id="capsw" aria-pressed="true" aria-label="日本語字幕 ON/OFF"><span>字幕</span><b>ON</b></button><button type="button" class="speed" id="speedbtn" aria-label="再生速度 1.00x" aria-haspopup="true" aria-expanded="false">1.00x</button><button type="button" class="skip" id="back10" aria-label="10秒戻る">&minus;10</button><button type="button" class="pp" id="pp" aria-label="再生"></button><button type="button" class="skip" id="fwd10" aria-label="10秒進む">+10</button></div>
   </div>
-  <div id="ratepop" role="radiogroup" aria-label="再生速度" hidden><button type="button" role="radio" data-rate="0.5" aria-checked="false">0.5x</button><button type="button" role="radio" data-rate="0.8" aria-checked="false">0.8x</button><button type="button" role="radio" data-rate="0.9" aria-checked="false">0.9x</button><button type="button" role="radio" data-rate="1" aria-checked="true">1.0x</button><button type="button" role="radio" data-rate="1.1" aria-checked="false">1.1x</button><button type="button" role="radio" data-rate="1.2" aria-checked="false">1.2x</button></div>
+  <div id="ratepop" role="group" aria-label="再生速度" hidden><input type="range" id="ratespd" min="0.5" max="1.2" step="0.05" value="1" aria-label="再生速度" aria-valuetext="再生速度 1.00x"><span class="rateval" id="rateval" aria-live="off">1.00x</span><button type="button" id="ratereset" class="on" aria-label="再生速度を1.0倍に戻す">1.0x</button></div>
 </div>
 <nav id="nav" aria-label="メインナビゲーション">
   <a href="#/home" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>ホーム</span></a>
@@ -37,6 +37,6 @@
 <script src="srs.js?v=rev12"></script>
 <script src="review.js?v=rev12"></script>
 <script src="bubble.js?v=rev12"></script>
-<script src="app.js?v=rev12"></script>
+<script src="app.js?v=rev12-spd1"></script>
 </body>
 </html>

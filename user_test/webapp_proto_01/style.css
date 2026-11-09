@@ -253,9 +253,11 @@ body.hasdock #toast{bottom:calc(var(--nav-total) + var(--dock-h) + 12px)}
 .jacap{margin:0;background:#eef4ff;border:1px solid #cfe0fb;border-radius:12px;padding:5px 12px;font-size:14px;line-height:1.45;color:#27406f;min-height:52px;max-height:74px;overflow-y:auto;overscroll-behavior:contain;overflow-wrap:anywhere}
 .jacap.none{color:var(--muted)}
 #ctl .seekrow{min-height:26px}
-#ratepop{position:absolute;left:8px;right:8px;top:6px;z-index:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:6px;background:#fff;border:1.5px solid #b9cdf7;border-radius:14px;box-shadow:0 8px 22px rgba(16,40,94,.25)}
+#ratepop{position:absolute;left:8px;right:8px;top:6px;z-index:2;display:flex;align-items:center;gap:10px;padding:6px 10px;background:#fff;border:1.5px solid #b9cdf7;border-radius:14px;box-shadow:0 8px 22px rgba(16,40,94,.25)}
 #ratepop[hidden]{display:none}
-#ratepop button{min-height:44px;min-width:0;padding:0;border:1px solid var(--line);background:var(--soft2);border-radius:10px;font-weight:800;font-size:14px;color:var(--navy);cursor:pointer}
+#ratepop input[type=range]{flex:1 1 auto;min-width:0;height:44px;margin:0;accent-color:var(--blue);touch-action:pan-y}
+#ratepop .rateval{flex:0 0 auto;min-width:3.4em;text-align:right;font-weight:800;font-size:16px;color:var(--navy);font-variant-numeric:tabular-nums}
+#ratepop button{flex:0 0 auto;min-height:44px;min-width:52px;padding:0 8px;border:1px solid var(--line);background:var(--soft2);border-radius:10px;font-weight:800;font-size:14px;color:var(--navy);cursor:pointer}
 #ratepop button.on{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-color:var(--blue2)}
 @media(max-height:640px){
   .capwrap{margin-bottom:4px}
