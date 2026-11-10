@@ -94,8 +94,8 @@
       var body = '<div class="kp">' + kps.map(function (p) {
         return p.kp.map(function (k) {
           return '<div class="kpitem" data-part="' + p.idx + '"><div><span class="th">' + esc(hdr[0]) + '</span><b>' + esc(k.en) + '</b></div>' +
-                 (k.japanese_gloss ? '<div class="def"><span class="th">日本語訳</span>' + esc(k.japanese_gloss) + '</div><details class="kpdet"><summary>詳しい解説を見る</summary><div class="def"><span class="th">' + esc((k.text2 ? hdr[2] : hdr[1]) || '') + '</span>' + esc(k.text2 ? k.text2 : k.text) + '</div></details>' : '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + (k.text2 ? '<span class="th th2">' + esc(hdr[2] || '') + '</span>' + esc(k.text2) : '') + '</div>') +
-                 (k.title_only ? '<div class="note kptitle">※この表現は英語タイトルに登場します</div>' : '') +
+                 '<div class="kpmain">' + (k.japanese_gloss ? '<div class="def"><span class="th">日本語訳</span>' + esc(k.japanese_gloss) + '</div><details class="kpdet"><summary>詳しい解説を見る</summary><div class="def"><span class="th">' + esc((k.text2 ? hdr[2] : hdr[1]) || '') + '</span>' + esc(k.text2 ? k.text2 : k.text) + '</div></details>' : '<div class="def"><span class="th">' + esc(hdr[1] || '') + '</span>' + esc(k.text) + (k.text2 ? '<span class="th th2">' + esc(hdr[2] || '') + '</span>' + esc(k.text2) : '') + '</div>') +
+                 (k.title_only ? '<div class="note kptitle">※この表現は英語タイトルに登場します</div>' : '') + '</div>' +
                  '<div class="kpact"><button type="button" class="seek part" data-act="kp" data-i="' + p.idx + '" aria-label="' + esc(k.en) + ' の英語音声を再生">▶ 英語音声</button>' +
                  (kpVi(k) >= 0 ? '<a class="glink kpglink" href="#vi-' + lv + '-' + kpVi(k) + '" data-vi="' + kpVi(k) + '" aria-label="' + esc(k.en) + ' の解説へ移動">解説</a>' : '') + '</div></div>';
         }).join('');

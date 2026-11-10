@@ -165,3 +165,10 @@ body.capon{--bar-h:176px}
 .kpitem .kpact{display:flex;flex-direction:column;gap:6px;align-items:stretch}
 .kpitem .kpglink{display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 12px;border:1px solid var(--accent);border-radius:999px;text-decoration:none;font-size:13px}
 @media(max-width:640px){.kpitem .kpact{grid-row:1 / 3;grid-column:2}}
+
+/* rev01-y(REF): タイトル限定KPの注記(既存.noteの見た目を踏襲。KPカード内) */
+.kpitem .kptitle{margin:4px 0 0}
+
+/* rev01-z(FX-DRONE-CAN-KPCARD-FIX-01): KPカードの子を[英語][.kpmain(訳・解説折りたたみ・注記)][.kpact]の3個に固定(ボタン列が行送りで横長・位置不統一になる不具合の是正) */
+.kpitem .kpmain{min-width:0}
+@media(max-width:640px){.kpitem .kpmain{grid-column:1 / 2;grid-row:2}}
