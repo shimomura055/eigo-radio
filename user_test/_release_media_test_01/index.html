@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>音声配信 比較テスト(Pages / Releases)</title>
+<style>
+body{font-family:sans-serif;margin:0;padding:12px;background:#f4f4f4;color:#111;font-size:16px}
+h1{font-size:18px;margin:4px 0}
+.note{background:#fff3cd;padding:8px;border-radius:6px;font-size:14px}
+.pair{background:#fff;border-radius:8px;padding:10px;margin:12px 0}
+.row{border-top:1px solid #ddd;padding:8px 0}
+button{font-size:20px;padding:16px;margin:4px 0;width:100%;border:0;border-radius:8px;background:#1a73e8;color:#fff}
+button.sub{background:#555;font-size:16px;padding:12px}
+button.rel{background:#c2410c}
+.m{font-family:monospace;font-size:14px;white-space:pre-wrap}
+</style></head><body>
+<h1>音声配信 比較テスト</h1>
+<p class="note">テストページ(catalog外・学習用ではありません)。現行GitHub Pages版とGitHub Releases版を同一MP3・同一条件で比較します。各ボタンを押してから実際に音が出るまでの時間(ms)を画面に表示します。各ペアを3回ずつ再生し、最後に「結果をコピー」で貼り付けてください。再読込のたびにペア内の並び順が入れ替わります。</p>
+<div id="pairs"></div>
+<div class="pair">
+<button id="copy">結果をコピー</button>
+<div id="copystat" class="m"></div>
+</div>
+<script>
+(function(){
+var PAGES='https://shimomura055.github.io/eigo-radio/user_test/family_y_production_surname_choice_01/audio/';
+var REL='https://github.com/shimomura055/eigo-radio/releases/download/media-test-01/';
+var FILES=[['std_full.mp3','Std全編(約5.4MB)'],['adv_full.mp3','Adv全編(約5.0MB)'],['adv_00.mp3','Adv短い1本(約130KB)']];
+var log=[];var cur=null;
+function now(){return performance.now();}
+function mk(el,tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt)e.textContent=txt;el.appendChild(e);return e;}
+function setup(root,file,label,kind,url){
+  var row=mk(root,'div','row');
+  var btn=mk(row,'button',kind==='REL'?'rel':'', (kind==='REL'?'[Releases版] ':'[Pages版] ')+label+' 再生');
+  var out=mk(row,'div','m','未計測');
+  var aud=document.createElement('audio');aud.preload='none';aud.controls=true;aud.style.width='100%';row.appendChild(aud);
+  var seekBtn=mk(row,'button','sub','途中(60秒付近)へシークして再生');
+  var seekOut=mk(row,'div','m','');
+  var n=0;
+  function run(seek){
+    if(cur&&cur!==aud){try{cur.pause();}catch(e){}}
+    cur=aud;n++;
+    var t0=now(),T={};var o=seek?seekOut:out;
+    try{aud.pause();}catch(e){}
+    aud.removeAttribute('src');aud.load();
+    ['loadstart','loadedmetadata','canplay','playing','error','stalled','waiting'].forEach(function(ev){
+      aud.addEventListener(ev,function h(e){
+        if(T[ev]===undefined){T[ev]=Math.round(now()-t0);}
+        if(ev==='playing'||ev==='error'){aud.removeEventListener(ev,h);finish();}
+      });
+    });
+    var done=false;
+    function finish(){
+      if(done)return;
+      done=true;
+      var err=aud.error?(' error='+aud.error.code+':'+(aud.error.message||'')):'';
+      var s=(seek?'[seek]':'[play]')+' #'+n+' loadstart='+(T.loadstart!==undefined?T.loadstart:'-')+' loadedmetadata='+(T.loadedmetadata!==undefined?T.loadedmetadata:'-')+' canplay='+(T.canplay!==undefined?T.canplay:'-')+' PLAYING='+(T.playing!==undefined?T.playing:'-')+' ms'+err;
+      o.textContent=s;
+      log.push(kind+' '+file+' '+s);
+    }
+    setTimeout(function(){if(!done){T.timeout=true;finish();}},20000);
+    aud.src=url;
+    if(seek){
+      aud.addEventListener('loadedmetadata',function h(){aud.removeEventListener('loadedmetadata',h);try{aud.currentTime=Math.min(60,(aud.duration||70)/2);}catch(e){}});
+    }
+    var p=aud.play();
+    if(p&&p.catch)p.catch(function(e){T.playReject=1;o.textContent='play()拒否: '+e.name;log.push(kind+' '+file+' play rejected '+e.name);done=true;});
+  }
+  btn.onclick=function(){run(false);};
+  seekBtn.onclick=function(){run(true);};
+}
+var root=document.getElementById('pairs');
+FILES.forEach(function(f){
+  var box=mk(root,'div','pair');mk(box,'h1','',f[1]);
+  var order=[['PAGES',PAGES+f[0]],['REL',REL+f[0]]];
+  if(Math.random()<0.5)order.reverse();
+  order.forEach(function(x){setup(box,f[0],f[1],x[0]==='REL'?'REL':'PAGES',x[1]);});
+});
+document.getElementById('copy').onclick=function(){
+  var txt='UA: '+navigator.userAgent+'\nconnection: '+(navigator.connection?(navigator.connection.effectiveType+' rtt='+navigator.connection.rtt+' dl='+navigator.connection.downlink):'n/a')+'\ntime: '+new Date().toISOString()+'\n'+log.join('\n');
+  var st=document.getElementById('copystat');
+  function fb(){var ta=document.createElement('textarea');ta.value=txt;ta.style.width='100%';ta.style.height='160px';st.textContent='自動コピー不可。下の文字を全選択してコピーしてください。';st.appendChild(ta);ta.select();}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){st.textContent='コピーしました('+log.length+'件)';},fb);}else{fb();}
+};
+})();
+</script></body></html>
