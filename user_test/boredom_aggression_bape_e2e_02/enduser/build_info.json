@@ -1,9 +1,9 @@
 {
   "schema": "enduser_build_info_v1",
-  "id": "bape",
+  "id": "boredom_aggression_bape_e2e_02",
   "family": "X",
-  "asset_build": "rev01-x",
-  "dev_index_sha256": "994c6b308200b29f4f4af0d6832e23e4bdca2f674e9fd0ea60929ac1761d4e3b",
+  "asset_build": "rev01-y",
+  "dev_index_sha256": "b0f4433135bc754a864ef27fdd3b5aa8bc305c2b4ab81dc432a42b5a0eccb795",
   "audio_sha256": {
     "audio/adv_00.mp3": "4d21cc919b2d065ff88919ba506d9281f3d33a419ba0cd97ebf7188fd1e41a52",
     "audio/adv_01.mp3": "fc36747d7937452e3a4fd4df0e2a485c9f5c58e0fdeffcf3c8f7feed60c9b20f",
@@ -54,17 +54,17 @@
     "audio/std_22.mp3": "dc5cc5ab758935f551675c7d6c801463b6207d6769b3ac36bdadf1d3959a80de"
   },
   "assets": {
-    "index.html": "122261bc8c61071c7fb02fda43dfa57f9ffe61f694d805434579619f9bb050e4",
-    "app.js": "c921ac8a21f31dfc429144d952b97684d606d19629d3f1f996d88e95c2a5179e",
-    "style.css": "924bb5a998e9e4c9a3fe40cafb2657352ce84c559f2145c86ad073fc367565e6"
+    "index.html": "bdfd37130051e3fc770f79ac1007edb329d56cf2792ac27059b7256a839e8f59",
+    "app.js": "815336422ddc22aff9ce1a80baff8f7c052039b530a8d36c242212a4e9631686",
+    "style.css": "a87ffe8b8e5df629ac5959ce2fdc3cb7afee0f61258f0a38529fb5cbfa64f436"
   },
   "files": {
-    "data/article.json": "b0e6d4accd42e080b3126c1a7fb8bbd63b99d03e15b59a27d3b0e51bf78b71ad",
+    "data/article.json": "cd37060482f193eecf5dc971597a956728fd2a58684515b67d8c7dc7a18761cb",
     "data/sync_std.json": "d152e0bd1dec059d7879a8391d51b4cecbad49f2733fe9adda6b6c6ba9c12a40",
     "data/sync_adv.json": "3368dad4b9eef56cf0b5083db95dfd22251aa1ebc80a67ceb36326e023abdd48",
-    "index.html": "122261bc8c61071c7fb02fda43dfa57f9ffe61f694d805434579619f9bb050e4",
-    "app.js": "c921ac8a21f31dfc429144d952b97684d606d19629d3f1f996d88e95c2a5179e",
-    "style.css": "924bb5a998e9e4c9a3fe40cafb2657352ce84c559f2145c86ad073fc367565e6"
+    "index.html": "bdfd37130051e3fc770f79ac1007edb329d56cf2792ac27059b7256a839e8f59",
+    "app.js": "815336422ddc22aff9ce1a80baff8f7c052039b530a8d36c242212a4e9631686",
+    "style.css": "a87ffe8b8e5df629ac5959ce2fdc3cb7afee0f61258f0a38529fb5cbfa64f436"
   },
   "sync": {
     "std": {
@@ -85,7 +85,7 @@
         "languages": "ja if CJK else en (kp window: en)"
       },
       "gate_status": "PASS",
-      "source_sha256": "7d82c93379afb1c6148c567532c815956fd79ca150bdd7ec4a73bd1a4cd009de",
+      "source_sha256": "4472d606b91fb611b0b1b36dd330a0c78859645aad2f5ea2b60866315dcaf1dc",
       "rows": 11,
       "sentences": 56,
       "min_row_ratio": 0.9941,
@@ -147,7 +147,7 @@
       },
       "comment": {
         "blocks": 4,
-        "translated": 3,
+        "translated": 4,
         "source": "generated"
       },
       "story": {
@@ -172,8 +172,7 @@
   },
   "warnings": [
     "std: 低信頼度境界を持つ行 5件(記録のみ)",
-    "adv: 低信頼度境界を持つ行 3件(記録のみ)",
-    "日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): adv adv_19"
+    "adv: 低信頼度境界を持つ行 3件(記録のみ)"
   ],
   "link_targets": {
     "parts": {
@@ -333,10 +332,12 @@
         {
           "key": "adv_19",
           "kind": "comment",
-          "status": "missing",
+          "status": "generated",
           "sentences": 3,
-          "linked": 0,
-          "how": []
+          "linked": 3,
+          "how": [
+            "gen"
+          ]
         },
         {
           "key": "adv_20",
@@ -397,10 +398,9 @@
         "comment": {
           "parts": 4,
           "sentences": 9,
-          "linked": 6,
+          "linked": 9,
           "status": {
-            "generated": 3,
-            "missing": 1
+            "generated": 4
           }
         },
         "story": {
@@ -546,6 +546,15 @@
           "paragraphs": 3,
           "context_paragraphs": 3
         },
+        "adv_19": {
+          "en_sha256": "a75b54b91130d83ca41f9e5822ad856563cff4b2f7f50c6535807cb4d09020a2",
+          "ja_sha256": "ae4b0960af3412aa0d07e20b240c856b189f1832c657ff61b3f29e31b1f94b19",
+          "sentences": 3,
+          "context_applied": false,
+          "context_lines": 8,
+          "paragraphs": 1,
+          "context_paragraphs": 1
+        },
         "adv_20": {
           "en_sha256": "9c7a4e3f2917cd7fe845ebb052e8e7c234b8f8707cf01174389bf98a55d968d1",
           "ja_sha256": "52fabad39e53934c856b1c470ac9f98352616ad05026360ca74c92b66e8df17e",
@@ -557,24 +566,16 @@
         }
       }
     },
-    "failures": [
-      {
-        "level": "adv",
-        "key": "adv_19",
-        "reasons": [
-          "exception: APIConnectionError: Connection error."
-        ]
-      }
-    ],
+    "failures": [],
     "api_calls": {
       "translate": 0
     },
-    "cache_hits": 28,
+    "cache_hits": 29,
     "verification": "none(2026-11-03 ユーザー正式決定: 翻訳後の検査AI廃止。決定論チェック[構造・文数・数値]のみ)",
     "context": {
       "method": "E-v1",
       "parts": 0,
-      "cached_parts": 12
+      "cached_parts": 13
     }
   },
   "judge": {
@@ -629,14 +630,14 @@
         "coverage": 1.0
       },
       "adv": {
-        "story_parts": 8,
-        "sentences_total": 44,
-        "sentences_linked": 44,
-        "groups_total": 44,
+        "story_parts": 9,
+        "sentences_total": 47,
+        "sentences_linked": 47,
+        "groups_total": 47,
         "groups_null": 0,
         "reasons": {},
         "linked_by_how": {
-          "gen": 44
+          "gen": 47
         },
         "coverage": 1.0
       }
@@ -656,6 +657,7 @@
         "adv_16": "0e61d6c9ca9d59fc72d3ca167f3d30b37fd012ab548a54da8370035f9ee19c16",
         "adv_17": "4122c6b14713db1354193da7180b29c540050436fb0777c60d9b6cad29daf5b9",
         "adv_18": "7d8877d5b26bdd11aae76a4ba28e7a5d16048129b1d1c969ca31c7482a886283",
+        "adv_19": "f11ac00855545548d57023abea151c910fbb5ff27ece0ee9b3b57adae9ab4511",
         "adv_20": "bf66dd77a026e930da0f276a37fa23991cc7554d38ff87912ac7ee535477f84c"
       }
     },
@@ -687,6 +689,14 @@
       "length_diff_s": 0.03,
       "length_basis": "run_timeline"
     }
+  },
+  "translation_unify": {
+    "status": "done",
+    "input_set_sha256": "87a0002109ebacf5ac401c071c1a23103d36c17ed168f90faba558251628ce0b",
+    "separate_senses": [],
+    "unified": [
+      "meanness"
+    ]
   },
   "timeline_check": {
     "std": {
