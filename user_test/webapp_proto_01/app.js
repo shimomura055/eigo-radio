@@ -266,7 +266,7 @@
       '<section class="omakase" id="omakase"><span class="pill">おまかせラジオ</span><h2>今日も英語を楽しもう。</h2><p>新着記事からランダムに連続再生</p>' +
       '<button type="button" class="bigbtn" id="omakase-btn" data-omakase>' + IC.play + '<span><span data-lvname2>' + LV[ST.level] + '</span>で再生</span></button>' +
       '<div class="fine">仮設定: 新着' + items.length + '件すべてをランダム順・既聴も含む・1周で停止(Production採用しない)</div></section>' +
-      '<div class="sh"><h3>新着エピソード<span class="kari">新着順・ジャンル・概要は仮</span></h3><a href="#/list?g=all">すべて見る &#8250;</a></div>' +
+      '<div class="sh"><h3>新着エピソード<span class="kari">新着順・概要は仮</span></h3><a href="#/list?g=all">すべて見る &#8250;</a></div>' +
       '<div class="cards">' + items.map(function (it) { return cardHtml(it, 'home'); }).join('') + '</div>';
   }
   /* ---------- 画面: 記事を探す ---------- */
@@ -275,9 +275,9 @@
     return topBar() + '<h2 style="margin:4px 0 10px;color:var(--navy)">記事を探す</h2>' +
       '<label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg><input id="q" type="search" placeholder="タイトル・概要・キーワードで検索" autocomplete="off" aria-label="キーワード検索"></label>' +
       '<div id="qres"></div><div id="browse"><div class="rows"><a class="row all" href="#/list?g=all">すべての記事<small>' + ST.cat.items.length + '件 &#8250;</small></a></div>' +
-      '<div class="sh"><h3>ジャンル<span class="kari">仮割付</span></h3></div><div class="rows">' +
+      '<div class="sh"><h3>ジャンル</h3></div><div class="rows">' +
       ST.cat.genres.map(function (g, i) { var n = genreCount(g); return '<a class="row" href="#/list?g=' + i + '">' + esc(g) + '<small>' + (n ? n + '件' : '準備中') + ' &#8250;</small></a>'; }).join('') + '</div>' +
-      '<p class="lvnote">ジャンル体系は既存記事の分布確認後に正式確定します(本画面は仮割付・主+副の多重所属)</p></div>';
+      '<p class="lvnote">記事は主ジャンルと、内容上明確な場合は副ジャンルの両方に表示されます</p></div>';
   }
   function norm(s) { return String(s || '').toLowerCase().normalize('NFKC'); }
   function doSearch(q) {
@@ -291,10 +291,10 @@
   function listItems(g) { return byNew().filter(function (it) { return g === 'all' || it.genres.indexOf(ST.cat.genres[+g]) >= 0; }); }
   function viewList(g) {
     var items = listItems(g), title = g === 'all' ? 'すべての記事' : (ST.cat.genres[+g] || '');
-    return topBar({ back: true }) + '<h2 style="margin:4px 0 4px;color:var(--navy)">' + esc(title) + '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + items.length + '件' + (g === 'all' ? '' : '<span class="kari">仮割付</span>') + '</small></h2>' +
+    return topBar({ back: true }) + '<h2 style="margin:4px 0 4px;color:var(--navy)">' + esc(title) + '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + items.length + '件' + '' + '</small></h2>' +
       '<div class="seqbtns"><button type="button" class="bigbtn" data-seq="new" data-g="' + g + '">' + IC.play + '新着順で連続再生</button><button type="button" class="bigbtn ghost" data-seq="rand" data-g="' + g + '">' + IC.play + 'ランダムで連続再生</button></div>' +
       '<p class="lvnote" style="margin-top:-6px">連続再生も選択中のレベル(<b data-lvname>' + LV[ST.level] + '</b>)で再生します</p>' +
-      (items.length ? '<div class="cards">' + items.map(function (it) { return cardHtml(it, 'list:' + g); }).join('') + '</div>' : '<div class="empty">このジャンルの記事は準備中です(仮割付で該当0件)</div>');
+      (items.length ? '<div class="cards">' + items.map(function (it) { return cardHtml(it, 'list:' + g); }).join('') + '</div>' : '<div class="empty">このジャンルの記事は準備中です</div>');
   }
   /* ---------- 画面: 復習帳 / マイページ ---------- */
   function basesFor(slug) {
