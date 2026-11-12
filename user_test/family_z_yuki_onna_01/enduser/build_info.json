@@ -45,7 +45,7 @@
     "style.css": "782d54c4b076debb1aab91b1e30dd2283445fa45f20a982c9b79c5bc7797349e"
   },
   "files": {
-    "data/article.json": "f50db11aec3d484971839e74c8ed7b33fb9aff9975d8feef6ef66e3066bcaa2e",
+    "data/article.json": "5bfb877218b5e007a3c3a2eedcbe85829ef8d7fc504ab577767b99f7da6d2363",
     "data/sync_std.json": "9075096c3242b94bb097d739e0fb73b503c830fdb9181c6c2a30d38fbb57421a",
     "data/sync_adv.json": "5498d851860a82135b0c567cb104a49cf6eb980b7349e469e3ad5a868af30bcd",
     "index.html": "4b7e6f33ec21e12d1ce9201069aef7da4f09e62aad135c2341b412d3bdffac56",
@@ -71,7 +71,7 @@
         "languages": "ja if CJK else en (kp window: en)"
       },
       "gate_status": "PASS",
-      "source_sha256": "d2e9a78745c78a740c2a4572b0f58ad7936e7fea2a55eb60e960192d19be3e23",
+      "source_sha256": "6a20e622b87c6082a3fc3f205b1acba8966bb6a44e224ff1d673048ba4717ca6",
       "rows": 9,
       "sentences": 57,
       "min_row_ratio": 0.9259,
@@ -95,7 +95,7 @@
         "languages": "ja if CJK else en (kp window: en)"
       },
       "gate_status": "PASS",
-      "source_sha256": "9729b5b06609ce90e24c4bbc9bb0486951070a16e8555126d34d561b5dfaabc0",
+      "source_sha256": "d8db5574b12e1d35499f2c66bde698acdfe07f5292e519a0568e0a9821250a55",
       "rows": 8,
       "sentences": 57,
       "min_row_ratio": 0.6,
@@ -133,7 +133,7 @@
       },
       "story": {
         "blocks": 3,
-        "translated": 2,
+        "translated": 3,
         "source": "generated"
       }
     }
@@ -145,8 +145,7 @@
   "ja_manuscript": null,
   "warnings": [
     "std: 低信頼度境界を持つ行 5件(記録のみ)",
-    "adv: 低信頼度境界を持つ行 2件(記録のみ)",
-    "日本語訳の新規生成が不成立のpart(英語のみ表示・連動なし): adv adv_12"
+    "adv: 低信頼度境界を持つ行 2件(記録のみ)"
   ],
   "link_targets": {
     "parts": {
@@ -258,10 +257,12 @@
         {
           "key": "adv_12",
           "kind": "story",
-          "status": "missing",
+          "status": "generated",
           "sentences": 14,
-          "linked": 0,
-          "how": []
+          "linked": 14,
+          "how": [
+            "gen"
+          ]
         },
         {
           "key": "adv_13",
@@ -332,10 +333,9 @@
         "story": {
           "parts": 3,
           "sentences": 48,
-          "linked": 34,
+          "linked": 48,
           "status": {
-            "generated": 2,
-            "missing": 1
+            "generated": 3
           }
         }
       }
@@ -424,6 +424,15 @@
           "paragraphs": 1,
           "context_paragraphs": 1
         },
+        "adv_12": {
+          "en_sha256": "8426a9f1c2b227d6cf3a6aa550b34e7680fa7d3bcbfcd8057a48f3f6972f9843",
+          "ja_sha256": "4d8c457c7e7e35b948b183df3993d787f0d1c4608894f361e95ad9e1defd94d8",
+          "sentences": 14,
+          "context_applied": false,
+          "context_lines": 9,
+          "paragraphs": 1,
+          "context_paragraphs": 0
+        },
         "adv_13": {
           "en_sha256": "3793d647bec1cd30398db4935da8524c738e925c6ec898c65ccc443958673441",
           "ja_sha256": "b4d8f1e578648f60f7535b1de99c679c262b5125192f49fce256182178af9077",
@@ -444,24 +453,16 @@
         }
       }
     },
-    "failures": [
-      {
-        "level": "adv",
-        "key": "adv_12",
-        "reasons": [
-          "exception: APIConnectionError: Connection error."
-        ]
-      }
-    ],
+    "failures": [],
     "api_calls": {
       "translate": 0
     },
-    "cache_hits": 29,
+    "cache_hits": 30,
     "verification": "none(2026-11-03 ユーザー正式決定: 翻訳後の検査AI廃止。決定論チェック[構造・文数・数値]のみ)",
     "context": {
       "method": "E-v1",
       "parts": 0,
-      "cached_parts": 9
+      "cached_parts": 10
     }
   },
   "judge": {
@@ -516,14 +517,14 @@
         "coverage": 1.0
       },
       "adv": {
-        "story_parts": 6,
-        "sentences_total": 42,
-        "sentences_linked": 42,
-        "groups_total": 42,
+        "story_parts": 7,
+        "sentences_total": 56,
+        "sentences_linked": 56,
+        "groups_total": 56,
         "groups_null": 0,
         "reasons": {},
         "linked_by_how": {
-          "gen": 42
+          "gen": 56
         },
         "coverage": 1.0
       }
@@ -539,6 +540,7 @@
         "adv_09": "dc353cd68babb368a4c5ec2c1b60e217197c4ce33095c52b1c8eef1ea70fd7b9",
         "adv_10": "e2b710eb1fdc270a63e9110e241d479f6de2013bbb78b46eea3d6441f061baec",
         "adv_11": "3c3520ee9751508f062055f1782ab1924d4b8a413d669c18826440d6fbe72648",
+        "adv_12": "9ac8551d69fdc84cc13251dc14e12d7300385df9926c56680a8a0401b11bf64d",
         "adv_13": "293680ef2bb2ab169a001a0e17971b3e25ecb0d7ddb6236951ed38ceaffa6cfb",
         "adv_14": "791b35dd5c7df1563e455c53e236211a267668213234cacdacba8b08e9302d82"
       }
