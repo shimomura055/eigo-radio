@@ -1033,13 +1033,54 @@
      (3) 背景のスクロールを暗幕上で禁止(touchmove/wheel を止める)=実機で指が触れて背景だけ動き、枠が取り残される事態を防ぐ。
      (4) 枠のクランプ廃止(以前は y を2pxへ丸めて高さだけ残し枠が対象から外れた)。 */
   var TUT = null, probe = null, tutRaf = 0, tutLockBound = false;
+  /* WEBAPP-TUTORIAL-REVISION-02(2026-11-12 ユーザー承認 APPROVED_FOR_PRODUCTION): 6ページ構成(旧P2=おまかせ/記事を探す を削除。P3〜P7を追加)。
+     実画面+実要素へのspotlight(既存方式)。説明用に保存・復習を実行しない: 学ぶ画面の「保存」・復習帳・復習画面の見せ方は表示(DOM)のみで、store/localStorage へは書かない
+     (P5=未保存が無い時は保存済ボタンの見た目だけを一時的に未保存へ/P6,P7=保存0件でも WURReview.homeHtml/answerHtml のサンプル描画。クリックは暗幕が遮り、離脱時に rerender で実データ描画へ戻る) */
   function tutSteps() {
     var first = byNew()[0].slug;
+    function reviewReady(cb) { waitFor(['#srsroot [data-srs-view]'], function () { cb(); }); }
+    function sampleNote() { return '<div class="srs-note" data-tut-sample="1">※ 説明用のサンプル表示です(実際の保存データは変更されません)</div>'; }
+    function sampleItem() { return { en: 'lean in', ja: '身を乗り出す', jaHtml: false, kp: true, det: [{ label: '解説', html: '積極的に関わる、前のめりになる、という意味です。' }], audio: null }; }
     return [
       { hash: '#/home', sel: ['#lvseg-home'], title: 'レベルを選ぶ', html: '<p>ここで切り替えます。</p><div class="lvs"><b>Standard</b>：TOEIC 800点未満／英検2級程度<br><b>Advanced</b>：TOEIC 800点以上／英検準1級以上</div><p class="fine2">あくまで目安で、利用制限ではありません。</p>' },
-      { hash: '#/home', sel: ['#omakase-btn', '#nav a[data-tab=search]'], title: '聴き始める', html: '<p>「おまかせ再生」でランダムに連続再生。聴きたい記事は「記事を探す」から。</p>' },
-      { hash: '#/player/' + first, sel: ['#lvseg-player', '#modeseg'], title: '視聴ページ', html: '<p>ここでもレベルを切り替えられます。「聴く／学ぶ」を切り替えても音声は止まりません。</p>' }
+      { hash: '#/player/' + first, sel: ['#modeseg'], title: '聴く / 学ぶを切り替え', html: '<p>『聴く』で音声を楽しみ、『学ぶ』でPhrase / Word、文法、表現などを確認できます。</p>' },
+      { hash: '#/search', sel: ['#view label.search', '#browse .sh + .rows', '#nav a[data-tab=search]'], title: '記事を探す', clip: { 1: 4 }, html: '<p>下の『記事を探す』から、キーワード検索やジャンル一覧で読みたい記事を探せます。</p>' },
+      { hash: '#/player/' + first, sel: ['#pwbox [data-tut-target]'], title: '気になる表現を保存', html: '<p>学ぶモードで気になったPhrase / Wordは『保存』をタップ。あとで復習帳にまとめて残せます。</p>',
+        prep: function (cb) {
+          waitFor(['#modeseg'], function () {
+            if (ST.mode !== 'learn') setMode('learn');
+            waitFor(['#pwbox .save'], function () {
+              var b = document.querySelector('#pwbox .save:not(.on)');
+              if (!b) { b = document.querySelector('#pwbox .save'); if (b) { b.classList.remove('on'); b.textContent = '保存'; b.setAttribute('aria-pressed', 'false'); } }   // 全件保存済の人向け: 見た目だけを未保存にする(storeは触らない)
+              if (b) b.setAttribute('data-tut-target', '1');
+              cb();
+            });
+          });
+        } },
+      { hash: '#/review', reroute: true, sel: ['#srsroot [data-srs-start]', '#nav a[data-tab=review]'], title: '復習帳でまとめて確認', html: '<p>保存した表現は『復習帳』に集まります。『始める』を押すと、その日の復習を進められます。</p>',
+        prep: function (cb) {
+          reviewReady(function () {
+            if (!document.querySelector('#srsroot [data-srs-start]') && window.WURReview) {   // 保存0件/本日分なし: 同じ部品でサンプルを描画(書込なし)
+              var it = function (en, k) { return { key: 'tut|' + k, en: en, level: 'adv', state: 'new', due: '' }; };
+              $('srsroot').innerHTML = sampleNote() + WURReview.homeHtml({ storeStatus: 'ok', counts: { remaining: 4, newShown: 4, newDeferred: 0 }, items: [it('lean in', 1), it('close to home', 2), it('hand something over to', 3), it('save the day', 4)], orphans: [], orphanKeys: {}, netfail: 0, nextDue: null });
+            }
+            cb();
+          });
+        } },
+      { hash: '#/review', reroute: true, sel: ['#srsroot .srs-grades'], title: '4択で復習する', html: '<p>復習では、覚えやすさに合わせて『忘れた』『難しい』『普通』『簡単』を選びます。自分のペースで続けられます。</p>',
+        prep: function (cb) {
+          reviewReady(function () {   // 復習セッションは開始・記録しない。同じ部品(answerHtml)のプレビュー
+            var x = sampleItem(), pv = { again: { label: '今日' }, hard: { label: '1日後' }, good: { label: '2日後' }, easy: { label: '4日後' } };
+            $('srsroot').innerHTML = sampleNote() + WURReview.answerHtml({ remaining: 5 }, { key: 'tut|lean in', en: x.en }, PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }), pv, true);
+            cb();
+          });
+        } }
     ];
+  }
+  function tgtRect(i, e) {   // 対象の矩形。step.clip[i]=n なら対象の先頭n個の子要素までに切る(長い一覧=ジャンル一覧の先頭だけを示す。吹き出しの置き場を確保)
+    var r = e.getBoundingClientRect(), c = TUT && TUT.steps[TUT.i].clip, n = c && c[i];
+    if (n && e.children[n - 1]) { var b = e.children[n - 1].getBoundingClientRect().bottom; return { left: r.left, top: r.top, width: r.width, height: Math.max(0, b - r.top) }; }
+    return { left: r.left, top: r.top, width: r.width, height: r.height };
   }
   function stepEls() { return TUT ? TUT.steps[TUT.i].sel.map(function (q) { return document.querySelector(q); }).filter(Boolean) : []; }
   function startTutorial() {
@@ -1055,7 +1096,7 @@
     function stop(e) { if (!TUT) return; var tip = e.target && e.target.closest && e.target.closest('.tip'); if (tip && tip.scrollHeight > tip.clientHeight + 1) return; if (e.cancelable) e.preventDefault(); }
     t.addEventListener('touchmove', stop, { passive: false }); t.addEventListener('wheel', stop, { passive: false });
   }
-  function sigOf(els) { return els.map(function (e) { var r = e.getBoundingClientRect(); return [r.left, r.top, r.width, r.height].map(function (v) { return Math.round(v * 10) / 10; }).join(','); }).join('|'); }
+  function sigOf(els) { return els.map(function (e, i) { var r = tgtRect(i, e); return [r.left, r.top, r.width, r.height].map(function (v) { return Math.round(v * 10) / 10; }).join(','); }).join('|'); }
   function viewSig() {
     var o = $('tut').getBoundingClientRect(), vv = window.visualViewport;
     return [o.left, o.top, o.width, o.height, innerWidth, innerHeight, vv ? [vv.width, vv.height, vv.offsetLeft, vv.offsetTop, vv.scale].join(',') : '', dockTop()].map(function (v) { return typeof v === 'number' ? Math.round(v * 10) / 10 : v; }).join('|');
@@ -1078,7 +1119,8 @@
   }
   function showStep() {
     var st = TUT.steps[TUT.i], tut = $('tut');
-    function go() {
+    function go() { if (st.prep) st.prep(go2); else go2(); }
+    function go2() {
       waitFor(st.sel, function (els) {
         if (!TUT) return;
         if (!els.length) { finishTutorial(false); return; }
@@ -1090,12 +1132,12 @@
     }
     TUT.els = null; TUT.sig = ''; TUT.built = false; TUT.up = false;
     tut.innerHTML = '<div class="dim"></div>';
-    if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else go();
+    if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else { if (st.reroute) rerender(false); go(); }
   }
   function buildTut() {   // ステップごとに1回だけDOMを作る(位置更新では作り直さない)
     var st = TUT.steps[TUT.i], tut = $('tut'), last = TUT.i === TUT.steps.length - 1;
     tut.innerHTML = '<div class="dim"></div>' + st.sel.map(function (q, i) { return '<div class="ring" data-ring="' + i + '"></div>'; }).join('') +
-      '<div class="tip" id="tip" role="dialog" aria-label="使い方 ' + (TUT.i + 1) + '/3" style="top:0;visibility:hidden"><h3>' + esc(st.title) + '</h3><div class="tbody">' + st.html + '</div><div class="foot"><div class="dots">' + TUT.steps.map(function (s, i) { return '<i class="' + (i === TUT.i ? 'on' : '') + '"></i>'; }).join('') + '<span>' + (TUT.i + 1) + '/3</span></div><div class="btns"><button type="button" data-tut="skip">スキップ</button><button type="button" class="pri" data-tut="' + (last ? 'done' : 'next') + '">' + (last ? '完了' : '次へ') + '</button></div></div></div>';
+      '<div class="tip" id="tip" role="dialog" aria-label="使い方 ' + (TUT.i + 1) + '/' + TUT.steps.length + '" style="top:0;visibility:hidden"><h3>' + esc(st.title) + '</h3><div class="tbody">' + st.html + '</div><div class="foot"><div class="dots">' + TUT.steps.map(function (s, i) { return '<i class="' + (i === TUT.i ? 'on' : '') + '"></i>'; }).join('') + '<span>' + (TUT.i + 1) + '/' + TUT.steps.length + '</span></div><div class="btns">' + '<button type="button" data-tut="skip">スキップ</button>' + (TUT.i > 0 ? '<button type="button" data-tut="prev">戻る</button>' : '') + '<button type="button" class="pri" data-tut="' + (last ? 'done' : 'next') + '">' + (last ? 'はじめる' : '次へ') + '</button></div></div></div>';
     TUT.built = true;
   }
   function tutSync(force) {   // 対象の実位置を測り、変化があれば位置だけ更新
@@ -1136,7 +1178,7 @@
     var tut = $('tut'), tip = $('tip'), dim = tut.querySelector('.dim'), pad = 6;
     if (!tip || !dim) return;
     var o = tut.getBoundingClientRect(), W = o.width, H = o.height;   // #tut 自身の実矩形を原点・寸法にする(座標系の差を消す)
-    var rects = els.map(function (e) { var r = e.getBoundingClientRect(); return { x: r.left - o.left - pad, y: r.top - o.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 }; });
+    var rects = els.map(function (e, i) { var r = tgtRect(i, e); return { x: r.left - o.left - pad, y: r.top - o.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 }; });
     var path = 'M0 0H' + W + 'V' + H + 'H0Z' + mergeOverlap(rects).map(roundRectPath).join('');   // 穴が重なる場合(固定ナビの裏に対象が来た等)は外接矩形へ統合(evenoddだと重なり部分が暗幕で塞がるため)
     dim.style.clipPath = 'path(evenodd,\'' + path + '\')';
     Array.prototype.forEach.call(tut.querySelectorAll('.ring'), function (rg, i) { var r = rects[i]; if (!r) return; rg.style.left = r.x + 'px'; rg.style.top = r.y + 'px'; rg.style.width = r.w + 'px'; rg.style.height = r.h + 'px'; });
@@ -1187,6 +1229,7 @@
     var b = e.target.closest('[data-tut]'); if (!b || !TUT) return;
     var a = b.dataset.tut;
     if (a === 'skip' || a === 'done') { finishTutorial(a === 'done'); return; }
+    if (a === 'prev') { if (TUT.i > 0) { TUT.i--; showStep(); } return; }
     TUT.i++; showStep();
   });
   function relayout() { if (TUT) TUT.up = false; tutSync(true); }
