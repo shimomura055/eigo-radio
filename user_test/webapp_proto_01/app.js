@@ -1268,7 +1268,7 @@
     if (window.ResizeObserver) { var ro2 = new ResizeObserver(updateCapCue); ro2.observe(cj); ro2.observe($('capwrap')); }
     if (window.MutationObserver) new MutationObserver(updateCapCue).observe(cj, { childList: true, characterData: true, subtree: true });
   })();
-  fetchJson('data/catalog_auto.json?v=rev12').then(function (r) {   // ECUI C-DEV2: データ源は自動catalogのみ。失敗時は旧データへ黙って戻らず、明示エラーを出す
+  fetchJson('data/catalog_auto.json?v=' + ((document.querySelector('meta[name="wut-build"]') || {}).content || 'dev')).then(function (r) {   // ECUI C-DEV2: データ源は自動catalogのみ。失敗時は旧データへ黙って戻らず、明示エラーを出す
     if (!r || r.schema !== 'ecui_catalog_auto_v1' || !Array.isArray(r.items)) throw new Error('catalog_auto.json の形式が想定外です');
     ST.cat = r;
     setRate(); onRoute(); migrateSaved();
