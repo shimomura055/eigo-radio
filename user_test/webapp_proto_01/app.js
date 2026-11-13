@@ -122,7 +122,7 @@
           var art = JSON.parse(new TextDecoder('utf-8').decode(buf));
           var d = { art: art, sha: hex, sync: { std: normSync(sy[0]), adv: normSync(sy[1]) }, jaBy: { std: jaIndex(art.levels.std), adv: jaIndex(art.levels.adv) } };
           ART[slug] = d;
-          if (hex && it && it.article_sha256 && hex !== it.article_sha256) { ST.warn.push(slug); toast('元データが更新されています(' + slug + ')。同期のずれに注意'); }   // 既存: catalog取込時から更新されていないか(更新時は警告。表示・再生はarticle値で継続)
+          if (hex && it && it.article_sha256 && hex !== it.article_sha256) { ST.warn.push(slug); if (DEV) toast('元データが更新されています(' + slug + ')。同期のずれに注意'); else { try { console.warn('WUL article data differs from catalog (non-DEV: not shown to user)', slug); } catch (e) { } } }   // BUG_01: 内部警告・内部IDはモニター(一般ユーザー)に出さない。開発者は ?dev=1 で従来どおり表示。ST.warn/検知は残置   // 既存: catalog取込時から更新されていないか(更新時は警告。表示・再生はarticle値で継続)
           return d;
         });
       });
@@ -1101,10 +1101,38 @@
   function stepEls() { return TUT ? stepSels(TUT.steps[TUT.i]).map(function (q) { return document.querySelector(q); }).filter(Boolean) : []; }
   function startTutorial() {
     if (TUT) return;
-    TUT = { i: 0, steps: tutSteps(), prevHash: location.hash || '#/home', els: null, sig: '', built: false };
-    tutOn = true; $('tut').hidden = false; placePanel(true); (function () { var fs = $('floatstack'); if (fs) fs.hidden = true; })(); bindTutLock(); renderMini(); showStep();
-    var loop = function () { if (!TUT) { tutRaf = 0; return; } tutSync(false); tutRaf = requestAnimationFrame(loop); };
-    tutRaf = requestAnimationFrame(loop);   // 毎フレーム実測(スクロール/Safariバー伸縮/回転/読込後のレイアウト変化へ追従)
+    try {
+      TUT = { i: 0, steps: tutSteps(), prevHash: location.hash || '#/home', els: null, sig: '', built: false, stepAt: Date.now(), hid: 0 };
+      tutOn = true; $('tut').hidden = false; placePanel(true); (function () { var fs = $('floatstack'); if (fs) fs.hidden = true; })(); bindTutLock(); renderMini(); showStep();
+      var loop = function () { if (!TUT) { tutRaf = 0; return; } try { tutSync(false); } catch (e) { tutAbort('sync_exception: ' + (e && e.message)); return; } tutRaf = requestAnimationFrame(loop); };
+      tutRaf = requestAnimationFrame(loop);   // 毎フレーム実測(スクロール/Safariバー伸縮/回転/読込後のレイアウト変化へ追従)
+      if (!tutWd) tutWd = setInterval(tutWatch, 500);
+    } catch (e) { tutAbort('start_exception: ' + (e && e.message)); }
+  }
+  /* BUG_01(WEBAPP-UPDATE-WARNING-TUTORIAL-FREEZE-01) fail-safe: チュートリアルが例外・対象要素未検出・タイムアウト・吹き出しの非表示/画面外で「暗幕だけ残って操作不能」にならないよう、
+     必ず通常操作へ戻す。独立タイマ(rAFが止まっても動く)で監視し、異常を検知したら終了(finishTutorial(false)=既存の「対象が無い→終了」と同じ扱い)。 */
+  var tutWd = 0;
+  function tutAbort(why) {
+    try { console.warn('tutorial aborted (fail-safe):', why); } catch (e) { }
+    if (document.documentElement) document.documentElement.setAttribute('data-tut-abort', String(why).slice(0, 80));
+    try { finishTutorial(false); } catch (e) { tutForceClose(); }
+  }
+  function tutForceClose() {   // finishTutorial自体が失敗しても操作制限だけは確実に解除する
+    tutOn = false; TUT = null; if (tutRaf) { try { cancelAnimationFrame(tutRaf); } catch (e) { } tutRaf = 0; }
+    var t = $('tut'); if (t) { t.hidden = true; t.innerHTML = ''; }
+    var fs = $('floatstack'); if (fs) fs.hidden = false;
+    if (tutWd) { clearInterval(tutWd); tutWd = 0; }
+  }
+  function tutWatch() {
+    if (!TUT) { if (tutWd) { clearInterval(tutWd); tutWd = 0; } var t0 = $('tut'); if (t0 && !t0.hidden) tutForceClose(); return; }
+    try {
+      var now = Date.now(), tip = $('tip');
+      if (!TUT.built) { if (now - TUT.stepAt > 15000) tutAbort('step_timeout(step ' + (TUT.i + 1) + ')'); return; }   // 暗幕だけで吹き出しが作られないまま15秒
+      if (!tip || getComputedStyle(tip).visibility !== 'visible' || getComputedStyle(tip).display === 'none') { TUT.hid = TUT.hid || now; if (now - TUT.hid > 3000) tutAbort('tip_not_visible(step ' + (TUT.i + 1) + ')'); return; }
+      var r = tip.getBoundingClientRect(), ok = r.width > 0 && r.height > 0 && r.bottom > 40 && r.top < innerHeight - 40 && r.right > 0 && r.left < innerWidth;
+      if (!ok) { TUT.hid = TUT.hid || now; if (now - TUT.hid > 3000) tutAbort('tip_off_screen(step ' + (TUT.i + 1) + ')'); return; }
+      TUT.hid = 0;
+    } catch (e) { tutAbort('watch_exception: ' + (e && e.message)); }
   }
   function bindTutLock() {   // 暗幕上では背景をスクロールさせない(吹き出し内の縦スクロールだけ許可)
     if (tutLockBound) return; tutLockBound = true;
@@ -1117,12 +1145,14 @@
     var o = $('tut').getBoundingClientRect(), vv = window.visualViewport;
     return [o.left, o.top, o.width, o.height, innerWidth, innerHeight, vv ? [vv.width, vv.height, vv.offsetLeft, vv.offsetTop, vv.scale].join(',') : '', dockTop()].map(function (v) { return typeof v === 'number' ? Math.round(v * 10) / 10 : v; }).join('|');
   }
-  function waitFor(sels, cb, n) {
-    n = n || 0;
+  function waitFor(sels, cb, n, ref) {   // BUG_01: チュートリアル終了/中断後の遅延callbackは捨てる(ref=開始時のTUT)。callback内の例外は握りつぶさず fail-safe 終了
+    if (!n) { n = 0; ref = TUT; }
+    if (!TUT || TUT !== ref) return;
     var els = sels.map(function (s) { return document.querySelector(s); });
-    if (els.every(Boolean)) { cb(els); return; }
-    if (n > 60) { cb(els.filter(Boolean)); return; }
-    setTimeout(function () { waitFor(sels, cb, n + 1); }, 100);
+    function run(a) { try { cb(a); } catch (e) { tutAbort('step_exception: ' + (e && e.message)); } }
+    if (els.every(Boolean)) { run(els); return; }
+    if (n > 60) { run(els.filter(Boolean)); return; }
+    setTimeout(function () { waitFor(sels, cb, n + 1, ref); }, 100);
   }
   function safeInsets() {   // セーフエリア(env(safe-area-inset-*))
     if (!probe) { probe = document.createElement('div'); probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)'; document.body.appendChild(probe); }
@@ -1135,18 +1165,18 @@
   }
   function showStep() {
     var st = TUT.steps[TUT.i], tut = $('tut');
-    function go() { if (st.prep) st.prep(go2); else go2(); }
+    function go() { if (!TUT) return; try { if (st.prep) st.prep(go2); else go2(); } catch (e) { tutAbort('prep_exception: ' + (e && e.message)); } }
     function go2() {
       waitFor(stepSels(st), function (els) {
         if (!TUT) return;
-        if (!els.length) { finishTutorial(false); return; }
+        if (els.length !== stepSels(st).length) { tutAbort('target_missing(step ' + (TUT.i + 1) + ': ' + els.length + '/' + stepSels(st).length + ')'); return; }   // 一部でも対象が無い=吹き出しを置けず暗幕だけが残る→終了
         if (!els[0].closest('#nav')) {   // 対象を見える領域の上寄りへ(吹き出しを下の空き領域へ置くため)
           var r = els[0].getBoundingClientRect(); window.scrollBy(0, r.top - (vvBox().top + 72));
         }
         buildTut(); tutSync(true);   // 初回表示から実測位置で配置(同期)。以降は毎フレーム追従
       });
     }
-    TUT.els = null; TUT.sig = ''; TUT.built = false; TUT.up = false;
+    TUT.els = null; TUT.sig = ''; TUT.built = false; TUT.up = false; TUT.stepAt = Date.now(); TUT.hid = 0;
     tut.innerHTML = '<div class="dim"></div>';
     if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else { if (st.reroute) rerender(false); go(); }
   }
@@ -1237,11 +1267,10 @@
     return { overlap: n, tip: [Math.round(tip.top), Math.round(tip.bottom), Math.round(tip.left), Math.round(tip.right)], targets: list, visible: [Math.round(box.top), Math.round(box.bottom)], inside: tip.top >= box.top - 1 && tip.bottom <= box.bottom + 1 && tip.left >= 0 && tip.right <= innerWidth + 1 };
   }
   function finishTutorial(completed) {
-    lsSet(K_TUT, true); tutOn = false; $('tut').hidden = true; (function () { var fs = $('floatstack'); if (fs) fs.hidden = false; })(); $('tut').innerHTML = ''; $('tut').classList.remove('ctxstep');
-    if (tutRaf) { cancelAnimationFrame(tutRaf); tutRaf = 0; }
-    TUT = null;
-    if (location.hash !== '#/home') location.hash = '#/home'; else rerender();
-    renderMini();
+    tutForceClose();   // BUG_01: 操作制限(暗幕・tutOn・TUT・タイマ)の解除を最初に確実に行う(以降の処理が例外でも通常操作へ戻る)
+    lsSet(K_TUT, true); $('tut').classList.remove('ctxstep');
+    try { if (location.hash !== '#/home') location.hash = '#/home'; else rerender(); } catch (e) { try { console.warn('tutorial finish rerender', e && e.message); } catch (e2) { } }
+    try { renderMini(); } catch (e) { }
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-tut]'); if (!b || !TUT) return;
