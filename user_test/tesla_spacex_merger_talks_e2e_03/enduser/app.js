@@ -166,7 +166,7 @@
     g.forEach(function (x) { var w = x.split(' '); w.forEach(function (a) { m[a] = m[a] ? m[a].concat(w) : w; }); });
     return m;
   })();
-  var PH = { "one's": 1, "someone's": 1, "sb's": 1, "somebody's": 1, one: 1, someone: 1, somebody: 1, something: 1, sth: 1, sb: 1, oneself: 1, etc: 1 };
+  var PH = { "one's": 1, "someone's": 1, "sb's": 1, "somebody's": 1, someone: 1, somebody: 1, something: 1, sth: 1, sb: 1, oneself: 1, etc: 1 };
   function toks(s) { var r = [], re = /[A-Za-z0-9]+(?:['’][A-Za-z]+)?/g, m; while ((m = re.exec(s))) r.push({ w: m[0].toLowerCase().replace(/’/g, "'"), s: m.index, e: m.index + m[0].length }); return r; }
   function forms(w) {
     if (IRR[w]) {   // 不規則動詞: 原形・過去形・過去分詞に加え、3単現(-s/-es)・-ing形(語尾e脱落・子音重ね)も候補にする

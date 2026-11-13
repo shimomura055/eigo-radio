@@ -16,6 +16,8 @@
   var SKIP = 10;   // 既存End Userと同じ±10秒(H-4)
   var K_LEVEL = 'wut01.level', K_TUT = 'wut01.tutorial_done', K_SAVED = 'wut01.saved', K_STATS = 'wut01.stats', K_RATE = 'wut01.rate', K_CAP = 'wut01.caption';
   var QS = new URLSearchParams(location.search);
+  /* MP_01: 開発用表示(マイページのダミー表記・試作データ消去・試作版ビルド・更新検知)はモニター向けでは非表示。開発環境は ?dev=1 または localStorage 'wut01.dev'='1' で従来どおり表示(保存データ・機能は変更しない) */
+  var DEV = (function () { try { return QS.get('dev') === '1' || window.localStorage.getItem('wut01.dev') === '1'; } catch (e) { return QS.get('dev') === '1'; } })();
   /* WUR S5: 復習帳ストア(srs.js)。localStorageのみ(§7: 永続ストレージ/同期/本格SRSはユーザー判断事項)。 */
   var LSX = (function () { try { var l = window.localStorage; l.getItem('wut01.__probe'); return l; } catch (e) { return { getItem: function () { throw new Error('unavailable'); }, setItem: function () { throw new Error('unavailable'); }, removeItem: function () { throw new Error('unavailable'); } }; } })();
   var store = SRS.createStore(LSX);
@@ -339,13 +341,13 @@
     migrateSaved().then(function () { if (reviewCtl === ctl && $('srsroot') === el) ctl.mount(el); });
   }
   function viewMe() {
-    return topBar() + '<h2 style="margin:4px 0 8px;color:var(--navy)">マイページ<span class="kari">ダミー</span></h2><div class="dummy">マイページはダミー画面です(正式仕様なし)。</div>' +
+    return topBar() + '<h2 style="margin:4px 0 8px;color:var(--navy)">マイページ' + (DEV ? '<span class="kari">ダミー</span>' : '') + '</h2>' + (DEV ? '<div class="dummy">マイページはダミー画面です(正式仕様なし)。</div>' : '') +
       '<div class="pl">レベル設定(共通)</div>' + lvSeg('lvseg-me', true) +
       '<div class="lvnote">Standard: ' + LV_HINT.std + ' / Advanced: ' + LV_HINT.adv + '。目安であり、どちらも自由に選べます。</div>' +
       '<button class="setrow" id="tutbtn">使い方(チュートリアル)を見る<span>&#8250;</span></button>' +
-      '<button class="setrow" id="resetbtn">端末内の試作データを消す(レベル・保存・学習記録・チュートリアル)<span>&#8250;</span></button>' +
-      '<div class="setrow"><span>試作版ビルド</span><small>rev12 / Trial・未承認 / 数値・ジャンル・概要の一部は仮データ</small></div>' +
-      '<div class="setrow"><span>元データの更新検知</span><small>' + (ST.warn.length ? '更新あり: ' + ST.warn.length + '件' : '異常なし(再生時に検査)') + '</small></div>';
+      (DEV ? '<button class="setrow" id="resetbtn">端末内の試作データを消す(レベル・保存・学習記録・チュートリアル)<span>&#8250;</span></button>' +
+        '<div class="setrow"><span>試作版ビルド</span><small>rev12 / Trial・未承認 / 数値・ジャンル・概要の一部は仮データ</small></div>' +
+        '<div class="setrow"><span>元データの更新検知</span><small>' + (ST.warn.length ? '更新あり: ' + ST.warn.length + '件' : '異常なし(再生時に検査)') + '</small></div>' : '');
   }
 
   /* ---------- 画面: プレイヤー ---------- */
