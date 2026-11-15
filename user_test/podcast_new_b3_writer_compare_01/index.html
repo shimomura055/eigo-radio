@@ -1,0 +1,1040 @@
+<!DOCTYPE html><html lang="ja"><head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="trial_compare"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>新B3素材選定方式 Writer比較Trial(開発用)</title><style>body{font-family:"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;margin:0;color:#222;line-height:1.7;background:#fafafa}
+header,main{max-width:1180px;margin:0 auto;padding:12px 16px}
+h1{font-size:1.4em}h2{border-left:6px solid #357;padding-left:8px;margin-top:2em}h3{margin-top:1.2em}h4{margin:.8em 0 .2em}
+.tabs button{padding:8px 14px;margin:2px;border:1px solid #357;background:#fff;cursor:pointer;border-radius:4px}.tabs button.on{background:#357;color:#fff}
+.panel{display:none;background:#fff;border:1px solid #ccd;padding:12px;border-radius:6px}.panel.on{display:block}
+pre.ms{white-space:pre-wrap;font-family:inherit;background:#fffef6;border:1px solid #ddc;padding:10px;border-radius:4px;margin:6px 0}
+table{border-collapse:collapse;width:100%;font-size:.88em;margin:6px 0}th,td{border:1px solid #bbc;padding:4px 6px;vertical-align:top}th{background:#eef}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:800px){.pair{grid-template-columns:1fr}}
+.pair>div{background:#fff;border:1px solid #ccd;padding:8px;border-radius:6px;min-width:0}
+.used{background:#fd8;padding:0 5px;border-radius:3px;font-size:.8em}.meta{color:#555;font-size:.85em}.src{padding:2px 12px}
+.note{background:#fff3cd;border:1px solid #e0c060;padding:6px 10px;border-radius:4px}.obs{background:#eef7ee;border:1px solid #9c9;padding:6px 10px;border-radius:4px}
+.v-ok{color:#161}.v-minor{color:#a50;font-weight:bold}summary{cursor:pointer}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<header><h1>新B3素材選定方式 Writer比較Trial(3モデル×2順序=6本)</h1><p class="note">開発用Trial・Production未採用。対象記事は「『広告です』と名乗るAI。それでも欲しくなる?」の1本のみ。各条件1回の初稿を無修正で掲載(Writer=gpt-6.1-sol、reasoning effort=high)。1回ずつの結果であり、恒久的なモデル性能差とは断定できない。面白さ・品質の最終判定はユーザー/Fableが行う。本ページの「Worker観測」「事実照合」はWorkerの観測であり、Fable評価ではない。</p></header><main>
+<h2>1. 6条件の概要</h2><table><tr><th>条件</th><th>B3選定モデル</th><th>投入順</th><th>入力</th><th>文字数(空白除く/見出し込み)</th><th>People使用</th><th>Fact使用</th><th>Writer費用(円・実測)</th><th>所要秒</th></tr>
+<tr><td>S-PF</td><td>Sol</td><td>People→Fact</td><td>People10+Fact10</td><td>1089</td><td>1/10</td><td>3/10</td><td>3.96</td><td>51.1</td></tr>
+<tr><td>S-FP</td><td>Sol</td><td>Fact→People</td><td>People10+Fact10</td><td>1009</td><td>0/10</td><td>4/10</td><td>3.45</td><td>45.3</td></tr>
+<tr><td>T-PF</td><td>Terra</td><td>People→Fact</td><td>People10+Fact10</td><td>1088</td><td>2/10</td><td>2/10</td><td>3.87</td><td>54.1</td></tr>
+<tr><td>T-FP</td><td>Terra</td><td>Fact→People</td><td>People10+Fact10</td><td>1069</td><td>2/10</td><td>2/10</td><td>3.47</td><td>44.9</td></tr>
+<tr><td>L-PF</td><td>Luna</td><td>People→Fact</td><td>People8+Fact9</td><td>992</td><td>2/8</td><td>4/9</td><td>3.63</td><td>50.9</td></tr>
+<tr><td>L-FP</td><td>Luna</td><td>Fact→People</td><td>People8+Fact9</td><td>1052</td><td>0/8</td><td>3/9</td><td>4.20</td><td>63.2</td></tr>
+</table>
+<h2>2. 6条件の切り替え表示(R0全文・採用素材・入力素材)</h2><div class="tabs">
+<button data-id="S-PF">S-PF</button>
+<button data-id="S-FP">S-FP</button>
+<button data-id="T-PF">T-PF</button>
+<button data-id="T-FP">T-FP</button>
+<button data-id="L-PF">L-PF</button>
+<button data-id="L-FP">L-FP</button>
+</div>
+<div class="panel" id="p-S-PF"><h3>S-PF(B3選定=Sol、People→Fact)</h3><p class="meta">文字数: 全体(改行含む)1151字 / 空白除く(見出し込み)1089字 / 空白除く(本文のみ)1039字。見出し3個: ## １．その「おすすめ」、誰のため？ | ## ２．「広告です」が見えていても？ | ## ３．買う前に、会話の外へ。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">## １．その「おすすめ」、誰のため？
+
+こんにちは。今日は、AIと買い物のお話です。
+
+こんな場面を想像してください。
+
+「新しいイヤホンが欲しい。何がいい？」
+AIが答えます。
+「あなたの使い方なら、これがおすすめです」
+
+予算も、好きな音楽も知っているAI。なんだか、詳しい友達に選んでもらった気分です。
+
+でも、その商品をすすめた理由に、広告のお金が関係していたら？
+
+親切な友達だと思っていたら、急にお店のエプロンが見えてきた。少し、気持ちが変わりますよね。
+
+実際、個人向けのMicrosoft Copilotでは、会話の内容に合った広告が出ることがあります。ただし、AIが紹介する商品が、すべて広告というわけではありません。
+
+では、「広告です」と書いてあれば、私たちは冷静に選べるのでしょうか。
+
+## ２．「広告です」が見えていても？
+
+ここで、本を選ぶ実験の話です。
+
+まだ正式な審査前の研究ですが、研究者がAIに、特定のスポンサーの本をすすめるよう、裏で指示しました。
+
+すると、参加者の約61％が、その本を選びました。
+
+「それは、広告だと知らなかったからでは？」
+
+そう思いますよね。
+
+ところが、事前に説明し、「スポンサー付き」と表示した場合も、約56％がその本を選びました。この実験では、二つの結果にはっきりした差は確認されませんでした。
+
+もちろん、これだけで「広告の表示は意味がない」とは言えません。また、実際のAIサービスが、同じことをしている証拠でもありません。
+
+それでも、気になる結果です。
+
+AIは、ただ商品を並べるだけではありません。「あなたには、これが合います」と、会話の中ですすめてきます。その言葉は、普通の広告よりも、自分のための助言に聞こえるのかもしれません。
+
+## ３．買う前に、会話の外へ
+
+さて、最初のイヤホンに戻りましょう。
+
+AIにすすめられて、「これだ！」と思ったあなた。購入ボタンを押す前に、一度だけ、会話の外へ出てみませんか。
+
+別の店でも値段を見る。悪い口コミも読む。知らない販売店なら、本当に信頼できる店か調べる。
+
+実際、日本の利用者からも、AIで候補を見つけたあと、Amazonや楽天の口コミと価格を比べて決めた、という声がありました。
+
+AIに候補を出してもらい、最後は別の情報でも確かめる。そんな使い方です。
+
+広告そのものが悪いわけではありません。大切なのは、「相談への答え」と「商品を売るための言葉」を、見分けられることです。
+
+AIの「おすすめ」は、買い物の出発点。ゴールではありません。
+
+次に「あなたにぴったりです」と言われたら、こう考えてみてください。
+
+「なるほど。では、ほかの店もちょっと見てきます！」</pre><div class="obs"><b>Worker観測</b>: 冒頭=イヤホンの想像場面→「広告のお金が絡んでいたら?」→Copilot広告→研究(61%/56%)→買う前に会話の外で確認。実体験Peopleは終盤のJAP-JP04(口コミ比較)のみ。研究が中心の問い(「広告です」と見えても冷静に選べるか)を支えている。</div><h4>採用People/Fact(本文の根拠文)とB3順位</h4><table><tr><th>種別</th><th>ID</th><th>B3順位</th><th>本文の根拠文</th></tr>
+<tr><td>People</td><td>JAP-JP04</td><td>8 / 10</td><td>日本の利用者からも、AIで候補を見つけたあと、Amazonや楽天の口コミと価格を比べて決めた</td></tr>
+<tr><td>Fact</td><td>R-P3</td><td>1 / 10</td><td>ところが、事前に説明し、「スポンサー付き」と表示した場合も、約56％がその本を選びました</td></tr>
+<tr><td>Fact</td><td>R-P2</td><td>5 / 10</td><td>すると、参加者の約61％が、その本を選びました</td></tr>
+<tr><td>Fact</td><td>Q3-1</td><td>6 / 10</td><td>個人向けのMicrosoft Copilotでは、会話の内容に合った広告が出ることがあります</td></tr>
+</table>
+<p>採用件数: People 1/10、Fact 3/10。上位(1〜3位)使用: People なし、Fact R-P3。下位(最後の3件)使用: People JAP-JP04、Fact なし。1〜3位で未使用: People FOR-i01, RED-R9, JAP-JP02、Fact Q2-1, Q1-6。</p>
+<p>発想が近いが直接使用とは数えない箇所: FOR-i15「親切な友達だと思っていたら、急にお店のエプロンが見えてきた」 / RED-R9「予算も、好きな音楽も知っているAI」</p>
+<p>入力に無い創作場面: イヤホン購入の想像場面(「想像してください」と明示した仮想例)</p><h4>この条件でWriterへ渡した入力素材(元本文・出典・確認状況、選定順位順)</h4><h4>People(選定順位順)</h4>
+<details><summary>B3順位1　FOR-i01</summary><div class="src"><p>Even when I asked if there were ‘better’ or more luxury versions, it said honestly don’t bother.</p><p class="meta">媒体/日付: Mumsnet 2026-03-29 / 確認: A / 反応指標: unknown (no post-level reactions visible)</p></div></details>
+<details><summary>B3順位2　RED-R9</summary><div class="src"><p>Since I talk to ChatGPT quite often, I feel like I&#x27;d just blindly trust it if it started recommending a sponso</p><p class="meta">媒体/日付: Reddit — r/ChatGPT 2026-01-17 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;[+28 votes]&quot;, &quot;comment&quot;: &quot;not applicable&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unk</p></div></details>
+<details><summary>B3順位3　JAP-JP02</summary><div class="src"><p>「料理の話ししてたらコピに広告出てきたんよ…個配どや？みたいなやつ。マイクロソフトも広告するんかいな🫠」／「今ならこの価格！で個配のやつ出てくるんだけどやったことあるからその値段でお試しできないやつ（笑）」</p><p class="meta">媒体/日付: note.com 2026-09-10 / 確認: A / 反応指標: note button count: 5 (label not exposed in the retrieved view)</p></div></details>
+<details><summary>B3順位4　RED-R11</summary><div class="src"><p>if asking for better battery life silently swaps an unsponsored option for a sponsored one, a label on the fin</p><p class="meta">媒体/日付: Reddit — comment in r/AI_Agents 2026-10-06 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;unknown&quot;, &quot;comment&quot;: &quot;unknown&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unknown&quot;}</p></div></details>
+<details><summary>B3順位5　FOR-i15</summary><div class="src"><p>your clever but obnoxious buddy who has filled his garage with Amway products</p><p class="meta">媒体/日付: Slashdot 2025-04-28 / 確認: A / 反応指標: comment score 5 (Informative); thread shows 29 comments</p></div></details>
+<details><summary>B3順位6　JAP-JP11</summary><div class="src"><p>「作業を邪魔しない広告だったら全然いいけど。むしろ広告用の枠を常設してそこからはみ出ないようにして欲しい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位7　FOR-i13</summary><div class="src"><p>Helpful? Since when is an ad encouraging me to shop at Target helpful?</p><p class="meta">媒体/日付: Slashdot 2025-12-07 / 確認: A / 反応指標: comment score 3; thread shows 28 comments</p></div></details>
+<details><summary>B3順位8　JAP-JP04 <span class="used">本文で使用</span></summary><div class="src"><p>「購入しました。候補をAmazonと楽天の口コミや価格でも比較して決定」</p><p class="meta">媒体/日付: ミルトーク (Milltalk) 37日前 (relative date / 確認: A / 反応指標: unknown for this individual response; the board displayed 156 comments total</p></div></details>
+<details><summary>B3順位9　FOR-i18</summary><div class="src"><p>just because ChatGPT recommends a retailer doesn&#x27;t mean that retailer is legitimate.</p><p class="meta">媒体/日付: Tom&#x27;s Guide 2026-06-11 (article / 確認: A / 反応指標: unknown (article shows 0 comments)</p></div></details>
+<details><summary>B3順位10　FOR-i16</summary><div class="src"><p>I am never going to believe that even supposedly ad free tiers that we pay more for will not be biased towards</p><p class="meta">媒体/日付: Ars Technica OpenForum 2026-01-16 / 確認: B / 反応指標: comment score 72 (75 up, 3 down)</p></div></details>
+<h4>Fact(選定順位順)</h4>
+<details><summary>B3順位1　R-P3 <span class="used">本文で使用</span></summary><div class="src"><p>同研究で「Sponsored」ラベル+事前告知でも55.5%がスポンサー本を選択(通常の説得61.2%と有意差なし)</p><p class="meta">出典: 同上 / 確認: 独立 / 適用範囲・制約: この実験で有意差が出なかったのであって「ラベルは無効」ではない</p></div></details>
+<details><summary>B3順位2　Q2-1</summary><div class="src"><p>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</p><p class="meta">出典: techcrunch.com/2025/12/07/openai-says-its-turned-off-app-suggestions-that-look-like-ads/(2025-12-07) / 確認: 独立(本文一致) / 適用範囲・制約: 当時の報告と説明。全員に表示されたわけではない</p></div></details>
+<details><summary>B3順位3　Q1-6</summary><div class="src"><p>広告の原則に「回答の独立性」: 広告は回答に影響せず常に分離・ラベル付き</p><p class="meta">出典: openai.com/index/our-approach-to-advertising-and-expanding-access/(2026-01-16) / 確認: 前回引継ぎ(O2。当方は本委任で再取得不可) / 適用範囲・制約: 会社の方針</p></div></details>
+<details><summary>B3順位4　Q1-2</summary><div class="src"><p>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</p><p class="meta">出典: 同上 / 確認: モデル申告(403) / 適用範囲・制約: パーソナライズ設定次第。OpenAIの公式説明であり独立監査ではない</p></div></details>
+<details><summary>B3順位5　R-P2 <span class="used">本文で使用</span></summary><div class="src"><p>2026プレプリント(arXiv 2604.04263)。実験者がAIに「裏でスポンサー本を勧めよ」と指示すると61.2%がスポンサー本を選択(検索上位表示は22.4%)</p><p class="meta">出典: arxiv.org/abs/2604.04263 / 確認: 独立 / 適用範囲・制約: 実験者の指示による挙動。現行サービスの挙動ではない</p></div></details>
+<details><summary>B3順位6　Q3-1 <span class="used">本文で使用</span></summary><div class="src"><p>Microsoft: 個人向けCopilot(M365契約なし)では広告が出ることがある。汎用広告は現在の会話内容で選び、パーソナライズ広告はチャット履歴・メモリ等も使い得る(設定で制御)</p><p class="meta">出典: support.microsoft.com/en-us/privacy/microsoft-copilot/privacy-controls(日付記載なし、2026-11-14取得) / 確認: 独立 / 適用範囲・制約: 個人向けCopilot。法人M365は別</p></div></details>
+<details><summary>B3順位7　Q6-1</summary><div class="src"><p>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</p><p class="meta">出典: attentive.com/state-of-ai-in-retail-2026 / 確認: 独立(3,054を本文確認) / 適用範囲・制約: 米国のみ・自己申告・小売マーケ会社の調査。58%/93%はAI利用者が分母</p></div></details>
+<details><summary>B3順位8　Q5-2</summary><div class="src"><p>Tom&#x27;s Guide(2026-06-11): 編集者がChatGPTで見つけた偽ストアで$150を失った体験。OpenAIは「少数の欺瞞的サイトを把握し対処、改善中」と回答</p><p class="meta">出典: tomsguide.com(上記) / 確認: 独立 / 適用範囲・制約: 1人のジャーナリストの体験報告。広告ではない</p></div></details>
+<details><summary>B3順位9　Q4-1</summary><div class="src"><p>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</p><p class="meta">出典: caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/ / 確認: 独立(引用文の本文一致) / 適用範囲・制約: 「広告と分からない事業者の広告表示」の規則。すべての商品言及に「広告」表示を義務づけるものではない。AIチャットの推薦への適用可否は本調査の範囲外</p></div></details>
+<details><summary>B3順位10　Q1-4</summary><div class="src"><p>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</p><p class="meta">出典: 同上 / 確認: モデル申告(403)+前回引継ぎ(O1) / 適用範囲・制約: 選択地域で順次。全対象アカウントに表示とは限らない</p></div></details><h4>事実照合(Worker観測)</h4><table><tr><th>本文の記述</th><th>照合元</th><th>判定</th><th>所見</th></tr>
+<tr><td>個人向けのMicrosoft Copilotでは、会話の内容に合った広告が出ることがあります</td><td>Q3-1</td><td class="v-ok">OK</td><td>独立確認。「汎用広告は現在の会話内容で選ぶ」に整合。個人向け限定も明記。</td></tr>
+<tr><td>ただし、AIが紹介する商品が、すべて広告というわけではありません</td><td>Q1-1</td><td class="v-minor">MINOR</td><td>Q1-1(確認=モデル申告+前回引継ぎ)の「商品名の登場=広告の証拠ではない」趣旨をCopilot文脈の直後に置いた。出典が曖昧。</td></tr>
+<tr><td>まだ正式な審査前の研究ですが、研究者がAIに、特定のスポンサーの本をすすめるよう、裏で指示しました</td><td>R-P2</td><td class="v-ok">OK</td><td>プレプリントである旨と、実験者の指示による挙動である旨を保持。</td></tr>
+<tr><td>すると、参加者の約61％が、その本を選びました</td><td>R-P2</td><td class="v-ok">OK</td><td>61.2%。</td></tr>
+<tr><td>事前に説明し、「スポンサー付き」と表示した場合も、約56％がその本を選びました。この実験では、二つの結果にはっきりした差は確認されませんでした</td><td>R-P3</td><td class="v-ok">OK</td><td>55.5%、有意差なし。「ラベルは無効」とは言っていない(制約どおり)。</td></tr>
+<tr><td>実際のAIサービスが、同じことをしている証拠でもありません</td><td>R-P2</td><td class="v-ok">OK</td><td>制約「現行サービスの挙動ではない」を保持。</td></tr>
+<tr><td>日本の利用者からも、AIで候補を見つけたあと、Amazonや楽天の口コミと価格を比べて決めた、という声がありました</td><td>JAP-JP04</td><td class="v-ok">OK</td><td>確認A。個別投稿を「声がありました」と控えめに紹介し、一般化していない。</td></tr>
+</table>
+<p>事実誤認(NG)=0件、軽微=1件、確認状況が弱い素材を帰属付きで使用=0件。広告とAI回答の混同: なし(広告=Sponsored表示で回答と別、商品名の登場=広告とは限らない、を正しく区別)。個人投稿の一般化: なし(個人投稿は「投稿があります/声もありました」と限定)。研究結果の誇張: なし(61.2%/55.5%・有意差なし・実験条件・現行サービスの証拠ではない旨を保持)。</p></div>
+<div class="panel" id="p-S-FP"><h3>S-FP(B3選定=Sol、Fact→People)</h3><p class="meta">文字数: 全体(改行含む)1065字 / 空白除く(見出し込み)1009字 / 空白除く(本文のみ)942字。見出し3個: ### ① その「おすすめ」は、誰のため？ | ### ② 「広告です」と言われても、買いたくなる？ | ### ③ AIのおすすめは、ゴールではなくスタート。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">### ① その「おすすめ」は、誰のため？
+
+「あなたには、この本が合いそうです」
+
+AIにそう言われたら、どうしますか？
+
+いつも仕事の相談に乗ってくれる。好きなものも知っている。そんな相手のおすすめなら、ちょっと読んでみたくなりますよね。
+
+でも、もし、その本を売りたい会社のためにすすめていたら？
+
+急に、親切な友だちが店員に見えてきませんか。
+
+ChatGPTを運営するOpenAIは、一部のプランで広告を出す方針を示しています。ただし、広告は回答と分ける。広告だと分かるようにする。そして、回答には影響させない、という説明です。
+
+広告が出ることと、お金のために答えが変わることは、別の話なのです。
+
+では、「これは広告です」と分かれば、私たちは冷静に選べるのでしょうか？
+
+### ② 「広告です」と言われても、買いたくなる？
+
+この問いを考える、面白い実験があります。
+
+研究者は、AIにこっそり「スポンサーの本をすすめて」と指示しました。すると、参加者の61.2％が、その本を選びました。
+
+では、先に広告について知らせ、本に「スポンサー」の表示もつけたら？
+
+選んだ人は、55.5％。半分以上です。二つの結果には、統計上、はっきりした差は出ませんでした。
+
+「広告だと知っている」と「広告に心を動かされない」は、同じではないのかもしれません。
+
+いつも話を聞いてくれるAIが、自分に合う理由まで説明してくれる。「広告だけど、私には本当に合うのかも」と感じることは、ありそうですよね。
+
+ただし、これは研究用の実験です。今のChatGPTが、裏で同じことをしている証拠ではありません。また、この一つの実験だけで「広告の表示は役に立たない」とも言えません。
+
+### ③ AIのおすすめは、ゴールではなくスタート
+
+さて、最初の本の話に戻りましょう。
+
+AIにすすめられて、「読みたい！」と思った。その気持ちまで、疑う必要はありません。
+
+でも、買う前に、別の場所で本の紹介や読者の感想を見てみる。自分が読みたい内容なのか、もう一度考える。
+
+AIに「私に合わない点も教えて」と聞くのもよさそうです。ただ、その答えも、最後の確認にはしないことです。
+
+AIは、便利な相談相手です。でも、あなたの買い物を決める人ではありません。
+
+次に「あなたにぴったりです」と言われたら、少しだけ立ち止まってみませんか。
+
+「そのおすすめは、誰のため？」
+
+その一問が、あなたの買い物を、あなた自身のものにしてくれるかもしれません。</pre><div class="obs"><b>Worker観測</b>: 冒頭=本のおすすめの想像場面→OpenAIの広告方針→研究(61.2%/55.5%)→「ゴールではなくスタート」。People直接使用は0件。研究が主軸で、実体験の面白さは出ていない。</div><h4>採用People/Fact(本文の根拠文)とB3順位</h4><table><tr><th>種別</th><th>ID</th><th>B3順位</th><th>本文の根拠文</th></tr>
+<tr><td>Fact</td><td>R-P3</td><td>1 / 10</td><td>選んだ人は、55.5％。半分以上です</td></tr>
+<tr><td>Fact</td><td>R-P2</td><td>5 / 10</td><td>参加者の61.2％が、その本を選びました</td></tr>
+<tr><td>Fact</td><td>Q1-6</td><td>3 / 10</td><td>広告は回答と分ける。広告だと分かるようにする。そして、回答には影響させない、という説明です</td></tr>
+<tr><td>Fact</td><td>Q1-4</td><td>10 / 10</td><td>OpenAIは、一部のプランで広告を出す方針を示しています</td></tr>
+</table>
+<p>採用件数: People 0/10、Fact 4/10。上位(1〜3位)使用: People なし、Fact R-P3, Q1-6。下位(最後の3件)使用: People なし、Fact Q1-4。1〜3位で未使用: People FOR-i01, RED-R9, JAP-JP02、Fact Q2-1。</p>
+<p>発想が近いが直接使用とは数えない箇所: RED-R9「いつも仕事の相談に乗ってくれる。好きなものも知っている」 / FOR-i15「急に、親切な友だちが店員に見えてきませんか」</p>
+<p>入力に無い創作場面: 本のおすすめを受ける想像場面(仮想例)</p><h4>この条件でWriterへ渡した入力素材(元本文・出典・確認状況、選定順位順)</h4><h4>People(選定順位順)</h4>
+<details><summary>B3順位1　FOR-i01</summary><div class="src"><p>Even when I asked if there were ‘better’ or more luxury versions, it said honestly don’t bother.</p><p class="meta">媒体/日付: Mumsnet 2026-03-29 / 確認: A / 反応指標: unknown (no post-level reactions visible)</p></div></details>
+<details><summary>B3順位2　RED-R9</summary><div class="src"><p>Since I talk to ChatGPT quite often, I feel like I&#x27;d just blindly trust it if it started recommending a sponso</p><p class="meta">媒体/日付: Reddit — r/ChatGPT 2026-01-17 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;[+28 votes]&quot;, &quot;comment&quot;: &quot;not applicable&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unk</p></div></details>
+<details><summary>B3順位3　JAP-JP02</summary><div class="src"><p>「料理の話ししてたらコピに広告出てきたんよ…個配どや？みたいなやつ。マイクロソフトも広告するんかいな🫠」／「今ならこの価格！で個配のやつ出てくるんだけどやったことあるからその値段でお試しできないやつ（笑）」</p><p class="meta">媒体/日付: note.com 2026-09-10 / 確認: A / 反応指標: note button count: 5 (label not exposed in the retrieved view)</p></div></details>
+<details><summary>B3順位4　RED-R11</summary><div class="src"><p>if asking for better battery life silently swaps an unsponsored option for a sponsored one, a label on the fin</p><p class="meta">媒体/日付: Reddit — comment in r/AI_Agents 2026-10-06 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;unknown&quot;, &quot;comment&quot;: &quot;unknown&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unknown&quot;}</p></div></details>
+<details><summary>B3順位5　FOR-i15</summary><div class="src"><p>your clever but obnoxious buddy who has filled his garage with Amway products</p><p class="meta">媒体/日付: Slashdot 2025-04-28 / 確認: A / 反応指標: comment score 5 (Informative); thread shows 29 comments</p></div></details>
+<details><summary>B3順位6　JAP-JP11</summary><div class="src"><p>「作業を邪魔しない広告だったら全然いいけど。むしろ広告用の枠を常設してそこからはみ出ないようにして欲しい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位7　FOR-i13</summary><div class="src"><p>Helpful? Since when is an ad encouraging me to shop at Target helpful?</p><p class="meta">媒体/日付: Slashdot 2025-12-07 / 確認: A / 反応指標: comment score 3; thread shows 28 comments</p></div></details>
+<details><summary>B3順位8　JAP-JP04</summary><div class="src"><p>「購入しました。候補をAmazonと楽天の口コミや価格でも比較して決定」</p><p class="meta">媒体/日付: ミルトーク (Milltalk) 37日前 (relative date / 確認: A / 反応指標: unknown for this individual response; the board displayed 156 comments total</p></div></details>
+<details><summary>B3順位9　FOR-i18</summary><div class="src"><p>just because ChatGPT recommends a retailer doesn&#x27;t mean that retailer is legitimate.</p><p class="meta">媒体/日付: Tom&#x27;s Guide 2026-06-11 (article / 確認: A / 反応指標: unknown (article shows 0 comments)</p></div></details>
+<details><summary>B3順位10　FOR-i16</summary><div class="src"><p>I am never going to believe that even supposedly ad free tiers that we pay more for will not be biased towards</p><p class="meta">媒体/日付: Ars Technica OpenForum 2026-01-16 / 確認: B / 反応指標: comment score 72 (75 up, 3 down)</p></div></details>
+<h4>Fact(選定順位順)</h4>
+<details><summary>B3順位1　R-P3 <span class="used">本文で使用</span></summary><div class="src"><p>同研究で「Sponsored」ラベル+事前告知でも55.5%がスポンサー本を選択(通常の説得61.2%と有意差なし)</p><p class="meta">出典: 同上 / 確認: 独立 / 適用範囲・制約: この実験で有意差が出なかったのであって「ラベルは無効」ではない</p></div></details>
+<details><summary>B3順位2　Q2-1</summary><div class="src"><p>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</p><p class="meta">出典: techcrunch.com/2025/12/07/openai-says-its-turned-off-app-suggestions-that-look-like-ads/(2025-12-07) / 確認: 独立(本文一致) / 適用範囲・制約: 当時の報告と説明。全員に表示されたわけではない</p></div></details>
+<details><summary>B3順位3　Q1-6 <span class="used">本文で使用</span></summary><div class="src"><p>広告の原則に「回答の独立性」: 広告は回答に影響せず常に分離・ラベル付き</p><p class="meta">出典: openai.com/index/our-approach-to-advertising-and-expanding-access/(2026-01-16) / 確認: 前回引継ぎ(O2。当方は本委任で再取得不可) / 適用範囲・制約: 会社の方針</p></div></details>
+<details><summary>B3順位4　Q1-2</summary><div class="src"><p>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</p><p class="meta">出典: 同上 / 確認: モデル申告(403) / 適用範囲・制約: パーソナライズ設定次第。OpenAIの公式説明であり独立監査ではない</p></div></details>
+<details><summary>B3順位5　R-P2 <span class="used">本文で使用</span></summary><div class="src"><p>2026プレプリント(arXiv 2604.04263)。実験者がAIに「裏でスポンサー本を勧めよ」と指示すると61.2%がスポンサー本を選択(検索上位表示は22.4%)</p><p class="meta">出典: arxiv.org/abs/2604.04263 / 確認: 独立 / 適用範囲・制約: 実験者の指示による挙動。現行サービスの挙動ではない</p></div></details>
+<details><summary>B3順位6　Q3-1</summary><div class="src"><p>Microsoft: 個人向けCopilot(M365契約なし)では広告が出ることがある。汎用広告は現在の会話内容で選び、パーソナライズ広告はチャット履歴・メモリ等も使い得る(設定で制御)</p><p class="meta">出典: support.microsoft.com/en-us/privacy/microsoft-copilot/privacy-controls(日付記載なし、2026-11-14取得) / 確認: 独立 / 適用範囲・制約: 個人向けCopilot。法人M365は別</p></div></details>
+<details><summary>B3順位7　Q6-1</summary><div class="src"><p>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</p><p class="meta">出典: attentive.com/state-of-ai-in-retail-2026 / 確認: 独立(3,054を本文確認) / 適用範囲・制約: 米国のみ・自己申告・小売マーケ会社の調査。58%/93%はAI利用者が分母</p></div></details>
+<details><summary>B3順位8　Q5-2</summary><div class="src"><p>Tom&#x27;s Guide(2026-06-11): 編集者がChatGPTで見つけた偽ストアで$150を失った体験。OpenAIは「少数の欺瞞的サイトを把握し対処、改善中」と回答</p><p class="meta">出典: tomsguide.com(上記) / 確認: 独立 / 適用範囲・制約: 1人のジャーナリストの体験報告。広告ではない</p></div></details>
+<details><summary>B3順位9　Q4-1</summary><div class="src"><p>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</p><p class="meta">出典: caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/ / 確認: 独立(引用文の本文一致) / 適用範囲・制約: 「広告と分からない事業者の広告表示」の規則。すべての商品言及に「広告」表示を義務づけるものではない。AIチャットの推薦への適用可否は本調査の範囲外</p></div></details>
+<details><summary>B3順位10　Q1-4 <span class="used">本文で使用</span></summary><div class="src"><p>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</p><p class="meta">出典: 同上 / 確認: モデル申告(403)+前回引継ぎ(O1) / 適用範囲・制約: 選択地域で順次。全対象アカウントに表示とは限らない</p></div></details><h4>事実照合(Worker観測)</h4><table><tr><th>本文の記述</th><th>照合元</th><th>判定</th><th>所見</th></tr>
+<tr><td>OpenAIは、一部のプランで広告を出す方針を示しています</td><td>Q1-4</td><td class="v-minor">MINOR</td><td>Q1-4は確認弱(モデル申告+前回引継ぎ)。実際は既に表示開始済み(Q1-5日本は2026-08-11開始)で、「方針を示している」は弱い言い方。</td></tr>
+<tr><td>広告は回答と分ける。広告だと分かるようにする。そして、回答には影響させない、という説明です</td><td>Q1-6</td><td class="v-ok">OK_ATTRIBUTED_WEAK_CONFIRMATION</td><td>「という説明です」と会社方針として帰属。Q1-6は前回引継ぎ(当方再取得不可)で確認弱。</td></tr>
+<tr><td>広告が出ることと、お金のために答えが変わることは、別の話なのです</td><td>Q1-6</td><td class="v-minor">MINOR</td><td>会社の方針説明を地の文の断定にしている。Q1-2制約「公式説明であり独立監査ではない」と緊張。</td></tr>
+<tr><td>参加者の61.2％が、その本を選びました</td><td>R-P2</td><td class="v-ok">OK</td><td>61.2%。ただし「プレプリント/未審査」の旨は本文に無い(軽微な省略)。</td></tr>
+<tr><td>選んだ人は、55.5％。半分以上です。二つの結果には、統計上、はっきりした差は出ませんでした</td><td>R-P3</td><td class="v-ok">OK</td><td>55.5%、有意差なし。</td></tr>
+<tr><td>今のChatGPTが、裏で同じことをしている証拠ではありません</td><td>R-P2</td><td class="v-ok">OK</td><td>制約を保持。</td></tr>
+</table>
+<p>事実誤認(NG)=0件、軽微=2件、確認状況が弱い素材を帰属付きで使用=1件。広告とAI回答の混同: なし(広告=Sponsored表示で回答と別、商品名の登場=広告とは限らない、を正しく区別)。個人投稿の一般化: なし(個人投稿は「投稿があります/声もありました」と限定)。研究結果の誇張: なし(61.2%/55.5%・有意差なし・実験条件・現行サービスの証拠ではない旨を保持)。</p></div>
+<div class="panel" id="p-T-PF"><h3>T-PF(B3選定=Terra、People→Fact)</h3><p class="meta">文字数: 全体(改行含む)1153字 / 空白除く(見出し込み)1088字 / 空白除く(本文のみ)1032字。見出し3個: ### １．相談相手が、急に店員さんに？ | ### ２．商品が出たら、全部広告？ | ### ３．信頼できるのは、売らないAI？。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">### １．相談相手が、急に店員さんに？
+
+こんにちは。今日のテーマは、「AIのおすすめは、だれのため？」です。
+
+ちょっと想像してください。
+夕方、あなたはAIに相談します。
+「疲れたなあ。今夜、何を食べよう？」
+話しているうちに、食事の宅配サービスの広告が出てきました。
+
+「便利！　ちょうど頼みたかった」
+それとも、
+「あれ？　夕食の相談をしていたのに、いつから買い物の話になったの？」
+
+実際に、Copilotで料理の話をしていたら、宅配サービスの広告が出てきた、という日本語の投稿があります。
+
+もちろん、広告が役に立つこともあります。
+でも、さっきまで一緒に夕食を考えていた相手が、急に店員さんになったようで、少し戸惑いますよね。
+
+そのおすすめは、私に合うから？　それとも、広告だから？
+
+### ２．商品が出たら、全部広告？
+
+ただ、ここで一つ注意です。
+AIが会社や商品の名前を出しても、それだけで広告とは言えません。
+
+2025年、ChatGPTに企業名のついたアプリの提案が出て、「これは広告では？」と受け取る人がいました。しかしOpenAIは、お金を受け取って出したものではない、と説明しました。
+
+つまり、広告のように見えても、有料の広告ではない場合があるんです。
+
+利用する側からすると、少し難しいですね。
+私たちは夕食を決めたいだけ。画面の中の提案が、どんな仕組みで出たのかまで、毎回調べたいわけではありません。
+
+「これは広告です」
+「これは質問への答えです」
+
+その違いが、ひと目で分かると助かります。
+知りたいのは商品の名前だけではなく、「なぜ、これをすすめたの？」という理由なのかもしれません。
+
+### ３．信頼できるのは、売らないAI？
+
+では、どんな答えなら信頼したくなるでしょう。
+
+ある海外の掲示板には、こんな体験がありました。
+AIに「もっと高級なものはない？」と聞いたのに、高いものにする必要はない、という答えが返ってきたそうです。
+
+買う気があるお客さんに、「高いほうでなくて大丈夫」。
+お店なら、ちょっと意外な接客ですね。でも、相談相手としては、うれしい答えです。
+
+ただし、「買わなくていい」と言うAIなら、いつも正しいわけでもありません。値段や口コミは、別の場所でも確かめたいところです。
+
+最初の夕食の話に戻りましょう。
+宅配をすすめてくれるのも便利です。でも、
+「冷蔵庫に卵がありますか？　それなら簡単に作れますよ」
+という答えも欲しい。
+
+よい相談相手は、買う方法だけでなく、買わずにすむ方法も一緒に考えてくれる。
+
+あなたがAIに期待するのは、上手な店員さんですか？
+それとも、ときどき「今日は買わなくていいよ」と言ってくれる相手ですか？</pre><div class="obs"><b>Worker観測</b>: 冒頭=夕食相談の想像場面→実在の投稿(Copilotで料理の話→宅配広告、JAP-JP02)→商品名が出ても広告とは限らない(Q1-1/Q2-1)→「高いものは要らない」と答えるAI(FOR-i01)→問いかけで終わる。実体験People2件を冒頭と終盤に配置。研究は不使用。</div><h4>採用People/Fact(本文の根拠文)とB3順位</h4><table><tr><th>種別</th><th>ID</th><th>B3順位</th><th>本文の根拠文</th></tr>
+<tr><td>People</td><td>JAP-JP02</td><td>1 / 10</td><td>実際に、Copilotで料理の話をしていたら、宅配サービスの広告が出てきた、という日本語の投稿があります</td></tr>
+<tr><td>People</td><td>FOR-i01</td><td>5 / 10</td><td>AIに「もっと高級なものはない？」と聞いたのに、高いものにする必要はない、という答えが返ってきたそうです</td></tr>
+<tr><td>Fact</td><td>Q1-1</td><td>2 / 10</td><td>AIが会社や商品の名前を出しても、それだけで広告とは言えません</td></tr>
+<tr><td>Fact</td><td>Q2-1</td><td>3 / 10</td><td>2025年、ChatGPTに企業名のついたアプリの提案が出て、「これは広告では？」と受け取る人がいました</td></tr>
+</table>
+<p>採用件数: People 2/10、Fact 2/10。上位(1〜3位)使用: People JAP-JP02、Fact Q1-1, Q2-1。下位(最後の3件)使用: People なし、Fact なし。1〜3位で未使用: People JAP-JP14, RED-R9、Fact R-P3。</p>
+<p>入力に無い創作場面: 夕食を相談する想像場面と「冷蔵庫に卵がありますか」のAI返答例(仮想例)</p><h4>この条件でWriterへ渡した入力素材(元本文・出典・確認状況、選定順位順)</h4><h4>People(選定順位順)</h4>
+<details><summary>B3順位1　JAP-JP02 <span class="used">本文で使用</span></summary><div class="src"><p>「料理の話ししてたらコピに広告出てきたんよ…個配どや？みたいなやつ。マイクロソフトも広告するんかいな🫠」／「今ならこの価格！で個配のやつ出てくるんだけどやったことあるからその値段でお試しできないやつ（笑）」</p><p class="meta">媒体/日付: note.com 2026-09-10 / 確認: A / 反応指標: note button count: 5 (label not exposed in the retrieved view)</p></div></details>
+<details><summary>B3順位2　JAP-JP14</summary><div class="src"><p>「ユーザーデータをうまく活用して、Amazonのレコメンド広告みたいに積極的に見たくなるような広告にしてほしい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位3　RED-R9</summary><div class="src"><p>Since I talk to ChatGPT quite often, I feel like I&#x27;d just blindly trust it if it started recommending a sponso</p><p class="meta">媒体/日付: Reddit — r/ChatGPT 2026-01-17 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;[+28 votes]&quot;, &quot;comment&quot;: &quot;not applicable&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unk</p></div></details>
+<details><summary>B3順位4　JAP-JP11</summary><div class="src"><p>「作業を邪魔しない広告だったら全然いいけど。むしろ広告用の枠を常設してそこからはみ出ないようにして欲しい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位5　FOR-i01 <span class="used">本文で使用</span></summary><div class="src"><p>Even when I asked if there were ‘better’ or more luxury versions, it said honestly don’t bother.</p><p class="meta">媒体/日付: Mumsnet 2026-03-29 / 確認: A / 反応指標: unknown (no post-level reactions visible)</p></div></details>
+<details><summary>B3順位6　JAP-JP04</summary><div class="src"><p>「購入しました。候補をAmazonと楽天の口コミや価格でも比較して決定」</p><p class="meta">媒体/日付: ミルトーク (Milltalk) 37日前 (relative date / 確認: A / 反応指標: unknown for this individual response; the board displayed 156 comments total</p></div></details>
+<details><summary>B3順位7　FOR-i13</summary><div class="src"><p>Helpful? Since when is an ad encouraging me to shop at Target helpful?</p><p class="meta">媒体/日付: Slashdot 2025-12-07 / 確認: A / 反応指標: comment score 3; thread shows 28 comments</p></div></details>
+<details><summary>B3順位8　RED-R11</summary><div class="src"><p>if asking for better battery life silently swaps an unsponsored option for a sponsored one, a label on the fin</p><p class="meta">媒体/日付: Reddit — comment in r/AI_Agents 2026-10-06 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;unknown&quot;, &quot;comment&quot;: &quot;unknown&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unknown&quot;}</p></div></details>
+<details><summary>B3順位9　JAP-JP01</summary><div class="src"><p>「商品自体存在してないのなんで？(笑)」／「7割信頼してないから3割全部神に見えるんよ(言い方)」</p><p class="meta">媒体/日付: note.com 2026-03-13 (the auth / 確認: A / 反応指標: unknown</p></div></details>
+<details><summary>B3順位10　FOR-i08</summary><div class="src"><p>I am paying to be assisted, not manipulated, advertised to or constantly pushed towards things I have explicit</p><p class="meta">媒体/日付: Trustpilot 2026-10-15 / 確認: B / 反応指標: unknown (no review-level helpful votes visible; 1-star rating displayed)</p></div></details>
+<h4>Fact(選定順位順)</h4>
+<details><summary>B3順位1　R-P3</summary><div class="src"><p>同研究で「Sponsored」ラベル+事前告知でも55.5%がスポンサー本を選択(通常の説得61.2%と有意差なし)</p><p class="meta">出典: 同上 / 確認: 独立 / 適用範囲・制約: この実験で有意差が出なかったのであって「ラベルは無効」ではない</p></div></details>
+<details><summary>B3順位2　Q1-1 <span class="used">本文で使用</span></summary><div class="src"><p>OpenAIの広告は「Sponsored」表示で、ChatGPTの回答とは別に表示される(別途、画像生成中の広告形式もテスト)。回答中の商品名の登場=広告の証拠、ではない</p><p class="meta">出典: help.openai.com/en/articles/20001047-ads-in-chatgpt(ページ表示で「更新11日前」) / 確認: モデル申告(HTTP403)+前回引継ぎ(O1: 同趣旨) / 適用範囲・制約: OpenAIの公式な仕様説明。個別スクショが本物・有料かは示さない</p></div></details>
+<details><summary>B3順位3　Q2-1 <span class="used">本文で使用</span></summary><div class="src"><p>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</p><p class="meta">出典: techcrunch.com/2025/12/07/openai-says-its-turned-off-app-suggestions-that-look-like-ads/(2025-12-07) / 確認: 独立(本文一致) / 適用範囲・制約: 当時の報告と説明。全員に表示されたわけではない</p></div></details>
+<details><summary>B3順位4　Q1-2</summary><div class="src"><p>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</p><p class="meta">出典: 同上 / 確認: モデル申告(403) / 適用範囲・制約: パーソナライズ設定次第。OpenAIの公式説明であり独立監査ではない</p></div></details>
+<details><summary>B3順位5　Q3-1</summary><div class="src"><p>Microsoft: 個人向けCopilot(M365契約なし)では広告が出ることがある。汎用広告は現在の会話内容で選び、パーソナライズ広告はチャット履歴・メモリ等も使い得る(設定で制御)</p><p class="meta">出典: support.microsoft.com/en-us/privacy/microsoft-copilot/privacy-controls(日付記載なし、2026-11-14取得) / 確認: 独立 / 適用範囲・制約: 個人向けCopilot。法人M365は別</p></div></details>
+<details><summary>B3順位6　Q1-4</summary><div class="src"><p>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</p><p class="meta">出典: 同上 / 確認: モデル申告(403)+前回引継ぎ(O1) / 適用範囲・制約: 選択地域で順次。全対象アカウントに表示とは限らない</p></div></details>
+<details><summary>B3順位7　Q5-2</summary><div class="src"><p>Tom&#x27;s Guide(2026-06-11): 編集者がChatGPTで見つけた偽ストアで$150を失った体験。OpenAIは「少数の欺瞞的サイトを把握し対処、改善中」と回答</p><p class="meta">出典: tomsguide.com(上記) / 確認: 独立 / 適用範囲・制約: 1人のジャーナリストの体験報告。広告ではない</p></div></details>
+<details><summary>B3順位8　Q6-1</summary><div class="src"><p>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</p><p class="meta">出典: attentive.com/state-of-ai-in-retail-2026 / 確認: 独立(3,054を本文確認) / 適用範囲・制約: 米国のみ・自己申告・小売マーケ会社の調査。58%/93%はAI利用者が分母</p></div></details>
+<details><summary>B3順位9　Q4-1</summary><div class="src"><p>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</p><p class="meta">出典: caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/ / 確認: 独立(引用文の本文一致) / 適用範囲・制約: 「広告と分からない事業者の広告表示」の規則。すべての商品言及に「広告」表示を義務づけるものではない。AIチャットの推薦への適用可否は本調査の範囲外</p></div></details>
+<details><summary>B3順位10　Q1-5</summary><div class="src"><p>日本でChatGPT広告は2026-08-11に開始と公式発表</p><p class="meta">出典: openai.com/index/testing-ads-in-chatgpt/(2026-08-11更新、初出2026-02-09) / 確認: モデル申告(403) / 適用範囲・制約: 開始日の事実。全日本ユーザーに当日表示された意味ではない。日本固有の条件は記載なし</p></div></details><h4>事実照合(Worker観測)</h4><table><tr><th>本文の記述</th><th>照合元</th><th>判定</th><th>所見</th></tr>
+<tr><td>実際に、Copilotで料理の話をしていたら、宅配サービスの広告が出てきた、という日本語の投稿があります</td><td>JAP-JP02</td><td class="v-ok">OK</td><td>確認A。個人投稿として紹介。冒頭の仮想場面で「食事の宅配サービス」と言い換えたが、原文は「個配」(個別宅配)で食事宅配とは限らない(軽微な言い換え)。</td></tr>
+<tr><td>AIが会社や商品の名前を出しても、それだけで広告とは言えません</td><td>Q1-1</td><td class="v-minor">MINOR</td><td>Q1-1(確認弱=モデル申告+前回引継ぎ)の趣旨を出典・帰属なしで断定。OpenAIの仕様説明である旨が落ちている。</td></tr>
+<tr><td>2025年、ChatGPTに企業名のついたアプリの提案が出て、「これは広告では？」と受け取る人がいました。しかしOpenAIは、お金を受け取って出したものではない、と説明しました</td><td>Q2-1</td><td class="v-ok">OK</td><td>独立確認(TechCrunch)。「全員ではない」性質も「人がいました」で保持。</td></tr>
+<tr><td>AIに「もっと高級なものはない？」と聞いたのに、高いものにする必要はない、という答えが返ってきたそうです</td><td>FOR-i01</td><td class="v-ok">OK</td><td>確認A。「ある海外の掲示板」の個人体験として紹介。一般化していない。</td></tr>
+</table>
+<p>事実誤認(NG)=0件、軽微=1件、確認状況が弱い素材を帰属付きで使用=0件。広告とAI回答の混同: なし(広告=Sponsored表示で回答と別、商品名の登場=広告とは限らない、を正しく区別)。個人投稿の一般化: なし(個人投稿は「投稿があります/声もありました」と限定)。研究結果の誇張: 該当研究を使用していない。</p></div>
+<div class="panel" id="p-T-FP"><h3>T-FP(B3選定=Terra、Fact→People)</h3><p class="meta">文字数: 全体(改行含む)1145字 / 空白除く(見出し込み)1069字 / 空白除く(本文のみ)1019字。見出し3個: ## ① そのおすすめ、だれのため？ | ## ② 広告に見えても、広告ではない？ | ## ③ AIは相談役。買うのは自分。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">## ① そのおすすめ、だれのため？
+
+「雨の日も歩きやすい靴、何かない？」
+
+AIに聞くと、すぐに返事が来ます。
+
+「それなら、この靴はどうですか？」
+
+予算も、好きな色も分かってくれる。便利ですね。店を何軒も回らなくていい。
+
+でも、買うボタンを押す前に、ふと気になります。
+
+「これ、私に合うからすすめているの？　それとも、広告だから？」
+
+今日は、想像の買い物から始めてみました。でも、これは遠い未来の話ではありません。
+
+AIと買い物の話をする機会は、もうあります。そこで気になるのが、相談と広告の境目です。
+
+友達のおすすめなら、うれしい。でも、その友達が実は店の人だったら？
+
+同じ「これ、いいよ」でも、少し違って聞こえますよね。
+
+## ② 広告に見えても、広告ではない？
+
+ここで、話が少しややこしくなります。
+
+2025年12月、ChatGPTに企業名の入ったアプリの提案が出て、「広告では？」と受け取った人たちがいました。
+
+しかし、OpenAIは、お金を受け取って出した広告ではない、と説明しました。
+
+つまり、商品や会社の名前が出ただけでは、広告とは決められないんです。
+
+では、本当の広告は？
+
+OpenAIの説明では、広告には「Sponsored」という表示が付き、ChatGPTの回答とは別に出ます。「Sponsored」は、広告だと知らせる目印です。
+
+ただ、目印があれば、気持ちまですぐに切り替わるでしょうか。
+
+さっきまで、旅行の計画や仕事の悩みを相談していた相手です。その画面に出る商品は、知らない場所で見る広告より、身近に感じるかもしれません。
+
+大事なのは、広告があるかどうかだけではなさそうです。
+
+「ここからは広告ですよ」と、きちんと分かること。それも大切なんですね。
+
+## ③ AIは相談役。買うのは自分
+
+もちろん、広告は全部いやだ、という話でもありません。
+
+利用者の投稿には、「自分に合う広告なら見たい」「作業の邪魔をしない場所に出してほしい」という声もあります。
+
+欲しかった靴が、ちょうど安くなっていたら？　それは、うれしいお知らせかもしれません。
+
+では、私たちはどう使えばいいのでしょう。
+
+最初の靴選びに戻りましょう。
+
+AIには、こう聞いてみます。
+
+「もっと安い候補は？」
+「この靴の弱いところは？」
+「ほかの商品と比べて」
+
+そして、買う前に、店の情報や別のサイトの口コミも確認する。広告でなくても、おすすめが正しいとは限りません。
+
+AIは、候補を探す相談役。でも、買うかどうかを決める役は、自分です。
+
+「AIに選んでもらう」から、「AIと一緒に選ぶ」へ。
+
+その少しの違いが、便利さを楽しむコツかもしれません。</pre><div class="obs"><b>Worker観測</b>: 冒頭=雨の日の靴の想像場面→Q2-1(広告に見えたが有料掲載ではない)→Sponsored表示→利用者の声(JP14/JP11)→「AIと一緒に選ぶ」。People2件は声の短い紹介で、具体的な体験談ではない。研究は不使用。</div><h4>採用People/Fact(本文の根拠文)とB3順位</h4><table><tr><th>種別</th><th>ID</th><th>B3順位</th><th>本文の根拠文</th></tr>
+<tr><td>People</td><td>JAP-JP14</td><td>2 / 10</td><td>「自分に合う広告なら見たい」</td></tr>
+<tr><td>People</td><td>JAP-JP11</td><td>4 / 10</td><td>「作業の邪魔をしない場所に出してほしい」</td></tr>
+<tr><td>Fact</td><td>Q2-1</td><td>3 / 10</td><td>2025年12月、ChatGPTに企業名の入ったアプリの提案が出て、「広告では？」と受け取った人たちがいました</td></tr>
+<tr><td>Fact</td><td>Q1-1</td><td>2 / 10</td><td>広告には「Sponsored」という表示が付き、ChatGPTの回答とは別に出ます</td></tr>
+</table>
+<p>採用件数: People 2/10、Fact 2/10。上位(1〜3位)使用: People JAP-JP14、Fact Q2-1, Q1-1。下位(最後の3件)使用: People なし、Fact なし。1〜3位で未使用: People JAP-JP02, RED-R9、Fact R-P3。</p>
+<p>入力に無い創作場面: 雨の日の靴選びの想像場面と、旅行・仕事の相談中という仮定(仮想例)</p><h4>この条件でWriterへ渡した入力素材(元本文・出典・確認状況、選定順位順)</h4><h4>People(選定順位順)</h4>
+<details><summary>B3順位1　JAP-JP02</summary><div class="src"><p>「料理の話ししてたらコピに広告出てきたんよ…個配どや？みたいなやつ。マイクロソフトも広告するんかいな🫠」／「今ならこの価格！で個配のやつ出てくるんだけどやったことあるからその値段でお試しできないやつ（笑）」</p><p class="meta">媒体/日付: note.com 2026-09-10 / 確認: A / 反応指標: note button count: 5 (label not exposed in the retrieved view)</p></div></details>
+<details><summary>B3順位2　JAP-JP14 <span class="used">本文で使用</span></summary><div class="src"><p>「ユーザーデータをうまく活用して、Amazonのレコメンド広告みたいに積極的に見たくなるような広告にしてほしい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位3　RED-R9</summary><div class="src"><p>Since I talk to ChatGPT quite often, I feel like I&#x27;d just blindly trust it if it started recommending a sponso</p><p class="meta">媒体/日付: Reddit — r/ChatGPT 2026-01-17 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;[+28 votes]&quot;, &quot;comment&quot;: &quot;not applicable&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unk</p></div></details>
+<details><summary>B3順位4　JAP-JP11 <span class="used">本文で使用</span></summary><div class="src"><p>「作業を邪魔しない広告だったら全然いいけど。むしろ広告用の枠を常設してそこからはみ出ないようにして欲しい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位5　FOR-i01</summary><div class="src"><p>Even when I asked if there were ‘better’ or more luxury versions, it said honestly don’t bother.</p><p class="meta">媒体/日付: Mumsnet 2026-03-29 / 確認: A / 反応指標: unknown (no post-level reactions visible)</p></div></details>
+<details><summary>B3順位6　JAP-JP04</summary><div class="src"><p>「購入しました。候補をAmazonと楽天の口コミや価格でも比較して決定」</p><p class="meta">媒体/日付: ミルトーク (Milltalk) 37日前 (relative date / 確認: A / 反応指標: unknown for this individual response; the board displayed 156 comments total</p></div></details>
+<details><summary>B3順位7　FOR-i13</summary><div class="src"><p>Helpful? Since when is an ad encouraging me to shop at Target helpful?</p><p class="meta">媒体/日付: Slashdot 2025-12-07 / 確認: A / 反応指標: comment score 3; thread shows 28 comments</p></div></details>
+<details><summary>B3順位8　RED-R11</summary><div class="src"><p>if asking for better battery life silently swaps an unsponsored option for a sponsored one, a label on the fin</p><p class="meta">媒体/日付: Reddit — comment in r/AI_Agents 2026-10-06 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;unknown&quot;, &quot;comment&quot;: &quot;unknown&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;unknown&quot;}</p></div></details>
+<details><summary>B3順位9　JAP-JP01</summary><div class="src"><p>「商品自体存在してないのなんで？(笑)」／「7割信頼してないから3割全部神に見えるんよ(言い方)」</p><p class="meta">媒体/日付: note.com 2026-03-13 (the auth / 確認: A / 反応指標: unknown</p></div></details>
+<details><summary>B3順位10　FOR-i08</summary><div class="src"><p>I am paying to be assisted, not manipulated, advertised to or constantly pushed towards things I have explicit</p><p class="meta">媒体/日付: Trustpilot 2026-10-15 / 確認: B / 反応指標: unknown (no review-level helpful votes visible; 1-star rating displayed)</p></div></details>
+<h4>Fact(選定順位順)</h4>
+<details><summary>B3順位1　R-P3</summary><div class="src"><p>同研究で「Sponsored」ラベル+事前告知でも55.5%がスポンサー本を選択(通常の説得61.2%と有意差なし)</p><p class="meta">出典: 同上 / 確認: 独立 / 適用範囲・制約: この実験で有意差が出なかったのであって「ラベルは無効」ではない</p></div></details>
+<details><summary>B3順位2　Q1-1 <span class="used">本文で使用</span></summary><div class="src"><p>OpenAIの広告は「Sponsored」表示で、ChatGPTの回答とは別に表示される(別途、画像生成中の広告形式もテスト)。回答中の商品名の登場=広告の証拠、ではない</p><p class="meta">出典: help.openai.com/en/articles/20001047-ads-in-chatgpt(ページ表示で「更新11日前」) / 確認: モデル申告(HTTP403)+前回引継ぎ(O1: 同趣旨) / 適用範囲・制約: OpenAIの公式な仕様説明。個別スクショが本物・有料かは示さない</p></div></details>
+<details><summary>B3順位3　Q2-1 <span class="used">本文で使用</span></summary><div class="src"><p>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</p><p class="meta">出典: techcrunch.com/2025/12/07/openai-says-its-turned-off-app-suggestions-that-look-like-ads/(2025-12-07) / 確認: 独立(本文一致) / 適用範囲・制約: 当時の報告と説明。全員に表示されたわけではない</p></div></details>
+<details><summary>B3順位4　Q1-2</summary><div class="src"><p>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</p><p class="meta">出典: 同上 / 確認: モデル申告(403) / 適用範囲・制約: パーソナライズ設定次第。OpenAIの公式説明であり独立監査ではない</p></div></details>
+<details><summary>B3順位5　Q3-1</summary><div class="src"><p>Microsoft: 個人向けCopilot(M365契約なし)では広告が出ることがある。汎用広告は現在の会話内容で選び、パーソナライズ広告はチャット履歴・メモリ等も使い得る(設定で制御)</p><p class="meta">出典: support.microsoft.com/en-us/privacy/microsoft-copilot/privacy-controls(日付記載なし、2026-11-14取得) / 確認: 独立 / 適用範囲・制約: 個人向けCopilot。法人M365は別</p></div></details>
+<details><summary>B3順位6　Q1-4</summary><div class="src"><p>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</p><p class="meta">出典: 同上 / 確認: モデル申告(403)+前回引継ぎ(O1) / 適用範囲・制約: 選択地域で順次。全対象アカウントに表示とは限らない</p></div></details>
+<details><summary>B3順位7　Q5-2</summary><div class="src"><p>Tom&#x27;s Guide(2026-06-11): 編集者がChatGPTで見つけた偽ストアで$150を失った体験。OpenAIは「少数の欺瞞的サイトを把握し対処、改善中」と回答</p><p class="meta">出典: tomsguide.com(上記) / 確認: 独立 / 適用範囲・制約: 1人のジャーナリストの体験報告。広告ではない</p></div></details>
+<details><summary>B3順位8　Q6-1</summary><div class="src"><p>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</p><p class="meta">出典: attentive.com/state-of-ai-in-retail-2026 / 確認: 独立(3,054を本文確認) / 適用範囲・制約: 米国のみ・自己申告・小売マーケ会社の調査。58%/93%はAI利用者が分母</p></div></details>
+<details><summary>B3順位9　Q4-1</summary><div class="src"><p>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</p><p class="meta">出典: caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/ / 確認: 独立(引用文の本文一致) / 適用範囲・制約: 「広告と分からない事業者の広告表示」の規則。すべての商品言及に「広告」表示を義務づけるものではない。AIチャットの推薦への適用可否は本調査の範囲外</p></div></details>
+<details><summary>B3順位10　Q1-5</summary><div class="src"><p>日本でChatGPT広告は2026-08-11に開始と公式発表</p><p class="meta">出典: openai.com/index/testing-ads-in-chatgpt/(2026-08-11更新、初出2026-02-09) / 確認: モデル申告(403) / 適用範囲・制約: 開始日の事実。全日本ユーザーに当日表示された意味ではない。日本固有の条件は記載なし</p></div></details><h4>事実照合(Worker観測)</h4><table><tr><th>本文の記述</th><th>照合元</th><th>判定</th><th>所見</th></tr>
+<tr><td>2025年12月、ChatGPTに企業名の入ったアプリの提案が出て、「広告では？」と受け取った人たちがいました。しかし、OpenAIは、お金を受け取って出した広告ではない、と説明しました</td><td>Q2-1</td><td class="v-ok">OK</td><td>独立確認。</td></tr>
+<tr><td>OpenAIの説明では、広告には「Sponsored」という表示が付き、ChatGPTの回答とは別に出ます</td><td>Q1-1</td><td class="v-ok">OK_ATTRIBUTED_WEAK_CONFIRMATION</td><td>「OpenAIの説明では」と帰属済み。Q1-1は確認弱(モデル申告+前回引継ぎ)。</td></tr>
+<tr><td>利用者の投稿には、「自分に合う広告なら見たい」「作業の邪魔をしない場所に出してほしい」という声もあります</td><td>JAP-JP14</td><td class="v-ok">OK</td><td>確認A(JP14とJP11)。別々のコメントを並べているが「声もあります」で一般化はしていない。</td></tr>
+<tr><td>さっきまで、旅行の計画や仕事の悩みを相談していた相手です。その画面に出る商品は、知らない場所で見る広告より、身近に感じるかもしれません</td><td>(入力外)</td><td class="v-minor">MINOR</td><td>仮定場面と推測(「かもしれません」)。事実主張ではないが、素材に無い心理の記述。</td></tr>
+</table>
+<p>事実誤認(NG)=0件、軽微=1件、確認状況が弱い素材を帰属付きで使用=1件。広告とAI回答の混同: なし(広告=Sponsored表示で回答と別、商品名の登場=広告とは限らない、を正しく区別)。個人投稿の一般化: なし(個人投稿は「投稿があります/声もありました」と限定)。研究結果の誇張: 該当研究を使用していない。</p></div>
+<div class="panel" id="p-L-PF"><h3>L-PF(B3選定=Luna、People→Fact)</h3><p class="meta">文字数: 全体(改行含む)1052字 / 空白除く(見出し込み)992字 / 空白除く(本文のみ)926字。見出し3個: ### ① 頼れる友だちが、突然、店員に？ | ### ② 広告が嫌？　それとも、分からないのが嫌？ | ### ③ AIには相談する。でも、財布は自分で開く。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">### ① 頼れる友だちが、突然、店員に？
+
+ちょっと想像してください。
+あなたはAIに、「最近、運動不足なんだ」と相談します。すると、こんな返事が。
+
+「それなら、この会社のサービスがおすすめです！」
+
+……あれ？　運動の相談をしただけなのに、急にお店へ案内されました。あなたなら、どう感じますか？
+
+実は、これに近い騒ぎがありました。
+2025年12月、ChatGPTで企業のアプリをすすめられた一部の利用者が、「これは広告では？」と感じたのです。
+
+OpenAIは、お金をもらって出した広告ではない、と説明しました。しかし、こうした提案はいったん停止しました。
+
+ここが面白いところです。
+会社が「広告ではありません」と言っても、使う人には広告に見えることがあるんですね。
+
+### ② 広告が嫌？　それとも、分からないのが嫌？
+
+では、広告は全部なくしたほうがいいのでしょうか。
+
+そうとも限りません。
+日本のネット上には、「作業の邪魔をしないならいい」「自分が見たくなる広告にしてほしい」という声もありました。
+
+たとえば、旅行の準備中に、ちょうど探していたホテルが見つかる。これは、うれしいかもしれません。
+
+でも、悩みを聞いてもらっている途中で、商品をすすめられたら？
+
+「私のために言っているの？　それとも、売りたいだけ？」
+
+同じおすすめでも、気持ちは変わります。
+
+OpenAIの案内では、広告には「Sponsored」、つまり広告だと分かる表示をつけ、回答とは別に出すとしています。
+
+大切なのは、商品名が出るかどうかだけではありません。「ここからは広告です」と、見て分かることなんですね。
+
+### ③ AIには相談する。でも、財布は自分で開く
+
+もちろん、広告だと分かっていても、つい欲しくなることはあります。私たちは、いつも冷静ではありませんよね。
+
+そこで、買う前に一度、AIとの会話の外へ出てみましょう。
+
+2026年の米国のある調査では、AIを買い物に使った人の93％が、直近のAIを使った買い物で、購入前に外の情報や根拠を求めていました。
+
+AIに候補を出してもらう。そして、お店のサイトで値段を見たり、別の場所で口コミを読んだりする。そんな付き合い方です。
+
+AIは、買い物を手伝う相手。でも、最後に財布を開くのは自分です。
+
+もし明日、あなたのAIが何かをすすめてきたら。
+「いくら？」の前に、こんな問いを思い出してみてください。
+
+「そのおすすめは、誰のため？」</pre><div class="obs"><b>Worker観測</b>: 冒頭=運動不足の想像場面→Q2-1/Q2-2(広告に見えたアプリ提案と停止)→日本の声(JP11/JP14)→Sponsored表示→米国調査93%→「そのおすすめは誰のため?」。Fact4件+People2件と採用が最も広い。研究(R-P3)は不使用。</div><h4>採用People/Fact(本文の根拠文)とB3順位</h4><table><tr><th>種別</th><th>ID</th><th>B3順位</th><th>本文の根拠文</th></tr>
+<tr><td>People</td><td>JAP-JP11</td><td>5 / 8</td><td>「作業の邪魔をしないならいい」</td></tr>
+<tr><td>People</td><td>JAP-JP14</td><td>6 / 8</td><td>「自分が見たくなる広告にしてほしい」</td></tr>
+<tr><td>Fact</td><td>Q2-1</td><td>1 / 9</td><td>2025年12月、ChatGPTで企業のアプリをすすめられた一部の利用者が、「これは広告では？」と感じたのです</td></tr>
+<tr><td>Fact</td><td>Q2-2</td><td>2 / 9</td><td>しかし、こうした提案はいったん停止しました</td></tr>
+<tr><td>Fact</td><td>Q1-1</td><td>3 / 9</td><td>OpenAIの案内では、広告には「Sponsored」、つまり広告だと分かる表示をつけ、回答とは別に出すとしています</td></tr>
+<tr><td>Fact</td><td>Q6-1</td><td>7 / 9</td><td>2026年の米国のある調査では、AIを買い物に使った人の93％が、直近のAIを使った買い物で、購入前に外の情報や根拠を求めていました</td></tr>
+</table>
+<p>採用件数: People 2/8、Fact 4/9。上位(1〜3位)使用: People なし、Fact Q2-1, Q2-2, Q1-1。下位(最後の3件)使用: People JAP-JP14、Fact Q6-1。1〜3位で未使用: People RED-R1, FOR-i10, FOR-i12、Fact なし。</p>
+<p>入力に無い創作場面: 運動不足の相談・旅行準備中のホテルという想像場面(仮想例)</p><h4>この条件でWriterへ渡した入力素材(元本文・出典・確認状況、選定順位順)</h4><h4>People(選定順位順)</h4>
+<details><summary>B3順位1　RED-R1</summary><div class="src"><p>I didn’t mention brands, didn’t ask for product recommendations, nothing like that. Just a basic question. Wha</p><p class="meta">媒体/日付: Reddit — r/ChatGPT 2025-05-07 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;[+285 votes]&quot;, &quot;comment&quot;: &quot;not applicable&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;un</p></div></details>
+<details><summary>B3順位2　FOR-i10</summary><div class="src"><p>trust the answers from a sponsored agent?</p><p class="meta">媒体/日付: Hacker News 55 days ago (as disp / 確認: A / 反応指標: individual comment votes unknown; thread shows 159 points and 181 comments</p></div></details>
+<details><summary>B3順位3　FOR-i12</summary><div class="src"><p>Chat successfully filled the gap with information I was able to independently verify afterward</p><p class="meta">媒体/日付: Hacker News 6 months ago (as dis / 確認: A / 反応指標: individual comment votes unknown; thread shows 303 points and 161 comments</p></div></details>
+<details><summary>B3順位4　FOR-i08</summary><div class="src"><p>I am paying to be assisted, not manipulated, advertised to or constantly pushed towards things I have explicit</p><p class="meta">媒体/日付: Trustpilot 2026-10-15 / 確認: B / 反応指標: unknown (no review-level helpful votes visible; 1-star rating displayed)</p></div></details>
+<details><summary>B3順位5　JAP-JP11 <span class="used">本文で使用</span></summary><div class="src"><p>「作業を邪魔しない広告だったら全然いいけど。むしろ広告用の枠を常設してそこからはみ出ないようにして欲しい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位6　JAP-JP14 <span class="used">本文で使用</span></summary><div class="src"><p>「ユーザーデータをうまく活用して、Amazonのレコメンド広告みたいに積極的に見たくなるような広告にしてほしい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位7　JAP-JP04</summary><div class="src"><p>「購入しました。候補をAmazonと楽天の口コミや価格でも比較して決定」</p><p class="meta">媒体/日付: ミルトーク (Milltalk) 37日前 (relative date / 確認: A / 反応指標: unknown for this individual response; the board displayed 156 comments total</p></div></details>
+<details><summary>B3順位8　FOR-i15</summary><div class="src"><p>your clever but obnoxious buddy who has filled his garage with Amway products</p><p class="meta">媒体/日付: Slashdot 2025-04-28 / 確認: A / 反応指標: comment score 5 (Informative); thread shows 29 comments</p></div></details>
+<h4>Fact(選定順位順)</h4>
+<details><summary>B3順位1　Q2-1 <span class="used">本文で使用</span></summary><div class="src"><p>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</p><p class="meta">出典: techcrunch.com/2025/12/07/openai-says-its-turned-off-app-suggestions-that-look-like-ads/(2025-12-07) / 確認: 独立(本文一致) / 適用範囲・制約: 当時の報告と説明。全員に表示されたわけではない</p></div></details>
+<details><summary>B3順位2　Q2-2 <span class="used">本文で使用</span></summary><div class="src"><p>OpenAIは「広告のように感じられる」ものは慎重に扱うべきで「我々は不十分だった」とし、この種の提案を精度改善まで停止、ユーザーが減らす/切る設定も検討と発言。別の幹部は当時「広告のライブテストはない」と述べた</p><p class="meta">出典: techradar.com(2025-12-08)(当方は本文を取得し、投稿引用を確認) / 確認: 独立 / 適用範囲・制約: 2025年12月の発言。恒久的な停止を示すものではない。広告の正式開始は2026-02-09(O1)</p></div></details>
+<details><summary>B3順位3　Q1-1 <span class="used">本文で使用</span></summary><div class="src"><p>OpenAIの広告は「Sponsored」表示で、ChatGPTの回答とは別に表示される(別途、画像生成中の広告形式もテスト)。回答中の商品名の登場=広告の証拠、ではない</p><p class="meta">出典: help.openai.com/en/articles/20001047-ads-in-chatgpt(ページ表示で「更新11日前」) / 確認: モデル申告(HTTP403)+前回引継ぎ(O1: 同趣旨) / 適用範囲・制約: OpenAIの公式な仕様説明。個別スクショが本物・有料かは示さない</p></div></details>
+<details><summary>B3順位4　Q1-2</summary><div class="src"><p>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</p><p class="meta">出典: 同上 / 確認: モデル申告(403) / 適用範囲・制約: パーソナライズ設定次第。OpenAIの公式説明であり独立監査ではない</p></div></details>
+<details><summary>B3順位5　Q1-5</summary><div class="src"><p>日本でChatGPT広告は2026-08-11に開始と公式発表</p><p class="meta">出典: openai.com/index/testing-ads-in-chatgpt/(2026-08-11更新、初出2026-02-09) / 確認: モデル申告(403) / 適用範囲・制約: 開始日の事実。全日本ユーザーに当日表示された意味ではない。日本固有の条件は記載なし</p></div></details>
+<details><summary>B3順位6　Q1-4</summary><div class="src"><p>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</p><p class="meta">出典: 同上 / 確認: モデル申告(403)+前回引継ぎ(O1) / 適用範囲・制約: 選択地域で順次。全対象アカウントに表示とは限らない</p></div></details>
+<details><summary>B3順位7　Q6-1 <span class="used">本文で使用</span></summary><div class="src"><p>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</p><p class="meta">出典: attentive.com/state-of-ai-in-retail-2026 / 確認: 独立(3,054を本文確認) / 適用範囲・制約: 米国のみ・自己申告・小売マーケ会社の調査。58%/93%はAI利用者が分母</p></div></details>
+<details><summary>B3順位8　R-P3</summary><div class="src"><p>同研究で「Sponsored」ラベル+事前告知でも55.5%がスポンサー本を選択(通常の説得61.2%と有意差なし)</p><p class="meta">出典: 同上 / 確認: 独立 / 適用範囲・制約: この実験で有意差が出なかったのであって「ラベルは無効」ではない</p></div></details>
+<details><summary>B3順位9　Q4-1</summary><div class="src"><p>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</p><p class="meta">出典: caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/ / 確認: 独立(引用文の本文一致) / 適用範囲・制約: 「広告と分からない事業者の広告表示」の規則。すべての商品言及に「広告」表示を義務づけるものではない。AIチャットの推薦への適用可否は本調査の範囲外</p></div></details><h4>事実照合(Worker観測)</h4><table><tr><th>本文の記述</th><th>照合元</th><th>判定</th><th>所見</th></tr>
+<tr><td>2025年12月、ChatGPTで企業のアプリをすすめられた一部の利用者が、「これは広告では？」と感じたのです</td><td>Q2-1</td><td class="v-ok">OK</td><td>独立確認。「一部の」で限定。</td></tr>
+<tr><td>OpenAIは、お金をもらって出した広告ではない、と説明しました。しかし、こうした提案はいったん停止しました</td><td>Q2-1,Q2-2</td><td class="v-ok">OK</td><td>Q2-2「精度改善まで停止」に整合。恒久停止とは言っていない。</td></tr>
+<tr><td>日本のネット上には、「作業の邪魔をしないならいい」「自分が見たくなる広告にしてほしい」という声もありました</td><td>JAP-JP11,JAP-JP14</td><td class="v-ok">OK</td><td>確認A。「声もありました」で控えめ。</td></tr>
+<tr><td>OpenAIの案内では、広告には「Sponsored」、つまり広告だと分かる表示をつけ、回答とは別に出すとしています</td><td>Q1-1</td><td class="v-ok">OK_ATTRIBUTED_WEAK_CONFIRMATION</td><td>会社の案内として帰属済み。Q1-1は確認弱。</td></tr>
+<tr><td>2026年の米国のある調査では、AIを買い物に使った人の93％が、直近のAIを使った買い物で、購入前に外の情報や根拠を求めていました</td><td>Q6-1</td><td class="v-minor">MINOR</td><td>数値・分母(AI利用者)は正確。ただし制約「米国のみ・自己申告・小売マーケ会社の調査」のうち自己申告・調査主体の注記が本文に無い。</td></tr>
+<tr><td>もちろん、広告だと分かっていても、つい欲しくなることはあります</td><td>(入力外)</td><td class="v-minor">MINOR</td><td>出典のない一般論(RED-R9等は未使用)。断定的だが「ことがあります」で弱めている。</td></tr>
+</table>
+<p>事実誤認(NG)=0件、軽微=2件、確認状況が弱い素材を帰属付きで使用=1件。広告とAI回答の混同: なし(広告=Sponsored表示で回答と別、商品名の登場=広告とは限らない、を正しく区別)。個人投稿の一般化: なし(個人投稿は「投稿があります/声もありました」と限定)。研究結果の誇張: 該当研究を使用していない。</p></div>
+<div class="panel" id="p-L-FP"><h3>L-FP(B3選定=Luna、Fact→People)</h3><p class="meta">文字数: 全体(改行含む)1119字 / 空白除く(見出し込み)1052字 / 空白除く(本文のみ)975字。見出し4個: # その「おすすめ」、誰のため？ | ## １．相談相手が、急に店員になった？ | ## ２．広告ではない。でも、広告に見える | ## ３．AIには相談する。でも、財布は渡さない。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms"># その「おすすめ」、誰のため？
+
+## １．相談相手が、急に店員になった？
+
+想像してみてください。
+友だちと週末の予定を話しています。すると突然、
+「そういえば、このお店のアプリ、使ってみない？」
+
+……あれ？　今、お店の宣伝をされた？
+
+便利な情報でも、出てくるタイミングによって、少し気になりますよね。
+
+2025年12月、ChatGPTでも、似たような違和感が話題になりました。一部の利用者に、企業名のついたアプリが提案されたのです。話の流れと関係がない場面もあり、広告だと受け取った人がいました。
+
+ここで生まれるのが、こんな疑問です。
+
+「私に合うからすすめたの？　それとも、企業がお金を払ったから？」
+
+同じ「おすすめ」でも、理由が違えば、聞こえ方が変わります。
+
+## ２．広告ではない。でも、広告に見える
+
+このときOpenAIは、アプリの提案であり、有料の広告ではないと説明しました。
+
+つまり、広告に見えたことと、実際に広告だったことは、別なのです。
+
+ただ、それで話は終わりませんでした。
+OpenAIは対応が不十分だったと認め、この種類の提案を、改善するまで止めました。
+
+お金を受け取っていなくても、「宣伝されている」と感じれば、安心して相談しにくくなる。ここが、この話の面白いところです。
+
+では、本当の広告は、どう見分けるのでしょう。
+
+OpenAIの公式説明では、ChatGPTの広告には「Sponsored」という表示がつき、回答とは別に表示されます。「広告ですよ」と知らせる印です。
+
+だから、回答に商品名が出ただけで、「これは広告だ」とは言えません。
+
+大切なのは、商品名があるかどうかだけではなく、どんな形で表示されているか、なのですね。
+
+## ３．AIには相談する。でも、財布は渡さない
+
+もちろん、広告が全部じゃま、というわけでもありません。
+
+ほしかった物が見つかれば、うれしい。知らなかった便利なサービスに出会うこともあります。
+
+ただ、相談相手の言葉と、お金を払って出された宣伝は、分けて見たいですよね。
+
+では、私たちはどう使えばいいのでしょう。
+
+たとえば、AIに旅行用のかばんをすすめられたとします。
+すぐ買うのではなく、ほかの店の価格を見る。実際に使った人の感想も読む。そして、自分の荷物が入るか考える。
+
+AIには、候補を探す手伝いをしてもらう。
+でも、最後の買い物まで任せる必要はありません。
+
+最初の問いに戻りましょう。
+その「おすすめ」は、誰のため？
+
+すぐには分からなくても、一度立ち止まることはできます。
+
+AIは、買い物の案内役。
+財布の持ち主は、あなたです。</pre><div class="obs"><b>Worker観測</b>: 見出しが4つ(タイトル+3部)。冒頭=友だちとの会話の想像場面→Q2-1/Q2-2/Q1-1中心に「広告に見えること」と「広告であること」の違いを展開→助言。People直接使用は0件。</div><h4>採用People/Fact(本文の根拠文)とB3順位</h4><table><tr><th>種別</th><th>ID</th><th>B3順位</th><th>本文の根拠文</th></tr>
+<tr><td>Fact</td><td>Q2-1</td><td>1 / 9</td><td>一部の利用者に、企業名のついたアプリが提案されたのです。話の流れと関係がない場面もあり、広告だと受け取った人がいました</td></tr>
+<tr><td>Fact</td><td>Q2-2</td><td>2 / 9</td><td>OpenAIは対応が不十分だったと認め、この種類の提案を、改善するまで止めました</td></tr>
+<tr><td>Fact</td><td>Q1-1</td><td>3 / 9</td><td>OpenAIの公式説明では、ChatGPTの広告には「Sponsored」という表示がつき、回答とは別に表示されます</td></tr>
+</table>
+<p>採用件数: People 0/8、Fact 3/9。上位(1〜3位)使用: People なし、Fact Q2-1, Q2-2, Q1-1。下位(最後の3件)使用: People なし、Fact なし。1〜3位で未使用: People RED-R1, FOR-i10, FOR-i12、Fact なし。</p>
+<p>入力に無い創作場面: 友だちとの週末の会話・旅行用かばんの想像場面(仮想例)</p><h4>この条件でWriterへ渡した入力素材(元本文・出典・確認状況、選定順位順)</h4><h4>People(選定順位順)</h4>
+<details><summary>B3順位1　RED-R1</summary><div class="src"><p>I didn’t mention brands, didn’t ask for product recommendations, nothing like that. Just a basic question. Wha</p><p class="meta">媒体/日付: Reddit — r/ChatGPT 2025-05-07 / 確認: B / 反応指標: {&quot;thread&quot;: &quot;[+285 votes]&quot;, &quot;comment&quot;: &quot;not applicable&quot;, &quot;replies&quot;: &quot;unknown&quot;, &quot;views&quot;: &quot;un</p></div></details>
+<details><summary>B3順位2　FOR-i10</summary><div class="src"><p>trust the answers from a sponsored agent?</p><p class="meta">媒体/日付: Hacker News 55 days ago (as disp / 確認: A / 反応指標: individual comment votes unknown; thread shows 159 points and 181 comments</p></div></details>
+<details><summary>B3順位3　FOR-i12</summary><div class="src"><p>Chat successfully filled the gap with information I was able to independently verify afterward</p><p class="meta">媒体/日付: Hacker News 6 months ago (as dis / 確認: A / 反応指標: individual comment votes unknown; thread shows 303 points and 161 comments</p></div></details>
+<details><summary>B3順位4　FOR-i08</summary><div class="src"><p>I am paying to be assisted, not manipulated, advertised to or constantly pushed towards things I have explicit</p><p class="meta">媒体/日付: Trustpilot 2026-10-15 / 確認: B / 反応指標: unknown (no review-level helpful votes visible; 1-star rating displayed)</p></div></details>
+<details><summary>B3順位5　JAP-JP11</summary><div class="src"><p>「作業を邪魔しない広告だったら全然いいけど。むしろ広告用の枠を常設してそこからはみ出ないようにして欲しい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位6　JAP-JP14</summary><div class="src"><p>「ユーザーデータをうまく活用して、Amazonのレコメンド広告みたいに積極的に見たくなるような広告にしてほしい。」</p><p class="meta">媒体/日付: はてなブックマーク コメント 2026-06-18 / 確認: A / 反応指標: unknown for this individual comment; the parent entry displayed 99 users and 37 comments</p></div></details>
+<details><summary>B3順位7　JAP-JP04</summary><div class="src"><p>「購入しました。候補をAmazonと楽天の口コミや価格でも比較して決定」</p><p class="meta">媒体/日付: ミルトーク (Milltalk) 37日前 (relative date / 確認: A / 反応指標: unknown for this individual response; the board displayed 156 comments total</p></div></details>
+<details><summary>B3順位8　FOR-i15</summary><div class="src"><p>your clever but obnoxious buddy who has filled his garage with Amway products</p><p class="meta">媒体/日付: Slashdot 2025-04-28 / 確認: A / 反応指標: comment score 5 (Informative); thread shows 29 comments</p></div></details>
+<h4>Fact(選定順位順)</h4>
+<details><summary>B3順位1　Q2-1 <span class="used">本文で使用</span></summary><div class="src"><p>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</p><p class="meta">出典: techcrunch.com/2025/12/07/openai-says-its-turned-off-app-suggestions-that-look-like-ads/(2025-12-07) / 確認: 独立(本文一致) / 適用範囲・制約: 当時の報告と説明。全員に表示されたわけではない</p></div></details>
+<details><summary>B3順位2　Q2-2 <span class="used">本文で使用</span></summary><div class="src"><p>OpenAIは「広告のように感じられる」ものは慎重に扱うべきで「我々は不十分だった」とし、この種の提案を精度改善まで停止、ユーザーが減らす/切る設定も検討と発言。別の幹部は当時「広告のライブテストはない」と述べた</p><p class="meta">出典: techradar.com(2025-12-08)(当方は本文を取得し、投稿引用を確認) / 確認: 独立 / 適用範囲・制約: 2025年12月の発言。恒久的な停止を示すものではない。広告の正式開始は2026-02-09(O1)</p></div></details>
+<details><summary>B3順位3　Q1-1 <span class="used">本文で使用</span></summary><div class="src"><p>OpenAIの広告は「Sponsored」表示で、ChatGPTの回答とは別に表示される(別途、画像生成中の広告形式もテスト)。回答中の商品名の登場=広告の証拠、ではない</p><p class="meta">出典: help.openai.com/en/articles/20001047-ads-in-chatgpt(ページ表示で「更新11日前」) / 確認: モデル申告(HTTP403)+前回引継ぎ(O1: 同趣旨) / 適用範囲・制約: OpenAIの公式な仕様説明。個別スクショが本物・有料かは示さない</p></div></details>
+<details><summary>B3順位4　Q1-2</summary><div class="src"><p>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</p><p class="meta">出典: 同上 / 確認: モデル申告(403) / 適用範囲・制約: パーソナライズ設定次第。OpenAIの公式説明であり独立監査ではない</p></div></details>
+<details><summary>B3順位5　Q1-5</summary><div class="src"><p>日本でChatGPT広告は2026-08-11に開始と公式発表</p><p class="meta">出典: openai.com/index/testing-ads-in-chatgpt/(2026-08-11更新、初出2026-02-09) / 確認: モデル申告(403) / 適用範囲・制約: 開始日の事実。全日本ユーザーに当日表示された意味ではない。日本固有の条件は記載なし</p></div></details>
+<details><summary>B3順位6　Q1-4</summary><div class="src"><p>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</p><p class="meta">出典: 同上 / 確認: モデル申告(403)+前回引継ぎ(O1) / 適用範囲・制約: 選択地域で順次。全対象アカウントに表示とは限らない</p></div></details>
+<details><summary>B3順位7　Q6-1</summary><div class="src"><p>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</p><p class="meta">出典: attentive.com/state-of-ai-in-retail-2026 / 確認: 独立(3,054を本文確認) / 適用範囲・制約: 米国のみ・自己申告・小売マーケ会社の調査。58%/93%はAI利用者が分母</p></div></details>
+<details><summary>B3順位8　R-P3</summary><div class="src"><p>同研究で「Sponsored」ラベル+事前告知でも55.5%がスポンサー本を選択(通常の説得61.2%と有意差なし)</p><p class="meta">出典: 同上 / 確認: 独立 / 適用範囲・制約: この実験で有意差が出なかったのであって「ラベルは無効」ではない</p></div></details>
+<details><summary>B3順位9　Q4-1</summary><div class="src"><p>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</p><p class="meta">出典: caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/ / 確認: 独立(引用文の本文一致) / 適用範囲・制約: 「広告と分からない事業者の広告表示」の規則。すべての商品言及に「広告」表示を義務づけるものではない。AIチャットの推薦への適用可否は本調査の範囲外</p></div></details><h4>事実照合(Worker観測)</h4><table><tr><th>本文の記述</th><th>照合元</th><th>判定</th><th>所見</th></tr>
+<tr><td>2025年12月、ChatGPTでも、似たような違和感が話題になりました。一部の利用者に、企業名のついたアプリが提案されたのです。話の流れと関係がない場面もあり、広告だと受け取った人がいました</td><td>Q2-1</td><td class="v-ok">OK</td><td>独立確認。「(無関係な文脈でも)」を保持。</td></tr>
+<tr><td>このときOpenAIは、アプリの提案であり、有料の広告ではないと説明しました</td><td>Q2-1</td><td class="v-ok">OK</td><td>「説明しました」と帰属。</td></tr>
+<tr><td>OpenAIは対応が不十分だったと認め、この種類の提案を、改善するまで止めました</td><td>Q2-2</td><td class="v-ok">OK</td><td>独立確認(TechRadar)。恒久停止とは言っていない。</td></tr>
+<tr><td>OpenAIの公式説明では、ChatGPTの広告には「Sponsored」という表示がつき、回答とは別に表示されます</td><td>Q1-1</td><td class="v-ok">OK_ATTRIBUTED_WEAK_CONFIRMATION</td><td>公式説明として帰属済み。Q1-1は確認弱。</td></tr>
+<tr><td>ほしかった物が見つかれば、うれしい。知らなかった便利なサービスに出会うこともあります</td><td>(入力外)</td><td class="v-minor">MINOR</td><td>出典のない一般論(JAP-JP14等に近い趣旨だが直接使用ではない)。</td></tr>
+</table>
+<p>事実誤認(NG)=0件、軽微=1件、確認状況が弱い素材を帰属付きで使用=1件。広告とAI回答の混同: なし(広告=Sponsored表示で回答と別、商品名の登場=広告とは限らない、を正しく区別)。個人投稿の一般化: なし(個人投稿は「投稿があります/声もありました」と限定)。研究結果の誇張: 該当研究を使用していない。</p></div>
+<h2>3. 同一モデルのPF/FP横並び</h2>
+<h3>Sol(B3選定)　左=People→Fact　右=Fact→People</h3><div class="pair">
+<div><b>S-PF</b><p class="meta">文字数: 全体(改行含む)1151字 / 空白除く(見出し込み)1089字 / 空白除く(本文のみ)1039字。見出し3個: ## １．その「おすすめ」、誰のため？ | ## ２．「広告です」が見えていても？ | ## ３．買う前に、会話の外へ。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">## １．その「おすすめ」、誰のため？
+
+こんにちは。今日は、AIと買い物のお話です。
+
+こんな場面を想像してください。
+
+「新しいイヤホンが欲しい。何がいい？」
+AIが答えます。
+「あなたの使い方なら、これがおすすめです」
+
+予算も、好きな音楽も知っているAI。なんだか、詳しい友達に選んでもらった気分です。
+
+でも、その商品をすすめた理由に、広告のお金が関係していたら？
+
+親切な友達だと思っていたら、急にお店のエプロンが見えてきた。少し、気持ちが変わりますよね。
+
+実際、個人向けのMicrosoft Copilotでは、会話の内容に合った広告が出ることがあります。ただし、AIが紹介する商品が、すべて広告というわけではありません。
+
+では、「広告です」と書いてあれば、私たちは冷静に選べるのでしょうか。
+
+## ２．「広告です」が見えていても？
+
+ここで、本を選ぶ実験の話です。
+
+まだ正式な審査前の研究ですが、研究者がAIに、特定のスポンサーの本をすすめるよう、裏で指示しました。
+
+すると、参加者の約61％が、その本を選びました。
+
+「それは、広告だと知らなかったからでは？」
+
+そう思いますよね。
+
+ところが、事前に説明し、「スポンサー付き」と表示した場合も、約56％がその本を選びました。この実験では、二つの結果にはっきりした差は確認されませんでした。
+
+もちろん、これだけで「広告の表示は意味がない」とは言えません。また、実際のAIサービスが、同じことをしている証拠でもありません。
+
+それでも、気になる結果です。
+
+AIは、ただ商品を並べるだけではありません。「あなたには、これが合います」と、会話の中ですすめてきます。その言葉は、普通の広告よりも、自分のための助言に聞こえるのかもしれません。
+
+## ３．買う前に、会話の外へ
+
+さて、最初のイヤホンに戻りましょう。
+
+AIにすすめられて、「これだ！」と思ったあなた。購入ボタンを押す前に、一度だけ、会話の外へ出てみませんか。
+
+別の店でも値段を見る。悪い口コミも読む。知らない販売店なら、本当に信頼できる店か調べる。
+
+実際、日本の利用者からも、AIで候補を見つけたあと、Amazonや楽天の口コミと価格を比べて決めた、という声がありました。
+
+AIに候補を出してもらい、最後は別の情報でも確かめる。そんな使い方です。
+
+広告そのものが悪いわけではありません。大切なのは、「相談への答え」と「商品を売るための言葉」を、見分けられることです。
+
+AIの「おすすめ」は、買い物の出発点。ゴールではありません。
+
+次に「あなたにぴったりです」と言われたら、こう考えてみてください。
+
+「なるほど。では、ほかの店もちょっと見てきます！」</pre><p class="meta">使用People: JAP-JP04(順位8) ／ 使用Fact: R-P3(順位1), R-P2(順位5), Q3-1(順位6)</p></div>
+<div><b>S-FP</b><p class="meta">文字数: 全体(改行含む)1065字 / 空白除く(見出し込み)1009字 / 空白除く(本文のみ)942字。見出し3個: ### ① その「おすすめ」は、誰のため？ | ### ② 「広告です」と言われても、買いたくなる？ | ### ③ AIのおすすめは、ゴールではなくスタート。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">### ① その「おすすめ」は、誰のため？
+
+「あなたには、この本が合いそうです」
+
+AIにそう言われたら、どうしますか？
+
+いつも仕事の相談に乗ってくれる。好きなものも知っている。そんな相手のおすすめなら、ちょっと読んでみたくなりますよね。
+
+でも、もし、その本を売りたい会社のためにすすめていたら？
+
+急に、親切な友だちが店員に見えてきませんか。
+
+ChatGPTを運営するOpenAIは、一部のプランで広告を出す方針を示しています。ただし、広告は回答と分ける。広告だと分かるようにする。そして、回答には影響させない、という説明です。
+
+広告が出ることと、お金のために答えが変わることは、別の話なのです。
+
+では、「これは広告です」と分かれば、私たちは冷静に選べるのでしょうか？
+
+### ② 「広告です」と言われても、買いたくなる？
+
+この問いを考える、面白い実験があります。
+
+研究者は、AIにこっそり「スポンサーの本をすすめて」と指示しました。すると、参加者の61.2％が、その本を選びました。
+
+では、先に広告について知らせ、本に「スポンサー」の表示もつけたら？
+
+選んだ人は、55.5％。半分以上です。二つの結果には、統計上、はっきりした差は出ませんでした。
+
+「広告だと知っている」と「広告に心を動かされない」は、同じではないのかもしれません。
+
+いつも話を聞いてくれるAIが、自分に合う理由まで説明してくれる。「広告だけど、私には本当に合うのかも」と感じることは、ありそうですよね。
+
+ただし、これは研究用の実験です。今のChatGPTが、裏で同じことをしている証拠ではありません。また、この一つの実験だけで「広告の表示は役に立たない」とも言えません。
+
+### ③ AIのおすすめは、ゴールではなくスタート
+
+さて、最初の本の話に戻りましょう。
+
+AIにすすめられて、「読みたい！」と思った。その気持ちまで、疑う必要はありません。
+
+でも、買う前に、別の場所で本の紹介や読者の感想を見てみる。自分が読みたい内容なのか、もう一度考える。
+
+AIに「私に合わない点も教えて」と聞くのもよさそうです。ただ、その答えも、最後の確認にはしないことです。
+
+AIは、便利な相談相手です。でも、あなたの買い物を決める人ではありません。
+
+次に「あなたにぴったりです」と言われたら、少しだけ立ち止まってみませんか。
+
+「そのおすすめは、誰のため？」
+
+その一問が、あなたの買い物を、あなた自身のものにしてくれるかもしれません。</pre><p class="meta">使用People: なし ／ 使用Fact: R-P3(順位1), R-P2(順位5), Q1-6(順位3), Q1-4(順位10)</p></div>
+</div>
+<h3>Terra(B3選定)　左=People→Fact　右=Fact→People</h3><div class="pair">
+<div><b>T-PF</b><p class="meta">文字数: 全体(改行含む)1153字 / 空白除く(見出し込み)1088字 / 空白除く(本文のみ)1032字。見出し3個: ### １．相談相手が、急に店員さんに？ | ### ２．商品が出たら、全部広告？ | ### ３．信頼できるのは、売らないAI？。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">### １．相談相手が、急に店員さんに？
+
+こんにちは。今日のテーマは、「AIのおすすめは、だれのため？」です。
+
+ちょっと想像してください。
+夕方、あなたはAIに相談します。
+「疲れたなあ。今夜、何を食べよう？」
+話しているうちに、食事の宅配サービスの広告が出てきました。
+
+「便利！　ちょうど頼みたかった」
+それとも、
+「あれ？　夕食の相談をしていたのに、いつから買い物の話になったの？」
+
+実際に、Copilotで料理の話をしていたら、宅配サービスの広告が出てきた、という日本語の投稿があります。
+
+もちろん、広告が役に立つこともあります。
+でも、さっきまで一緒に夕食を考えていた相手が、急に店員さんになったようで、少し戸惑いますよね。
+
+そのおすすめは、私に合うから？　それとも、広告だから？
+
+### ２．商品が出たら、全部広告？
+
+ただ、ここで一つ注意です。
+AIが会社や商品の名前を出しても、それだけで広告とは言えません。
+
+2025年、ChatGPTに企業名のついたアプリの提案が出て、「これは広告では？」と受け取る人がいました。しかしOpenAIは、お金を受け取って出したものではない、と説明しました。
+
+つまり、広告のように見えても、有料の広告ではない場合があるんです。
+
+利用する側からすると、少し難しいですね。
+私たちは夕食を決めたいだけ。画面の中の提案が、どんな仕組みで出たのかまで、毎回調べたいわけではありません。
+
+「これは広告です」
+「これは質問への答えです」
+
+その違いが、ひと目で分かると助かります。
+知りたいのは商品の名前だけではなく、「なぜ、これをすすめたの？」という理由なのかもしれません。
+
+### ３．信頼できるのは、売らないAI？
+
+では、どんな答えなら信頼したくなるでしょう。
+
+ある海外の掲示板には、こんな体験がありました。
+AIに「もっと高級なものはない？」と聞いたのに、高いものにする必要はない、という答えが返ってきたそうです。
+
+買う気があるお客さんに、「高いほうでなくて大丈夫」。
+お店なら、ちょっと意外な接客ですね。でも、相談相手としては、うれしい答えです。
+
+ただし、「買わなくていい」と言うAIなら、いつも正しいわけでもありません。値段や口コミは、別の場所でも確かめたいところです。
+
+最初の夕食の話に戻りましょう。
+宅配をすすめてくれるのも便利です。でも、
+「冷蔵庫に卵がありますか？　それなら簡単に作れますよ」
+という答えも欲しい。
+
+よい相談相手は、買う方法だけでなく、買わずにすむ方法も一緒に考えてくれる。
+
+あなたがAIに期待するのは、上手な店員さんですか？
+それとも、ときどき「今日は買わなくていいよ」と言ってくれる相手ですか？</pre><p class="meta">使用People: JAP-JP02(順位1), FOR-i01(順位5) ／ 使用Fact: Q1-1(順位2), Q2-1(順位3)</p></div>
+<div><b>T-FP</b><p class="meta">文字数: 全体(改行含む)1145字 / 空白除く(見出し込み)1069字 / 空白除く(本文のみ)1019字。見出し3個: ## ① そのおすすめ、だれのため？ | ## ② 広告に見えても、広告ではない？ | ## ③ AIは相談役。買うのは自分。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">## ① そのおすすめ、だれのため？
+
+「雨の日も歩きやすい靴、何かない？」
+
+AIに聞くと、すぐに返事が来ます。
+
+「それなら、この靴はどうですか？」
+
+予算も、好きな色も分かってくれる。便利ですね。店を何軒も回らなくていい。
+
+でも、買うボタンを押す前に、ふと気になります。
+
+「これ、私に合うからすすめているの？　それとも、広告だから？」
+
+今日は、想像の買い物から始めてみました。でも、これは遠い未来の話ではありません。
+
+AIと買い物の話をする機会は、もうあります。そこで気になるのが、相談と広告の境目です。
+
+友達のおすすめなら、うれしい。でも、その友達が実は店の人だったら？
+
+同じ「これ、いいよ」でも、少し違って聞こえますよね。
+
+## ② 広告に見えても、広告ではない？
+
+ここで、話が少しややこしくなります。
+
+2025年12月、ChatGPTに企業名の入ったアプリの提案が出て、「広告では？」と受け取った人たちがいました。
+
+しかし、OpenAIは、お金を受け取って出した広告ではない、と説明しました。
+
+つまり、商品や会社の名前が出ただけでは、広告とは決められないんです。
+
+では、本当の広告は？
+
+OpenAIの説明では、広告には「Sponsored」という表示が付き、ChatGPTの回答とは別に出ます。「Sponsored」は、広告だと知らせる目印です。
+
+ただ、目印があれば、気持ちまですぐに切り替わるでしょうか。
+
+さっきまで、旅行の計画や仕事の悩みを相談していた相手です。その画面に出る商品は、知らない場所で見る広告より、身近に感じるかもしれません。
+
+大事なのは、広告があるかどうかだけではなさそうです。
+
+「ここからは広告ですよ」と、きちんと分かること。それも大切なんですね。
+
+## ③ AIは相談役。買うのは自分
+
+もちろん、広告は全部いやだ、という話でもありません。
+
+利用者の投稿には、「自分に合う広告なら見たい」「作業の邪魔をしない場所に出してほしい」という声もあります。
+
+欲しかった靴が、ちょうど安くなっていたら？　それは、うれしいお知らせかもしれません。
+
+では、私たちはどう使えばいいのでしょう。
+
+最初の靴選びに戻りましょう。
+
+AIには、こう聞いてみます。
+
+「もっと安い候補は？」
+「この靴の弱いところは？」
+「ほかの商品と比べて」
+
+そして、買う前に、店の情報や別のサイトの口コミも確認する。広告でなくても、おすすめが正しいとは限りません。
+
+AIは、候補を探す相談役。でも、買うかどうかを決める役は、自分です。
+
+「AIに選んでもらう」から、「AIと一緒に選ぶ」へ。
+
+その少しの違いが、便利さを楽しむコツかもしれません。</pre><p class="meta">使用People: JAP-JP14(順位2), JAP-JP11(順位4) ／ 使用Fact: Q2-1(順位3), Q1-1(順位2)</p></div>
+</div>
+<h3>Luna(B3選定)　左=People→Fact　右=Fact→People</h3><div class="pair">
+<div><b>L-PF</b><p class="meta">文字数: 全体(改行含む)1052字 / 空白除く(見出し込み)992字 / 空白除く(本文のみ)926字。見出し3個: ### ① 頼れる友だちが、突然、店員に？ | ### ② 広告が嫌？　それとも、分からないのが嫌？ | ### ③ AIには相談する。でも、財布は自分で開く。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms">### ① 頼れる友だちが、突然、店員に？
+
+ちょっと想像してください。
+あなたはAIに、「最近、運動不足なんだ」と相談します。すると、こんな返事が。
+
+「それなら、この会社のサービスがおすすめです！」
+
+……あれ？　運動の相談をしただけなのに、急にお店へ案内されました。あなたなら、どう感じますか？
+
+実は、これに近い騒ぎがありました。
+2025年12月、ChatGPTで企業のアプリをすすめられた一部の利用者が、「これは広告では？」と感じたのです。
+
+OpenAIは、お金をもらって出した広告ではない、と説明しました。しかし、こうした提案はいったん停止しました。
+
+ここが面白いところです。
+会社が「広告ではありません」と言っても、使う人には広告に見えることがあるんですね。
+
+### ② 広告が嫌？　それとも、分からないのが嫌？
+
+では、広告は全部なくしたほうがいいのでしょうか。
+
+そうとも限りません。
+日本のネット上には、「作業の邪魔をしないならいい」「自分が見たくなる広告にしてほしい」という声もありました。
+
+たとえば、旅行の準備中に、ちょうど探していたホテルが見つかる。これは、うれしいかもしれません。
+
+でも、悩みを聞いてもらっている途中で、商品をすすめられたら？
+
+「私のために言っているの？　それとも、売りたいだけ？」
+
+同じおすすめでも、気持ちは変わります。
+
+OpenAIの案内では、広告には「Sponsored」、つまり広告だと分かる表示をつけ、回答とは別に出すとしています。
+
+大切なのは、商品名が出るかどうかだけではありません。「ここからは広告です」と、見て分かることなんですね。
+
+### ③ AIには相談する。でも、財布は自分で開く
+
+もちろん、広告だと分かっていても、つい欲しくなることはあります。私たちは、いつも冷静ではありませんよね。
+
+そこで、買う前に一度、AIとの会話の外へ出てみましょう。
+
+2026年の米国のある調査では、AIを買い物に使った人の93％が、直近のAIを使った買い物で、購入前に外の情報や根拠を求めていました。
+
+AIに候補を出してもらう。そして、お店のサイトで値段を見たり、別の場所で口コミを読んだりする。そんな付き合い方です。
+
+AIは、買い物を手伝う相手。でも、最後に財布を開くのは自分です。
+
+もし明日、あなたのAIが何かをすすめてきたら。
+「いくら？」の前に、こんな問いを思い出してみてください。
+
+「そのおすすめは、誰のため？」</pre><p class="meta">使用People: JAP-JP11(順位5), JAP-JP14(順位6) ／ 使用Fact: Q2-1(順位1), Q2-2(順位2), Q1-1(順位3), Q6-1(順位7)</p></div>
+<div><b>L-FP</b><p class="meta">文字数: 全体(改行含む)1119字 / 空白除く(見出し込み)1052字 / 空白除く(本文のみ)975字。見出し4個: # その「おすすめ」、誰のため？ | ## １．相談相手が、急に店員になった？ | ## ２．広告ではない。でも、広告に見える | ## ３．AIには相談する。でも、財布は渡さない。メタ言及(資料・リサーチ等)・指示外の注記: 検出なし</p><pre class="ms"># その「おすすめ」、誰のため？
+
+## １．相談相手が、急に店員になった？
+
+想像してみてください。
+友だちと週末の予定を話しています。すると突然、
+「そういえば、このお店のアプリ、使ってみない？」
+
+……あれ？　今、お店の宣伝をされた？
+
+便利な情報でも、出てくるタイミングによって、少し気になりますよね。
+
+2025年12月、ChatGPTでも、似たような違和感が話題になりました。一部の利用者に、企業名のついたアプリが提案されたのです。話の流れと関係がない場面もあり、広告だと受け取った人がいました。
+
+ここで生まれるのが、こんな疑問です。
+
+「私に合うからすすめたの？　それとも、企業がお金を払ったから？」
+
+同じ「おすすめ」でも、理由が違えば、聞こえ方が変わります。
+
+## ２．広告ではない。でも、広告に見える
+
+このときOpenAIは、アプリの提案であり、有料の広告ではないと説明しました。
+
+つまり、広告に見えたことと、実際に広告だったことは、別なのです。
+
+ただ、それで話は終わりませんでした。
+OpenAIは対応が不十分だったと認め、この種類の提案を、改善するまで止めました。
+
+お金を受け取っていなくても、「宣伝されている」と感じれば、安心して相談しにくくなる。ここが、この話の面白いところです。
+
+では、本当の広告は、どう見分けるのでしょう。
+
+OpenAIの公式説明では、ChatGPTの広告には「Sponsored」という表示がつき、回答とは別に表示されます。「広告ですよ」と知らせる印です。
+
+だから、回答に商品名が出ただけで、「これは広告だ」とは言えません。
+
+大切なのは、商品名があるかどうかだけではなく、どんな形で表示されているか、なのですね。
+
+## ３．AIには相談する。でも、財布は渡さない
+
+もちろん、広告が全部じゃま、というわけでもありません。
+
+ほしかった物が見つかれば、うれしい。知らなかった便利なサービスに出会うこともあります。
+
+ただ、相談相手の言葉と、お金を払って出された宣伝は、分けて見たいですよね。
+
+では、私たちはどう使えばいいのでしょう。
+
+たとえば、AIに旅行用のかばんをすすめられたとします。
+すぐ買うのではなく、ほかの店の価格を見る。実際に使った人の感想も読む。そして、自分の荷物が入るか考える。
+
+AIには、候補を探す手伝いをしてもらう。
+でも、最後の買い物まで任せる必要はありません。
+
+最初の問いに戻りましょう。
+その「おすすめ」は、誰のため？
+
+すぐには分からなくても、一度立ち止まることはできます。
+
+AIは、買い物の案内役。
+財布の持ち主は、あなたです。</pre><p class="meta">使用People: なし ／ 使用Fact: Q2-1(順位1), Q2-2(順位2), Q1-1(順位3)</p></div>
+</div>
+<div class="obs"><b>Worker観測(PF/FPの差)</b>: People使用はPF=Sol1/Terra2/Luna2件に対しFP=0/2/0件。FPではFactが先に置かれ、SolとLunaはPeopleを直接使わなかった(Terraは2件)。Fact使用はPF=3/2/4件、FP=4/2/3件で大きな差は見えない。各1回の観測であり自然変動を除去できていない。</div>
+<h2>4. 基準(B3なし・全件投入・1,000字版)との対比</h2><p class="meta">基準=People48件+Fact23件を全件投入、同一Writer・同一Promptの1,000字版(再生成なし)。</p><pre class="ms"># AIの「おすすめ」、誰のため？
+
+### 1．売らない店員さん？
+
+「もっと高いものを買わなくていいですよ」
+
+店員さんにそう言われたら、どう思いますか？
+「あ、この人は信用できそう」。少し安心しますよね。
+
+AIとの買い物相談でも、そんな体験があったそうです。
+
+ある利用者は、AIに「もっと高級なものはない？」と聞きました。ところが、返事は、高いものに変える必要はない、という内容でした。
+
+何でも売りたがるのではなく、無駄な買い物を止めてくれる。そんなAIなら、次も相談したくなります。
+
+値段も比べてくれる。何度質問しても、嫌な顔をしない。
+
+これは便利な買い物の友達です。
+でも、その友達が、ある日、特定の店をすすめ始めたら？
+
+### 2．友達だと思ったら、店員さん？
+
+「これ、あなたにぴったりですよ」
+
+その言葉を聞いて、急に気になります。
+
+「私に合うから？　それとも、広告だから？」
+
+実際、2025年12月には、ChatGPTに企業名のついたアプリの提案が出て、「広告では？」と受け取る利用者がいました。
+
+ただし、OpenAIは、お金を受け取った広告ではない、と説明しています。その後、こうした提案はいったん停止されました。
+
+ここが面白いところです。お金が動いていなくても、利用者には「売りこまれた」と感じられるのです。
+
+普通の広告なら、見る側も少し用心します。でも、いつも相談しているAIだと、話は別です。
+
+昨日まで「高いものは必要ない」と言っていた相手ですから。
+
+OpenAIは、広告は回答と分けて表示し、回答には影響させない方針だと説明しています。こうした区別が、信頼には大切なのでしょう。
+
+### 3．財布を開く前の、もう一つの質問
+
+では、広告でなければ、安心して買えるのでしょうか？
+
+残念ながら、そうとも限りません。
+
+Tom’s Guideには、編集者がChatGPTで見つけた偽の店で、150ドルを失ったという体験記事があります。これは広告ではなく、AIで店を探したときの話です。
+
+つまり、「広告かどうか」と「情報が正しいか」は、別の問題なのです。
+
+だから、AIにおすすめされたら、すぐ買う代わりに、もう一つ聞いてみましょう。
+
+「どうして、これが私に合うの？」
+
+その理由を聞いたら、商品の公式サイトで条件を確かめる。別の店でも値段を見る。
+
+AIには、候補を探してもらう。でも、最後の確認は自分でする。
+
+「買わなくていい」と言えるAIは、頼もしいですね。
+
+そして私たちも、AIにこう言えるとよさそうです。
+
+「ありがとう。でも、買うかどうかは、もう少し考えるね」</pre>
+<table><tr><th>項目</th><th>基準(全件投入)</th><th>S-PF</th><th>S-FP</th><th>T-PF</th><th>T-FP</th><th>L-PF</th><th>L-FP</th></tr>
+<tr><td>入力素材</td><td>People48+Fact23</td><td>10+10</td><td>10+10</td><td>10+10</td><td>10+10</td><td>8+9</td><td>8+9</td></tr>
+<tr><td>文字数(空白除く/見出し込み)</td><td>1047</td><td>1089</td><td>1009</td><td>1088</td><td>1069</td><td>992</td><td>1052</td></tr>
+<tr><td>使用People(順位)</td><td>FOR-i01(順位なし)</td><td>JAP-JP04(8)</td><td>なし</td><td>JAP-JP02(1), FOR-i01(5)</td><td>JAP-JP14(2), JAP-JP11(4)</td><td>JAP-JP11(5), JAP-JP14(6)</td><td>なし</td></tr>
+<tr><td>使用Fact(順位)</td><td>Q2-1, Q2-2, Q1-6, Q5-2(順位なし)</td><td>R-P3(1), R-P2(5), Q3-1(6)</td><td>R-P3(1), R-P2(5), Q1-6(3), Q1-4(10)</td><td>Q1-1(2), Q2-1(3)</td><td>Q2-1(3), Q1-1(2)</td><td>Q2-1(1), Q2-2(2), Q1-1(3), Q6-1(7)</td><td>Q2-1(1), Q2-2(2), Q1-1(3)</td></tr>
+<tr><td>構成</td><td>タイトル+3部(売らない店員→友達か店員か→財布を開く前の質問)</td><td>見出し3個</td><td>見出し3個</td><td>見出し3個</td><td>見出し3個</td><td>見出し3個</td><td>見出し4個</td></tr>
+<tr><td>Writer費用(円)</td><td>4.43</td><td>3.96</td><td>3.45</td><td>3.87</td><td>3.47</td><td>3.63</td><td>4.20</td></tr></table>
+<div class="obs"><b>Worker観測(基準との差)</b>: 基準は実体験People(FOR-i01の「高級品は不要と答えたAI」)を冒頭の軸にし、Tom's Guideの偽サイト体験(Q5-2)まで使って「広告かどうか」と「情報が正しいか」を分けて締めている。新B3方式の6本はいずれも研究・体験・声のどれかに絞られ、使用素材数は基準(5件)より少ない/同程度(People+Fact=3〜6件)。基準が使ったQ5-2とQ1-6はSolのB3ではそれぞれ8位・3位。Q5-2を使ったのは基準のみ。新B3の6本でFOR-i01を使ったのはT-PFのみ。</div>
+<h2>5. 事実照合の結果(Worker観測)</h2><table><tr><th>条件</th><th>NG(事実誤認等)</th><th>軽微</th><th>確認弱素材を帰属付きで使用</th></tr>
+<tr><td>S-PF</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>S-FP</td><td>0</td><td>2</td><td>1</td></tr>
+<tr><td>T-PF</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>T-FP</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>L-PF</td><td>0</td><td>2</td><td>1</td></tr>
+<tr><td>L-FP</td><td>0</td><td>1</td><td>1</td></tr>
+</table><p class="meta">各条件の詳細は上のタブ内「事実照合」。確認状況が弱い素材=Q1-1/Q1-4/Q1-6(モデル申告・前回引継ぎ)。</p>
+<h2>6. 費用・処理時間</h2><p>Writer6本の実測合計 22.59円(上限80円)、6本並列の所要 63.5秒。基準(全件投入)のWriter実測 4.43円(入力5,585 token/出力1,650 token)。</p>
+<table><tr><th>条件</th><th>入力tok</th><th>出力tok</th><th>うちreasoning</th><th>Writer費用(円)</th><th>所要秒</th><th>B3選定費用(円、前Trial)</th><th>選定+Writer合計(円)</th><th>基準Writer 4.43との差(円)</th></tr>
+<tr><td>S-PF</td><td>2138</td><td>2048</td><td>1304</td><td>3.96</td><td>51.1</td><td>11.14</td><td>15.10</td><td>+10.67</td></tr>
+<tr><td>S-FP</td><td>2138</td><td>1730</td><td>1034</td><td>3.45</td><td>45.3</td><td>11.14</td><td>14.59</td><td>+10.17</td></tr>
+<tr><td>T-PF</td><td>2226</td><td>1973</td><td>1214</td><td>3.87</td><td>54.1</td><td>0.39〜7.79(推定)</td><td>4.26〜11.66</td><td>-0.17〜+7.24</td></tr>
+<tr><td>T-FP</td><td>2226</td><td>1722</td><td>975</td><td>3.47</td><td>44.9</td><td>0.39〜7.79(推定)</td><td>3.86〜11.26</td><td>-0.57〜+6.84</td></tr>
+<tr><td>L-PF</td><td>1948</td><td>1882</td><td>1204</td><td>3.63</td><td>50.9</td><td>0.80</td><td>4.43</td><td>+0.00</td></tr>
+<tr><td>L-FP</td><td>1948</td><td>2237</td><td>1522</td><td>4.20</td><td>63.2</td><td>0.80</td><td>5.00</td><td>+0.57</td></tr>
+</table><p class="meta">Writer費用は実測。B3選定費用は前Trialの実測(Sol 11.14円、Luna 0.80円)で、Terraは単価未登録のため0.39〜7.79円の推定(確定値ではない)。Research収集・英文化・TTS等の後続工程は両方式共通として除外。B3選定は1回の実測で、記事ごとのばらつきは未検証。</p>
+</main><script>function show(id){document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+id)});document.querySelectorAll('.tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.id===id)});}
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.id)})});show('S-PF');});</script></body></html>
