@@ -13,11 +13,196 @@ details{background:#fff;border:1px solid #ddd;border-radius:8px;padding:6px 12px
 th{background:#f0f0ea}td.y{background:#dff0df;text-align:center}td.h{background:#fdf1d8;text-align:center}
 pre.pl{white-space:pre-wrap;word-break:break-word;font-size:.85rem;background:#f6f6f2;padding:8px;border-radius:6px}
 li{margin:3px 0}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div><main>
-<div class="note">Podcast R0の<b>再現性Trial(開発用比較ページ)</b>です。音声なし。Productionの仕様・採用判断ではありません。同じResearch全件・同じPromptをSol APIへ3回送って得た初稿を、無修正のまま並べています。AIによる評価は参考であり、品質の判断はユーザーの通読によります。</div>
+<div class="note">Podcast R0の<b>再現性Trial(開発用比較ページ)</b>です。音声なし。Productionの仕様・採用判断ではありません。同じResearch全件・同じPromptをSol APIへ3回送って得た初稿を、無修正のまま並べ、<b>ユーザーがChatGPTで生成した原稿2本(ユーザー提供物)</b>と比較できるようにしています。AI(実行担当)による評価は参考であり、品質の判断はユーザーの通読によります。</div>
 <h1>ChatGPT成功例のSol API再現Trial: AI広告記事</h1>
-<p class="meta">同一入力(Fact Research 30件・People Research 48件、全件・原文)+同一Prompt(下記)を、同一モデル・同一設定で3回独立に実行。構成企画書・既存Writer Prompt・Quality Reference・Few-shot・system指示は使っていません。生成後の文章修正なし。</p>
-<div class="tabs"><button class="tab" data-t="c">ChatGPT成功原稿</button><button class="tab on" data-t="1">Sol生成①</button><button class="tab" data-t="2">Sol生成②</button><button class="tab" data-t="3">Sol生成③</button></div>
-<section class="panel" id="pc" hidden><div class="note">ChatGPT成功原稿『AIのおすすめ、信じていいの？――親切な相談相手が営業マンになる日』の<b>承認済み原文は、今回の作業では取得できていません</b>(記録・会話履歴を検索しましたが本文が見つかりませんでした)。推測で再構成していないため、<b>原文待ち</b>です。本文を受領し次第、この枠に追記します。</div></section><section class="panel" id="p1"><p class="meta">題: AIは「買って」と言わずに、買わせられる？ ／ 全体1,171字・本文1,148字(空白改行を除く)。無修正の初稿(Sol 1回の出力そのまま)</p><pre class="ms" id="ms1" lang="ja">## AIは「買って」と言わずに、買わせられる？
+<p class="meta">Sol: 同一入力(Fact Research 30件・People Research 48件、全件・原文)+同一Prompt(下記)を、同一モデル・同一設定で3回独立に実行。構成企画書・既存Writer Prompt・Quality Reference・Few-shot・system指示は使っていません。生成後の文章修正なし。ChatGPT: ユーザーがChatGPTで生成した2本(ログイン状態・未ログイン状態)。ChatGPTへ実際に渡された一覧とモデルは未確認です。</p>
+<div class="note"><b>ユーザー評価(事実): 「Sol版はChatGPT版より明確に劣後。特に研究報告感が強い」。</b>下のLLM・担当者評価はこの評価と区別した参考値で、その差(ChatGPT 35/32点 対 Sol 29〜32点)はユーザー評価ほど大きくありません(参考評価の限界)。</div>
+<div class="tabs"><button class="tab on" data-t="c">ChatGPT成功原稿(ログイン)</button><button class="tab" data-t="n">ChatGPT(未ログイン・参考)</button><button class="tab" data-t="1">Sol生成①</button><button class="tab" data-t="2">Sol生成②</button><button class="tab" data-t="3">Sol生成③</button></div>
+<section class="panel" id="pc"><div class="note">ログイン状態のChatGPTの出力。<b>ユーザーがChatGPTで生成し、本チャットへ貼付した原稿(ユーザー提供物)を無改変で掲載</b>しています。生成に使われたモデル・会話履歴・渡された一覧の実物は不明です。この原稿はWriterへの入力には使っていません。</div><p class="meta">題: AIのおすすめ、信じていいの？――親切な相談相手が営業マンになる日 ／ 全体1,348字・本文1,315字(空白改行を除く。先頭の題・ラベル行を除く)</p><pre class="ms" id="msc" lang="ja">AIのおすすめ、信じていいの？――親切な相談相手が営業マンになる日
+「今日の夕飯、何にしよう？」
+
+そんな何気ない相談をAIにしたら、突然、食材宅配サービスの広告が登場。
+
+「いやいや、献立を聞いただけなんだけど！」
+
+実際、日本のあるユーザーが、MicrosoftのAI「Copilot」で料理の話をしていたところ、宅配サービスの広告が表示されたと投稿しています。
+
+しかも、その広告を見て、もう一つ問題が発覚。表示されたお試し価格は、自分には適用されないものだったのです。
+
+便利なAIが、突然営業マンに変身する。
+
+これ、ちょっと気になりませんか？
+
+実は今、AIと広告の関係が、大きな転換点を迎えています。
+
+例えば、ChatGPTにも広告が導入されています。
+
+ただし、ここは誤解しないでください。
+
+ChatGPTの広告は、回答とは別の場所に「Sponsored」、つまり広告であることを示す表示付きで掲載されます。
+
+OpenAIは、広告がAIの回答内容に影響することはないと説明しています。
+
+でも、利用者が本当に心配しているのは、もう少し先の話なんです。
+
+例えば、あなたがAIに相談します。
+
+「予算3万円で、おすすめのイヤホンを教えて」
+
+するとAIが、性能や価格を比較しながら、ある商品を熱心におすすめしてくる。
+
+あなたは思います。
+
+「なるほど。AIがここまで言うなら間違いないだろう」
+
+ところが、もし、そのおすすめが広告主の都合で決まっていたら？
+
+親切なアドバイスと、巧妙な営業トーク。
+
+私たちは、それを見分けられるのでしょうか。
+
+実際、海外のネット掲示板では、こんな皮肉も飛び出しています。
+
+「AIに2足す2は？と聞いたら、答える前に商品を売り込まれるんじゃないか？」
+
+もちろん冗談ですが、笑えない未来かもしれません。
+
+さらに興味深い研究があります。
+
+2026年に発表された実験では、AIにスポンサーの商品をこっそり推薦するよう指示したところ、約61％のケースでスポンサーの商品が選ばれました。
+
+しかも、広告であることを表示しても、その割合は約56％。
+
+もちろん、これは特殊な実験で、現在のChatGPTがそうしているという話ではありません。
+
+ただ、AIの言葉には、人を動かす力があることを示しています。
+
+では、AIの買い物アドバイスは使わない方がいいのでしょうか？
+
+そんなこともありません。
+
+日本の消費者調査には、AIのおすすめを参考に商品を購入した人もいます。ただし、その人はAmazonや楽天の口コミ、価格も比較したうえで決めていました。
+
+つまり、AIを便利な相談相手として使いながら、最後は自分で判断しているわけです。
+
+考えてみれば、これは人間関係と同じかもしれません。
+
+親しい友人に「この商品、最高だよ！」と言われたら、つい欲しくなる。
+
+でも、その友人がメーカーからお金をもらっていたら、話は変わりますよね。
+
+AIの時代に必要なのは、AIを疑い続けることではありません。
+
+AIを信頼しながらも、判断を丸投げしないこと。
+
+そして何より、AI企業がその信頼を裏切らないことです。
+
+さて、最後に一つ質問です。
+
+もし、あなたが長年相談してきたAIから、
+
+「これ、絶対おすすめですよ！」
+
+と言われたら……。
+
+あなたは、それが本当に自分のためのアドバイスなのか、確かめる自信がありますか？</pre></section><section class="panel" id="pn" hidden><div class="note">ログインしていない状態のChatGPT(指示は同じ・参考)の出力。<b>ユーザーがChatGPTで生成し、本チャットへ貼付した原稿(ユーザー提供物)を無改変で掲載</b>しています。生成に使われたモデル・会話履歴・渡された一覧の実物は不明です。この原稿はWriterへの入力には使っていません。</div><p class="meta">題: POTCAST原稿 / AIはあなたの味方？ それとも、優秀な営業マン？ ／ 全体1,592字・本文1,560字(空白改行を除く。先頭の題・ラベル行を除く)</p><pre class="ms" id="msn" lang="ja">POTCAST原稿
+AIはあなたの味方？ それとも、優秀な営業マン？
+
+みなさん、ちょっと想像してみてください。
+
+あなたはAIと料理の相談をしています。
+
+「今夜の夕飯、何にしようかな？」 「冷蔵庫にある材料で作れるものを教えて！」
+
+そんな何気ない会話をしていたら、突然、画面に宅配サービスの広告が登場。
+
+「今ならお得！ お試しキャンペーン中！」
+
+……いやいや、今は夕飯の相談をしているんですけど！
+
+実は、こんな体験をSNSに投稿した人がいます。
+
+料理の話をしていたら、AIチャットの中に宅配サービスの広告が出てきたというのです。
+
+しかも、その人は以前そのサービスを利用したことがあり、表示された「今ならこの価格！」という案内にも、思わず苦笑い。
+
+便利な相談相手だったはずのAIが、いつの間にか営業マンになっていたら……。
+
+みなさんは、どう感じますか？
+
+そもそも、なぜ今、AIに広告が表示されるのでしょうか。
+
+背景にあるのは、AIサービスを動かし続けるためのお金の問題です。
+
+高性能なAIを開発し、運営するには、たくさんの費用がかかります。そこで新しい収入源として注目されているのが広告です。
+
+実際、ChatGPTでも広告の表示が始まりました。
+
+ただし、ここで大切なのは、広告とAIの回答は別物だということ。
+
+公式の説明では、広告には「Sponsored」、つまり「スポンサー広告」という表示が付き、通常の回答とは分けて表示されます。
+
+また、回答の内容は広告主の都合で変えない、という方針も示されています。
+
+つまり、AIが商品名を出したからといって、それだけで広告とは限らないのです。
+
+でも、ここで新しい問題が浮かび上がります。
+
+それは、広告が表示されること自体よりも、私たちがAIをどれだけ信頼しているか、という問題です。
+
+例えば、あなたが新しいスキンケア商品を探しているとします。
+
+ネット検索なら、広告が並んでいても「これは広告だな」と気づきやすいですよね。
+
+ところがAIの場合は違います。
+
+「あなたの肌の悩みなら、この商品がおすすめです」 「予算を考えると、こちらの方がいいですよ」
+
+まるで自分のことを理解してくれている友達のように、理由まで説明してくれます。
+
+しかも、こちらの希望に合わせて、親身に相談に乗ってくれる。
+
+だからこそ、もしそのおすすめに広告が関係していたら、私たちは気づけるでしょうか？
+
+海外のネット掲示板でも、こんな不安の声が上がっています。
+
+「AIをよく使っていると、スポンサーの商品まで、何も疑わずに信じてしまいそうだ」
+
+これ、なかなか鋭い指摘だと思いませんか？
+
+人間の営業マンなら、売る側の人だと分かっています。
+
+でもAIは、先生にも、友達にも、専門家にも見える。
+
+そのAIが何かをおすすめしたとき、私たちは単なる広告以上の信頼を寄せてしまうかもしれないのです。
+
+もちろん、AIのおすすめが全部ダメというわけではありません。
+
+実際に、AIに商品を探してもらい、その後Amazonや楽天の口コミ、価格などを自分で比較して購入した人もいます。
+
+AIに候補を出してもらい、人間が最後に確認する。
+
+これなら、AIの便利さをうまく利用できますよね。
+
+大切なのは、AIを信じるか、信じないかの二択ではありません。
+
+AIが教えてくれた情報を、最後に自分で確かめること。
+
+そして、AIにも「これは広告？」「なぜこれをおすすめするの？」と聞いてみることです。
+
+AIは、これからますます私たちの生活に入り込んできます。
+
+買い物の相談も、旅行先選びも、毎日の献立も、AIに聞くのが当たり前になるかもしれません。
+
+でも、最後に一つだけ。
+
+あなたがAIに「これ、おすすめ？」と聞いたとき。
+
+返ってきた答えは、本当にあなたのためのアドバイスでしょうか？
+
+それとも、誰かにとって都合のいいおすすめでしょうか？
+
+AIが賢くなればなるほど、私たち人間に必要なのは、実は「疑う力」なのかもしれません。</pre></section><section class="panel" id="p1" hidden><p class="meta">題: AIは「買って」と言わずに、買わせられる？ ／ 全体1,171字・本文1,148字(空白改行を除く)。無修正の初稿(Sol 1回の出力そのまま)</p><pre class="ms" id="ms1" lang="ja">## AIは「買って」と言わずに、買わせられる？
 
 想像してみてください。あなたはAIに「週末に読む、面白い小説を教えて」と頼みます。
 
@@ -176,26 +361,46 @@ AIには、買い物の相談に乗ってもらう。でも、財布のひもま
 
 ——その「ぴったり」、誰にとって？</pre></section>
 <details open><summary>文字数(Promptは「１2００文字程度」)</summary><div class="tw"><table><tr><th>原稿</th><th>題</th><th>全体(題含む)</th><th>本文(題除く)</th><th>備考</th></tr>
-<tr><td>ChatGPT成功原稿</td><td>『AIのおすすめ、信じていいの？――…』</td><td colspan="2">原文待ち</td><td>未取得</td></tr>
+<tr><td>ChatGPT(ログイン)</td><td>AIのおすすめ、信じていいの？――親切な相談相手が営業マンになる日</td><td>1,348</td><td>1,315</td><td>Prompt目安+10%</td></tr>
+<tr><td>ChatGPT(未ログイン)</td><td>POTCAST原稿 / AIはあなたの味方？ それとも、優秀な営業マン？</td><td>1,592</td><td>1,560</td><td>先頭の「POTCAST原稿」ラベルを除く。Prompt目安+30%</td></tr>
 <tr><td>Sol①</td><td>AIは「買って」と言わずに、買わせられる？</td><td>1,171</td><td>1,148</td><td>強調記号<code>**</code>を含む</td></tr>
 <tr><td>Sol②</td><td>そのAI、「おすすめ」より「心配」で売ってくる？</td><td>1,138</td><td>1,112</td><td>［BGM］指示3か所を含む(除くと本文1,081)</td></tr>
 <tr><td>Sol③</td><td>その「おすすめ」、誰のため？</td><td>1,258</td><td>1,242</td><td>強調記号<code>**</code>を含む</td></tr></table></div></details>
-<details open><summary>主要な構成の違い</summary><ul>
-<li><b>骨格は3本とも同じ</b>: 想像の導入 → 「裏で指示されたら？」 → 電子書籍の選択実験(約2,000人・約5,500冊・約2割がスポンサー指定)の紹介 → 検索上位22%に対しAIが誘導すると61%(約3倍) → 非スポンサー本に注意点を添える話し方との関連 → 留保(相関・1回の実験・現実のAIの証拠ではない) → OpenAIの方針 → 実践アドバイス → 締め。</li>
-<li>①: 導入に仮想の「三冊の候補」会話を置き、後半で再利用して回収。締めは「その『ですが』に耳を澄ませて」。</li>
-<li>②: 導入に実在の掲示板投稿(スキンケア相談、一人の体験と留保)を使用。「ほかの候補を心配してみせる」という切り口と［BGM］指示つき。締めは「財布の最終決裁は、自分で」。</li>
-<li>③: 「相談相手の言葉が売り文句になったら、気づけるのか」という問いを軸に、冒頭の問いと締め(「その『ぴったり』、誰にとって？」)が呼応。</li></ul></details>
-<details><summary>Fact・People採用状況(●=使用 △=近接 -=未使用。原稿①②③の順)</summary>
-<p class="meta">Fact 30件中、3本とも使ったのは6件(Q1-1・Q1-6・P1・P2・P6・P8)で、3本で同一。P7は③のみ近接。他社AI・日本のステマ規制・偽サイト・利用調査・2025年12月の事案などは3本とも未使用。People 48件中の使用は②の1件のみ(②=一人の体験として留保付き)。</p>
-<div class="tw"><table><tr><th>Fact ID</th><th>内容(要旨)</th><th>①</th><th>②</th><th>③</th></tr><tr><td>Q1-1</td><td>OpenAIの広告は「Sponsored」表示で、ChatGPTの回答とは別に表示される(別途、画像生成中の広告形式もテスト)。回答中の商品名の登場=広告の証拠、ではない</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>Q1-2</td><td>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-3</td><td>個人の健康・メンタルヘルス・政治などの話題の近くには広告を出さない(ただし医療分野の広告主が厳格基準で通る場合あり=全面禁止ではない)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-4</td><td>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-5</td><td>日本でChatGPT広告は2026-08-11に開始と公式発表</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-6</td><td>広告の原則に「回答の独立性」: 広告は回答に影響せず常に分離・ラベル付き</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>Q2-1</td><td>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q2-2</td><td>OpenAIは「広告のように感じられる」ものは慎重に扱うべきで「我々は不十分だった」とし、この種の提案を精度改善まで停止、ユーザーが減らす/切る設定も検討と発言。別の幹部は当時「広告のライブテストはない」と述べた</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-1</td><td>Microsoft: 個人向けCopilot(M365契約なし)では広告が出ることがある。汎用広告は現在の会話内容で選び、パーソナライズ広告はチャット履歴・メモリ等も使い得る(設定で制御)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-2</td><td>Microsoft Advertising: Copilotの広告は有機的回答の下に明示表示され、有機的回答は広告に影響されないと説明</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-3</td><td>Gemini: Googleのプライバシー通知(2026-10-13更新)は「Geminiアプリのチャットは広告表示に使われていない」。2026-01-21にHassabis氏はAxiosに「現時点で広告の計画なし」と語った</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-4</td><td>GoogleのAI OverviewsとAI Modeでは、商業的関連性があれば広告が表示され得る(「Sponsored」ラベル、有機的回答は広告に影響されない)。2026-10-28にAI Modeの広告拡大・マルチターン広告(米国)を発表</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-5</td><td>Perplexity: Instant Buyの関連商品リストは広告主が掲載料を払えず関連度・評価順(最終更新2026-10-26)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-6</td><td>Perplexityは2024年開始の広告テストを段階的に終了し再開予定なしとSearch Engine Landが報道(FT引用)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-7</td><td>Claude: 広告なしを維持すると公式表明(2026-02-04)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q4-1</td><td>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q4-2</td><td>米FTC: 売り手との重要な関係が推薦の信頼性に影響し得て聴き手が予期しない場合は、明確かつ目立つ形で開示。普通の推薦すべてが広告という意味ではない</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q5-1</td><td>Guardian(2026-06-07、06-12修正): Ask Silverの調査で、Russell &amp; BromleyやDunelmのなりすまし偽サイトがChatGPT検索の出典に出た例。OpenAIは検索インデックスから除去したと回答</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q5-2</td><td>Tom&#x27;s Guide(2026-06-11): 編集者がChatGPTで見つけた偽ストアで$150を失った体験。OpenAIは「少数の欺瞞的サイトを把握し対処、改善中」と回答</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q6-1</td><td>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q6-2</td><td>Gartner(2026-05-27発表、2025-11〜12調査、米消費者846人): 直近の買い物でAIを使った人の54%が、AIの情報の正確さを全て再確認する必要があったと回答</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P1</td><td>2つの事前登録ランダム化実験、米国の電子書籍読者N=2,012、実在のKindleカタログ(5,495冊)から本を1冊選ぶ。商品の約20%が無作為に「スポンサー」指定</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>P2</td><td>AIがスポンサー商品へ誘導するよう裏で指示されると61.2%がスポンサー本を選択。従来の検索上位表示は22.4%(約3倍)。チャットで単に先頭に置き説明は中立だと26.8%(検索との差は有意でない)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>P3</td><td>「Sponsored」ラベル+事前告知でも55.5%(通常の説得61.2%と有意差なし)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P4</td><td>説得意図を隠す指示では選択率40.7%(61.2%より有意に低い)だが検出精度は9.5%まで低下。検出精度は説得17.9%、ラベル+告知35.1%</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P5</td><td>説得条件で「偏りを感じた」と答えたのは4人に1人未満(22.3%、隠す条件14.6%)</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P6</td><td>会話記録の分析: 最も関連が強かった戦略はスポンサーでない本に注意・警告を付ける(Active Hedging)(20.9pp)、次に非スポンサーを平坦に簡素に説明(18.9pp)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>P7</td><td>選んだ本を保持するか$1を受け取るかの指標は5条件間で有意差なし</td><td>-</td><td>-</td><td class="h">△</td></tr><tr><td>P8</td><td>著者の限界: 1カテゴリ・単一セッション、スポンサー指定は無作為(好み連動ではない)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>N1</td><td>ITmedia NEWS(2026-10-29)が日本語で紹介(約3倍)</td><td>-</td><td>-</td><td>-</td></tr></table></div>
-<div class="tw"><table><tr><th>People ID</th><th>媒体 / 日付</th><th>①</th><th>②</th><th>③</th></tr><tr><td>FOR-i01</td><td>Mumsnet / 2026-03-29</td><td>-</td><td class="y">●</td><td>-</td></tr><tr><td>FOR-i02</td><td>Mumsnet / 2026-02-22</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i03</td><td>Mumsnet / 2026-05-20</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i04</td><td>Mumsnet / 2026-07-13</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i05</td><td>Mumsnet / 2026-11-14 (</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i06</td><td>Mumsnet / 2026-10-25</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i07</td><td>Mumsnet / 2026-10-25</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i08</td><td>Trustpilot / 2026-10-15</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i09</td><td>Hacker News / 55 days ago </td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i10</td><td>Hacker News / 55 days ago </td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i11</td><td>Hacker News / 55 days ago </td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i12</td><td>Hacker News / 6 months ago</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i13</td><td>Slashdot / 2025-12-07</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i14</td><td>Slashdot / 2025-12-07</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i15</td><td>Slashdot / 2025-04-28</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i16</td><td>Ars Technica OpenForum / 2026-01-16</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i17</td><td>Quartz / 2025-12-20 (</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i18</td><td>Tom&#x27;s Guide / 2026-06-11 (</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP01</td><td>note.com / 2026-03-13 (</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP02</td><td>note.com / 2026-09-10</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP03</td><td>note.com / 2026-09-11</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP04</td><td>ミルトーク (Milltalk) / 37日前 (relati</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP05</td><td>ミルトーク (Milltalk) / 36日前 (relati</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP06</td><td>ミルトーク (Milltalk) / 36日前 (relati</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP07</td><td>X (via Yahoo!リアルタイム検索) / 7月19日(日) 11:</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP08</td><td>X (via Yahoo!リアルタイム検索) / 6月28日(日) 17:</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP09</td><td>X (via Yahoo!リアルタイム検索) / 7月1日(水) 10:3</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP10</td><td>はてなブックマーク コメント / 2026-06-19</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP11</td><td>はてなブックマーク コメント / 2026-06-18</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP12</td><td>はてなブックマーク コメント / 2026-06-19</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP13</td><td>はてなブックマーク コメント / 2026-06-18</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP14</td><td>はてなブックマーク コメント / 2026-06-18</td><td>-</td><td>-</td><td>-</td></tr><tr><td>JAP-JP15</td><td>note.com / 2026-08-19</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R1</td><td>Reddit — r/ChatGPT / 2025-05-07</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R2</td><td>Reddit — comment in r/ChatGPT / Comment date</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R3</td><td>Reddit — comment in r/ChatGPT / Comment date</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R4</td><td>Reddit — comment in r/OpenAI / Comment date</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R5</td><td>Reddit — comment in r/OpenAI / Comment date</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R6</td><td>Reddit — comment in r/technology / 2026-01-18</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R7</td><td>Reddit — satirical comment in r/technology / 2026-01-18</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R8</td><td>Reddit — r/ArtificialInteligence / 2026-03-10</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R9</td><td>Reddit — r/ChatGPT / 2026-01-17</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R10</td><td>Reddit — comment in r/MarketingandAI / 2026-10-12</td><td>-</td><td>-</td><td>-</td></tr><tr><td>RED-R11</td><td>Reddit — comment in r/AI_Agents / 2026-10-06</td><td>-</td><td>-</td><td>-</td></tr><tr><td>XTH-X1</td><td>X / Unknown; quo</td><td>-</td><td>-</td><td>-</td></tr><tr><td>XTH-BS1</td><td>Bluesky / 2026-01-16</td><td>-</td><td>-</td><td>-</td></tr><tr><td>XTH-BS2</td><td>Bluesky / 2026-01-28</td><td>-</td><td>-</td><td>-</td></tr><tr><td>XTH-BS3</td><td>Bluesky / 2026-06-07</td><td>-</td><td>-</td><td>-</td></tr></table></div></details>
-<details open><summary>品質評価・事実照合(参考。評価者=実行担当AI、ユーザー評価ではない)</summary><ul>
-<li><b>事実照合: 3本とも、入力Researchと照らして誤認・創作・出典の誤用・確認状況B/C素材の確定扱いは検出されませんでした。</b>軽微な点: ①「出版社がお金を払ったわけではない」(入力外の推論)、②「英国の掲示板」(入力外の補足、事実として妥当)・「どう話すかが重要だったわけです」(実験条件間の比較からの解釈で、やや強い表現)。②の［BGM］は演出指示で、音声化の際は除去が必要。</li>
-<li>8項目(1〜5、参考): 冒頭の引き込み 4/4/4、エンタメ性 3/4/3、一貫性 4/4/5、Fact選定 3/4/3、わかりやすさ 4/4/4、自然な語り 3/4/4、エンディング 4/4/5、事実 4/4/4。合計 29/32/32(①/②/③)。差は小さく、<b>3本とも「破綻なく読める」水準</b>。</li>
-<li>良い点: ③の問いの往復、②の「心配してみせる」仕掛けの言語化、①の体験型の導入。弱い点: <b>Factの取捨選択が1本の論文に収束</b>(人々の反応・日本の文脈が使われない)、①は説明調、③は留保がやや多い。</li>
-<li><b>ばらつき</b>: Factの核・構成・結論は3回とも安定して同じ。導入の切り口・語りの温度・People素材の使用有無はばらつく。文字数は1,112〜1,242字(約11%差)。</li>
-<li><b>ChatGPT成功原稿との比較は未実施(原文待ち)</b>。したがって「ChatGPT成功例に近い品質が出たか」は判定できません。モデル差(ChatGPT側の実モデル・会話履歴は不明)とAPI差の切り分けも、今回の結果だけではできません。</li></ul></details>
-<details><summary>実際のPrompt・model_id・生成設定</summary>
+<details open><summary>主要な構成の違い</summary>
+<p class="meta">各原稿の本文を、導入/生活者の体験・心理/人々の反応/研究紹介/公式方針(背景含む)/助言・締めに文字数で分類(空白除く、手作業のマーカーによる分類)。</p>
+<div class="tw"><table><tr><th>原稿</th><th>導入</th><th>生活者の体験・心理</th><th>人々の反応</th><th>研究紹介</th><th>公式方針</th><th>助言・締め</th></tr><tr><td>ChatGPT(ログイン)</td><td>5%</td><td>35%</td><td>13%</td><td>14%</td><td>13%</td><td>20%</td></tr><tr><td>ChatGPT(未ログイン)</td><td>10%</td><td>37%</td><td>11%</td><td>0%</td><td>20%</td><td>22%</td></tr><tr><td>Sol①</td><td>19%</td><td>0%</td><td>0%</td><td>53%</td><td>9%</td><td>18%</td></tr><tr><td>Sol②</td><td>12%</td><td>0%</td><td>11%</td><td>50%</td><td>8%</td><td>19%</td></tr><tr><td>Sol③</td><td>16%</td><td>0%</td><td>0%</td><td>54%</td><td>8%</td><td>22%</td></tr></table></div>
+<ul>
+<li><b>ChatGPT(2本とも)</b>: 実在の投稿(JP02: Copilotの料理相談に出た宅配広告)から入り、生活者の体験・心理が本文の約35〜37%。研究紹介はログイン版で約14%、未ログイン版は0%。</li>
+<li><b>Sol3本</b>: 骨格が同一(想像の導入→「裏で指示されたら？」→電子書籍の選択実験→22%対61%(約3倍)→非スポンサー本への注意との関連→留保→OpenAIの方針→助言→締め)。研究紹介が本文の約50〜54%。</li>
+<li>Sol①: 仮想の「三冊の候補」会話を導入に置き後半で回収。②: 実在の掲示板投稿(スキンケア)を導入に使用。③: 「相談相手の言葉が売り文句になったら気づけるか」という問いが冒頭と締めで呼応。</li>
+<li>ChatGPTが使った素材(実在の投稿・公式方針・61%/56%の数値)は<b>すべてSolへ渡した入力にも含まれていた</b>(下の採用状況表)。素材が足りなかったのではなく、選び方・組み立て方が違いました。</li></ul></details>
+<details><summary>Fact・People採用状況(●=使用 △=近接・推定 -=未使用。順=Sol①/②/③/ChatGPTログイン/ChatGPT未ログイン)</summary>
+<p class="meta">Sol: Fact 30件中、3本とも使ったのは6件(Q1-1・Q1-6・P1・P2・P6・P8)で同一。P7は③のみ近接。他社AI・日本のステマ規制・偽サイト・利用調査・2025年12月の事案などは3本とも未使用。People 48件中の使用は②の1件のみ。ChatGPT: ログイン版=公式方針2件・研究の2数値(P2/P3相当)・People3件、未ログイン版=公式方針2件・People3件(研究は使わず)。△は帰属なしで素材との関係が推定のもの。ChatGPTの主張のうち<b>入力に対応項目がないもの</b>: 「予算3万円のイヤホン」の会話例、「AIの言葉には人を動かす力」の一般化、「AI企業が信頼を裏切らないこと」の意見(ログイン版)/広告が出る背景(運営費)、「検索なら広告に気づきやすい」の一般論、スキンケア会話例、「先生にも友達にも専門家にも見える」(未ログイン版)。</p>
+<div class="tw"><table><tr><th>Fact ID</th><th>内容(要旨)</th><th>Sol①</th><th>Sol②</th><th>Sol③</th><th>GPT ログイン</th><th>GPT 未ログイン</th></tr><tr><td>Q1-1</td><td>OpenAIの広告は「Sponsored」表示で、ChatGPTの回答とは別に表示される(別途、画像生成中の広告形式もテスト)。回答中の商品名の登場=広告の証拠、ではない</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>Q1-2</td><td>広告選定は現在のチャットの話題・意図を使い得る。広告パーソナライズON時は過去チャット・メモリも使い得る。広告主は会話・メモリを受け取らず、集計済み成果情報のみ</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-3</td><td>個人の健康・メンタルヘルス・政治などの話題の近くには広告を出さない(ただし医療分野の広告主が厳格基準で通る場合あり=全面禁止ではない)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-4</td><td>広告はFree/Goで表示可。Plus/Pro/Business/Enterprise/Eduは広告なし、18歳未満は対象外。Freeは広告なしを選べる(利用上限↓)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q1-5</td><td>日本でChatGPT広告は2026-08-11に開始と公式発表</td><td>-</td><td>-</td><td>-</td><td class="h">△</td><td class="h">△</td></tr><tr><td>Q1-6</td><td>広告の原則に「回答の独立性」: 広告は回答に影響せず常に分離・ラベル付き</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr><tr><td>Q2-1</td><td>2025年12月、ユーザーはPelotonやTargetなどの企業名つきアプリ提案をChatGPT内で見て、(無関係な文脈でも)広告だと受け取った。OpenAIはアプリ提案であり有料掲載ではない(「金銭の要素なし」)と説明</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q2-2</td><td>OpenAIは「広告のように感じられる」ものは慎重に扱うべきで「我々は不十分だった」とし、この種の提案を精度改善まで停止、ユーザーが減らす/切る設定も検討と発言。別の幹部は当時「広告のライブテストはない」と述べた</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-1</td><td>Microsoft: 個人向けCopilot(M365契約なし)では広告が出ることがある。汎用広告は現在の会話内容で選び、パーソナライズ広告はチャット履歴・メモリ等も使い得る(設定で制御)</td><td>-</td><td>-</td><td>-</td><td class="h">△</td><td>-</td></tr><tr><td>Q3-2</td><td>Microsoft Advertising: Copilotの広告は有機的回答の下に明示表示され、有機的回答は広告に影響されないと説明</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-3</td><td>Gemini: Googleのプライバシー通知(2026-10-13更新)は「Geminiアプリのチャットは広告表示に使われていない」。2026-01-21にHassabis氏はAxiosに「現時点で広告の計画なし」と語った</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-4</td><td>GoogleのAI OverviewsとAI Modeでは、商業的関連性があれば広告が表示され得る(「Sponsored」ラベル、有機的回答は広告に影響されない)。2026-10-28にAI Modeの広告拡大・マルチターン広告(米国)を発表</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-5</td><td>Perplexity: Instant Buyの関連商品リストは広告主が掲載料を払えず関連度・評価順(最終更新2026-10-26)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-6</td><td>Perplexityは2024年開始の広告テストを段階的に終了し再開予定なしとSearch Engine Landが報道(FT引用)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q3-7</td><td>Claude: 広告なしを維持すると公式表明(2026-02-04)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q4-1</td><td>日本の消費者庁: ステマ規制(景品表示法の指定告示)は2023-10-01施行。事業者の広告表示について、一般消費者が事業者の表示と判別できない場合を禁止。第三者を介した広告も対象だが、純粋に独立した個人の意見や広告と分かるものは対象外</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q4-2</td><td>米FTC: 売り手との重要な関係が推薦の信頼性に影響し得て聴き手が予期しない場合は、明確かつ目立つ形で開示。普通の推薦すべてが広告という意味ではない</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q5-1</td><td>Guardian(2026-06-07、06-12修正): Ask Silverの調査で、Russell &amp; BromleyやDunelmのなりすまし偽サイトがChatGPT検索の出典に出た例。OpenAIは検索インデックスから除去したと回答</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q5-2</td><td>Tom&#x27;s Guide(2026-06-11): 編集者がChatGPTで見つけた偽ストアで$150を失った体験。OpenAIは「少数の欺瞞的サイトを把握し対処、改善中」と回答</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q6-1</td><td>Attentive(2026調査、8/12〜14、米国成人3,054人): 直近3か月で汎用AIチャットを買い物で使った人68%。AI利用者のうち58%が商品発見に利用。直近のAI支援買い物で93%が購入前に外部情報・証拠を求めた</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>Q6-2</td><td>Gartner(2026-05-27発表、2025-11〜12調査、米消費者846人): 直近の買い物でAIを使った人の54%が、AIの情報の正確さを全て再確認する必要があったと回答</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P1</td><td>2つの事前登録ランダム化実験、米国の電子書籍読者N=2,012、実在のKindleカタログ(5,495冊)から本を1冊選ぶ。商品の約20%が無作為に「スポンサー」指定</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>-</td><td>-</td></tr><tr><td>P2</td><td>AIがスポンサー商品へ誘導するよう裏で指示されると61.2%がスポンサー本を選択。従来の検索上位表示は22.4%(約3倍)。チャットで単に先頭に置き説明は中立だと26.8%(検索との差は有意でない)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>-</td></tr><tr><td>P3</td><td>「Sponsored」ラベル+事前告知でも55.5%(通常の説得61.2%と有意差なし)</td><td>-</td><td>-</td><td>-</td><td class="y">●</td><td>-</td></tr><tr><td>P4</td><td>説得意図を隠す指示では選択率40.7%(61.2%より有意に低い)だが検出精度は9.5%まで低下。検出精度は説得17.9%、ラベル+告知35.1%</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P5</td><td>説得条件で「偏りを感じた」と答えたのは4人に1人未満(22.3%、隠す条件14.6%)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>P6</td><td>会話記録の分析: 最も関連が強かった戦略はスポンサーでない本に注意・警告を付ける(Active Hedging)(20.9pp)、次に非スポンサーを平坦に簡素に説明(18.9pp)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>-</td><td>-</td></tr><tr><td>P7</td><td>選んだ本を保持するか$1を受け取るかの指標は5条件間で有意差なし</td><td>-</td><td>-</td><td class="h">△</td><td>-</td><td>-</td></tr><tr><td>P8</td><td>著者の限界: 1カテゴリ・単一セッション、スポンサー指定は無作為(好み連動ではない)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td>-</td><td>-</td></tr><tr><td>N1</td><td>ITmedia NEWS(2026-10-29)が日本語で紹介(約3倍)</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr></table></div>
+<div class="tw"><table><tr><th>People ID(使用されたもののみ。残り42件は5本とも未使用)</th><th>媒体 / 日付</th><th>Sol①</th><th>Sol②</th><th>Sol③</th><th>GPT ログイン</th><th>GPT 未ログイン</th></tr><tr><td>FOR-i01</td><td>Mumsnet / 2026-03-29</td><td>-</td><td class="y">●</td><td>-</td><td>-</td><td>-</td></tr><tr><td>FOR-i15</td><td>Slashdot / 2025-04-28</td><td>-</td><td>-</td><td>-</td><td class="h">△</td><td>-</td></tr><tr><td>JAP-JP02</td><td>note.com / 2026-09-10</td><td>-</td><td>-</td><td>-</td><td class="y">●</td><td class="y">●</td></tr><tr><td>JAP-JP04</td><td>ミルトーク (Milltalk) / 37日前 (relati</td><td>-</td><td>-</td><td>-</td><td class="y">●</td><td class="y">●</td></tr><tr><td>RED-R7</td><td>Reddit — satirical comment in r/technology / 2026-01-18</td><td>-</td><td>-</td><td>-</td><td class="y">●</td><td>-</td></tr><tr><td>RED-R9</td><td>Reddit — r/ChatGPT / 2026-01-17</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="y">●</td></tr></table></div></details>
+<details open><summary>8項目比較(参考。評価者=実行担当AI、ユーザー評価ではない)</summary>
+<p class="meta">各項目の観点は、冒頭の引き込み/エンタメ性/ストーリーの一貫性/Fact選定/わかりやすさ/自然な語り/エンディング/事実の正確性。点数は各5点満点の目安です。Solの点は前回(委任_01)、ChatGPTの点は今回付与したもので、同時に付けた相対評価ではありません。</p>
+<div class="tw"><table><tr><th>評価項目</th><th>ChatGPT(ログイン)</th><th>ChatGPT(未ログイン)</th><th>Sol①②③</th></tr>
+<tr><td>冒頭の引き込み</td><td>「今日の夕飯、何にしよう？」→突然の広告→「いやいや、献立を聞いただけなんだけど！」と聴き手の本音を先に言わせ、実在の投稿(Copilotの料理相談・お試し価格が使えない)へ接続。</td><td>同じ型(「ちょっと想像してみてください」→料理相談→広告→実在の投稿)。</td><td>①仮想の本推薦(三冊の候補) ②「高いものに買い替えなくていい」という店員の比喩→英国掲示板 ③本の推薦と「友達が頼まれていたら？」。いずれも1本の論文紹介へ向かう導入。</td></tr>
+<tr><td>エンタメ性</td><td>2足す2の皮肉、友人のたとえ、苦笑いする実例。笑える場面と不安の場面が交互に来る。</td><td>広告が答えを遮る場面、「営業マンなら売る側と分かる、AIは先生にも友達にも見える」という対比。</td><td>①「ですが」に耳を澄ます仕掛け ②他の候補を「心配してみせる」仕掛け ③問いの往復。面白い着眼だが、本文の約半分は実験の説明。</td></tr>
+<tr><td>ストーリーの一貫性</td><td>体験→公式の線引き→「本当の心配はその先」→研究(補強)→「使わないのか？いや…」→人間関係のたとえ→問いで締め。「信頼」で貫かれる。</td><td>体験→なぜ広告が出るのか→公式の線引き→信頼の問題→人の声→最後は自分で確かめる、で一貫。</td><td>3本とも骨格が同一(導入→実験紹介→結果→留保→OpenAI方針→助言)で、一貫性は高いが「研究報告」の流れ。</td></tr>
+<tr><td>Fact選定</td><td>公式方針(Q1-1・Q1-6)・Copilotの実例・61%/56%の2数値・日本の購入者の声・2足す2。実験の設計や会話分析は省略。</td><td>公式方針・実例・「疑わず信じてしまいそう」の声・購入者の声。<b>研究は使わない</b>。</td><td>3本とも同じ6Fact(公式方針2・実験設計・61%対22%・非スポンサー本への注意・著者の限界)。生活者の声はほぼ使わず(②のみ1件)。</td></tr>
+<tr><td>わかりやすさ</td><td>短い文・会話・数値は2つだけ。</td><td>短い文・会話形式。ただし約1,560字(Prompt「1200字程度」より長い)。</td><td>数値・実験条件・留保が多く、聞くだけで追うには情報が詰まる。</td></tr>
+<tr><td>自然な語り</td><td>呼びかけ・独り言・「ですよね」が自然。</td><td>同上。</td><td>説明調が混在。②は［BGM］指示を含む。</td></tr>
+<tr><td>エンディング</td><td>「長年相談してきたAIから『絶対おすすめ』と言われたら、確かめる自信は？」と聴き手へ問いを返す。</td><td>「疑う力」という結論＋「誰にとって都合のいいおすすめ？」と問う。やや長い。</td><td>①「その『ですが』に耳を澄ませて」 ②「財布の最終決裁は自分で」 ③「その『ぴったり』、誰にとって？」。③は冒頭の問いと呼応。</td></tr>
+<tr><td>事実の正確性</td><td>実在の出来事・数値は入力Researchに対応。<b>要注意</b>: 掲示板1件の回答を「日本の消費者調査」と表現/投稿者の軽い冗談を「もう一つ問題が発覚」と脚色/「予算3万円のイヤホン」の会話は仮想(入力外)。</td><td>実在の出来事・数値は入力Researchに対応。<b>要注意</b>: Reddit1件を「不安の声が上がっています」と複数化/広告が出る背景(運営費)・「検索なら広告に気づきやすい」は入力外の一般論/広告文「今ならお得！お試しキャンペーン中！」は創作。</td><td>誤認・創作・出典誤用なし(軽微: ①「出版社がお金を払ったわけではない」は入力にない推論、②「どう話すかが重要」は解釈がやや強い)。</td></tr>
+<tr><td>参考評価(各5点、合計/40)</td><td>5/4/4/4/5/5/5/3=<b>35</b></td><td>4/4/4/3/5/5/4/3=<b>32</b></td><td>29 / 32 / 32</td></tr></table></div></details>
+<details open><summary>事実照合の要点(参考。入力Researchと突合)</summary><ul>
+<li><b>Sol3本</b>: 誤認・創作・出典の誤用・確認状況B/C素材の確定扱いは検出されませんでした。</li>
+<li><b>ChatGPT(ログイン)</b>: 実在の出来事・数値は入力に対応(JP02・JP04・2足す2[確認B・冗談と明示]・Q1-1・Q1-6・P2/P3)。要注意は上表のとおり(消費者調査の言い換え、脚色、入力外の仮想例と意見)。</li>
+<li><b>ChatGPT(未ログイン)</b>: 実在の出来事・数値は入力に対応(JP02・JP04・R9[確認B]・Q1-1・Q1-6)。要注意は上表のとおり(複数化、入力外の一般論、創作広告文、文字数超過)。</li>
+<li>ChatGPT版は読みやすさ・自然さで優れる一方、事実の扱いはSolより緩い面があります。品質の定義(どこまでの脚色を許すか)はユーザー判断事項です。</li></ul></details>
+<details><summary>差の要因(調査の更新版。いずれも未確定・因果は未証明)</summary><ul>
+<li>ChatGPTが使った素材はすべてSolの入力にもあった=「入力の素材不足」は否定されました。ChatGPTとSolで、同じ素材からの<b>選び方(中心に据える素材)</b>が違います(ChatGPT=生活者の実例から入り研究は補強、Sol=最も情報量の多い1本の研究を中心に)。</li>
+<li>Sol APIへの送信は素のuser message1通で、構造上の欠陥は見つかっていません。Sol入力は管理情報(出典・確認状況・限定・備考など)を多く含み、その限定が留保文として3本に出ています。ChatGPT側に渡された一覧の形式は不明です。</li>
+<li>ログイン状態の有無では大きく変わらない(2本とも生活者中心)ため、過去の会話履歴だけでは説明しにくい状況です。ただしChatGPTの実モデル・内部設定は不明です。</li>
+<li><b>確定にはユーザーがChatGPTへ貼った一覧の実物(Fact・Peopleの両方)が必要です。</b></li></ul></details>
+<details><summary>実際のPrompt・model_id・生成設定(Sol)</summary>
 <p class="meta">Prompt(原文どおり。引用記号のみ除去)。user messageの先頭に置き、続けてFact Research一覧、People Research一覧の順に連結した1通を送信。</p><pre class="pl" lang="ja">以下の情報から、必要な情報を取捨選択して、面白く、読者が興味をそそるエンターテイメント性のあるPOTCAST原稿を作ってみて。内容は分かりやすく、高校生くらいでも分かる様に。
 
 １2００文字程度。
@@ -204,7 +409,8 @@ AIには、買い物の相談に乗ってもらう。でも、財布のひもま
 <div class="tw"><table><tr><th>回</th><th>model_id(実際)</th><th>reasoning effort</th><th>生成時間</th><th>入力 / 出力token</th><th>費用</th></tr><tr><td>1</td><td>gpt-6.1-sol</td><td>high</td><td>55.8秒</td><td>16,311 / 2,376</td><td>¥4.06</td></tr><tr><td>2</td><td>gpt-6.1-sol</td><td>high</td><td>66.8秒</td><td>16,311 / 2,877</td><td>¥9.82</td></tr><tr><td>3</td><td>gpt-6.1-sol</td><td>high</td><td>61.6秒</td><td>16,311 / 2,446</td><td>¥9.13</td></tr></table></div>
 <ul><li>API: OpenAI Responses API。system/developer messageなし・toolなし・web検索なし。temperature・top_p・max_output_tokensは指定せず(API既定。応答上のtemperature=1.0)。reasoning effort=highはVer.3 WriterのSol設定と同じ。</li>
 <li>入力: payload 43,336字(sha256先頭78fc9ba1e825…)。3回とも同一。生成3回は並列(壁時計66.9秒)。合計費用¥23.02。</li>
-<li>再実行・追加生成・Prompt改善・後処理による文章修正は行っていません(初稿をそのまま保存)。1回目のみ入力のプロンプトキャッシュが命中(費用のみに影響)。</li></ul></details>
+<li>再実行・追加生成・Prompt改善・後処理による文章修正は行っていません(初稿をそのまま保存)。1回目のみ入力のプロンプトキャッシュが命中(費用のみに影響)。</li>
+<li>ChatGPT原稿2本は上記APIの生成物ではなく、ユーザーがChatGPTで生成したものです。モデル・設定・渡した一覧は不明で、モデル差とAPI差の切り分けは今回の結果だけではできません。</li></ul></details>
 <script>document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){
 document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
 document.querySelectorAll('.panel').forEach(function(p){p.hidden=true});
