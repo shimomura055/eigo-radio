@@ -1,0 +1,463 @@
+<!doctype html><html lang="ja"><head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="other_dev"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Family X2 米国中間選挙 本文の最小修正 確認ページ</title>
+<style>body{font-family:sans-serif;max-width:1000px;margin:1em auto;padding:0 1em;line-height:1.55}pre{white-space:pre-wrap;background:#f6f6f6;padding:.8em;border-radius:4px;font-size:.92em}
+table{border-collapse:collapse;width:100%;font-size:.88em;margin-bottom:1em}td,th{border:1px solid #ccc;padding:4px;vertical-align:top}th{background:#eee}
+del{background:#f8c9c9;text-decoration:line-through}ins{background:#c9f0c9;text-decoration:none}.box{border:1px solid #cdb;background:#f4fbf0;padding:.5em .8em;margin:.6em 0}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<h1>Family X2 米国中間選挙 本文の最小修正 確認ページ</h1>
+<p>開発用の確認ページです。Production成果物・End Userカタログには反映されていません。全文再生成は行わず、保存済みの英文本文から対象部分だけを削除・置換した候補を並べています(赤の取消線=削除、緑=置換後)。日本語訳・学習項目・音声は含みません。</p>
+<div class="box"><b>状態</b>: ①(制作資料への言及の削除)・②(効果音ト書きの削除)はユーザー承認済みの修正で、候補として適用済み。③(「In this scenario」)は<b>未承認</b>で、案A・案Bの2案を提示しているだけです(どちらも正式な本文には未反映)。</div>
+<h2>1. 検査結果(既存の境界parserと本文欠落検査)</h2>
+<table><tr><th>版</th><th>3部境界</th><th>本文欠落</th><th>Part別語数(1/2/3)</th><th>本文語数計</th></tr><tr><td>Standard 修正前</td><td>NG: NG_BOUNDARY_AMBIGUOUS</td><td>(検査前に停止)</td><td>-</td><td>-</td></tr><tr><td>Standard ①②適用後</td><td>OK(3部)</td><td>欠落なし</td><td>126 / 144 / 110</td><td>380</td></tr><tr><td>Standard ①②+③案A</td><td>OK(3部)</td><td>欠落なし</td><td>123 / 144 / 110</td><td>377</td></tr><tr><td>Standard ①②+③案B</td><td>OK(3部)</td><td>欠落なし</td><td>126 / 144 / 110</td><td>380</td></tr><tr><td>Advanced 修正前</td><td>OK(3部)</td><td>欠落なし</td><td>131 / 145 / 143</td><td>419</td></tr><tr><td>Advanced ①②適用後</td><td>OK(3部)</td><td>欠落なし</td><td>129 / 143 / 143</td><td>415</td></tr></table>
+<p>修正前のStandardは、冒頭の斜体注記が余分な見出しとして扱われ、境界検査が止まる状態でした(本文欠落検査の前の段階)。注記を除くと3部境界・本文欠落とも合格します。</p>
+<h2>2. 事実との照合(③)</h2>
+<div class="box">Research Fact FX-F01: 「APは、2026年11月3日の中間選挙で民主党が連邦議会の上下両院の支配を獲得したと判定した。(APの勝者判定に基づく結果で、州による全選挙結果の認証完了を意味しない。)」<br>
+③の該当文は「議会は下院と上院の2つで、民主党が両方の支配を得た」と述べる一文で、FX-F01と整合します。「In this scenario,」は事実を述べる文を仮想の話のように見せる前置きで、削除しても(案A)・「In this election,」に置換しても(案B)文の事実内容は変わりません。</div>
+<h2>3. Standard(Part 1の該当箇所)</h2>
+<p>③の前後の文脈: 直前=「Congress makes national laws. It has two parts: the House and the Senate.」/直後=「But Trump is still president.」</p>
+<h3>3-1. Standard 修正前 → ①②適用後(左=修正前の全文)</h3><p>削除: 冒頭の注記1行と、効果音の1行(いずれも読み上げ本文ではない説明・ト書き)。</p><pre><del>*This script follows the election scenario described in your material.*</del>
+
+# Same Driver, New Brakes
+
+## Part 1: Wait—He’s Still President?
+
+<del>[Sound: A phone buzzes.]</del>
+
+You are eating breakfast. You look at your phone.
+
+“Democrats win control of Congress.”
+
+You stop eating.
+
+“So… Trump has to leave?”
+
+No. Put your toast down. We need to talk.
+
+This election was not a vote for president. It was a vote for members of Congress.
+
+Congress makes national laws. It has two parts: the House and the Senate. In this scenario, Democrats have won control of both.
+
+But Trump is still president.
+
+Think of a car. The driver has not changed. But now, someone from the other team has more power to use the brakes.
+
+There is a waiting period, too. The new Congress begins on January 3, 2027. Until then, the old Congress is still at work.
+
+So what can those new brakes actually do?
+
+## Part 2: Two Sides Can Say “No”
+
+Imagine Trump chooses someone to become a federal judge.
+
+The Senate can say, “No. We do not agree.”
+
+That matters. A president cannot simply put anyone he wants into that job.
+
+But here comes the twist.
+
+Democrats can face a stop sign, too.
+
+Imagine they want a new law to help people pay for health care. Both parts of Congress pass the bill.
+
+Everyone celebrates.
+
+Then Trump says, “No.”
+
+The celebration stops.
+
+This presidential “no” is called a **veto**.
+
+Congress can beat a veto. But it needs two-thirds of the votes in both the House and the Senate.
+
+That is much harder than getting just over half.
+
+So winning Congress does not mean Democrats can make every law they want.
+
+They can stop some of Trump’s plans. He can stop some of theirs.
+
+The car has brakes. But can it still move?
+
+## Part 3: Back to the Breakfast Table
+
+For voters, that is the real question.
+
+One person may say, “Good! I wanted someone to stop him.”
+
+Another may say, “Fine. But can you help me pay my bills?”
+
+Both are watching the same election. They want different things from the result.
+
+Back at your breakfast table, your shopping bill has not changed. Neither has your rent.
+
+An election result does not lower those costs overnight.
+
+Now the two sides face a choice: find something they can agree on, or spend their time saying no.
+
+The interesting question is no longer just, “Who won?”
+
+It is this:
+
+**When both sides can stop the car, who will help it move?**</pre><h3>3-2. Standard ①②適用後の全文</h3><pre># Same Driver, New Brakes
+
+## Part 1: Wait—He’s Still President?
+
+You are eating breakfast. You look at your phone.
+
+“Democrats win control of Congress.”
+
+You stop eating.
+
+“So… Trump has to leave?”
+
+No. Put your toast down. We need to talk.
+
+This election was not a vote for president. It was a vote for members of Congress.
+
+Congress makes national laws. It has two parts: the House and the Senate. In this scenario, Democrats have won control of both.
+
+But Trump is still president.
+
+Think of a car. The driver has not changed. But now, someone from the other team has more power to use the brakes.
+
+There is a waiting period, too. The new Congress begins on January 3, 2027. Until then, the old Congress is still at work.
+
+So what can those new brakes actually do?
+
+## Part 2: Two Sides Can Say “No”
+
+Imagine Trump chooses someone to become a federal judge.
+
+The Senate can say, “No. We do not agree.”
+
+That matters. A president cannot simply put anyone he wants into that job.
+
+But here comes the twist.
+
+Democrats can face a stop sign, too.
+
+Imagine they want a new law to help people pay for health care. Both parts of Congress pass the bill.
+
+Everyone celebrates.
+
+Then Trump says, “No.”
+
+The celebration stops.
+
+This presidential “no” is called a **veto**.
+
+Congress can beat a veto. But it needs two-thirds of the votes in both the House and the Senate.
+
+That is much harder than getting just over half.
+
+So winning Congress does not mean Democrats can make every law they want.
+
+They can stop some of Trump’s plans. He can stop some of theirs.
+
+The car has brakes. But can it still move?
+
+## Part 3: Back to the Breakfast Table
+
+For voters, that is the real question.
+
+One person may say, “Good! I wanted someone to stop him.”
+
+Another may say, “Fine. But can you help me pay my bills?”
+
+Both are watching the same election. They want different things from the result.
+
+Back at your breakfast table, your shopping bill has not changed. Neither has your rent.
+
+An election result does not lower those costs overnight.
+
+Now the two sides face a choice: find something they can agree on, or spend their time saying no.
+
+The interesting question is no longer just, “Who won?”
+
+It is this:
+
+**When both sides can stop the car, who will help it move?**</pre><h3>3-3. ③案A(「In this scenario,」を削除)の全文</h3><pre># Same Driver, New Brakes
+
+## Part 1: Wait—He’s Still President?
+
+You are eating breakfast. You look at your phone.
+
+“Democrats win control of Congress.”
+
+You stop eating.
+
+“So… Trump has to leave?”
+
+No. Put your toast down. We need to talk.
+
+This election was not a vote for president. It was a vote for members of Congress.
+
+Congress makes national laws. It has two parts: the House and the Senate. Democrats have won control of both.
+
+But Trump is still president.
+
+Think of a car. The driver has not changed. But now, someone from the other team has more power to use the brakes.
+
+There is a waiting period, too. The new Congress begins on January 3, 2027. Until then, the old Congress is still at work.
+
+So what can those new brakes actually do?
+
+## Part 2: Two Sides Can Say “No”
+
+Imagine Trump chooses someone to become a federal judge.
+
+The Senate can say, “No. We do not agree.”
+
+That matters. A president cannot simply put anyone he wants into that job.
+
+But here comes the twist.
+
+Democrats can face a stop sign, too.
+
+Imagine they want a new law to help people pay for health care. Both parts of Congress pass the bill.
+
+Everyone celebrates.
+
+Then Trump says, “No.”
+
+The celebration stops.
+
+This presidential “no” is called a **veto**.
+
+Congress can beat a veto. But it needs two-thirds of the votes in both the House and the Senate.
+
+That is much harder than getting just over half.
+
+So winning Congress does not mean Democrats can make every law they want.
+
+They can stop some of Trump’s plans. He can stop some of theirs.
+
+The car has brakes. But can it still move?
+
+## Part 3: Back to the Breakfast Table
+
+For voters, that is the real question.
+
+One person may say, “Good! I wanted someone to stop him.”
+
+Another may say, “Fine. But can you help me pay my bills?”
+
+Both are watching the same election. They want different things from the result.
+
+Back at your breakfast table, your shopping bill has not changed. Neither has your rent.
+
+An election result does not lower those costs overnight.
+
+Now the two sides face a choice: find something they can agree on, or spend their time saying no.
+
+The interesting question is no longer just, “Who won?”
+
+It is this:
+
+**When both sides can stop the car, who will help it move?**</pre><h3>3-4. ③案B(「In this election,」へ置換)の全文</h3><pre># Same Driver, New Brakes
+
+## Part 1: Wait—He’s Still President?
+
+You are eating breakfast. You look at your phone.
+
+“Democrats win control of Congress.”
+
+You stop eating.
+
+“So… Trump has to leave?”
+
+No. Put your toast down. We need to talk.
+
+This election was not a vote for president. It was a vote for members of Congress.
+
+Congress makes national laws. It has two parts: the House and the Senate. In this <ins>election,</ins> Democrats have won control of both.
+
+But Trump is still president.
+
+Think of a car. The driver has not changed. But now, someone from the other team has more power to use the brakes.
+
+There is a waiting period, too. The new Congress begins on January 3, 2027. Until then, the old Congress is still at work.
+
+So what can those new brakes actually do?
+
+## Part 2: Two Sides Can Say “No”
+
+Imagine Trump chooses someone to become a federal judge.
+
+The Senate can say, “No. We do not agree.”
+
+That matters. A president cannot simply put anyone he wants into that job.
+
+But here comes the twist.
+
+Democrats can face a stop sign, too.
+
+Imagine they want a new law to help people pay for health care. Both parts of Congress pass the bill.
+
+Everyone celebrates.
+
+Then Trump says, “No.”
+
+The celebration stops.
+
+This presidential “no” is called a **veto**.
+
+Congress can beat a veto. But it needs two-thirds of the votes in both the House and the Senate.
+
+That is much harder than getting just over half.
+
+So winning Congress does not mean Democrats can make every law they want.
+
+They can stop some of Trump’s plans. He can stop some of theirs.
+
+The car has brakes. But can it still move?
+
+## Part 3: Back to the Breakfast Table
+
+For voters, that is the real question.
+
+One person may say, “Good! I wanted someone to stop him.”
+
+Another may say, “Fine. But can you help me pay my bills?”
+
+Both are watching the same election. They want different things from the result.
+
+Back at your breakfast table, your shopping bill has not changed. Neither has your rent.
+
+An election result does not lower those costs overnight.
+
+Now the two sides face a choice: find something they can agree on, or spend their time saying no.
+
+The interesting question is no longer just, “Who won?”
+
+It is this:
+
+**When both sides can stop the car, who will help it move?**</pre>
+<h2>4. Advanced</h2>
+<h3>4-1. Advanced 修正前の全文</h3><p>置換: 「The supplied online comments capture」→「Online comments capture」/「The supplied reporting puts」→「Reporting puts」。他は変更なし。</p><pre># They Won. So Why Is Trump Still in Charge?
+
+### Part 1 — The Morning After
+
+Picture this: you’re on a train in Tokyo, checking your phone.
+
+The headline says AP has called both houses of Congress for the Democrats in the November 2026 election.
+
+You take a sip of coffee. “So… does Trump have to leave?”
+
+No. He keeps his job.
+
+That’s the first surprise. Americans have elected a new Congress, not a new president.
+
+<del>The supplied online</del> comments capture two reactions: relief that Trump will face stronger opposition, and worry that the next two years will produce absolutely nothing. Those comments aren’t a national poll, but they raise a good question:
+
+**What have the winners actually won?**
+
+First, check the calendar. The new congressional term begins on January 3, 2027—not the morning after the election.
+
+The headline arrives immediately. The handover takes two months.
+
+### Part 2 — The President’s “No”
+
+Now imagine it’s January.
+
+The new Congress passes a bill intended to lower prescription-drug costs. A family watching the news thinks, “Great. Maybe our pharmacy bill will finally shrink.”
+
+But then the bill reaches Trump.
+
+He can veto it: send it back without signing it into law.
+
+Congress can overcome that veto, but it needs a two-thirds vote in **each** chamber. Simply having more seats than the other party isn’t enough.
+
+So winning Congress doesn’t mean Democrats can deliver every promise on their campaign leaflets.
+
+There’s also business to finish before they take over. <del>The supplied reporting</del> puts a government-funding deadline on December 11—while the outgoing Congress is still in place.
+
+Imagine getting elected to manage a building in January, then discovering its electricity contract expires in December.
+
+The people leaving still have an urgent decision to make.
+
+### Part 3 — Not Powerless, Either
+
+So is the election just an expensive way to change the names on office doors?
+
+Not quite.
+
+Say Trump chooses someone for a lifetime job as a federal judge.
+
+That appointment needs Senate approval. The incoming Senate can examine the candidate—and reject the choice.
+
+Congress can also investigate government decisions, demanding documents and calling witnesses for inquiries connected to its lawmaking work. That doesn’t automatically remove anyone from office, but it can force uncomfortable questions into public hearings.
+
+Here’s the twist: **stopping something can be a major result, even when nothing new gets signed.**
+
+For one voter, a blocked appointment means protection. For another, it means obstruction.
+
+Same event. Completely different review.
+
+So keep watching after the victory speeches. The real story isn’t simply who won Congress.
+
+It’s what they can make happen—and what they can prevent.</pre><h3>4-2. Advanced ①②適用後の全文</h3><pre># They Won. So Why Is Trump Still in Charge?
+
+### Part 1 — The Morning After
+
+Picture this: you’re on a train in Tokyo, checking your phone.
+
+The headline says AP has called both houses of Congress for the Democrats in the November 2026 election.
+
+You take a sip of coffee. “So… does Trump have to leave?”
+
+No. He keeps his job.
+
+That’s the first surprise. Americans have elected a new Congress, not a new president.
+
+<ins>Online</ins> comments capture two reactions: relief that Trump will face stronger opposition, and worry that the next two years will produce absolutely nothing. Those comments aren’t a national poll, but they raise a good question:
+
+**What have the winners actually won?**
+
+First, check the calendar. The new congressional term begins on January 3, 2027—not the morning after the election.
+
+The headline arrives immediately. The handover takes two months.
+
+### Part 2 — The President’s “No”
+
+Now imagine it’s January.
+
+The new Congress passes a bill intended to lower prescription-drug costs. A family watching the news thinks, “Great. Maybe our pharmacy bill will finally shrink.”
+
+But then the bill reaches Trump.
+
+He can veto it: send it back without signing it into law.
+
+Congress can overcome that veto, but it needs a two-thirds vote in **each** chamber. Simply having more seats than the other party isn’t enough.
+
+So winning Congress doesn’t mean Democrats can deliver every promise on their campaign leaflets.
+
+There’s also business to finish before they take over. <ins>Reporting</ins> puts a government-funding deadline on December 11—while the outgoing Congress is still in place.
+
+Imagine getting elected to manage a building in January, then discovering its electricity contract expires in December.
+
+The people leaving still have an urgent decision to make.
+
+### Part 3 — Not Powerless, Either
+
+So is the election just an expensive way to change the names on office doors?
+
+Not quite.
+
+Say Trump chooses someone for a lifetime job as a federal judge.
+
+That appointment needs Senate approval. The incoming Senate can examine the candidate—and reject the choice.
+
+Congress can also investigate government decisions, demanding documents and calling witnesses for inquiries connected to its lawmaking work. That doesn’t automatically remove anyone from office, but it can force uncomfortable questions into public hearings.
+
+Here’s the twist: **stopping something can be a major result, even when nothing new gets signed.**
+
+For one voter, a blocked appointment means protection. For another, it means obstruction.
+
+Same event. Completely different review.
+
+So keep watching after the victory speeches. The real story isn’t simply who won Congress.
+
+It’s what they can make happen—and what they can prevent.</pre>
+<h2>5. ③の2案の比較</h2>
+<table><tr><th></th><th>①②適用後(③未修正)</th><th>案A(削除)</th><th>案B(置換)</th></tr><tr><td>該当文</td><td>In this scenario, Democrats have won control of both.</td><td>Democrats have won control of both.</td><td>In this election, Democrats have won control of both.</td></tr><tr><td>Part 1語数</td><td>126</td><td>123</td><td>126</td></tr></table>
+<p>案Aは語数が3語減り、文の前置きがなくなって直接の断定になります。案Bは語数・文の形を保ち、「この選挙で」と実際の選挙であることを明示します。どちらも事実関係・ストーリーは変わりません。</p>
+</body></html>
