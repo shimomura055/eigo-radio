@@ -336,7 +336,7 @@
       loadArticle: function (slug) { return ensureArt(slug).then(function (d) { return d.art; }); },
       bases: basesFor, lookup: reviewLookup,
       render: function (x) { return PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }); },
-      playAudio: playReviewAudio, stopAudio: stopItemAudio   // WUI4: 復習の音声は保存項目の同レベルarticle項目のaudio(url[+start/end])のみ。再タップは先頭から
+      playAudio: playReviewAudio, stopAudio: stopItemAudio, toast: toast   // WUI4: 復習の音声は保存項目の同レベルarticle項目のaudio(url[+start/end])のみ。再タップは先頭から
     });
     migrateSaved().then(function () { if (reviewCtl === ctl && $('srsroot') === el) ctl.mount(el); });
   }
@@ -353,12 +353,15 @@
   /* ---------- 画面: プレイヤー ---------- */
   var KIND_HEAD = { topic: 'Topic', jtitle: '日本語タイトル', preview: 'Preview', oneline: 'In One Line' };
   var JA_RE = /[ぁ-んァ-ヶ一-龠]/;
+  function modeSegHtml(id) {   // APP-UI-USERTEST-FIX-01 ③: 聴く/学ぶ切替(上部=#modeseg、本文内3か所=class mseg-in)。同じ data-mode・同じ setMode を共用
+    return '<div class="modeseg' + (id ? '' : ' mseg-in') + '"' + (id ? ' id="' + id + '"' : '') + ' role="group" aria-label="聴く/学ぶ"><button type="button" data-mode="listen" aria-pressed="' + (ST.mode === 'listen') + '">聴く</button><button type="button" data-mode="learn" aria-pressed="' + (ST.mode === 'learn') + '">学ぶ</button></div>';
+  }
   function viewPlayer(slug) {
     var it = item(slug); if (!it) return topBar({ back: true }) + '<div class="empty">記事が見つかりません</div>';
     return topBar({ back: true }) +
       '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + '<span class="kari">仮</span></span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
       '<div id="pnotice"></div>' + lvSeg('lvseg-player') + '<div class="nowlv" id="nowlv"></div>' +
-      '<div class="modeseg" id="modeseg" role="group" aria-label="聴く/学ぶ"><button type="button" data-mode="listen" aria-pressed="' + (ST.mode === 'listen') + '">聴く</button><button type="button" data-mode="learn" aria-pressed="' + (ST.mode === 'learn') + '">学ぶ</button></div>' +
+      modeSegHtml('modeseg') +
       '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" data-fromstart aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' +
       '<div id="pcontent"><div class="empty">読み込み中…</div></div>' +
       '<a class="fullink" href="../' + slug + '/enduser/index.html?lv=' + ST.level + '" target="_blank" rel="noopener">既存の完全版ページを開く &#8250;</a>' +
@@ -407,7 +410,8 @@
         }
       }
     });
-    if (tr) out += '<section class="secbox" id="fulltr"><h3>日本語訳(全文)</h3>' + tr + '</section>';
+    out += modeSegHtml();   // ③-1 英文終了位置(日本語訳の直前。訳が無い記事では末尾)
+    if (tr) out += '<section class="secbox" id="fulltr"><h3>日本語訳(全文)</h3>' + tr + '</section>' + modeSegHtml();   // ③-2 日本語訳の終了位置
     return '<div class="script">' + out + '</div>';
   }
   function buildPWI(slug, L, art) {   // 学ぶ画面と吹き出しが同じ項目生成(PWCard.buildPWItems)を使う(R2)
@@ -447,7 +451,8 @@
       }).join('') + '</section>';
     }
     out += '<section class="secbox"><h3>保存・復習</h3><p class="lvnote" style="text-align:left;margin:0 0 8px">各項目の「保存」で、この端末内(仮動作)に保存できます。</p><a class="setrow" href="#/review" style="text-decoration:none">復習帳を開く<span>&#8250;</span></a></section>';
-    return out;
+    return out + modeSegHtml();   // ③-3 学習コンテンツの終了位置
+
   }
   function renderContent() {
     var el = $('pcontent'), slug = route.arg; if (!el) return;
@@ -561,7 +566,7 @@
     CAPON = !!on; if (persist) lsSet(K_CAP, CAPON ? 1 : 0);
     var dk = $('dock'), b = $('capsw'); if (!dk) return;
     dk.classList.toggle('capoff', !CAPON);
-    if (b) { b.setAttribute('aria-pressed', String(CAPON)); var st = b.querySelector('b'); if (st) st.textContent = CAPON ? 'ON' : 'OFF'; }
+    if (b) { b.setAttribute('aria-checked', String(CAPON)); var st = b.querySelector('b'); if (st) st.textContent = CAPON ? 'ON' : 'OFF'; }
     layoutDock(); updateCapCue();
   }
   function capForce(on) { var dk = $('dock'); if (dk) dk.classList.toggle('capforce', !!on); }   // 字幕OFF中でも吹き出しの代替表示(キャプチャ枠内)が必要な時だけ一時的に枠を出す
@@ -734,6 +739,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('.cardplay'), function (b) {
       var on = isCur(b.dataset.play) && !A.paused;
       b.classList.toggle('on', on); b.innerHTML = on ? IC.pause : IC.play;
+      var al = b.getAttribute('aria-label'); if (al) b.setAttribute('aria-label', al.replace(/(一時停止|再生)$/, on ? '一時停止' : '再生'));   // APPUI-B ④ M1: aria表示を動作(再生中=一時停止/それ以外=再生して記事を開く)と一致させる
     });
     Array.prototype.forEach.call(document.querySelectorAll('[data-lvchip]'), function (c) { c.textContent = LV[ST.level]; c.className = 'chip lv' + (ST.level === 'adv' ? 'adv' : ''); c.setAttribute('data-lvchip', ''); });
     Array.prototype.forEach.call(document.querySelectorAll('[data-lvname],[data-lvname2]'), function (c) { c.textContent = LV[ST.level]; });
@@ -751,12 +757,11 @@
     st.slug = cur && cur.slug; st.level = cur && cur.level; st.t = A.currentTime; st.active = activeUnit && activeUnit.key; st.src = A.src; st.rate = A.playbackRate;
     window.__WUL_STATE = st;
   }
-  /* 手動選択の保持(D3/R1): 再生中の手動選択は RESUME_MS(8秒)保持→自動で追従へ復帰。手動スクロール後の追従復帰と同じ定数・同じtick内判定に一本化。
+  /* 手動選択の保持(D3/R1): 再生中の手動選択は RESUME_MS(8秒)保持→選択を解除(追従中=follow true の場合のみ現在位置へ復帰)。手動スクロールによる追従解除後の自動復帰は廃止(APP-UI-USERTEST-FIX-01 ⑥): 復帰は「再生位置へ」押下のみ。
      時刻比較型(setTimeoutなし)。表示中記事の再生中のみ。吹き出し表示中は停止し、閉じた時点から再計測(closeBubbleがmanual.atを更新)。一時停止中は無期限保持。 */
   function holdCheck() {
     var now = Date.now();
     if (manual && !A.paused && route.name === 'player' && isCur(route.arg) && cur.level === ST.level && !bubbleOpen() && !touching && now - Math.max(manual.at, lastUserScroll) > RESUME_MS) { clearManual('hold'); return; }
-    if (!follow && !touching && now - lastUserScroll > RESUME_MS) setFollow(true);   // 手動スクロールが止まって一定時間で自動追従へ復帰(手動選択は解除しない)
   }
   /* 不変条件: (1)全要素で .hl は1個以下 (2)キャプチャの文=強調の文(.sent.hl が無ければキャプチャも文なし)。違反はconsole.warn+data-hl-violations */
   function checkInvariant() {
@@ -825,7 +830,7 @@
 
   function setMode(m) {
     ST.mode = m; clearManual('mode'); syncModeClass();
-    Array.prototype.forEach.call(document.querySelectorAll('#modeseg button'), function (x) { x.setAttribute('aria-pressed', String(x.dataset.mode === ST.mode)); });
+    Array.prototype.forEach.call(document.querySelectorAll('.modeseg button'), function (x) { x.setAttribute('aria-pressed', String(x.dataset.mode === ST.mode)); });
     renderContent(); setFollow(true);
   }
   /* ---------- 手動選択・吹き出し(WUR 委任_02c S2) ---------- */
@@ -888,7 +893,7 @@
     manual = null; ST.sel = null; closeBubble(true);
     if (!had) return;
     placePanel(true); syncView();
-    if (reason === 'resume' || reason === 'hold') { follow = true; lastUserScroll = 0; setFollow(true); }   // 現在位置の文へ強調・キャプチャ・スクロールが復帰(原文§2-3)
+    if (reason === 'resume' || (reason === 'hold' && follow)) { follow = true; lastUserScroll = 0; setFollow(true); }   // APP-UI-USERTEST-FIX-01 ⑥: hold(8秒経過)は選択解除のみ。利用者のスクロールで追従解除済み(follow=false)なら勝手に戻さない   // 現在位置の文へ強調・キャプチャ・スクロールが復帰(原文§2-3)
   }
   function bubbleModel(entry) {
     var d = ART[route.arg], L = d.art.levels[ST.level], g = entry.gl || {}, x = null, idx = -1;
@@ -960,8 +965,12 @@
       e.stopPropagation();
       var slug = b.dataset.play;
       if (route.name !== 'player') ST.mode = 'listen';   // WUI4 改善③: 一覧(ホーム/検索/ジャンル)の再生=リスニング目的
-      if (isCur(slug) && cur.level === ST.level) { togglePlay(); return; }
-      startPlay(slug, {});
+      /* APPUI-B ④ M1/M2: 再生ボタン=記事ページへ遷移して再生。再生中の記事のボタンは従来どおり一時停止のみ(遷移しない=アイコン/aria表示と動作を一致)。
+         一時停止中の現在記事=位置維持で再開(togglePlay)、別記事/未再生=startPlay。いずれもクリック内で同期実行(iOS)し、その後に遷移(route が同記事なら遷移しない) */
+      var curHere = isCur(slug) && cur.level === ST.level;
+      if (curHere && !A.paused) { togglePlay(); return; }
+      if (curHere) togglePlay(); else startPlay(slug, {});
+      if (route.name !== 'player' || route.arg !== slug) location.hash = '#/player/' + slug;
       return;
     }
     if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = shuffle(byNew().map(function (x) { return x.slug; })); startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ(仮設定): ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
@@ -984,7 +993,8 @@
     }
     if ((b = t.closest('[data-mode]'))) {   // 聴く/学ぶの切替では音声に触れない
       setMode(b.dataset.mode);
-      var ms = $('modeseg'); if (ms) window.scrollTo(0, Math.max(0, ms.getBoundingClientRect().top + window.scrollY - 8));
+      if (b.closest('#modeseg')) { var ms = $('modeseg'); if (ms) window.scrollTo(0, Math.max(0, ms.getBoundingClientRect().top + window.scrollY - 8)); }   // 上部切替は従来どおり
+      else { var pc = $('pcontent'); if (pc) window.scrollTo(0, Math.max(0, pc.getBoundingClientRect().top + window.scrollY - 8)); }   // 本文内切替: 切替後コンテンツの先頭へ(上部切替位置まで戻らない)
       return;
     }
     if ((b = t.closest('[data-fromstart]'))) { playFromStart(route.arg); return; }   // 始めから聞く(聴く画面の共通ボタン)
@@ -1081,8 +1091,8 @@
       { hash: '#/review', reroute: true, ctx: ['#srsroot .srs-body'], sel: ['#srsroot .srs-grades'], title: '4択で復習する', html: '<p>保存した単語・フレーズをここで復習します。覚えやすさに合わせて『忘れた』『難しい』『普通』『簡単』を選ぶと、次回の学習ペースが変わります。</p>',
         prep: function (cb) {
           reviewReady(function () {   // 復習セッションは開始・記録しない。同じ部品(answerHtml)のプレビュー
-            var x = sampleItem(), pv = { again: { label: '今日' }, hard: { label: '1日後' }, good: { label: '2日後' }, easy: { label: '4日後' } };
-            $('srsroot').innerHTML = sampleNote() + WURReview.answerHtml({ remaining: 5 }, { key: 'tut|lean in', en: x.en }, PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }), pv, true);
+            var x = sampleItem();
+            $('srsroot').innerHTML = sampleNote() + WURReview.answerHtml({ remaining: 5 }, { key: 'tut|lean in', en: x.en }, PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }), true);
             var bd = document.querySelector('#srsroot .srs-body'), st6 = TUT.steps[TUT.i];
             if (bd) bd.style.marginBottom = '16px';   // 文脈枠(上部)と4択枠(下部)の間に余白(枠が重ならない)。説明用プレビューDOMのみ
             st6.adapt = [function () { var e = document.querySelector('#srsroot .srs-prog'); if (e) e.style.display = 'none'; }, function () { var e = document.querySelector('#srsroot [data-tut-sample]'); if (e) e.style.cssText = 'padding:3px 8px;margin:2px 0 12px;font-size:11px'; }, function () { var e = document.querySelector('#view .top'); if (e) e.style.display = 'none'; }];   // 小さい画面で吹き出しが入らない時だけ: 対象外の残件ヘッダ→サンプル注記→ロゴ見出しを順に縮める/隠す

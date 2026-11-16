@@ -50,7 +50,7 @@
     m.items.forEach(function (it) {
       var orph = m.orphanKeys[it.key];
       h += '<div class="kpi srs-row' + (orph ? ' srs-orph' : '') + '" data-srs-row="' + esc(it.key) + '"><b class="srs-rowen">' + esc(it.en) + '</b>' +
-        '<button type="button" class="save on" data-srs-unsave="' + esc(it.key) + '">' + (orph ? '解除' : '保存済(解除)') + '</button>' +
+        '<button type="button" class="save srs-unsave" data-srs-unsave="' + esc(it.key) + '" aria-label="' + esc(it.en) + ' の保存を解除">解除</button>' +
         '<span class="m">' + esc(LVNAME[it.level] || it.level) + (orph ? ' / 元データが見つかりません' : ' / 次回 ' + (it.state === 'new' ? '未学習' : esc(it.due))) + '</span></div>';
     });
     return h + '</section>';
@@ -70,9 +70,9 @@
       enRow(it, has) + '</div></div>' +   // WUG A-6: 記事タイトル/出典は出題画面に表示しない(it.title は内部データとして保存・参照関係は不変)
       '<div class="srs-bar srs-askbar"><button type="button" class="bigbtn srs-show" data-srs-show>答えを見る</button></div></section>';   // WUG2 改善③: 「答えを見る」は下部固定(mini/nav直上)。出題語は上部で目立たせ、下に考える余白
   }
-  function answerHtml(s, it, cardHtml, pv, has) {
+  function answerHtml(s, it, cardHtml, has) {
     var btns = ['again', 'hard', 'good', 'easy'].map(function (g) {
-      return '<button type="button" class="srs-g srs-g-' + g + '" data-srs-grade="' + g + '"><span class="srs-gl">' + GLABEL[g] + '</span><span class="srs-gs">' + esc(pv[g].label) + '</span></button>';
+      return '<button type="button" class="srs-g srs-g-' + g + '" data-srs-grade="' + g + '"><span class="srs-gl">' + GLABEL[g] + '</span></button>';
     }).join('');
     return '<section class="srs-sess" data-srs-view="answer" data-srs-key="' + esc(it.key) + '">' + sessionHeader(s) +
       '<div class="srs-body"><div class="srs-q">' + enRow(it, has) + '</div>' +
@@ -90,6 +90,52 @@
     var SRS = deps.SRS, store = deps.store, nowFn = deps.now || Date.now, el = null, off = null;
     var lookup = deps.lookup || defaultLookup, render = deps.render || defaultRender;
     var V = { phase: 'home', status: {}, resolved: {}, sess: null, sum: null, notice: '', busy: false };
+    /* APPUI-B ⑧ Undo: 保存解除は即時に保存へ反映し、解除した項目(元オブジェクト+位置)だけをメモリに保留。約5秒内の「元に戻す」で同位置へ挿し戻す。新storage key/スキーマなし。
+       #undobar は#srsrootの外(body直下)。復習帳controllerの持ち物: mountで登録・destroy/ホーム以外へ移動/時間切れで保留破棄+非表示 */
+    var U = { pend: [], timer: null, busy: false, bar: null, ms: deps.undoMs || 5000 };
+    function doc() { return (el && el.ownerDocument) || (typeof document !== 'undefined' ? document : null); }
+    function barEl() {
+      var d = doc(); if (!d) return null;
+      if (!U.bar) { U.bar = d.getElementById('undobar'); if (!U.bar) { U.bar = d.createElement('div'); U.bar.id = 'undobar'; U.bar.setAttribute('role', 'status'); U.bar.setAttribute('aria-live', 'polite'); U.bar.hidden = true; d.body.appendChild(U.bar); } U.bar.addEventListener('click', onBarClick); }
+      return U.bar;
+    }
+    function showBar() {
+      var b = barEl(); if (!b) return; var n = U.pend.length;
+      b.innerHTML = '<span class="ub-msg" data-undo-msg>保存を解除しました' + (n > 1 ? '(' + n + '件)' : '') + '</span><button type="button" class="ub-btn" data-srs-undo>元に戻す</button>';
+      b.hidden = false; var d = doc(); if (d) d.body.classList.add('undoshown');
+      if (U.timer) clearTimeout(U.timer); U.timer = setTimeout(dismiss, U.ms);   // 解除のたびタイマ延長
+    }
+    function dismiss() {
+      if (U.timer) { clearTimeout(U.timer); U.timer = null; } U.pend = [];
+      if (U.bar) { U.bar.hidden = true; U.bar.innerHTML = ''; } var d = doc(); if (d) d.body.classList.remove('undoshown');
+    }
+    function say(msg) { if (deps.toast) deps.toast(msg); else if (U.bar) { U.bar.innerHTML = '<span class="ub-msg">' + esc(msg) + '</span>'; U.bar.hidden = false; U.timer = setTimeout(dismiss, 3000); } }
+    function unsave(key) {
+      if (U.busy) return; U.busy = true;   // 解除→再描画が終わるまで次の解除を受け付けない(再タップ・連打の二重処理防止)
+      var rm = null, ix = -1;
+      var r = store.update(function (st) {   // 位置とオブジェクトは保存側(最新)から取る(画面モデルは使わない)
+        for (var i = 0; i < st.items.length; i++) if (st.items[i].key === key) { ix = i; break; }
+        if (ix < 0) return { abort: 'missing' };
+        rm = st.items[ix]; st.items.splice(ix, 1);
+      });
+      if (r.ok && rm) { U.pend.push({ item: rm, ix: ix }); showBar(); if (deps.saved && deps.saved.onRemoved) deps.saved.onRemoved(); }
+      return showHome().then(function () { U.busy = false; }, function () { U.busy = false; });
+    }
+    function undo() {
+      if (U.busy || !U.pend.length) return; U.busy = true;
+      var pend = U.pend, skipped = 0;
+      var r = store.update(function (st) {
+        for (var i = pend.length - 1; i >= 0; i--) {   // 解除と逆順に戻す=元のindexが再現される
+          var e = pend[i];
+          if (st.items.some(function (x) { return x.key === e.item.key; })) { skipped++; continue; }   // 別の画面で再保存済み: 挿し戻さない(重複防止)
+          st.items.splice(Math.min(e.ix, st.items.length), 0, e.item);
+        }
+      });
+      dismiss();
+      if (!r.ok) say('元に戻せませんでした'); else if (skipped) say('別の画面で再保存済みの項目があるため、その分は戻しませんでした');
+      return showHome().then(function () { U.busy = false; }, function () { U.busy = false; });
+    }
+    function onBarClick(e) { var t = e.target; if (t && t.closest && t.closest('[data-srs-undo]')) undo(); }
 
     function today() { return SRS.todayJST(nowFn()); }
     function setHtml(h) { if (el) el.innerHTML = h; }
@@ -129,7 +175,7 @@
       return prepare().then(function (p) { V.model = homeModel(p); setHtml(homeHtml(V.model)); if (deps.onChange) deps.onChange('home'); });
     }
     function startSession() {
-      V.sess = { queue: V.model.queue.slice(), total: V.model.queue.length, remaining: V.model.queue.length }; V.sum = { n: 0, by: { again: 0, hard: 0, good: 0, easy: 0 } }; V.notice = '';
+      dismiss(); V.sess = { queue: V.model.queue.slice(), total: V.model.queue.length, remaining: V.model.queue.length }; V.sum = { n: 0, by: { again: 0, hard: 0, good: 0, easy: 0 } }; V.notice = '';
       showAsk();
     }
     function hasAudio(it) { var x = it && V.resolved[it.key]; return !!(x && x.audio && x.audio.url); }
@@ -142,7 +188,7 @@
     }
     function showAnswer() {
       var it = cur(); if (!it) return; V.phase = 'answer';
-      setHtml(answerHtml(V.sess, it, render(V.resolved[it.key]), SRS.preview(it, today()), hasAudio(it))); if (deps.onChange) deps.onChange('answer');
+      setHtml(answerHtml(V.sess, it, render(V.resolved[it.key]), hasAudio(it))); if (deps.onChange) deps.onChange('answer');
     }
     function grade(g) {
       var it = cur(); if (!it || V.phase !== 'answer') return;
@@ -163,18 +209,18 @@
       if ((b = t.closest('[data-srs-noaudio]'))) return;
       if ((b = t.closest('[data-srs-show]'))) return showAnswer();
       if ((b = t.closest('[data-srs-grade]'))) return grade(b.getAttribute('data-srs-grade'));
-      if ((b = t.closest('[data-srs-unsave]'))) { store.remove(b.getAttribute('data-srs-unsave')); if (deps.saved && deps.saved.onRemoved) deps.saved.onRemoved(); return showHome(); }
+      if ((b = t.closest('[data-srs-unsave]'))) return unsave(b.getAttribute('data-srs-unsave'));
       if ((b = t.closest('[data-srs-remove-orphans]'))) { store.removeMany(V.model.orphans.map(function (i) { return i.key; })); return showHome(); }
       if ((b = t.closest('[data-srs-end]')) || (b = t.closest('[data-srs-home]')) || (b = t.closest('[data-srs-retry]'))) return showHome();
-      if ((b = t.closest('[data-srs-reset]'))) { store.resetAfterFailure(); return showHome(); }
+      if ((b = t.closest('[data-srs-reset]'))) { dismiss(); store.resetAfterFailure(); return showHome(); }
     }
     return {
       mount: function (container) {
-        el = container; el.addEventListener('click', onClick);
+        el = container; el.addEventListener('click', onClick); barEl();
         if (deps.win && store.attachStorage) off = store.attachStorage(deps.win, function () { if (V.phase === 'home') showHome(); });   // 他タブ変更: ホームは再描画、出題中は評価直前の再読込で吸収
         return showHome();
       },
-      destroy: function () { if (el) el.removeEventListener('click', onClick); if (off) off(); el = null; },
+      destroy: function () { dismiss(); if (U.bar) { U.bar.removeEventListener('click', onBarClick); U.bar = null; } if (el) el.removeEventListener('click', onClick); if (off) off(); el = null; },
       refresh: showHome, _state: V
     };
   }

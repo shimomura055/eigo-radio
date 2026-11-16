@@ -242,10 +242,14 @@ div.setrow{cursor:default}
 #dock{position:fixed;left:50%;transform:translateX(-50%);width:min(100%,var(--colw));bottom:var(--nav-total);z-index:38;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -6px 16px rgba(16,40,94,.08);padding:6px 10px 6px}
 #dock[hidden]{display:none}
 /* ECUI B 承継実装2: 日本語字幕ON/OFF(dock内。OFF時はキャプチャ枠だけ畳む。キャプチャ->操作->ナビの順序は不変) */
-.ctrl .capsw{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0;min-height:44px;border:1.5px solid #b9cdf7;background:var(--soft);color:var(--blue2);font-weight:800;line-height:1.1;cursor:pointer}
-.ctrl .capsw span{font-size:12px}
-.ctrl .capsw b{font-size:11px;font-weight:800}
-.ctrl .capsw[aria-pressed=false]{background:#f2f4f7;border-color:#c3cde3;color:var(--muted)}
+.ctrl .capsw{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;min-height:44px;border:0;background:transparent;color:var(--navy);font-weight:800;line-height:1.1;cursor:pointer}
+.ctrl .capsw .cslbl{font-size:12px}
+.ctrl .capsw .cstrack{position:relative;display:block;width:40px;height:22px;border-radius:999px;background:var(--blue2);transition:background .15s}
+.ctrl .capsw .cstrack b{position:absolute;top:0;left:6px;line-height:22px;font-size:9px;font-weight:800;color:#fff;font-style:normal}
+.ctrl .capsw .csknob{position:absolute;top:2px;left:20px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:left .15s}
+.ctrl .capsw[aria-checked=false] .cstrack{background:#aab4c6}
+.ctrl .capsw[aria-checked=false] .cstrack b{left:auto;right:5px}
+.ctrl .capsw[aria-checked=false] .csknob{left:2px}
 #dock.capoff:not(.capforce) #capwrap{display:none}
 .jhl{border-radius:4px;transition:background .12s}
 .jhl.on{background:var(--hl);box-shadow:0 0 0 3px var(--hl)}   /* REF承継: 訳本文の対応群の点灯(英文側の .sent.hl と同色) */
@@ -357,3 +361,14 @@ body.hasdock #toast{bottom:calc(var(--nav-total) + var(--dock-h) + 12px)}
 /* WUI4 改善④: 学ぶモード(視聴ページのみ)の背景を淡いブルーに。聴く=従来の白系(--bg #f7faff)。--bg を差替えるので #app/#dock/#nav 等 var(--bg) 参照面が揃って変わる。
    色だけに依存せず「聴く/学ぶ」セグメント表示は維持。復習帳・一覧等(body.modelearn は player ルートのみ)は不変 */
 body.modelearn{--bg:#eef5ff;background:#e7eefa}
+.modeseg.mseg-in{margin:14px 0}
+
+/* APPUI-B ④⑧ */
+/* ⑧ 復習帳の保存解除: 専用クラス(.save.on は学ぶ画面と共用のため不変)。主張を弱めた外観(枠のみ・灰色)。タップ領域44pxは維持 */
+.srs-row .save.srs-unsave{background:#fff;color:var(--muted);border:1px solid var(--line);font-weight:600}
+/* ⑧ Undoバー(#undobar は#srsrootの外)。ミニプレーヤー(表示時)・下部ナビ・toastと重ねない: ミニ表示中はその直上、非表示時はnav直上。toastはバー表示中だけ更に上へ */
+#undobar{position:fixed;left:50%;transform:translateX(-50%);width:min(calc(100% - 20px),calc(var(--colw) - 20px));bottom:calc(var(--nav-total) + 8px);z-index:70;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(16,40,94,.96);color:#fff;border-radius:12px;padding:4px 6px 4px 14px;min-height:48px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#undobar[hidden]{display:none}
+body:not(.nomini) #undobar{bottom:calc(var(--nav-total) + var(--mini-h) + 12px)}
+#undobar .ub-btn{border:0;background:transparent;color:#ffe27a;font-weight:800;font-size:14px;min-height:44px;padding:0 14px;cursor:pointer;text-decoration:underline;flex:none}
+body.undoshown #toast{bottom:calc(var(--nav-total) + var(--mini-h) + 76px)}
