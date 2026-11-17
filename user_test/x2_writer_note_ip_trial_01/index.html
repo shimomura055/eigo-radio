@@ -1,0 +1,1196 @@
+<!DOCTYPE html><html lang="ja"><head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="prompt_compare"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>X2 Writer 制作注記対策 I案/P案 比較Trial(開発用・未採用)</title><style>body{font-family:system-ui,'Hiragino Sans','Yu Gothic',sans-serif;margin:0 auto;max-width:1500px;padding:12px;line-height:1.55;color:#222;background:#fafafa}
+h1{font-size:1.4em}h2{font-size:1.2em;margin-top:1.6em;border-bottom:2px solid #345;padding-bottom:4px}h4{margin:.8em 0 .2em;font-size:1em;color:#234}
+.note{background:#fff7e0;border:1px solid #e0c060;padding:8px 12px;margin:10px 0;font-size:.92em}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:1000px){.cols{grid-template-columns:1fr}}
+.col{background:#fff;border:1px solid #ccd;border-radius:6px;padding:8px}.col>h3{background:#e8eef8;padding:4px 8px;border-radius:4px;font-size:1em}
+.out{border-top:1px dashed #bbc;margin-top:8px;padding-top:4px}.out p{margin:.35em 0;font-size:.93em}.lab{font-weight:bold;color:#a30}
+.b{display:inline-block;font-size:.72em;padding:1px 6px;border-radius:9px;margin-right:4px;border:1px solid #999}.b.ok{background:#e0f5e0;border-color:#4a4}.b.ng{background:#fde8e0;border-color:#c66}
+.note-line{background:#ffd6d6;border:1px solid #d44;padding:2px 4px}mark{background:#ffe680}
+table{border-collapse:collapse;font-size:.85em}td,th{border:1px solid #bbb;padding:2px 8px}summary{cursor:pointer;font-size:1.05em;font-weight:bold}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<h1>X2 Writer 制作注記対策 現行/I案/P案 本文比較(開発用・Trial限定・未採用)</h1>
+<div class="note"><b>このページはTrialの比較資料です。いずれの方式も採用・本番反映されていません。</b>同じ入力(Research)から、現行方式・I案・P案で生成した英文本文を並べています(日本語訳なし)。赤背景=制作注記行、黄色=本文中の資料言及(機械抽出+目視分類)。出力は生成されたまま(編集なし)。<br><b>I案</b>: Promptは変えず、Research節の直前に次の1行を追加: 「以下の資料に書かれた出来事・結果は、記載の日付時点で実際に報道されたものです（仮定やシナリオではありません）。確認状況が未確認と記された項目は、この限りではありません。」<br><b>P案</b>: Promptの末尾に次の1文を追加: 「出力は記事本文のみとしてください。制作メモ・注記、効果音や演出の指示、提供資料や入力への言及は書かないでください。」</div>
+<h2>混入件数(出力本数あたり)</h2><table><tr><th>記事</th><th>方式</th><th>本数</th><th>制作注記行あり</th><th>本文中の資料言及あり</th></tr>
+<tr><td>米国中間選挙(Std/Advとも)</td><td>現行(基準)</td><td>4</td><td>3</td><td>3</td></tr>
+<tr><td>米国中間選挙(Std/Advとも)</td><td>I案(入力に1行追加)</td><td>6</td><td>1</td><td>1</td></tr>
+<tr><td>米国中間選挙(Std/Advとも)</td><td>P案(Promptに1文追加)</td><td>6</td><td>0</td><td>0</td></tr>
+<tr><td>byUs</td><td>現行(基準)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>byUs</td><td>I案(入力に1行追加)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>byUs</td><td>P案(Promptに1文追加)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>片付け</td><td>現行(基準)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>片付け</td><td>I案(入力に1行追加)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>片付け</td><td>P案(Promptに1文追加)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>AI広告</td><td>現行(基準)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>AI広告</td><td>I案(入力に1行追加)</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>AI広告</td><td>P案(Promptに1文追加)</td><td>2</td><td>0</td><td>0</td></tr>
+</table>
+<h2>米国中間選挙 / Standard</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b ng">制作注記行 1</span> <span class="b">380語</span>
+<h4>They Won. So Why Can’t They Change Everything?</h4>
+<p class="note-line">*This script follows the election outcome described in the supplied research.*</p>
+<h4>Part 1: A Win—But Not a New President</h4>
+<p>[Sound: A phone buzzes.]</p>
+<p>You check the news while eating breakfast.</p>
+<p>“Democrats win control of Congress.”</p>
+<p>Your friend looks up.</p>
+<p>“So, Trump has to leave?”</p>
+<p>No. Put down the party hat. Or stop looking for one.</p>
+<p>This election chooses members of Congress, not a new president. Congress makes national laws. It has two parts: the House and the Senate.</p>
+<p><mark>According to the supplied report, Democrats won control of both in the November 2026 election.</mark></p>
+<p>But Trump stays president.</p>
+<p>And the new Congress does not begin work the next morning. Its term starts on January 3, 2027.</p>
+<p>So here is the big question: <b>If Democrats won, why can’t they simply make the changes they want?</b></p>
+<h4>Part 2: The President Has a “No” Button</h4>
+<p>Let’s start somewhere familiar: the supermarket.</p>
+<p>You put eggs, bread, and milk in your basket. Then you see the total.</p>
+<p>“Wait. How much?”</p>
+<p>Now imagine Democrats offer a plan to help lower food costs.</p>
+<p>“Great,” you say. “They won Congress. Pass it!”</p>
+<p>But passing a bill through Congress is not always the end.</p>
+<p>The president can reject it. This is called a <b>veto</b>.</p>
+<p>Think of it as a big “no” button.</p>
+<p>Congress can beat that “no.” But it needs at least two-thirds of the votes in both the House and the Senate.</p>
+<p>Having more seats than the other party does not automatically mean having enough votes.</p>
+<p>So Democrats could say, “We have a plan.”</p>
+<p>Trump could say, “No.”</p>
+<p>And you could still be standing at the supermarket, checking the price of eggs.</p>
+<p>That is why winning an election and changing daily life are different things.</p>
+<h4>Part 3: A Brake Still Matters</h4>
+<p>“So nothing changes?”</p>
+<p>Not quite.</p>
+<p>Imagine a car. Changing who controls Congress does not remove the president from the driver’s seat. But Congress can act as a brake.</p>
+<p>It can investigate government actions. The Senate can also reject some of the president’s choices for important jobs, including judges.</p>
+<p>Those powers matter—even when no new law passes.</p>
+<p>Still, a brake cannot take you to the shops by itself.</p>
+<p>To make many big changes, Congress and the president must find something they can both accept.</p>
+<p>Will they work together? Or spend two years saying, “It’s their fault”?</p>
+<p>For the person buying dinner, that matters more than the victory party.</p>
+<p>The election changes who can say “no.”</p>
+<p>The next question is whether they can find a “yes.”</p>
+</div>
+<div class="out"><span class="lab">C2(retry)</span> <span class="b ng">境界判定: NG_BOUNDARY_AMBIGUOUS</span> <span class="b ng">制作注記行 1</span> <span class="b">381語</span>
+<p class="note-line">*Note: This script follows the election result described in your material. I have not independently verified that result.*</p>
+<h4>A Big Win. But Who Has the Power?</h4>
+<h4>1. “Wait, Is Trump Leaving?”</h4>
+<p>Imagine you are eating breakfast. Your phone lights up.</p>
+<p>“Democrats win the House and the Senate!”</p>
+<p>You look at your friend.</p>
+<p>“So… is Trump leaving?”</p>
+<p>“No. He’s still president.”</p>
+<p>“Then what did people just vote for?”</p>
+<p>Good question.</p>
+<p>These are midterm elections. Americans choose members of Congress, not a new president. Congress has two parts: the House and the Senate. Together, they make laws and decide how the government spends money.</p>
+<p>In this election, Democrats win control of both parts. But Trump stays in the White House.</p>
+<p>And the new Congress does not start work the next morning. Its term begins on January 3, 2027.</p>
+<p>So the election changes who has power.</p>
+<p>But it does not give one side all the power.</p>
+<h4>2. The Power to Say “No”</h4>
+<p>Let’s follow one simple example.</p>
+<p>A family has a large medical bill. They want help paying it.</p>
+<p>Now imagine Democrats pass a new law through Congress to help families like this one.</p>
+<p>Problem solved?</p>
+<p>Not yet.</p>
+<p>Trump can reject the bill. This is called a “veto.”</p>
+<p>Congress can overcome a veto. But it needs two-thirds of the votes in both the House and the Senate. Simply having more seats than the other party is not enough.</p>
+<p>Now turn the situation around.</p>
+<p>Trump wants someone to become a federal judge. He chooses a person, but the Senate must approve that choice.</p>
+<p>The Senate can say no.</p>
+<p>So Trump can block a bill. The Senate can block his choice of judge.</p>
+<p>Both sides have a way to stop something.</p>
+<p>Getting both sides to say “yes” is the harder part.</p>
+<h4>3. Good Brakes. But Can We Move?</h4>
+<p>Think of a car.</p>
+<p>Good brakes are important. They help you stop when you need to.</p>
+<p>But brakes alone will not get you to the supermarket.</p>
+<p>That is the challenge after this election.</p>
+<p>For someone who wants to limit Trump’s power, the result may bring relief.</p>
+<p>For someone waiting for help with medical bills, stopping things may not feel like enough.</p>
+<p>A blocked decision can matter. An agreement can matter, too.</p>
+<p>Meanwhile, everyday life continues. Food costs money. Rent is due. Medical bills arrive.</p>
+<p>The election gives Democrats more power. It does not mean every problem is suddenly easy to solve.</p>
+<p>So here is the question to keep asking:</p>
+<p>Not just, “Who won?”</p>
+<p>But, “What can they actually do for people now?”</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">381語</span>
+<h4>A New Brake, Not a New Driver</h4>
+<h4>1. The Breakfast Question</h4>
+<p>Your toast is getting cold. On TV, people are cheering an American election result.</p>
+<p>“The Democrats won! So, is Trump leaving?”</p>
+<p>Not so fast.</p>
+<p>After the November 3, 2026 election, the AP news agency reported that Democrats had won control of Congress. Congress has two parts: the House and the Senate. Together, they make national laws.</p>
+<p>Trump is a Republican. The Democrats are the other main party. But this election did not choose a president. Trump stays in office.</p>
+<p>Think of America as a car. The election did not replace the driver. It gave the other party more power to use the brakes.</p>
+<p>And the change is not immediate. The new Congress starts on January 3, 2027.</p>
+<h4>2. Two Sides, Two Stop Signs</h4>
+<p>So, can the Democrats now make any law they want?</p>
+<p>No. Trump has a stop sign, too.</p>
+<p>Let’s say Congress passes a bill—a plan for a new law—to lower some health costs. This is an example, not an announced plan.</p>
+<p>The bill goes to the president. Trump can reject it. This is called a “veto.”</p>
+<p>Congress can still make that bill a law. But it needs support from two-thirds of the voters in each part of Congress. That is much harder than getting more than half.</p>
+<p>So both sides have ways to say no.</p>
+<p>One side says, “We won. Here is our plan.”</p>
+<p>The other says, “No.”</p>
+<p>The first side says, “Then we will stop your plans.”</p>
+<p>The car could spend a lot of time sitting still.</p>
+<h4>3. Does “Stop” Mean “Nothing”?</h4>
+<p>But a brake still matters—even when it does not take you somewhere new.</p>
+<p>For example, Trump chooses people for certain jobs, including federal judges. The Senate must approve those choices. A Democratic Senate can reject them.</p>
+<p>Congress can also investigate government decisions. It can question officials and seek documents. These checks do not require Trump to sign a new law.</p>
+<p>That is real power.</p>
+<p>But stopping a judge’s appointment does not lower your next food bill. Blocking a plan and solving a problem are different things.</p>
+<p>So the interesting question is not, “Did Trump lose his job?”</p>
+<p>He did not.</p>
+<p>It is this: “Can two sides that can stop each other also find a way to move?”</p>
+<p>For people watching prices at the supermarket, that may matter more than the cheering on election night.</p>
+</div>
+<div class="out"><span class="lab">I2</span> <span class="b ok">境界判定: OK</span> <span class="b">394語</span>
+<h4>Same President, New Brakes</h4>
+<h4>1. “Wait… Is Trump Out?”</h4>
+<p>Your phone lights up at breakfast.</p>
+<p>Big election news from America: Democrats have won control of Congress.</p>
+<p>You put down your coffee.</p>
+<p>“Wait. Does that mean Trump has to leave?”</p>
+<p>No. And that is where this story gets interesting.</p>
+<p>In the November 2026 election, AP, the news agency, reported that Democrats had won control of both parts of Congress: the House and the Senate.</p>
+<p>But this election did not choose a new president. Trump stays in office.</p>
+<p>Think of America as a bus. The driver is still in his seat. But another group now has more power to use the brakes.</p>
+<p>So here is the big question: <b>Can Democrats change where the bus goes—or only help stop it?</b></p>
+<h4>2. The President’s Big “No”</h4>
+<p>Imagine a plan for a new law to lower hospital bills.</p>
+<p>For a family looking at an expensive bill, that sounds much more important than a political speech.</p>
+<p>Democrats could pass the plan through Congress, if they get enough votes.</p>
+<p>Job done?</p>
+<p>Not yet.</p>
+<p>The plan goes to the president. Trump can say no. This power is called a “veto.”</p>
+<p>After the election, Trump publicly suggested that he might use it.</p>
+<p>Congress can beat that “no,” but it needs two-thirds of the votes in each part. A simple majority is not enough.</p>
+<p>It is like winning a game, then learning there is another round.</p>
+<p><mark>That helps explain a worry in the online comments supplied for this story: What if the next two years bring lots of fighting, but few new laws?</mark></p>
+<p>Winning Congress gives a party power. It does not give it every key to the government.</p>
+<h4>3. Brakes Can Matter, Too</h4>
+<p>But no new law does not always mean no change.</p>
+<p>Congress can investigate how the government works. It can question officials and demand documents for work connected to making laws.</p>
+<p>The Senate can also reject Trump’s choices for certain important jobs, including federal judges.</p>
+<p>Those are real powers—even without a big signing ceremony.</p>
+<p>There is also a delay. The new Congress begins on January 3, 2027, not the morning after the election.</p>
+<p>So, back to your breakfast question.</p>
+<p>Is Trump out? No.</p>
+<p>Can Democrats do whatever they want? Also no.</p>
+<p>The next question is harder: Can they use their new power to get useful results?</p>
+<p>Watch what they pass. But watch what they stop, too.</p>
+<p>On a bus, a working brake can make a very big difference.</p>
+</div>
+<div class="out"><span class="lab">I3</span> <span class="b ok">境界判定: OK</span> <span class="b">381語</span>
+<h4>They Won. So Why Is Trump Still in Charge?</h4>
+<h4>Part 1: A Win Is Not a Goodbye</h4>
+<p>Your phone lights up: “Democrats win!”</p>
+<p>“Wait,” you ask. “Does that mean Trump has to leave?”</p>
+<p>No. He is still president.</p>
+<p>And that is the key to this story. Americans voted, but they did not choose a new president. They chose members of Congress, the part of government that makes laws.</p>
+<p>According to AP, the news agency, Democrats won control of both parts of Congress—the House and the Senate—in the November 3, 2026 election.</p>
+<p>But their new majority starts on January 3, 2027. Not the next morning.</p>
+<p>So, what did they win?</p>
+<p>More power to stop Trump. But not the power to do anything they want.</p>
+<p>That difference could shape the next two years.</p>
+<h4>Part 2: The Big “No” Button</h4>
+<p>Imagine a big red button on a desk. It says “NO.”</p>
+<p>Trump still has one.</p>
+<p>Congress can pass a bill—a plan for a new law. But the president can reject it. This is called a veto.</p>
+<p>Trump has already said he may use this power against bills from the Democratic Congress.</p>
+<p>Can Congress push back? Yes. But it needs two-thirds of the votes in <b>both</b> the House and the Senate.</p>
+<p>Winning more than half the seats is not enough.</p>
+<p>Think about choosing dinner with friends. Most people want pizza. But one person can still block the order.</p>
+<p>That is frustrating if you are hungry.</p>
+<p>In politics, it can mean long arguments while people wait for help with everyday problems.</p>
+<p>But here is the twist: Trump is not the only one who can say no.</p>
+<h4>Part 3: Stopping Is Also Power</h4>
+<p>The Senate can reject Trump&#x27;s choices for federal judges and certain top government jobs.</p>
+<p>Congress can also investigate government actions. It can ask for documents and question officials, within legal limits.</p>
+<p>Democratic leaders have said they want investigations. That is a plan, not a completed result.</p>
+<p>These powers matter. A president may face harder questions and more limits, even when few new laws pass.</p>
+<p>Still, picture a family checking its food bill.</p>
+<p>They may ask, “Will any of this make our life easier?”</p>
+<p>That is a different test from winning an election.</p>
+<p>The next chapter is not simply “Democrats win” or “Trump loses.”</p>
+<p>It is this: can two sides that can stop each other also find something they can do together?</p>
+<p>Saying “no” is power. Making life better takes more.</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ok">境界判定: OK</span> <span class="b">393語</span>
+<h4>1. New Driver, or New Brakes?</h4>
+<p>Your phone lights up beside your breakfast.</p>
+<p>The news says the Democrats have won control of both parts of the U.S. Congress: the House and the Senate.</p>
+<p>“Wait,” you think. “Does that mean Trump has to leave?”</p>
+<p>No. This election chooses members of Congress, not a new president. Trump stays in the White House.</p>
+<p>That may sound strange. His party loses, but he keeps his job?</p>
+<p>Think of a car. Voters have not changed the driver. But they have given another group more control over the brakes.</p>
+<p>So here is the real question: how much can those brakes change the journey?</p>
+<p>And there is one more surprise. They do not start working the next morning. The new Congress begins on January 3, 2027.</p>
+<h4>2. The Power to Say “No”</h4>
+<p>Imagine Trump wants someone to take a top government job.</p>
+<p>“Here is my choice,” he says.</p>
+<p>For many important jobs, the Senate must agree. A Democratic Senate can say, “No. Choose someone else.”</p>
+<p>That is a real change, even without a new law.</p>
+<p>Congress can also investigate government actions. It can ask officials questions and demand documents, within legal limits.</p>
+<p>But the brakes work both ways.</p>
+<p>Now imagine Democrats pass a bill to help families pay medical bills.</p>
+<p>Trump can reject it. This is called a veto.</p>
+<p>Congress can overcome a veto, but it needs a two-thirds vote in both the House and the Senate. Simply having more seats than the other party is not enough.</p>
+<p>So winning Congress does not give Democrats a magic button.</p>
+<p>They gain power to stop things. Making new things happen can be much harder.</p>
+<h4>3. What Changes at the Kitchen Table?</h4>
+<p>Back at breakfast, you put down your phone.</p>
+<p>“Fine. But will any of this make life cheaper?”</p>
+<p>An election result alone cannot lower your food bill or the price of petrol.</p>
+<p>For people in Japan, it also does not mean American trade rules will suddenly change. A company selling Japanese cars in America still needs to watch what happens next.</p>
+<p>Some people may welcome stronger brakes on Trump. Others may worry that both sides will keep blocking each other.</p>
+<p>Both hopes and worries lead to the same test.</p>
+<p>Can the president and Congress agree on anything useful?</p>
+<p>The next big story may not be a loud victory speech. It may be a quiet deal.</p>
+<p>Because stopping the car is one kind of power.</p>
+<p>Getting everyone moving again is another.</p>
+</div>
+<div class="out"><span class="lab">P2</span> <span class="b ok">境界判定: OK</span> <span class="b">385語</span>
+<h4>1. The Celebration—and the Question</h4>
+<p>Picture a living room in Japan. The TV reports a Democratic win in America’s 2026 midterm election.</p>
+<p>“Trump lost? So he has to leave?”</p>
+<p>Not quite.</p>
+<p>Trump is still president. This election chooses members of Congress, the group that makes national laws. It does not choose a new president.</p>
+<p>Congress has two parts: the House and the Senate. Winning control of both gives Democrats more power. But it does not give them Trump’s job.</p>
+<p>Think of a car. The driver is still there. But someone else now has more power to press the brakes.</p>
+<p>And there is a wait. The new Congress starts on January 3, 2027. Until then, the old Congress stays in place.</p>
+<p>So what did voters change: the direction of the car, or just its speed?</p>
+<h4>2. Two Sides Can Say “No”</h4>
+<p>“Great. Now let’s make things cheaper.”</p>
+<p>That sounds simple. But imagine Democrats pass a bill to lower health care costs.</p>
+<p>Trump can say no. This presidential power is called a “veto.”</p>
+<p>Congress can overcome that veto. But it needs at least two-thirds of the votes in each part of Congress. A simple majority is not enough.</p>
+<p>So winning an election does not mean winning every argument.</p>
+<p>Yet Democrats also gain ways to say no.</p>
+<p>For example, Trump chooses people for important jobs, including federal judges. The Senate must approve those choices. A Senate controlled by Democrats can refuse them.</p>
+<p>Here is the strange part: fewer changes could look like failure to one voter and success to another.</p>
+<p>One might ask, “Why aren’t they doing anything?”</p>
+<p>Another might answer, “Stopping something is doing something.”</p>
+<p>Same result. Very different feelings.</p>
+<h4>3. Can You Feel a Political Win?</h4>
+<p>Now leave the TV and walk into a supermarket.</p>
+<p>You buy rice, eggs, and milk. The total is higher than you hoped.</p>
+<p>Does an election victory make that bill smaller?</p>
+<p>Not by itself.</p>
+<p>That is the challenge behind the celebration. Blocking a president may please voters who fear his plans. But it does not automatically make daily life easier.</p>
+<p>For that, leaders may need to agree on actual laws. Both sides can block the other. Finding something they can support is harder.</p>
+<p>And for people in Japan, a new Congress does not mean every American policy changes overnight.</p>
+<p>The driver stays. The brakes may get stronger.</p>
+<p>But the big question remains: can anyone agree on where to go?</p>
+</div>
+<div class="out"><span class="lab">P3</span> <span class="b ok">境界判定: OK</span> <span class="b">401語</span>
+<h4>1. A Big Win. A New President?</h4>
+<p>Picture a breakfast table in Japan. Someone looks up from their phone.</p>
+<p>“Democrats won Congress! So, does Trump have to leave?”</p>
+<p>“No. He stays.”</p>
+<p>“Then what did they win?”</p>
+<p>That question is the key to this election.</p>
+<p>News reports say Democrats won control of both parts of the U.S. Congress—the House and the Senate—in the November 2026 midterm elections. But a midterm election chooses members of Congress, not the president.</p>
+<p>Think of the government as a car. Trump still has the steering wheel. But his opponents now have more power to use the brakes.</p>
+<p>And there is another surprise. The change does not happen the next morning. The new Congress begins on January 3, 2027. Until then, the old Congress is still at work.</p>
+<h4>2. Two Sides Can Say “No”</h4>
+<p>Now imagine Democrats want a law to help people pay for health care.</p>
+<p>They get it through the House. They get it through the Senate.</p>
+<p>Job done?</p>
+<p>Not yet.</p>
+<p>Trump can reject the bill and send it back. This is called a “veto.” Congress can beat a veto, but it needs support from two-thirds of each house. A simple majority is not enough.</p>
+<p>So Democrats may win votes in Congress and still fail to make a new law.</p>
+<p>But Trump faces limits, too.</p>
+<p>For example, he can choose someone to become a federal judge. The Senate must approve that person. A Senate controlled by Democrats can say no.</p>
+<p>Congress can also investigate how the government uses its power and money.</p>
+<p>So this is not a story where one side gets everything. It is a story where both sides have ways to stop the other.</p>
+<h4>3. Can the Car Still Move?</h4>
+<p>Here is where the victory party meets the weekly shopping bill.</p>
+<p>Stopping the other side is one thing. Making daily life better is another.</p>
+<p>A family paying more for food may ask, “Fine, but what will you actually do?”</p>
+<p>That is the real test. The two sides could make deals. Or they could spend months blaming each other while little changes.</p>
+<p>For people in Japan, the result matters, too. U.S. trade decisions can affect Japanese businesses. But a new Congress does not automatically mean new trade rules.</p>
+<p>So watch what happens after the cheering ends. Can the two sides agree on anything useful?</p>
+<p>Winning an election gives a party power. It does not give that party every key.</p>
+<p>The next question is simple: can anyone get the car moving?</p>
+</div>
+</div>
+</div></details>
+<h2>米国中間選挙 / Advanced</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ng">境界判定: NG_PRODUCTION_NOTE</span> <span class="b ng">制作注記行 1</span> <span class="b">389語</span>
+<h4>New Brakes, Same Driver</h4>
+<p class="note-line">*Podcast script based on the supplied November 2026 reporting.*</p>
+<h4>Part 1 — The Toast Can Wait</h4>
+<p>[SFX: A toaster pops. A phone buzzes.]</p>
+<p>You’re eating breakfast in Tokyo when a headline lights up your phone: Democrats have won control of both chambers of the U.S. Congress.</p>
+<p>“Wait,” someone across the table asks. “Does that mean Trump is out?”</p>
+<p>No. And that is where this story gets interesting.</p>
+<p>AP has called control of Congress for the Democrats. But this was not a presidential election. Trump remains president, and the new Congress begins on January 3, 2027—not the next morning.</p>
+<p>So what did voters change?</p>
+<p>Think of a car. They have not replaced the driver. They have given someone else more power over the brakes.</p>
+<p>But here’s the question: <b>Will those brakes prevent a crash—or leave everyone stuck?</b></p>
+<h4>Part 2 — The Power to Say No</h4>
+<p>Imagine lawmakers pass a bill designed to lower medical costs.</p>
+<p>There’s a celebration. Cameras flash. Someone announces, “We delivered!”</p>
+<p>Then Trump says no.</p>
+<p>A president can reject a bill using a veto. Overriding that veto takes a two-thirds vote in each chamber. Simply winning more seats than the other party is not enough.</p>
+<p>So a victory at the ballot box does not guarantee a new law at the pharmacy counter.</p>
+<p>But that does not make the election meaningless.</p>
+<p>The Senate, the upper chamber, can reject nominees for federal judgeships and certain other senior jobs. Congressional committees can question officials and demand documents through investigations tied to their lawmaking work.</p>
+<p>Those are real limits on presidential power.</p>
+<p>The difference is simple: stopping something can be easier than building something.</p>
+<p>And depending on what you want stopped, that can feel like either a breakthrough or a disappointment.</p>
+<h4>Part 3 — A Brake, or a Traffic Jam?</h4>
+<p>Picture that breakfast conversation again.</p>
+<p>“At least someone can stop him now.”</p>
+<p>“Sure. But will my bills get any smaller?”</p>
+<p>That imagined exchange captures the tension in this election.</p>
+<p><mark>Some comments in the supplied online research express relief.</mark> Others fear two years of little progress. These are individual reactions, not a national poll—but they point to the same problem.</p>
+<p>A blocked policy may be a success to one person and a wasted year to another.</p>
+<p>So don’t judge the next Congress only by how loudly it argues with Trump. Watch what it blocks, what it changes, and where both sides make a deal.</p>
+<p>The election changed who can say no.</p>
+<p>The next story is whether anyone can find a useful yes.</p>
+<p>[SFX: A bite of toast.]</p>
+<p>And now your breakfast is cold.</p>
+</div>
+<div class="out"><span class="lab">C2(retry)</span> <span class="b ok">境界判定: OK</span> <span class="b">386語</span>
+<h4>They Won. So Why Can Trump Still Say No?</h4>
+<h4>1. The Morning-After Surprise</h4>
+<p>Your toast pops up. Your phone lights up.</p>
+<p>“Democrats win control of Congress.”</p>
+<p>You take a sip of coffee. Wait. Does that mean Trump is leaving?</p>
+<p>No. And that is where this story gets interesting.</p>
+<p><mark>According to the supplied AP reporting, Democrats won control of both the House and Senate in the November 2026 midterm elections.</mark> But midterms choose lawmakers, not a new president. Trump stays in office.</p>
+<p>There is another catch: the new congressional term begins on January 3, 2027. The election result does not change control overnight.</p>
+<p>So Democrats have won something important. But they have not won a giant remote control for the American government.</p>
+<p>What, exactly, can they do with their victory?</p>
+<h4>2. The Signature Problem</h4>
+<p>Imagine your team at work approves a plan.</p>
+<p>Everyone celebrates. Then someone asks, “Has the boss signed it?”</p>
+<p>Silence.</p>
+<p>That is roughly the problem Democrats face when trying to make new laws.</p>
+<p>Suppose they pass a bill to lower healthcare costs. Trump can reject it with a veto. Congress can overcome that veto, but it needs a two-thirds vote in each chamber. An ordinary majority is not enough.</p>
+<p>Winning the election does not remove that barrier.</p>
+<p>But passing laws is only part of Congress’s job.</p>
+<p>The Senate can reject Trump’s choices for federal judges and other positions that require its approval.</p>
+<p>Congress can also investigate how the administration uses its power. Committees can call witnesses and request documents, within legal limits.</p>
+<p>Think of a televised hearing: a government official sits at a microphone.</p>
+<p>A lawmaker asks, “Who approved this spending?”</p>
+<p>That question may not create a new law. It can still create a very uncomfortable afternoon.</p>
+<h4>3. Is Stopping Something a Victory?</h4>
+<p>Here is the real tension.</p>
+<p>One voter wants Congress to stop a decision they believe is dangerous. Another wants a lower medical bill.</p>
+<p>The first voter might see results even if few laws pass. The second might see only arguments on television.</p>
+<p>Both are watching the same government.</p>
+<p>That is why “nothing passed” does not always mean “nothing changed.” A rejected appointment matters. So can an investigation. But neither automatically makes daily life cheaper or easier.</p>
+<p>For that, Congress and the president may still need to agree.</p>
+<p>So keep that breakfast headline—but add a question underneath it:</p>
+<p><b>Did this election make it easier to say “no,” or can it also produce a useful “yes”?</b></p>
+<p>The celebration tells us who won.</p>
+<p>The next two years will show what winning was worth.</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ng">境界判定: NG_PRODUCTION_NOTE</span> <span class="b ng">制作注記行 1</span> <span class="b">387語</span>
+<h4>America Hit the Brakes. Who’s Driving Now?</h4>
+<p class="note-line">*Podcast script based on the supplied November 2026 reporting.*</p>
+<h4>Part 1 — The Morning After</h4>
+<p>Your phone lights up beside your morning coffee.</p>
+<p>“Democrats win control of Congress.”</p>
+<p>You pause. “Wait. Does that mean Trump is out?”</p>
+<p>No. Same president. Same White House.</p>
+<p>AP has called control of both the House and Senate for the Democrats. But this election did not choose a new president. It chose the lawmakers who can help Trump—or stand in his way.</p>
+<p>Think of a car. Voters have not replaced the driver. They have given someone else much more control over the brakes.</p>
+<p>That sounds like a big change. It is.</p>
+<p>But here is the question: can the person holding the brakes also make the car go somewhere better?</p>
+<h4>Part 2 — Two Sides, Two Ways to Say “No”</h4>
+<p>Say Democrats want a new law to lower healthcare costs.</p>
+<p>They get it through Congress. Supporters celebrate.</p>
+<p>Then Trump says, “No.”</p>
+<p>A president can reject a bill with a veto. Congress can overturn that decision, but it needs a two-thirds vote in each chamber. Winning a majority is not enough.</p>
+<p>So, does winning Congress achieve nothing?</p>
+<p>Not quite. Now imagine Trump wants to appoint a federal judge.</p>
+<p>This time, he needs the Senate’s approval. A Democratic-controlled Senate can refuse.</p>
+<p>See the change? Trump can block their bills. They can block his nominees.</p>
+<p>There is power here—but power to stop something is different from power to deliver something.</p>
+<p>For a family opening a medical bill at the kitchen table, that difference matters. Blocking an opponent may win applause. It does not automatically make that bill smaller.</p>
+<p>Both parties may soon face the same uncomfortable question: “Fine. You stopped them. What did you do for us?”</p>
+<h4>Part 3 — The First Test Comes Before the Handover</h4>
+<p>Now for the calendar twist.</p>
+<p>The new congressional term begins on January 3, 2027. The election result does not change who controls Congress the next morning.</p>
+<p>Meanwhile, temporary funding for covered federal government activities expires on December 11.</p>
+<p>December comes before January.</p>
+<p>That means the outgoing Congress faces a funding deadline before the newly elected majority takes over. Without new funding, affected government services could face disruption. A shutdown is not certain; a deal can prevent it.</p>
+<p>So keep two dates in mind: December 11 and January 3.</p>
+<p>One tests whether today’s leaders can reach a deal. The other begins a new balance of power.</p>
+<p>The election-night headline tells us who won.</p>
+<p>The next story is harder: who can make government work?</p>
+</div>
+<div class="out"><span class="lab">I2</span> <span class="b ok">境界判定: OK</span> <span class="b">385語</span>
+<h4>They Won. So Why Is Trump Still in Charge?</h4>
+<h4>1. The Morning-After Question</h4>
+<p>You are eating breakfast in Japan when a headline appears on your phone: <b>Democrats win control of Congress.</b></p>
+<p>Wait. Does that mean Trump is leaving?</p>
+<p>No. And that is where the story gets interesting.</p>
+<p>In the November 3, 2026 midterm elections, AP called control of both the House and Senate for the Democrats. But Americans were choosing lawmakers, not a president.</p>
+<p>Think of a car. The driver has not changed. But soon, someone else will have much more power to hit the brakes.</p>
+<p>There is a delay, too. The new congressional terms begin on January 3, 2027—not the morning after the election.</p>
+<p>The headline changed overnight. The people holding power did not.</p>
+<h4>2. The Power to Say “No”</h4>
+<p>Now picture a job interview.</p>
+<p>Trump says, “This is the person I want as a federal judge.”</p>
+<p>The Senate can say, “No.”</p>
+<p>That matters. Winning Congress is not only about passing new laws. It can also mean blocking appointments that require Senate approval.</p>
+<p>Then there are investigations. Congressional committees can question officials and demand documents for work connected to lawmaking. AP reported that Democratic leaders signaled plans to investigate administration officials and members of Trump’s family. Those signals were not completed investigations—or guaranteed outcomes.</p>
+<p>But the brakes work both ways.</p>
+<p>Suppose Democrats pass a bill to lower household costs. Trump can veto it. Overriding him requires a two-thirds vote in each chamber. Simply holding a majority is not enough.</p>
+<p>So the same result can look like protection to one voter and paralysis to another.</p>
+<p>Both are watching the same car. They disagree about whether it should be moving.</p>
+<h4>3. The Deadline Before the Handover</h4>
+<p>And while everyone watches January, December is approaching.</p>
+<p>Temporary funding for parts of the federal government is set to expire on December 11—before the new Congress takes over.</p>
+<p>That leaves the outgoing Congress facing an immediate problem: agree on more funding, or risk disruptions to affected government operations. A shutdown is not a certain outcome. But the deadline cannot be ignored.</p>
+<p>For listeners in Japan, the lesson is simple: <b>“Democrats won” does not mean “Trump’s policies vanish.”</b></p>
+<p>The important questions are more practical. Which appointments get blocked? What do investigations reveal? Can either side make a deal?</p>
+<p>Election night answered who won.</p>
+<p>The next chapter asks something harder: can they turn the power to say “no” into something worth saying “yes” to?</p>
+</div>
+<div class="out"><span class="lab">I3</span> <span class="b ok">境界判定: OK</span> <span class="b">391語</span>
+<h4>They Won. So Why Is Trump Still in Charge?</h4>
+<p>*November 2026*</p>
+<h4>Part 1 — The Celebration and the Catch</h4>
+<p>Your phone is beside your breakfast. A headline says Democrats have won control of both houses of the U.S. Congress.</p>
+<p>You pause with your coffee.</p>
+<p>“Wait. Does that mean Trump is leaving?”</p>
+<p>No. And that is where this story gets interesting.</p>
+<p>AP called both the House and Senate for Democrats after the November 3 election. But Americans were choosing lawmakers, not a new president. Trump stays in office.</p>
+<p>Think of a shared car. The election did not replace the driver. It gave his opponents stronger brakes.</p>
+<p>That sounds powerful. But there is a big difference between stopping a car and deciding where it goes.</p>
+<p>And everyone still needs to get somewhere.</p>
+<h4>Part 2 — A Very Powerful “No”</h4>
+<p>Suppose Democrats want a law to lower medical costs. Winning Congress gives them a better chance to move that bill forward.</p>
+<p>But Trump can still say, “No.”</p>
+<p>That is his veto power. To overcome it, supporters need a two-thirds vote in each house. Simply having more seats than the other party is not enough.</p>
+<p>So why celebrate winning Congress at all?</p>
+<p>Because the brakes are real.</p>
+<p>The Senate can reject Trump’s choices for federal judges and certain senior government jobs. That matters: some judges can serve for decades, long after today’s campaign posters disappear.</p>
+<p>Congress can also investigate the administration. Within its lawmaking role, it can demand documents and call witnesses.</p>
+<p>Those powers do not require Trump to welcome the attention.</p>
+<p>Still, an investigation is not a new law. Blocking a judge does not lower a family’s grocery bill.</p>
+<p>That is the tension: stopping things may be easier than delivering things.</p>
+<h4>Part 3 — Now Check the Calendar</h4>
+<p>Here comes the awkward detail.</p>
+<p>The new congressional terms begin on January 3, 2027—not the morning after the election.</p>
+<p>Meanwhile, temporary funding for some federal activities is due to expire on December 11. That puts a funding deadline in front of the outgoing Congress, before the newly elected team takes over.</p>
+<p>A shutdown is not guaranteed. Lawmakers can reach another agreement.</p>
+<p>But the calendar shows why an election victory is not an instant change of government.</p>
+<p>First, the old team must handle unfinished business. Then the new team must face a president who can push back.</p>
+<p>So watch what happens after the cheering stops.</p>
+<p>Brakes can prevent a crash. They can also leave everyone sitting in traffic.</p>
+<p>The real question is: can anyone get the car moving?</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ok">境界判定: OK</span> <span class="b">396語</span>
+<h4>1. A Victory, Not an Eviction</h4>
+<p>Your phone lights up during breakfast: Democrats have won control of both houses of the U.S. Congress.</p>
+<p>You glance at the screen. “So, does Trump have to leave?”</p>
+<p>No. This election changes Congress, not the president.</p>
+<p>The AP news agency called both the House and Senate for Democrats after the November 2026 election. But Trump remains president. And the new Congress does not begin until January 3, 2027.</p>
+<p>Put down the coffee for a second. Here is the real puzzle: voters have given more power to Trump’s opponents, but left him in office.</p>
+<p>Is that a recipe for balance—or two years of people shouting “No”?</p>
+<h4>2. Everyone Gets a Brake</h4>
+<p>Think of a family trying to buy a car.</p>
+<p>One person chooses the model. Another controls the money. Either can stop the purchase. Neither can drive home without some agreement.</p>
+<p>Washington is about to face a similar problem.</p>
+<p>A Democratic Congress can block legislation Trump wants. The Senate can reject his choices for judges and certain senior government jobs. Congressional committees can also investigate how his administration uses its power.</p>
+<p>Those are real changes, even if no new law passes.</p>
+<p>But stopping Trump is not the same as putting Democratic plans into action.</p>
+<p>Suppose Democrats pass a bill. Trump can reject it with a veto. Congress can overcome that veto, but only with a two-thirds vote in each house—a much higher hurdle than a simple majority.</p>
+<p>So neither side has been handed a remote control for the whole government.</p>
+<p>Both have brakes. Moving forward is harder.</p>
+<h4>3. The Test at the Kitchen Table</h4>
+<p>Now leave Washington and open a household bill.</p>
+<p>Imagine Democrats propose a law intended to lower medical costs. Congress passes it. Trump vetoes it.</p>
+<p>Democrats say, “We tried to help.”</p>
+<p>Trump says, “It was a bad plan.”</p>
+<p>The family holding the bill still has to pay it.</p>
+<p>That is the gap between winning an election and delivering a result people can feel.</p>
+<p>Yet “nothing gets done” can also miss something important. Blocking an unwanted appointment or uncovering misuse of public money may matter greatly, even without a new benefit arriving in someone’s bank account.</p>
+<p>The challenge is doing both: checking presidential power and finding agreements that improve daily life.</p>
+<p>Election night answers who won more seats.</p>
+<p>The next two years will answer the more interesting question: can people who have the power to stop each other find a reason to say yes?</p>
+</div>
+<div class="out"><span class="lab">P2</span> <span class="b ok">境界判定: OK</span> <span class="b">397語</span>
+<h4>1. They Won. So Why Is Trump Still There?</h4>
+<p>Picture checking your phone on a morning train in Japan. The headline is big: Democrats have won control of both parts of the U.S. Congress.</p>
+<p>“So, is Trump out?”</p>
+<p>No. This election changes Congress, not the president.</p>
+<p>According to AP’s election calls, Democrats won control of the House and Senate in the November 2026 midterms. But Trump remains president. And the new congressional terms do not begin until January 3, 2027.</p>
+<p>Think of it as adding stronger brakes, not replacing the driver.</p>
+<p>That raises the real question: if Democrats cannot take over the presidency, what exactly have they won?</p>
+<h4>2. The Power to Say No</h4>
+<p>Imagine Democrats pass a bill aimed at lowering medical costs. They celebrate. The bill reaches Trump’s desk.</p>
+<p>He can reject it.</p>
+<p>That is the presidential veto. Overriding it requires a two-thirds vote in each chamber. Simply winning a majority is not enough.</p>
+<p>So a big election victory does not become a magic button marked “Make Everything Cheaper.”</p>
+<p>But the brakes still matter.</p>
+<p>The Senate can reject Trump’s choices for federal judges and other jobs that require its approval. Congressional committees can investigate government decisions and demand documents, within legal limits.</p>
+<p>Those powers do not require Trump to happily sign a new policy into law.</p>
+<p>To someone worried about presidential power, that could be the whole point of voting. Stopping a decision can matter as much as making one.</p>
+<p>To someone waiting for help with household bills, however, “We stopped something” may sound less satisfying.</p>
+<p>The same political deadlock can feel like protection to one person and failure to another.</p>
+<h4>3. Bills Do Not Wait for Politicians</h4>
+<p>Now look at the calendar.</p>
+<p>Funding for affected federal government activities is due to expire on December 11—before the new Congress begins. The outgoing Congress and Trump face that deadline.</p>
+<p>The winners cannot simply walk in tomorrow and handle it. Yet government workers still need paychecks, and people still need public services.</p>
+<p>That is where election-night excitement meets ordinary life.</p>
+<p>For listeners in Japan, the same caution applies. A different Congress does not automatically mean different trade rules, lower prices, or a calmer relationship with America.</p>
+<p>Democrats have gained ways to limit Trump. Turning that power into practical results is a separate challenge.</p>
+<p>So watch what happens after the victory speeches. Can the two sides agree when something needs doing?</p>
+<p>The election changed who can say no.</p>
+<p>The next test is whether anyone can agree on yes.</p>
+</div>
+<div class="out"><span class="lab">P3</span> <span class="b ok">境界判定: OK</span> <span class="b">398語</span>
+<h4>1. The Winner Does Not Get the Keys</h4>
+<p>Imagine checking the news over breakfast in Japan. Democrats have won control of both parts of the U.S. Congress: the House and the Senate.</p>
+<p>Someone across the table asks, “So, Trump is out?”</p>
+<p>Not so fast.</p>
+<p>This election changes Congress, not the president. Trump stays in office. And the newly elected Congress does not begin its term until January 3, 2027.</p>
+<p>The election-night celebration comes long before the new lawmakers can use their power.</p>
+<p>Think of a car. Voters have given another group access to the brakes. They have not replaced the driver.</p>
+<p>That creates the real question: can Democrats slow Trump down without bringing the whole car to a stop?</p>
+<p>Because stopping something and fixing something are very different jobs.</p>
+<h4>2. The Power to Say No</h4>
+<p>Suppose Democrats pass a bill aimed at lowering medical costs. It reaches Trump’s desk.</p>
+<p>He can say no.</p>
+<p>That is a presidential veto. Overriding it takes a two-thirds vote in each chamber. Winning a majority is not enough.</p>
+<p>Now picture a different scene. Trump wants someone to become a federal judge. For appointments that require Senate approval, the Senate can refuse.</p>
+<p>Here, the president cannot simply veto the answer.</p>
+<p>Congress can also investigate government activity. Committees can seek testimony and documents for work connected to making laws. That can bring uncomfortable questions into public view.</p>
+<p>So a congressional victory is not an empty prize. It changes who can demand answers, who can block appointments, and who must negotiate.</p>
+<p>But none of those powers automatically makes next week’s shopping cheaper.</p>
+<p>A voter holding a supermarket receipt may have a simple response: “Fine. What can you actually get done?”</p>
+<h4>3. The First Test Comes Before January</h4>
+<p>The calendar adds a twist.</p>
+<p>Funding for some federal government activities is due to expire on December 11—before the new Congress starts.</p>
+<p>That means the immediate funding decisions belong to the outgoing lawmakers, not the people celebrating their election wins.</p>
+<p>A shutdown is not inevitable. Lawmakers could reach a deal. But the timing shows why an election result is not an instant change of government.</p>
+<p>And the same challenge continues after January. Democrats can block some of Trump’s plans. Trump can block their bills. Each side can blame the other.</p>
+<p>For households waiting for help, that could feel like two people arguing over a broken heater while the room gets colder.</p>
+<p>The victory gives Democrats a stronger voice. The harder task is turning “no” into a useful “yes.”</p>
+</div>
+</div>
+</div></details>
+<h2>byUs / Standard</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b">384語</span>
+<h4>1. Just Say It!</h4>
+<p>Imagine this. It is late. You are reading a love story on your phone.</p>
+<p>The boy looks at the girl. She looks back.</p>
+<p>Come on. Say it.</p>
+<p>But the chapter ends.</p>
+<p>Now you must wait another week.</p>
+<p>An AI service called byUs offers a different way to enjoy the story. Available through LINE Manga, it lets you become the main character. You chat with characters from the manga. Together, you create a new story.</p>
+<p>So you could type:</p>
+<p>“I like you. How do you feel about me?”</p>
+<p>No more waiting for someone else to make the first move.</p>
+<p>Sounds perfect, right?</p>
+<p>But here is the question: You want to change the story. How much can you change before your favorite character feels like a different person?</p>
+<h4>2. Wait—Where Did Our Coffee Go?</h4>
+<p>A Korean reviewer described something that made the experience feel real. The AI remembered earlier conversations and used them as the story continued.</p>
+<p>That is a small thing with a big effect.</p>
+<p>Think about a friend who remembers your favorite snack. You feel that they listened. A character remembering your words can create a similar feeling.</p>
+<p>But the same review also described a strange mistake. A scene set in a café became an office.</p>
+<p>One moment, coffee. The next, work.</p>
+<p>That can quickly break the feeling of being inside the story.</p>
+<p>And there is another problem. Even nice words can feel wrong. One Japanese blogger described feeling angry at the AI’s pleasing words.</p>
+<p>A friendly answer is not always the answer a fan wants.</p>
+<h4>3. The Answer You Want—or Their Answer?</h4>
+<p>Think of your favorite quiet, serious character.</p>
+<p>If that person suddenly becomes sweet and agrees with everything you say, would you be happy?</p>
+<p>Maybe at first.</p>
+<p>Then you might think, “Wait. You would never say that.”</p>
+<p>LINE Manga says the works used in byUs have permission from their original authors. Users can also create new situations and relationships for fan stories.</p>
+<p>So there is room to play.</p>
+<p>But permission to use a character and the feeling of meeting that character are different things.</p>
+<p>That may be the real challenge for byUs: not simply giving fans a happy ending, but making the journey feel right.</p>
+<p>Back to your phone. You have typed, “I like you.”</p>
+<p>Now, which reply would you choose?</p>
+<p>The one you hoped for?</p>
+<p>Or the one only your favorite character would give?</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">367語</span>
+<h4>Your Favorite Manga Character Just Texted Back</h4>
+<h4>Part 1: “Just Say It!”</h4>
+<p>Two manga characters look at each other. They clearly like each other.</p>
+<p>He opens his mouth…</p>
+<p>And the chapter ends.</p>
+<p>“Just say ‘I love you’ already!”</p>
+<p>Sound familiar? One Korean review joked about waiting 54 episodes for a love confession: enough waiting—I’ll say it myself!</p>
+<p>That feeling is at the heart of byUs, an AI story service. It arrived on LINE Manga in Japan in October 2026.</p>
+<p>You become the main character. You send messages to manga characters. Their AI replies help build a new story with you.</p>
+<p>Now you can do more than shout at your screen.</p>
+<p>But there is a catch. You want your favorite character to love you. Do you also want them to change?</p>
+<h4>Part 2: A Coffee Together… at the Office?</h4>
+<p>With byUs, you can begin with a scene based on the original manga. Then your conversation takes the story forward.</p>
+<p>Or you can make a fan story. Put familiar characters in a new situation. Change their relationships. You can also share your story with other users.</p>
+<p>For a romance fan, that means a chance to stop waiting and make the first move.</p>
+<p>And sometimes, the conversation can feel surprisingly real.</p>
+<p>One Korean reviewer said the AI remembered earlier chats and used them in the story later.</p>
+<p>Think about talking to someone who remembers a small thing you said. It feels good.</p>
+<p>But that same review found a problem. The characters were talking in a café, yet the AI described an office.</p>
+<p>Wait. We ordered coffee. How did we get to work?</p>
+<p>Suddenly, the magic feels a little less magical.</p>
+<h4>Part 3: “Would They Really Say That?”</h4>
+<p>The wrong room is easy to notice.</p>
+<p>The wrong personality may matter more.</p>
+<p>A quiet character suddenly says lots of sweet things. You might enjoy it. Or you might think, “Wait. This doesn’t sound like you.”</p>
+<p>The company says the Japanese service uses works with permission from their original creators. But permission to use a character does not promise that every reply will feel right.</p>
+<p>That is the interesting challenge.</p>
+<p>We want a new story. We also want the person we already know.</p>
+<p>So perhaps the best AI manga moment is not simply hearing, “I love you.”</p>
+<p>It is hearing those words and thinking:</p>
+<p>“Yes. That sounds like you.”</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ok">境界判定: OK</span> <span class="b">379語</span>
+<h4>1. Just Say “I Like You”!</h4>
+<p>You are reading a romance manga on your phone. Two people clearly like each other. But nobody says it.</p>
+<p>Another chapter ends.</p>
+<p>“Oh, come on! I could do better!”</p>
+<p>Now, you can try.</p>
+<p>A service called byUs, available through LINE Manga, lets you enter stories from selected manga. You become the main character and talk with manga characters through AI.</p>
+<p>You do not just read the next scene. Your messages help create it.</p>
+<p>Want to say “I like you” first? Go ahead. Want a different relationship? You can create a fan story with a new situation.</p>
+<p>It sounds like a dream for an impatient reader.</p>
+<p>But here is the question: can you change the story and still keep the character you love?</p>
+<h4>2. Wait—Where Did the Café Go?</h4>
+<p>Imagine a quiet conversation at a café. You tell your favorite character something important.</p>
+<p>Later, the character remembers it.</p>
+<p>That could feel special. A Korean reviewer described this kind of experience with byUs. The AI used earlier conversations in later parts of the story. This made the character feel more real.</p>
+<p>Think about a friend who remembers your favorite drink. A small detail can mean a lot.</p>
+<p>But the same review also described a strange mistake. The conversation was taking place in a café, yet the story suddenly described an office.</p>
+<p>One moment, coffee. The next, work.</p>
+<p>You wanted a sweet afternoon, not a meeting.</p>
+<p>The AI can help build a believable moment. It can also break that feeling with a few wrong words.</p>
+<h4>3. A Better Ending—or a Different Person?</h4>
+<p>A wrong room is easy to notice. A wrong personality may be harder.</p>
+<p>Imagine a shy character. You love the way he struggles to share his feelings.</p>
+<p>Now imagine that he immediately says every sweet thing you want to hear.</p>
+<p>You got your love story. But is he still the same person?</p>
+<p>LINE Manga says the works used in byUs have their creators’ permission. That matters. Still, the new conversation is created with AI, not written line by line by the original writer.</p>
+<p>Maybe the fun is trying a different path, not making a perfect copy.</p>
+<p>You can ask, “What if I spoke first?” The original manga still has its own story.</p>
+<p>So, would you give your favorite character a little push—or change everything?</p>
+<p>First, though, let’s get back to the café.</p>
+</div>
+</div>
+</div></details>
+<h2>byUs / Advanced</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b">404語</span>
+<h4>Change the Story. Keep the Character?</h4>
+<h4>1. “Just Confess Already!”</h4>
+<p>You’re reading a romance manga on the train. The couple almost holds hands. Then someone’s phone rings.</p>
+<p>Another chapter ends. Still no confession.</p>
+<p>A Korean review captured that frustration perfectly: 54 episodes without a confession? Fine. I’ll do it myself!</p>
+<p>That is the tempting idea behind <b>byUs</b>, an AI story-chat service launched on LINE Manga in Japan in October 2026.</p>
+<p>Instead of watching the romance from outside, you become the main character. You talk with the characters and help shape what happens next.</p>
+<p>Want to make the first move? Try it. Want a different relationship? Its fan-story feature lets you create new situations and share your stories with other users.</p>
+<p>At last, you can stop shouting at the page.</p>
+<p>But there’s a catch. You want to change the story—not lose the person you fell for.</p>
+<h4>2. A Great Date. Wrong Building.</h4>
+<p>One Korean reviewer noticed something impressive: the AI remembered earlier conversations and used them later in the story.</p>
+<p>That small detail matters. Think about a friend remembering something you said last week. It makes you feel heard.</p>
+<p>Now imagine that feeling coming from your favorite manga character.</p>
+<p>Then, suddenly, the spell breaks.</p>
+<p>The same reviewer reported a strange slip: a conversation was happening in a café, but the AI described the setting as an office.</p>
+<p>Wait. Where did the coffee go? And why are we at work?</p>
+<p>It’s funny. But it also reveals how fragile the experience can be. One moment, you feel close to a character. The next, you notice the machine making up the scene.</p>
+<p>And a wrong building may be easier to forgive than a wrong personality.</p>
+<h4>3. Would He Really Say That?</h4>
+<p>A Japanese blogger described feeling angry at the AI’s smooth talk.</p>
+<p>That reaction points to the bigger question. If a quiet, awkward character suddenly delivers perfect romantic lines, is that a dream come true—or does it stop feeling like him?</p>
+<p>LINE Manga says the works used in byUs have permission through formal contracts with their original authors.</p>
+<p>But permission to use a character cannot settle every fan’s feelings about what that character says.</p>
+<p>Maybe the best fantasy is not one where your favorite person agrees with everything you type. Maybe you still want the awkward pause. The stubborn answer. The confession that takes a little too long.</p>
+<p>So, before you rewrite that romance, ask yourself:</p>
+<p>Do you want him to say exactly what you want?</p>
+<p>Or do you want to believe it is really him saying it?</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">388語</span>
+<h4>Your Favorite Character Just Texted Back</h4>
+<h4>1. “Just Confess Already!”</h4>
+<p>The couple almost gets together. Then someone walks into the room.</p>
+<p>Again.</p>
+<p>You put down your phone. “Just tell her you like her!”</p>
+<p>But what if you could stop waiting for the next chapter—and step into the story yourself?</p>
+<p>That is the idea behind <b>byUs</b>, an AI story-chat service launched on LINE Manga in Japan in October 2026. You become the main character and talk with characters from the original work.</p>
+<p>You can start with a scene based on the original story. Or you can create a fan story with new situations and relationships, then share it with other users.</p>
+<p>No more shouting at the screen.</p>
+<p>Now you can type.</p>
+<p>But having more control brings a surprising question: will the character still feel like the person you loved reading about?</p>
+<h4>2. Wait—Weren’t We in a Café?</h4>
+<p>The attraction is easy to understand.</p>
+<p>One Korean news review described how the AI remembered earlier conversations and used them as the story continued. The reviewer said this made it feel like communicating with an actual character.</p>
+<p>That small detail matters. Think about a friend remembering something you mentioned last week. It makes you feel heard.</p>
+<p>Now imagine getting that feeling from your favorite manga character.</p>
+<p>But the same review found an awkward mistake: a conversation was happening in a café, yet the background was described as an office.</p>
+<p>One moment, coffee. The next, apparently, work.</p>
+<p>It is funny—but it also shows how quickly the feeling can break.</p>
+<p>Remembering your words helps a character feel real. Forgetting the room reminds you that a machine is building the scene.</p>
+<h4>3. The Perfect Reply—or the Right Reply?</h4>
+<p>There is plenty of interest in this idea. According to the Japanese launch announcement, the Korean service recorded 14 million conversations in its first ten weeks. Those are conversations, not individual users.</p>
+<p>The Japanese service also says it uses works with permission obtained through formal contracts with their original authors.</p>
+<p>That is important. But permission to use a character does not mean the author personally checks every AI reply.</p>
+<p>So the real challenge goes beyond keeping the café from becoming an office.</p>
+<p>A shy character might hesitate. A proud character might refuse to apologize. Those difficult moments may be exactly why fans love them.</p>
+<p>If you could steer the story toward your perfect romance, would you?</p>
+<p>Or would you miss the person who never quite followed your script?</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ng">境界判定: NG_NO_BOUNDARY_MARKER</span> <span class="b">401語</span>
+<p>“Just tell him you like him!” You are on the sofa, phone in hand. Your favorite manga couple has almost confessed again. Then someone walks into the room. The moment is gone. You want to grab the speech bubble and finish the sentence yourself. That is the appeal of byUs, an AI story-chat service launched on LINE Manga in Japan in October 2026. Instead of watching the main character struggle, you step into that role and talk with the characters yourself. You can also create new situations and relationships in fan stories. No more waiting for next week’s chapter to make your move. You could type, “I like you. What about you?” But here comes a harder question: will the answer sound like the person you wanted to meet?</p>
+<p>A reviewer in South Korea found one reason to keep talking: the AI remembered earlier conversations and used them later in the story. Think of telling someone about a terrible day, then having them ask about it the next time you meet. A small detail can make a chat feel personal. But the same review described a strange mistake. A conversation was taking place in a café, yet the AI described the setting as an office. Your coffee date has apparently moved to work without telling you. That is funny—until it breaks the mood. And staying in the right room is only half the challenge. One Japanese blogger described feeling angry at the character’s pleasing words. Sweet talk, it turns out, does not always feel sweet.</p>
+<p>That is the real balancing act. You want enough freedom to change the story, but enough consistency to recognize the character. A quiet person who suddenly delivers perfect romantic speeches might give you the answer you requested—and lose the quality you liked. LINE Manga says the works used in byUs have permission through formal contracts with their original authors. That matters. Still, permission to use a character does not guarantee that every AI reply will feel right. Perhaps the most interesting part of this service is not whether you can finally make that confession happen. It is what happens afterward. Does the character hesitate? Misunderstand? Say something awkward but believable? When you can guide the romance, a smooth answer may be less satisfying than an imperfect one. After all, did you come for someone who always agrees—or for the character you fell for?</p>
+</div>
+</div>
+</div></details>
+<h2>片付け / Standard</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b">384語</span>
+<h4>Is That Mess Doing a Job?</h4>
+<h4>1. The Sweater on the Chair</h4>
+<p>Sunday morning. You clean the room. You put the books away. You pick up the toys. Finally, you sit down with some tea.</p>
+<p>Then you see it.</p>
+<p>A sweater. On a chair.</p>
+<p>“Already? I just cleaned!”</p>
+<p>It feels like your hard work was for nothing. But what if that sweater is actually good news?</p>
+<p>A study of 22 homes in New Zealand offers a different way to look at mess. Researchers talked to one person from each home. They used photos of tidy and messy spaces to learn about daily life.</p>
+<p>Their work raises a simple question: before we put something away, should we ask why it is there?</p>
+<h4>2. Same Sweater, Different Story</h4>
+<p>In an article about the study, a researcher shared a father’s story. His daughter left her sweater on a chair.</p>
+<p>Why didn’t he ask her to put it away?</p>
+<p>Because before, she left it on the floor. The chair was a step forward. To him, this was something to feel good about.</p>
+<p>The sweater did not move. But our view of it just changed.</p>
+<p>Another person kept vitamins where they could see them. They said they might forget to take them if they put them away.</p>
+<p>To a visitor, the bottles might look messy. To that person, they were a reminder.</p>
+<p>These stories do not mean mess is always helpful. This was a small study, not a test of every home.</p>
+<h4>3. A Home, Not a Photo</h4>
+<p>So, should you leave everything where it is?</p>
+<p>Nice try.</p>
+<p>Old food still needs to go. A pile that stops you from cooking is a problem. And if someone cannot relax because of the mess, that matters too.</p>
+<p>But a sweater on a chair and old food on a plate are not the same problem.</p>
+<p>Tonight, look at one messy spot. Ask, “Is this helping us, or getting in our way?”</p>
+<p>Maybe you need to clear the table for dinner. Maybe you need a small box for things you use every day. Or maybe a child’s project can stay out until tomorrow.</p>
+<p>If you share your home, ask the other people too. Your idea of “tidy enough” may be different.</p>
+<p>The goal is not a home that is always ready for a photo.</p>
+<p>It is a home that works for the people living there.</p>
+<p>And today, that might include one sweater on a chair.</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">392語</span>
+<h4>Is Your Mess Doing a Job?</h4>
+<h4>1. The Table Is Full Again</h4>
+<p>It is eight in the evening. You finish cleaning the table.</p>
+<p>At eight ten, you come back.</p>
+<p>A school bag. Two books. A sweater.</p>
+<p>“I just cleaned this!”</p>
+<p>Does that sound familiar?</p>
+<p>Then you open your phone. Someone has posted a photo of a beautiful room. There is nothing on the table. Not even a cup.</p>
+<p>You look at your own table.</p>
+<p>“Why can’t my home look like that?”</p>
+<p>But wait. Maybe we are asking the wrong question.</p>
+<p>Instead of “Why is this here?” try asking, “What is this doing here?”</p>
+<p>Researchers in New Zealand explored this idea. They talked to one person from each of 22 homes. People took photos of tidy and messy places, then explained them.</p>
+<p>And some of that mess had a job.</p>
+<h4>2. A Sweater Can Be a Small Win</h4>
+<p>In an article about the study, a researcher shared two examples.</p>
+<p>One person kept supplements where they could see them. They said they might forget to take them if they put them away.</p>
+<p>An empty kitchen counter might look better. But for this person, keeping something out helped them remember it.</p>
+<p>Then there was a father and his daughter’s sweater.</p>
+<p>The sweater was on a chair.</p>
+<p>Not in a drawer. Not in a cupboard. A chair.</p>
+<p>But before, his daughter left it on the floor. This time, she put it on the chair.</p>
+<p>Her father saw a small win. He left it there.</p>
+<p>To another person, it might look like a problem.</p>
+<p>To him, it looked like things were getting better.</p>
+<p>The same sweater. A different story.</p>
+<h4>3. Keep the Job, Not Every Pile</h4>
+<p>So, should we stop cleaning?</p>
+<p>Not so fast.</p>
+<p>This was a small study. It does not prove that messy homes make people happier.</p>
+<p>And mess can still make life hard.</p>
+<p>If you cannot cook, find your keys, or walk safely, something needs to change.</p>
+<p>Here is one idea to try. Choose one pile. Ask:</p>
+<p>“Is this helping someone, or getting in the way?”</p>
+<p>Keep space for dinner. Give your keys a place. If you share your home, make the rules together.</p>
+<p>But a book you are reading may stay beside your chair.</p>
+<p>A child’s game may stay out until bedtime.</p>
+<p>The goal does not have to be an empty table all day.</p>
+<p>Maybe it is a table that is ready when you need it.</p>
+<p>After all, your home is not just a place for photos.</p>
+<p>You live there.</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ok">境界判定: OK</span> <span class="b">383語</span>
+<h4>1. The Chair Is Not a Closet</h4>
+<p>You walk into the living room. A sweater is hanging on a chair.</p>
+<p>“Again? Why can’t it go in the closet?”</p>
+<p>There are books on the table. A bag sits by the door. You cleaned yesterday. Now the mess is back, and you have not even finished your morning coffee.</p>
+<p>It is easy to think, “I’m bad at keeping this place tidy.”</p>
+<p>But wait. That sweater may tell a different story.</p>
+<p>What if the question is not, “Why is this house messy?”</p>
+<p>What if it is, “Is this mess making life harder—or helping in some small way?”</p>
+<h4>2. One Chair, Two Stories</h4>
+<p>Researchers talked to one person from each of 22 homes in New Zealand. They used photos of tidy and messy spaces to talk about daily life.</p>
+<p>In an article about the study, one researcher shared a father’s story. His daughter left her sweater on a chair. He decided to leave it there.</p>
+<p>Why? Before that, she had left her clothes on the floor.</p>
+<p>For him, the chair was progress.</p>
+<p>To a visitor, it might look like a job not done. To this father, it was a small success.</p>
+<p>Another person kept vitamins on the kitchen counter. Putting them away might look better. But this person said they might forget to take them.</p>
+<p>The bottle was not just something to tidy. It was a reminder.</p>
+<p>This small study does not prove that messy homes are happier. It suggests that some mess can have a purpose.</p>
+<h4>3. Make Room for Living</h4>
+<p>Of course, “It has a purpose!” cannot explain everything.</p>
+<p>Old food on the table needs attention. So does a pile of things that stops you from cooking. And if someone you live with feels upset, that matters too.</p>
+<p>The goal is not to love every mess. It is to notice what actually needs to change.</p>
+<p>Can everyone use the table? Can you find your keys? Is the floor safe to walk on?</p>
+<p>Talk about those things. Share the work, too. A home should not depend on one tired person putting everything away.</p>
+<p>Tonight, perhaps clear enough space for dinner. Put dirty clothes in the laundry basket. Leave the book you are still reading beside your chair.</p>
+<p>And that sweater?</p>
+<p>Maybe the closet is the next step.</p>
+<p>But if it was on the floor yesterday, the chair might be a win today.</p>
+</div>
+</div>
+</div></details>
+<h2>片付け / Advanced</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b">395語</span>
+<h4>Is Your Mess Doing a Job?</h4>
+<h4>Part 1 — The House Presses “Undo”</h4>
+<p>It’s Sunday evening. You clear the table, put away the bags, and rescue a chair from a mountain of clothes.</p>
+<p>Finally. A place to sit.</p>
+<p>By Monday evening, a sweater is back on that chair.</p>
+<p>The house has pressed “undo.”</p>
+<p>You look at your phone. Someone’s living room looks like a hotel. No socks. No cables. Apparently, nobody there needs to charge anything.</p>
+<p>It’s easy to feel that a messy home means you’re falling behind.</p>
+<p>But before you grab that sweater, stop for a second.</p>
+<p>What if it’s not just a sign that someone failed to tidy up? What if there’s a story behind it?</p>
+<h4>Part 2 — What the Photos Revealed</h4>
+<p>A study of 22 households in New Zealand explored how people understood order and mess at home.</p>
+<p>Researchers interviewed one person from each household. Participants took photos of tidy and messy spaces, then explained them.</p>
+<p>The interesting question wasn’t simply, “How much stuff is lying around?”</p>
+<p>It was, “Why is it there?”</p>
+<p>One participant kept supplements on the kitchen counter because putting them away could mean forgetting to take them. What looked like clutter was a reminder.</p>
+<p>And that sweater on the chair? In an article explaining the study, a researcher shared a father’s story. His daughter used to leave her clothes on the floor. Now, she put a sweater over the back of a chair.</p>
+<p>He saw progress. He left it there.</p>
+<p>The chair wasn’t perfectly tidy. But from his point of view, something had improved.</p>
+<p>The same object can look like a problem—or a small victory.</p>
+<h4>Part 3 — A Better Question Than “Is It Tidy?”</h4>
+<p>Now, this was a small interview study. It did not prove that messy homes make people happier.</p>
+<p>And a sweater on a chair is not the same as food going bad in the kitchen.</p>
+<p>Mess can cause real trouble. Perhaps you can’t prepare dinner. Perhaps you’re always losing your keys. Perhaps one person is doing all the cleaning.</p>
+<p>Those problems deserve attention.</p>
+<p>But tonight, instead of asking, “Does this room look perfect?” try asking, “Can we do what we need to do here?”</p>
+<p>Can everyone eat at the table? Can you find tomorrow’s things? Can you walk safely across the floor?</p>
+<p>Then decide together what needs putting away—and what can wait.</p>
+<p>Maybe the kitchen needs clearing now.</p>
+<p>Maybe the sweater can stay until bedtime.</p>
+<p>And maybe that chair isn’t evidence of failure.</p>
+<p>Sometimes, it’s one step up from the floor.</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">361語</span>
+<h4>Is Your Mess Doing a Job?</h4>
+<h4>Part 1: The Chair on Trial</h4>
+<p>A sweater is hanging over a chair. You walk past it for the fifth time and think, “Why can nobody put anything away?”</p>
+<p>Fair question. But before we put the sweater on trial, let’s hear its defense.</p>
+<p>A study of 22 households in New Zealand explored how people live with tidy and messy spaces. Researchers interviewed one person from each home, using photos the participants had taken.</p>
+<p>Their findings suggest that mess is not always a failure. Sometimes, it helps daily life work.</p>
+<p>This was a small interview study, not proof that messy homes are better. But it raises a useful question:</p>
+<p><b>Is that thing in the wrong place—or is it doing a job?</b></p>
+<h4>Part 2: The Sweater’s Defense</h4>
+<p>In an article explaining the research, one author describes a person who kept supplements on the kitchen counter. Why? They worried that putting them away would mean forgetting to take them.</p>
+<p>A clear counter might look better in a photo. It might also be less useful to the person living there.</p>
+<p>Then comes our chair.</p>
+<p>The article describes a father who accepted his daughter’s sweater hanging over a chair. Before, she had dropped it on the floor. To him, the chair was progress.</p>
+<p>“I regard that as a win,” he said.</p>
+<p>From outside, it looks like unfinished housework. From inside that family, it looks like a small success.</p>
+<p>The sweater hasn’t changed. The story behind it has.</p>
+<h4>Part 3: A Home, Not a Photo</h4>
+<p>Before your dirty dishes start celebrating: no, cleaning is not canceled.</p>
+<p>The researchers do not argue that all mess is helpful. Clutter can still bring stress and conflict.</p>
+<p>So try a different test tonight. Not “Would this room look good online?” Ask, <b>“Can we use this room?”</b></p>
+<p>Can you prepare dinner? Sit down? Find what you need? Does everyone have space?</p>
+<p>If the table is so full that nobody can eat, something needs to move. If a half-finished puzzle can stay without blocking anyone, perhaps it can wait.</p>
+<p>And if one person always does the clearing, that deserves a conversation too.</p>
+<p>The goal does not have to be an empty surface. It can be a home that works for the people in it.</p>
+<p>As for the sweater? Maybe tomorrow it reaches the cupboard.</p>
+<p>Tonight, getting it off the floor might be enough.</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ok">境界判定: OK</span> <span class="b">397語</span>
+<h4>1. The Chair Is a Victory</h4>
+<p>A sweater is hanging over a chair. It belongs in the wardrobe.</p>
+<p>Time for another argument?</p>
+<p>One father saw it differently. His daughter used to leave her clothes on the floor. Now her sweater had reached the chair.</p>
+<p>“I regard that as a win,” he said.</p>
+<p>A researcher shared this example while explaining a study of household mess. It raises a surprisingly tricky question: when we see things out of place, are we always seeing a problem?</p>
+<p>Or are we sometimes seeing progress?</p>
+<p>After all, the sweater has moved up in the world. Not very far. But still.</p>
+<h4>2. What Is Your Mess Doing?</h4>
+<p>The study looked at 22 households in New Zealand. Researchers interviewed one person from each home, using photos of tidy and messy spaces to guide the conversation.</p>
+<p>These were personal accounts, not an experiment proving that messy homes are better.</p>
+<p>Still, the stories offered a useful idea: some mess has a job.</p>
+<p>One participant kept supplements on the kitchen counter because putting them away could mean forgetting to take them. To a visitor, the bottles might look untidy. To that person, they were a reminder.</p>
+<p>Think about your own dining table.</p>
+<p>At breakfast, it holds bowls and cups. Later, it becomes a desk. In the afternoon, a child spreads out homework.</p>
+<p>By evening, it looks like three different rooms have crashed into each other.</p>
+<p>But perhaps the table has not failed. Perhaps it has been busy.</p>
+<p>The real question becomes less “Why isn’t this empty?” and more “Can everyone still use it?”</p>
+<h4>3. When the Mess Stops Helping</h4>
+<p>Of course, a chair covered in clothes eventually stops being a chair.</p>
+<p>If nobody can sit down, something needs to change. The same goes for a kitchen where there is no space to prepare dinner.</p>
+<p>This is not a free pass for dirty dishes, blocked doors, or endless piles. The research does not dismiss the stress and arguments that clutter can bring.</p>
+<p>Instead, try a smaller conversation.</p>
+<p>Not: “Why is this house always a disaster?”</p>
+<p>But: “What space do we need tonight?”</p>
+<p>Maybe the table needs clearing for dinner. Maybe the school bag can stay by the door until morning. And whoever wants a clearer table can help clear it.</p>
+<p>A home has several people’s needs to meet, not just one person’s picture of perfect order.</p>
+<p>As for that sweater? It can still go in the wardrobe.</p>
+<p>But first, perhaps the father can enjoy his small victory.</p>
+</div>
+</div>
+</div></details>
+<h2>AI広告 / Standard</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b">383語</span>
+<h4>Your AI Shopping Helper: Friend or Salesperson?</h4>
+<h4>1. Three Toys, One Small Problem</h4>
+<p>Two little toy bears fit in your bag. The third does not.</p>
+<p>“Sorry. You stay home.”</p>
+<p>Wait. Maybe AI can help.</p>
+<p>One Japanese shopper asked an AI a question like this: “Is there a pouch that can hold three soft toys?”</p>
+<p>It is a small question. But it shows why people use AI for shopping. You do not need to know the product name. You can just explain your problem.</p>
+<p>Imagine adding: “It must fit in my bag. And please, nothing expensive.”</p>
+<p>That feels easier than opening twenty shopping pages.</p>
+<p>AI can even tell you to spend less. One person reported asking about more expensive products. The AI’s answer was simple: do not bother.</p>
+<p>A shopping helper that says, “Keep your money”?</p>
+<p>That sounds like a good friend.</p>
+<h4>2. Then a Product Appears</h4>
+<p>But now imagine a product appearing beside your chat.</p>
+<p>You stop.</p>
+<p>“Did you choose this because it helps me? Or because someone paid?”</p>
+<p>The friendly conversation suddenly feels different.</p>
+<p>OpenAI says ads in ChatGPT have a “Sponsored” label. This means someone paid to show them. The company also says ads stay separate from answers and do not change those answers.</p>
+<p>Also, a product name in an answer does not automatically mean it is an ad.</p>
+<p>Still, the feeling matters. You came to solve a problem, not to hear a sales talk.</p>
+<p>Think of asking a friend about dinner.</p>
+<p>“Let’s make curry,” they say.</p>
+<p>Fine.</p>
+<p>“Let’s make curry—and first, buy this pan!”</p>
+<p>Now you have another question: whose side is your friend on?</p>
+<h4>3. Keep the Final Choice</h4>
+<p>Back to the pouch.</p>
+<p>The AI has found one. It looks perfect. All three toys can come.</p>
+<p>Should you press “Buy”?</p>
+<p>Not yet.</p>
+<p>Ads are not the only risk. A technology writer reported losing $150 at a fake store found through ChatGPT. That was a search result, not an ad.</p>
+<p>So “not an ad” does not mean “safe.”</p>
+<p>Ask for the product link. Open it yourself. Check the shop’s web address. Compare prices on other sites. Look for reviews outside the chat.</p>
+<p>And measure your toys. Even a real pouch is useless if bear number three cannot fit.</p>
+<p>AI can help you find choices. It can save time. Sometimes, it may save money.</p>
+<p>But let it make the list—not the final decision.</p>
+<p>Your three little travel friends are counting on you.</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">389語</span>
+<h4>1. A Shopping Friend in Your Phone</h4>
+<p>“Is there a pouch that can hold three stuffed toys?”</p>
+<p>A shopper in Japan asked AI this question. Not a car. Not a computer. A home for three soft little friends.</p>
+<p>This is where AI shopping help feels useful. You do not need to know the right words to search for. You can just explain what you need.</p>
+<p>“Too big.”</p>
+<p>“Too expensive.”</p>
+<p>“Will all three fit?”</p>
+<p>It can feel like talking to a patient friend. A friend who never says, “Are you STILL looking at bags?”</p>
+<p>But then a product name appears.</p>
+<p>Wait. Is your friend helping you choose—or trying to sell you something?</p>
+<h4>2. A Product Name Is Not Proof</h4>
+<p>That question has already caused confusion.</p>
+<p>In December 2025, some ChatGPT users saw suggestions for company apps. Some felt they were seeing ads.</p>
+<p>OpenAI said the suggestions were not paid ads. Still, it stopped those suggestions while it worked on improvements.</p>
+<p>The important point? Something can feel like an ad without being a paid ad.</p>
+<p>For its actual ads, OpenAI says it uses the label “Sponsored.” That means paid advertising. The company also says these ads are separate from ChatGPT’s answers and do not change the answers.</p>
+<p>So, should you look for the label? Yes.</p>
+<p>But here is the next question: if there is no ad label, is it safe to buy?</p>
+<p>Not necessarily.</p>
+<p>A suggestion does not have to be an ad to lead you to trouble. Even an answer that sounds helpful can be wrong.</p>
+<h4>3. Before You Open Your Wallet</h4>
+<p>In June 2026, a journalist reported losing $150 at a fake online store found through ChatGPT.</p>
+<p>This was about a shopping search result, not a paid ad.</p>
+<p>That changes our question. We should not ask only, “Is someone paying for this?” We should also ask, “Is this shop real?”</p>
+<p>Imagine finding the perfect pouch. Three toys fit. The price looks great. You are ready to tap “Buy.”</p>
+<p>Take one more minute.</p>
+<p>Check the shop’s web address. Look for reviews outside that shop. Compare the price with other stores. If a famous brand is involved, check its official website.</p>
+<p>One Japanese shopper described checking reviews and prices on Amazon and Rakuten before deciding to buy.</p>
+<p>That is a useful way to use AI: start the search together, then check before paying.</p>
+<p>Let AI help find a home for your three stuffed toys.</p>
+<p>Just check who gets your money.</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ok">境界判定: OK</span> <span class="b">398語</span>
+<h4>1. Three Bears, One Bag</h4>
+<p>“I need a bag for three small toy bears. Not two. Three.”</p>
+<p>You find a cute bag online. But will everyone fit? One bear already looks worried.</p>
+<p>You could spend an hour checking shopping sites. Or you could ask ChatGPT.</p>
+<p>“Find a small bag for these three toys. My budget is 2,000 yen.”</p>
+<p>This is where AI can help. You can explain what you need in everyday words. You can add, “That one is too big,” or “Show me something cheaper.”</p>
+<p>It feels less like searching and more like talking to a patient friend.</p>
+<p>Then your friend recommends a product.</p>
+<p>And a small question appears:</p>
+<p>“Is this really good for me—or does someone want me to buy it?”</p>
+<h4>2. When a Friend Sounds Like a Shop</h4>
+<p>That question is not always easy to answer.</p>
+<p>In December 2025, some ChatGPT users saw suggestions for apps from well-known companies. Some felt they were seeing ads, even when the suggestions did not fit the conversation.</p>
+<p>OpenAI, the company behind ChatGPT, said these were not paid ads. It later stopped that kind of suggestion while it worked on improvements.</p>
+<p>So, seeing a company name does not automatically mean someone paid to put it there.</p>
+<p>But you can understand the feeling.</p>
+<p>You ask a friend, “What should I cook tonight?”</p>
+<p>Your friend replies, “First, let me tell you about this shopping app.”</p>
+<p>Wait. Are we still talking about dinner?</p>
+<p>OpenAI says its ads are separate from answers and marked “Sponsored.” It also says ads do not influence its answers.</p>
+<p>That is an important difference. Still, the friendly voice alone cannot tell you whether a suggestion deserves your trust.</p>
+<h4>3. Keep Your Hand on Your Wallet</h4>
+<p>Now return to the bag for your three bears.</p>
+<p>Even if a recommendation is not an ad, you still need to check it.</p>
+<p>One journalist reported losing $150 after finding a fake online shop through ChatGPT. That case involved a search result, not an advertisement.</p>
+<p>“No ad” does not mean “no risk.”</p>
+<p>So use AI to find ideas. Then check the details yourself.</p>
+<p>Look at the bag’s size. Compare prices elsewhere. Read reviews outside the shop’s own website. Make sure the seller is real.</p>
+<p>You can also ask, “Why does this fit my needs?” and “What are its weak points?”</p>
+<p>The useful question is not just, “Is this an ad?”</p>
+<p>It is, “What should I check before I pay?”</p>
+<p>AI can help you choose.</p>
+<p>Your wallet should still belong to you.</p>
+</div>
+</div>
+</div></details>
+<h2>AI広告 / Advanced</h2><details open><summary>本文を開く/閉じる</summary><div class='cols'>
+<div class='col'><h3>現行(基準)</h3>
+<div class="out"><span class="lab">C1</span> <span class="b ok">境界判定: OK</span> <span class="b">377語</span>
+<h4>Your AI Shopping Buddy—or a Salesperson?</h4>
+<h4>1. The Most Helpful Answer: “Don’t Buy It”</h4>
+<p>Imagine standing in a drugstore with two bottles of moisturizer. One costs 1,000 yen. The other costs 4,000 yen and promises skin as soft as a baby’s cheek.</p>
+<p>You ask ChatGPT, “Is the expensive one worth it?”</p>
+<p>What if it says, “Save your money”?</p>
+<p>That is the kind of surprise one shopper reported on an online forum. Even when they asked about more luxurious options, the AI told them not to bother.</p>
+<p>Now *that* feels like a friend. Not the friend who says, “Treat yourself!” every weekend. The friend who stops you buying a bread maker you will use twice.</p>
+<p>But this creates an interesting problem.</p>
+<p>Once an AI earns your trust by helping you spend less, what happens when it suggests buying something?</p>
+<h4>2. A Helpful Suggestion Gets Awkward</h4>
+<p>Suddenly, a brand name appears.</p>
+<p>Is that useful advice? A paid promotion? Or simply a bad suggestion?</p>
+<p>These can look surprisingly similar on a phone screen.</p>
+<p>In December 2025, some ChatGPT users saw suggestions for company apps and thought they were ads. OpenAI said the companies had not paid for those suggestions. It also acknowledged that the experience had fallen short and stopped those suggestions while it worked on improvements.</p>
+<p>The important point is simple: a brand name does not automatically mean “advertisement.”</p>
+<p>OpenAI says its paid ads are labeled “Sponsored” and kept separate from ChatGPT’s answers.</p>
+<p>Still, the awkward feeling makes sense. A banner beside a webpage looks like a sales pitch. A suggestion from something that remembers your budget can feel like personal advice.</p>
+<p>Same shopping basket. Very different relationship.</p>
+<h4>3. Let It Make the Shortlist—Not the Final Decision</h4>
+<p>And advertising is not the only risk.</p>
+<p>One technology journalist reported losing $150 at a fake store found through ChatGPT. That case involved a search result, not an ad.</p>
+<p>So “not sponsored” does not mean “safe to buy.”</p>
+<p>Here is a better role for your AI shopping buddy: let it narrow the choices.</p>
+<p>Ask, “Why does this fit my needs? What is the cheaper alternative? Where can I check that?”</p>
+<p>Then visit the manufacturer’s website. Compare prices. Check the shop before entering your card details.</p>
+<p>It is like shopping with an enthusiastic friend. Enjoy the help. Keep hold of your wallet.</p>
+<p>Because the best shopping assistant should help you make a decision—not just help you reach the checkout.</p>
+</div>
+</div>
+<div class='col'><h3>I案(入力に1行追加)</h3>
+<div class="out"><span class="lab">I1</span> <span class="b ok">境界判定: OK</span> <span class="b">392語</span>
+<h4>Would You Let Your Chatbot Hold Your Wallet?</h4>
+<h4>1. A Friend Who Says, “Don’t Buy It”</h4>
+<p>A shopper asks an AI about a product. Then comes the tempting question: Is there a better, more luxurious version?</p>
+<p>According to their online post, the AI’s advice was simple: “Don’t bother.”</p>
+<p>Now *that* sounds like a useful shopping buddy. No upgrade. No extra money spent. Just someone saying, “Keep your cash.”</p>
+<p>It is easy to see the appeal. Instead of opening twenty browser tabs, you can explain what you need: a small kitchen appliance, a birthday gift, a pouch that fits three stuffed toys.</p>
+<p>The AI listens. It remembers your budget. It sounds patient.</p>
+<p>But then it recommends a brand.</p>
+<p>And suddenly, a new question enters the conversation:</p>
+<p>Is this my helpful friend—or a salesperson who knows me very well?</p>
+<h4>2. The Suggestion That Looked Like an Ad</h4>
+<p>That confusion became real in December 2025.</p>
+<p>Some ChatGPT users saw suggestions for company apps, including in conversations where those suggestions seemed unrelated. People took them for ads.</p>
+<p>OpenAI said they were not paid placements. No money was involved.</p>
+<p>Still, the company acknowledged that it had handled the feature poorly and switched those suggestions off while working on improvements.</p>
+<p>The interesting part is the gap between those two reactions.</p>
+<p>The company was explaining how the feature worked. Users were reacting to how it felt.</p>
+<p>Imagine a friend interrupting your story to recommend a shopping app.</p>
+<p>“Are they paying you?”</p>
+<p>“No.”</p>
+<p>“Okay. But why are we talking about this?”</p>
+<p>OpenAI’s stated policy for its ads is that they are labeled “Sponsored,” kept separate from answers, and do not influence those answers.</p>
+<p>That distinction matters. A brand name alone does not prove something is an ad.</p>
+<p>But an answer without an ad label is not automatically safe, either.</p>
+<h4>3. The Problem Beyond Advertising</h4>
+<p>In June 2026, a technology journalist reported losing $150 after buying from a fake store found through ChatGPT.</p>
+<p>This was not a reported case of a paid ad. It was a bad shopping lead.</p>
+<p>And that changes our central question.</p>
+<p>Not just: “Who paid for this recommendation?”</p>
+<p>Also: “Does this seller deserve my money?”</p>
+<p>So let the chatbot do the first job: explain choices and build a shortlist.</p>
+<p>Then do the final check outside the chat. Check the seller’s web address. Compare prices. Look for independent reviews.</p>
+<p>A friendly voice can make shopping easier.</p>
+<p>It cannot make a fake shop real.</p>
+<p>Your AI can help carry the shopping list.</p>
+<p>Keep hold of the wallet.</p>
+</div>
+</div>
+<div class='col'><h3>P案(Promptに1文追加)</h3>
+<div class="out"><span class="lab">P1</span> <span class="b ng">境界判定: NG_NO_BOUNDARY_MARKER</span> <span class="b">416語</span>
+<p>Three stuffed toys. One pouch. This is a serious packing problem.</p>
+<p>A Japanese shopper asked AI for help finding a pouch that could hold all three. And that is the appeal of an AI shopping assistant. You can explain your oddly specific problem instead of guessing which words to type into a search box.</p>
+<p>“It needs to fit inside my bag. Nothing too expensive. And please, no glitter.”</p>
+<p>It can feel less like searching and more like talking to a patient friend. Sometimes, that friend even talks you out of spending. One forum user said that when they asked about more expensive options, the AI told them, “Don’t bother.”</p>
+<p>A shopping assistant that tells you to keep your money? That sounds like someone worth trusting.</p>
+<p>But what happens when that trusted friend starts selling?</p>
+<p>***</p>
+<p>Imagine the next reply: “This one would be perfect for you.”</p>
+<p>Perfect because it fits your needs? Or because someone paid to put it there?</p>
+<p>That question has already caused trouble. In December 2025, some ChatGPT users saw suggestions for branded apps and took them for ads. OpenAI said the suggestions were not paid placements. Still, it stopped those suggestions while it worked on improvements.</p>
+<p>The distinction mattered to the company. To someone receiving an unwanted sales pitch, it may have mattered less.</p>
+<p>OpenAI says its ads are labeled “Sponsored” and displayed separately from answers. So a product name inside a reply is not, by itself, evidence of an ad.</p>
+<p>Still, a friendly voice can make a recommendation feel personal. A banner says, “Buy this.” A chatbot can sound like it understands why you need it.</p>
+<p>***</p>
+<p>And even a recommendation with no advertising behind it can go wrong.</p>
+<p>One shopping editor reported losing $150 after buying from a fake store found through ChatGPT. That was a problem with a search result, not proof of a paid promotion.</p>
+<p>So “Is this an ad?” is only half the question.</p>
+<p>The other half is: “Is this actually a good place to spend my money?”</p>
+<p>Let AI help make the shortlist. Then check the details elsewhere. Does the pouch really have the right measurements? Do independent reviews mention broken zips? Is the seller’s website genuine?</p>
+<p>You can also ask, “Why this one? What is cheaper? What are the drawbacks?” Then verify the answers.</p>
+<p>AI can be useful company on a shopping trip. It does not need to hold your wallet.</p>
+<p>And if it suggests buying a fourth stuffed toy, remember: you came here for a pouch.</p>
+</div>
+</div>
+</div></details>
+</body></html>
