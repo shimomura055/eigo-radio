@@ -1,0 +1,280 @@
+<!doctype html><html lang="ja"><head><meta name="eigo-radio-dev-page" content="v1" data-purpose="trial_compare"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Advanced 難易度調整Trial 2記事比較</title>
+<style>body{font-family:system-ui,"Yu Gothic",sans-serif;margin:0 auto;max-width:1500px;padding:12px;line-height:1.55;color:#222}
+.note{background:#fff7e0;border:1px solid #e0c060;padding:8px 12px;border-radius:6px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:12px}
+.card{border:1px solid #bbb;border-radius:8px;padding:8px 14px;background:#fafafa}.card h2{font-size:17px;margin:4px 0}
+.add{font-size:12.5px;color:#444;background:#eef;padding:4px 6px;border-radius:4px}
+.ttl{font-size:16px;margin:10px 0 4px}h4{margin:14px 0 4px;font-size:15px;color:#135}
+.body p{margin:5px 0;font-size:15px}mark.im{background:#ffb3b3}mark.sc{background:#ffe08a}
+table{border-collapse:collapse;font-size:13.5px;margin:6px 0}th,td{border:1px solid #bbb;padding:4px 8px;text-align:left;vertical-align:top}th{background:#eef}
+details{margin:12px 0}summary{cursor:pointer;font-weight:bold}
+.tab{font-size:16px;padding:8px 22px;margin-right:6px;border:1px solid #888;background:#eee;border-radius:6px 6px 0 0;cursor:pointer}.tab.on{background:#fff;font-weight:bold;border-bottom:2px solid #fff}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<h1 style="font-size:20px">Family X2 Advanced 難易度調整Trial(中間選挙・片付けの2記事比較)</h1>
+<p class="note">Trial(検証)であり、採用されたものではありません。Productionは変更していません。Control=前回C案の指示文+現行の難易度指示、案1・案3=同じ指示文の難易度調整の第1文だけを差し替えた本文です。各条件1回ずつ生成(結果の良し悪しでの再生成なし)。判定・採否は未決です。本文は生成されたままを掲載しています(注記行・効果音行・強調記号の*も原文のまま)。</p>
+<p>先行Trial(byUs記事): <a href="https://shimomura055.github.io/eigo-radio/user_test/x2_byus_adv_difficulty_trial_01/index.html">byUs Advanced 難易度調整Trial 比較ページ</a></p>
+<details open><summary>指示文の差分(3条件で違うのは難易度調整の第1文だけ)</summary>
+<table><tr><th>条件</th><th>難易度調整の第1文</th></tr><tr><th>Control(前回Advanced C案)</th><td>リスニングで理解できるように抽象的な説明は避け、具体的な場面や身近な例を使ってください。</td></tr><tr><th>案1 複雑な文章の抑制</th><td>複雑な文章は無くし、具体的な場面や身近な例を使ってください。</td></tr><tr><th>案3 複雑さの抑制+分かりやすい文章構成</th><td>複雑な文章や抽象的な説明を避け、具体的な場面や身近な例を使いながら、簡潔で分かりやすい文章構成にしてください。</td></tr></table>
+<p style="font-size:13.5px">全条件共通(変更なし): 第2文「また日本人が読むことを想定し、ストーリーに必要な固有名詞だけを残してください。」/ C案の追加文「読者を引き込む場面では、直接の呼びかけ、会話、身近な状況描写などを題材に応じて使い分け、同じ導入方法の繰り返しを避けてください。」/ 指示文のその他の部分・入力資料・モデル・設定。</p></details>
+<p style="font-size:13px">強調: <mark class="im">Imagine / Picture / Suppose系</mark> <mark class="sc">Think about・of / What if / Let's say</mark></p>
+<div><button type="button" class="tab on" data-t="E" onclick="sw('E')">中間選挙</button><button type="button" class="tab" data-t="T" onclick="sw('T')">片付け</button></div>
+<div class="panel" id="p_E">
+<h2 style="font-size:18px">中間選挙記事</h2>
+<table><tr><th>条件</th><th>総語数</th><th>平均文長(語)</th><th>5語以下の文</th><th>20語以上の文</th><th>引用符“”の数</th><th>会話段落数</th><th>Imagine/Picture系の演出</th></tr><tr><th>Control(前回Advanced C案)</th><td>386</td><td>8.04</td><td>13</td><td>2</td><td>9</td><td>4</td><td>Picture 1 / Think about/of 1 / Suppose 1 / Imagine 1</td></tr><tr><th>案1 複雑な文章の抑制</th><td>378</td><td>7.71</td><td>14</td><td>1</td><td>7</td><td>5</td><td>Think about/of 1 / Let&#x27;s say 1 / Imagine 1 / Suppose 1</td></tr><tr><th>案3 複雑さの抑制+分かりやすい文章構成</th><td>398</td><td>9.05</td><td>10</td><td>0</td><td>6</td><td>1</td><td>Picture 1 / Imagine 1</td></tr><tr><th>Original(C案追加前の現行Advanced本文・参考)</th><td>408</td><td>9.49</td><td>12</td><td>1</td><td>2</td><td>0</td><td>Picture 1 / Imagine 2</td></tr></table>
+<p style="font-size:12.5px;color:#555">計測は題名行・注記行(*Podcast script…*)・効果音行([Sound:…])を除いた本文。</p>
+<div class="grid"><section class="card"><h2>Control(前回Advanced C案)</h2><p class="add">難易度調整の第1文: 「リスニングで理解できるように抽象的な説明は避け、具体的な場面や身近な例を使ってください。」</p><div class="body"><h3 class="ttl">They Won Congress. So Why Is Trump Still There?</h3>
+<p>*Podcast script based on the supplied 2026 election scenario.*</p>
+<h4>Part One — The Morning-After Question</h4>
+<p><mark class="im">Picture</mark> a kitchen the morning after the American midterm elections. Coffee is brewing. Someone looks up from their phone.</p>
+<p>“Democrats won both houses of Congress. So… is Trump out?”</p>
+<p>“No. Pass the toast.”</p>
+<p>That tiny conversation gets to the biggest misunderstanding about these elections. Voters chose lawmakers—not a replacement president. Trump stays in the White House.</p>
+<p>And the new congressional terms do not even begin until January 3, 2027. The election-night headline is not an overnight transfer of power.</p>
+<p>So what did voters actually change?</p>
+<p><mark class="sc">Think about</mark> two people watching that same breakfast news. One says, “Finally, someone can stop him.”</p>
+<p>The other says, “Wonderful. Now nobody will agree on anything.”</p>
+<p>Interestingly, both have a point.</p>
+<h4>Part Two — The President’s “No”</h4>
+<p>**[Sound: a rubber stamp hitting a desk.]**</p>
+<p><mark class="im">Suppose</mark> both houses pass a bill intended to reduce prescription-drug costs.</p>
+<p>A patient waiting at a pharmacy might think, “Good. Will my medicine finally get cheaper?”</p>
+<p>Not so fast.</p>
+<p>The bill reaches Trump’s desk. He can reject it with a veto. To overcome that rejection, supporters need two-thirds of the votes in **each** house—not just a simple majority.</p>
+<p>Winning control of Congress does not automatically give Democrats those numbers.</p>
+<p>Now <mark class="im">imagine</mark> the argument on television.</p>
+<p>“We passed a bill!”</p>
+<p>“And I stopped a bad bill!”</p>
+<p>Meanwhile, the patient is still standing at the pharmacy counter.</p>
+<p>That is the fear behind predictions of two years of deadlock: plenty of political action, but little change on an ordinary receipt.</p>
+<h4>Part Three — What a Veto Cannot Do</h4>
+<p>But leave the pharmacy for a moment. Walk into a congressional hearing room.</p>
+<p>An official sits at a microphone. A committee member asks, “Who approved this spending? And where are the documents?”</p>
+<p>Congressional investigations connected to lawmaking can bring decisions into public view. That is a different kind of power from passing a bill.</p>
+<p>Then there is the Senate’s role in appointments. Trump chooses a nominee for a federal judgeship. Senators can refuse approval.</p>
+<p>He cannot turn their rejection into approval by vetoing it.</p>
+<p>So “nothing will happen” misses something important. Blocking an appointment or exposing how money was spent can matter—even without a new law.</p>
+<p>Back at our breakfast table, neither friend has won the argument.</p>
+<p>One wanted a brake. The other wanted results.</p>
+<p>The real question is whether Washington can deliver both—or just spend two years arguing over whose fault the pharmacy bill is.</p></div></section>
+<section class="card"><h2>案1 複雑な文章の抑制</h2><p class="add">難易度調整の第1文: 「複雑な文章は無くし、具体的な場面や身近な例を使ってください。」</p><div class="body"><h3 class="ttl">New Brakes. Same Driver.</h3>
+<p>*Podcast script based on the supplied November 2026 reporting.*</p>
+<h4>Part 1 — Wait… Is Trump Leaving?</h4>
+<p>You’re on the morning train. Coffee in one hand, phone in the other.</p>
+<p>A headline appears: Democrats have won control of both parts of the U.S. Congress—the House and the Senate.</p>
+<p>“So… is Trump leaving?”</p>
+<p>No. And that is where this story gets interesting.</p>
+<p>Americans were choosing lawmakers, not a new president. Trump stays in the White House.</p>
+<p><mark class="sc">Think of</mark> it this way: voters have not replaced the driver. They have given his opponents stronger brakes.</p>
+<p>But those brakes do not arrive immediately. The new congressional term begins on January 3, 2027. Until then, the outgoing Congress remains in place.</p>
+<p>The celebration can start in November. The transfer of power has to wait.</p>
+<p>And once it happens, there is another catch.</p>
+<h4>Part 2 — The President’s Big “No”</h4>
+<p><mark class="sc">Let’s say</mark> the new Congress passes a bill designed to lower medical costs.</p>
+<p>There are speeches. There are handshakes. Someone probably posts a victory video.</p>
+<p>Then the bill reaches Trump’s desk.</p>
+<p>He can say no.</p>
+<p>That is the presidential veto. Congress can overrule it, but that takes a two-thirds vote in each chamber. Winning a majority does not automatically give Democrats that much support.</p>
+<p>So a big election victory can produce a very small pile of new laws.</p>
+<p><mark class="im">Imagine</mark> ordering dinner with someone who can reject every restaurant you suggest.</p>
+<p>“Sushi?”</p>
+<p>“No.”</p>
+<p>“Pizza?”</p>
+<p>“No.”</p>
+<p>Eventually, you’re both hungry—and blaming each other.</p>
+<p>That is the risk of divided government. Each side has enough power to block the other, but neither necessarily has enough power to deliver what voters want.</p>
+<h4>Part 3 — When “No” Is the Point</h4>
+<p>But wait. If fewer laws pass, does that mean the election changed nothing?</p>
+<p>Not quite.</p>
+<p><mark class="im">Suppose</mark> Trump nominates a federal judge. For appointments requiring Senate approval, the Senate can reject his choice.</p>
+<p>Congress can also investigate the administration. Committees can question officials and seek documents as part of their work on laws and government oversight.</p>
+<p>That might not produce a new benefit on someone’s next payslip. It can still change what a president is able to do.</p>
+<p>This is why one person sees a welcome safety check while another sees two years of arguments.</p>
+<p>The real question is not simply, “Did Democrats win?”</p>
+<p>It is: “What will they do with the power to say no?”</p>
+<p>Because brakes matter.</p>
+<p>But voters also want to get somewhere.</p></div></section>
+<section class="card"><h2>案3 複雑さの抑制+分かりやすい文章構成</h2><p class="add">難易度調整の第1文: 「複雑な文章や抽象的な説明を避け、具体的な場面や身近な例を使いながら、簡潔で分かりやすい文章構成にしてください。」</p><div class="body"><h3 class="ttl">They Won Congress. So Why Is Trump Still in Charge?</h3>
+<h4>Part 1 — The Morning-After Mix-Up</h4>
+<p>*[Sound: A phone notification.]*</p>
+<p><mark class="im">Picture</mark> a morning train in Japan. You check your phone. The headline says Democrats have won control of the U.S. Congress.</p>
+<p>You message a friend: “So, Trump’s out?”</p>
+<p>Not so fast.</p>
+<p>The Associated Press has called control of both the House and Senate for Democrats in the November 2026 elections. That is a major victory—but this was not a presidential election.</p>
+<p>Trump keeps his job. And the new Congress does not begin until January 3, 2027.</p>
+<p>So what did voters actually change?</p>
+<p>Not the person sitting in the White House. They changed who can stand in his way.</p>
+<p>And that makes the next question interesting: How much power comes from being able to say “no”?</p>
+<h4>Part 2 — The Power of “No”</h4>
+<p><mark class="im">Imagine</mark> Democrats pass a bill to lower healthcare costs. They celebrate. Cameras flash.</p>
+<p>Then it reaches Trump’s desk.</p>
+<p>“Rejected.”</p>
+<p>The president can veto a bill. Overriding that veto takes a two-thirds vote in each chamber. Winning a majority is not enough.</p>
+<p>Sounds like a recipe for two years of arguments, right?</p>
+<p>But passing laws is only part of Congress’s job.</p>
+<p>Congress can investigate how the government is working. Committees can question officials and seek documents to inform their work on laws.</p>
+<p>And the Senate has another powerful tool: it can reject presidential nominees, including federal judges.</p>
+<p>Trump chooses a candidate. The Senate can say, “Not this person.”</p>
+<p>These powers do not depend on Trump signing a new law.</p>
+<p>That is the difference between “nothing happens” and “the president can no longer get everything he wants.”</p>
+<p>Blocking a decision rarely makes exciting television. But some blocked decisions could matter for years.</p>
+<h4>Part 3 — The Deadline Before the Handover</h4>
+<p>Now for the twist: the next big test arrives before the winners take over.</p>
+<p>Temporary funding for parts of the federal government is due to expire on December 11. The outgoing Congress and Trump face that deadline together.</p>
+<p>A funding gap is a risk—not a guaranteed outcome.</p>
+<p>Meanwhile, a Japanese company selling products in America should not assume this election means lower U.S. tariffs. Those depend on specific laws and policy decisions, not simply which party controls Congress.</p>
+<p>So this election is neither an instant reset nor a meaningless result.</p>
+<p>Trump remains president. But from January, more decisions will face a powerful challenge.</p>
+<p>The real story is not just who won.</p>
+<p>It is what the winners can stop—and whether they can turn that power into something useful.</p></div></section></div>
+<details><summary>参考: Original(現行の正式Advanced本文)</summary><div class="grid"><section class="card"><h2>Original(C案追加前の現行Advanced本文・参考)</h2><p class="add">C案の追加文も難易度調整の変更もない、現行の正式本文です(再生成なし)。</p><div class="body"><p class="add">この本文には題名行がありません(生成結果のまま掲載)。</p><h4>Part 1</h4>
+<p><mark class="im">Picture</mark> this: you’re on a train in Tokyo, checking your phone.</p>
+<p>The headline says AP has called both houses of Congress for the Democrats in the November 2026 election.</p>
+<p>You take a sip of coffee. “So… does Trump have to leave?”</p>
+<p>No. He keeps his job.</p>
+<p>That’s the first surprise. Americans have elected a new Congress, not a new president.</p>
+<p>Online comments capture two reactions: relief that Trump will face stronger opposition, and worry that the next two years will produce absolutely nothing. Those comments aren’t a national poll, but they raise a good question:</p>
+<p>What have the winners actually won?</p>
+<p>First, check the calendar. The new congressional term begins on January 3, 2027—not the morning after the election.</p>
+<p>The headline arrives immediately. The handover takes two months.</p>
+<h4>Part 2</h4>
+<p>Now <mark class="im">imagine</mark> it’s January.</p>
+<p>The new Congress passes a bill intended to lower prescription-drug costs. A family watching the news thinks, “Great. Maybe our pharmacy bill will finally shrink.”</p>
+<p>But then the bill reaches Trump.</p>
+<p>He can veto it: send it back without signing it into law.</p>
+<p>Congress can overcome that veto, but it needs a two-thirds vote in each chamber. Simply having more seats than the other party isn’t enough.</p>
+<p>So winning Congress doesn’t mean Democrats can deliver every promise on their campaign leaflets.</p>
+<p>There’s also business to finish before they take over. Reporting puts a government-funding deadline on December 11—while the outgoing Congress is still in place.</p>
+<p><mark class="im">Imagine</mark> getting elected to manage a building in January, then discovering its electricity contract expires in December.</p>
+<p>The people leaving still have an urgent decision to make.</p>
+<h4>Part 3</h4>
+<p>So is the election just an expensive way to change the names on office doors?</p>
+<p>Not quite.</p>
+<p>Say Trump chooses someone for a lifetime job as a federal judge.</p>
+<p>That appointment needs Senate approval. The incoming Senate can examine the candidate—and reject the choice.</p>
+<p>Congress can also investigate government decisions, demanding documents and calling witnesses for inquiries connected to its lawmaking work. That doesn’t automatically remove anyone from office, but it can force uncomfortable questions into public hearings.</p>
+<p>Here’s the twist: stopping something can be a major result, even when nothing new gets signed.</p>
+<p>For one voter, a blocked appointment means protection. For another, it means obstruction.</p>
+<p>Same event. Completely different review.</p>
+<p>So keep watching after the victory speeches. The real story isn’t simply who won Congress.</p>
+<p>It’s what they can make happen—and what they can prevent.</p></div></section></div></details></div><div class="panel" id="p_T" style="display:none">
+<h2 style="font-size:18px">片付け記事</h2>
+<table><tr><th>条件</th><th>総語数</th><th>平均文長(語)</th><th>5語以下の文</th><th>20語以上の文</th><th>引用符“”の数</th><th>会話段落数</th><th>Imagine/Picture系の演出</th></tr><tr><th>Control(前回Advanced C案)</th><td>391</td><td>9.54</td><td>9</td><td>3</td><td>7</td><td>3</td><td>Think about/of 1</td></tr><tr><th>案1 複雑な文章の抑制</th><td>393</td><td>9.36</td><td>12</td><td>2</td><td>8</td><td>4</td><td>なし</td></tr><tr><th>案3 複雑さの抑制+分かりやすい文章構成</th><td>397</td><td>9.93</td><td>3</td><td>0</td><td>4</td><td>1</td><td>なし</td></tr><tr><th>Original(C案追加前の現行Advanced本文・参考)</th><td>387</td><td>9.00</td><td>15</td><td>4</td><td>2</td><td>0</td><td>Picture 1 / Imagine 1</td></tr></table>
+<p style="font-size:12.5px;color:#555">計測は題名行・注記行(*Podcast script…*)・効果音行([Sound:…])を除いた本文。</p>
+<div class="grid"><section class="card"><h2>Control(前回Advanced C案)</h2><p class="add">難易度調整の第1文: 「リスニングで理解できるように抽象的な説明は避け、具体的な場面や身近な例を使ってください。」</p><div class="body"><h3 class="ttl">Is That Mess—or Is It Doing a Job?</h3>
+<h4>1. The Sweater on the Chair</h4>
+<p>A sweater hangs over the back of a chair. Not folded. Not put away.</p>
+<p>You see unfinished housework. But one father saw a small victory.</p>
+<p>In an article explaining a New Zealand study, a researcher described how this father accepted his daughter’s sweater staying on a chair. Why? Because previously, her clothes had landed on the floor.</p>
+<p>“I regard that as a win,” he said.</p>
+<p>The chair wasn’t the final destination. But it was progress.</p>
+<p>Suddenly, “Put that away!” sounds less like an obvious solution.</p>
+<p>And that raises a question worth asking before your next cleaning session: **is everything that looks messy actually a problem?**</p>
+<h4>2. The Bottle That Needs to Stay Out</h4>
+<p>The study involved one adult from each of 22 New Zealand households. Researchers asked participants to photograph five tidy places and five messy ones, then explain what they saw.</p>
+<p>That last step mattered. A photograph can show you what’s on a kitchen counter. It cannot tell you why it’s there.</p>
+<p>In the researcher’s explanation, one participant kept supplements out because putting them away could mean forgetting to take them.</p>
+<p>To a visitor: clutter.</p>
+<p>To the person living there: a reminder.</p>
+<p><mark class="sc">Think of</mark> placing an umbrella beside your shoes before a rainy morning. It may look untidy, but you want to notice it before walking out the door.</p>
+<p>An empty surface looks good in a photograph. In daily life, sometimes you need the object in sight.</p>
+<p>Of course, interviews with 22 people do not prove that mess makes families happier. They do show why “just put it away” can miss part of the story.</p>
+<h4>3. A Home, Not a Photo</h4>
+<p>So, should we celebrate every pile?</p>
+<p>Not if yesterday’s dishes smell, the hallway is blocked, or someone has to move three bags just to eat breakfast.</p>
+<p>The useful question is not simply, “Does this look tidy?”</p>
+<p>It is, “Can everyone use this space?”</p>
+<p>A bottle beside the breakfast bowl might help someone remember a daily habit. Ten bottles covering the chopping board might stop someone else making dinner.</p>
+<p>That calls for a conversation, not a blanket rule.</p>
+<p>“Can this stay here?”</p>
+<p>“Yes—but leave me room to cook.”</p>
+<p>And that sweater? Perhaps it stays on the chair tonight. Perhaps tomorrow, father and daughter choose a hook she can easily reach.</p>
+<p>The goal isn’t to make the room ready for a photograph.</p>
+<p>It’s to make tomorrow morning easier for the people who live there.</p></div></section>
+<section class="card"><h2>案1 複雑な文章の抑制</h2><p class="add">難易度調整の第1文: 「複雑な文章は無くし、具体的な場面や身近な例を使ってください。」</p><div class="body"><h3 class="ttl">Before You Clear That Chair…</h3>
+<h4>1. The Crime Scene</h4>
+<p>Dinner is ready. The rice is hot. But your chair is wearing a sweater.</p>
+<p>Again.</p>
+<p>You lift it up. “Why can’t anyone put things away?”</p>
+<p>On the table: school papers, a pencil case, and a half-finished drawing. You spent Sunday cleaning. Somehow, by Monday evening, the house has returned to its natural state.</p>
+<p>You pick up your phone. There is someone else’s living room: clear table, matching cushions, not a sock in sight.</p>
+<p>Wonderful. Even your phone is judging you.</p>
+<p>But before you put that sweater on trial, here is a question:</p>
+<p>Is this mess stopping family life—or is some of it helping family life happen?</p>
+<h4>2. The Surprise Witness</h4>
+<p>A study of 22 households in New Zealand explored that question. Researchers asked one person from each home to photograph tidy and messy spaces, then explain them.</p>
+<p>The pictures alone could not tell the whole story.</p>
+<p>In an article explaining the research, one researcher described a father who left his daughter’s sweater on a chair. Why? She used to leave it on the floor.</p>
+<p>“I regard that as a win,” he said.</p>
+<p>Same sweater. Same chair. Very different story.</p>
+<p>Another participant kept supplements on the kitchen counter because putting them away might mean forgetting to take them.</p>
+<p>What looked like clutter was also a reminder.</p>
+<p>This was a small interview study, not proof that messy homes are happier. But it offered a useful way to look at familiar objects: before asking why something is out, ask what it is doing there.</p>
+<p>Sometimes, the answer is more interesting than “Someone is lazy.”</p>
+<h4>3. A Home, Not a Photograph</h4>
+<p>Of course, a sweater on a chair is not the same as old food in the sink.</p>
+<p>And “I need everything where I can see it” becomes a problem when nobody else can find space to eat.</p>
+<p>So perhaps the goal is not an empty room. It is a room that works for the people sharing it.</p>
+<p>Try a different conversation:</p>
+<p>“Which part of this table do we need clear for dinner?”</p>
+<p>“Can the drawing stay here until tomorrow?”</p>
+<p>“Where could the sweater go that is just as easy as this chair?”</p>
+<p>These are smaller questions than “Why is this house always a disaster?” They may also be easier to answer together.</p>
+<p>Tonight, the sweater still needs to move.</p>
+<p>But perhaps what this family needs is a hook by the chair—not another argument.</p></div></section>
+<section class="card"><h2>案3 複雑さの抑制+分かりやすい文章構成</h2><p class="add">難易度調整の第1文: 「複雑な文章や抽象的な説明を避け、具体的な場面や身近な例を使いながら、簡潔で分かりやすい文章構成にしてください。」</p><div class="body"><p class="add">この本文には題名行がありません(生成結果のまま掲載)。</p><h4>Part 1: The Sweater Has Been Promoted</h4>
+<p>The sweater has finally made it off the floor.</p>
+<p>Unfortunately, its new home is the back of a chair.</p>
+<p>You might call that unfinished housework. But one father called it progress. His daughter used to leave her clothes on the floor. Compared with that, the chair was an improvement.</p>
+<p>“I regard that as a win,” he said, according to a researcher’s article about the study.</p>
+<p>It’s a tiny household moment. But it raises a surprisingly tricky question:</p>
+<p>**When is mess actually a problem—and when is it just life happening?**</p>
+<p>The research team interviewed one person from each of 22 households in New Zealand. Participants took photos of tidy and untidy places in their homes, then explained them.</p>
+<p>The interesting part wasn’t simply what looked messy. It was why things were there.</p>
+<h4>Part 2: That Bottle Has a Job</h4>
+<p>Take a bottle of supplements sitting on a kitchen counter.</p>
+<p>In a photo, it might look like something that needs putting away. Open the cupboard, hide the bottle, and enjoy that lovely empty surface.</p>
+<p>Except, for one study participant, hiding it could mean forgetting to take it.</p>
+<p>The bottle wasn’t simply waiting to be tidied. It was doing a job: reminding its owner.</p>
+<p>That changes the question from “Why is this still here?” to “What happens if we move it?”</p>
+<p>The sweater on the chair tells a similar story. One person sees an item in the wrong place. The father sees a small step forward.</p>
+<p>Neither example means every pile has a secret purpose. This was a small interview study, not proof that messy homes are happier.</p>
+<p>But appearances don’t tell the whole story.</p>
+<h4>Part 3: A Home, Not a Photograph</h4>
+<p>Of course, a useful reminder is different from food waste. A sweater on a chair is different from a blocked hallway.</p>
+<p>And if you must move six things just to eat dinner, the table probably needs attention.</p>
+<p>So here’s a small experiment for tonight: choose one messy spot. Before clearing it, ask what the things there are doing.</p>
+<p>Are they needed soon? Waiting for an unfinished task? Or simply making the room harder to use?</p>
+<p>If you share your home, ask the other people too. “It works for me” isn’t enough when somebody else has nowhere to sit.</p>
+<p>The goal isn’t to defend every pile.</p>
+<p>It’s to make room for daily life—not just a photograph.</p>
+<p>And sometimes, that starts by noticing that the sweater is no longer on the floor.</p></div></section></div>
+<details><summary>参考: Original(現行の正式Advanced本文)</summary><div class="grid"><section class="card"><h2>Original(C案追加前の現行Advanced本文・参考)</h2><p class="add">C案の追加文も難易度調整の変更もない、現行の正式本文です(再生成なし)。</p><div class="body"><p class="add">この本文には題名行がありません(生成結果のまま掲載)。</p><h4>Part 1</h4>
+<p><mark class="im">Picture</mark> this. You’ve cleared the table, washed the dishes, and finally sat down.</p>
+<p>Then you see it.</p>
+<p>A sweater. On the chair. Again.</p>
+<p>You could put it away. You could call its owner. Or you could stare at it and wonder why keeping a home tidy feels like brushing your teeth while eating a biscuit.</p>
+<p>But before we declare that sweater a household crime, here’s a question:</p>
+<p>Is it causing a problem—or could it be a sign that something is going right?</p>
+<p>That sounds like an excellent excuse. But stay with me.</p>
+<h4>Part 2</h4>
+<p>Researchers studying 22 households in New Zealand asked one person from each home to photograph tidy and messy spaces, then explain the pictures.</p>
+<p>This wasn’t an experiment proving that messy homes make people happier. It was a closer look at what those piles and scattered objects meant to the people living with them.</p>
+<p>And sometimes, the mess had a job.</p>
+<p>One participant kept supplements on the kitchen counter because putting them away could mean forgetting to take them.</p>
+<p><mark class="im">Imagine</mark> breakfast: toast, coffee, bottle in sight. That bottle is doing something a closed drawer cannot.</p>
+<p>Then there’s our sweater.</p>
+<p>In the researcher’s public account of the study, one father explained why he left his daughter’s sweater hanging over a chair.</p>
+<p>Previously, she had dropped it on the floor.</p>
+<p>To a visitor, the chair might look untidy. To her father, it showed progress. He chose to recognize that rather than demand the next improvement immediately.</p>
+<p>Same sweater. Same chair. A completely different story.</p>
+<h4>Part 3</h4>
+<p>Of course, this is not permission to leave everything everywhere.</p>
+<p>A sweater on a chair is different from dirty plates attracting insects. And if your things cover the kitchen counter so completely that someone else cannot prepare dinner, your convenient arrangement is creating work for them.</p>
+<p>So here’s a question to try tonight. Instead of asking, “Does this room look perfect?” ask, “Can we do what we need to do here?”</p>
+<p>Can we cook? Find the keys? Sit down together?</p>
+<p>Keep the counter space needed for chopping vegetables. Leave the reminder bottle where it helps. And agree on who moves what, rather than making one person clear everything.</p>
+<p>As for that sweater, perhaps it needs putting away.</p>
+<p>Or perhaps, tonight, it deserves a small round of applause.</p>
+<p>It made it off the floor.</p></div></section></div></details></div>
+<script>function sw(a){var ps=document.querySelectorAll('.panel');for(var i=0;i<ps.length;i++){ps[i].style.display=(ps[i].id==='p_'+a)?'':'none';}var ts=document.querySelectorAll('.tab');for(var j=0;j<ts.length;j++){ts[j].className='tab'+(ts[j].getAttribute('data-t')===a?' on':'');}}</script>
+</body></html>
