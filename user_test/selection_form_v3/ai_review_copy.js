@@ -9,7 +9,7 @@
   if (typeof module === 'object' && module.exports) module.exports = factory(); else root.AIReviewCopy = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
   // M-5: 承認済み定型文(LF正規化)のsha256。公開ページが取得した定型文がこれと違えばコピーを拒否する(古いキャッシュ・誤編集対策)
-  var TEMPLATE_SHA256 = 'bd9e1fb2e054f27ae723b91bf5ce57e7770b239bd5990cb1628a2b8226a355d1';
+  var TEMPLATE_SHA256 = '0f0e8c1928291088f6ffe797c98a5a6afb638d017f8eec47923912993b8d1d54';
   var SCHEMA = 'eigo_radio_ai_review_data_v2';
   var LEVEL_JA = { a2: 'Standard（中級学習者）', b1b: 'Advanced（上級学習者）' };
   var PLACEHOLDER_HEAD = '# 評価対象\n';
