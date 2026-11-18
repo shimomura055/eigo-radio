@@ -82,6 +82,13 @@
     }
     return false;
   }
+  /* FIXFLOW-GLID 委任_04: lk3(下線<->glossary[i])の対応検査。glossary[i].hl(ビルド側=er135がIDで対応づけた下線のdata-hl。生成側が同じ候補IDを下線と意味一覧に出す)が
+     ある項目は、下線のdata-hlと一致することだけを確認する(見出しと下線の文字列が違っても対応)。不一致=理由文字列を返す(降格=従来と同じく文クリックへ)。
+     hl無し(旧記事)は従来の類似度(閾値0.8)+部分列救済のまま。戻り値=NG理由(文字列)|null */
+  function lk3Reason(form, key, g) {
+    if (g.hl != null) return g.hl === key ? null : form + ': lk3 hl id mismatch';
+    return (glScore(form, g.en || '') < 0.8 && !glRescue(form, g.en || '')) ? form + ': lk3 score<0.8' : null;
+  }
   var LKSEL = 'span.lk1,span.lk2,span.lk3,strong.lk1,strong.lk2,strong.lk3';
   function lkOf(el) { return el.classList.contains('lk1') ? 'lk1' : el.classList.contains('lk2') ? 'lk2' : 'lk3'; }
   function plain(html) { var d = document.createElement('div'); d.innerHTML = html || ''; return d.textContent; }
@@ -117,7 +124,7 @@
           else if (quotes[vi].indexOf(c.form.toLowerCase()) < 0) reasons.push(c.form + ': not in vocab[' + vi + '] quote');
         } else {
           if (vi != null) reasons.push(c.form + ': lk3 has vi');
-          else if (glScore(c.form, g.en || '') < 0.8 && !glRescue(c.form, g.en || '')) reasons.push(c.form + ': lk3 score<0.8');
+          else { var r3 = lk3Reason(c.form, c.key, g); if (r3) reasons.push(r3); }
         }
       });
       var ok = !reasons.length, entries = cand.map(function (c, i) {
@@ -147,5 +154,5 @@
     var h = Math.min(bh, maxH), top = mode === 'above' ? first.top - GAP - h : last.bottom + GAP;
     return { mode: mode, left: left, top: top, width: w, maxH: maxH, arrowX: arrowX };
   }
-  root.WURBubble = { glScore: glScore, glRescue: glRescue, checkLevel: checkLevel, layout: layout, MINBAND: MINBAND };
+  root.WURBubble = { glScore: glScore, glRescue: glRescue, lk3Reason: lk3Reason, checkLevel: checkLevel, layout: layout, MINBAND: MINBAND };
 })(window);
