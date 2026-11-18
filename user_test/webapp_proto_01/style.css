@@ -1,5 +1,5 @@
 /* eigo-radio WebApp UI 試作(WUT 委任_02a、Trial専用)。ネイビー+ロイヤルブルー、白基調。参考: docs/UI/Image/ref_01〜04(方向性のみ) */
-:root{--navy:#10285e;--blue:#1d4fd8;--blue2:#0a3bbd;--soft:#e8f0ff;--soft2:#f3f7ff;--line:#dfe7f5;--text:#14213d;--muted:#5d6b88;--bg:#f7faff;--hl:#fff1b8;--nav-h:64px;--mini-h:62px;--nav-total:calc(var(--nav-h) + env(safe-area-inset-bottom));--dock-h:0px;--colw:480px}
+:root{--navy:#10285e;--blue:#1d4fd8;--blue2:#0a3bbd;--soft:#e8f0ff;--soft2:#f3f7ff;--line:#dfe7f5;--text:#14213d;--muted:#5d6b88;--bg:#f7faff;--hl:#fff1b8;--danger:#c62828;--nav-h:64px;--mini-h:62px;--nav-total:calc(var(--nav-h) + env(safe-area-inset-bottom));--dock-h:0px;--colw:480px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:#eef2f9;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.6;font-size:16px}
@@ -364,11 +364,6 @@ body.modelearn{--bg:#eef5ff;background:#e7eefa}
 .modeseg.mseg-in{margin:14px 0}
 
 /* APPUI-B ④⑧ */
-/* ⑧ 復習帳の保存解除: 専用クラス(.save.on は学ぶ画面と共用のため不変)。主張を弱めた外観(枠のみ・灰色)。タップ領域44pxは維持 */
-.srs-row .save.srs-unsave{background:#fff;color:var(--muted);border:1px solid var(--line);font-weight:600}
-/* ⑧ Undoバー(#undobar は#srsrootの外)。ミニプレーヤー(表示時)・下部ナビ・toastと重ねない: ミニ表示中はその直上、非表示時はnav直上。toastはバー表示中だけ更に上へ */
-#undobar{position:fixed;left:50%;transform:translateX(-50%);width:min(calc(100% - 20px),calc(var(--colw) - 20px));bottom:calc(var(--nav-total) + 8px);z-index:70;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(16,40,94,.96);color:#fff;border-radius:12px;padding:4px 6px 4px 14px;min-height:48px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
-#undobar[hidden]{display:none}
-body:not(.nomini) #undobar{bottom:calc(var(--nav-total) + var(--mini-h) + 12px)}
-#undobar .ub-btn{border:0;background:transparent;color:#ffe27a;font-weight:800;font-size:14px;min-height:44px;padding:0 14px;cursor:pointer;text-decoration:underline;flex:none}
-body.undoshown #toast{bottom:calc(var(--nav-total) + var(--mini-h) + 76px)}
+/* ⑧ 復習帳の保存解除(APP-UI-UNDO-BUILD-01): 通常=青の塗りつぶし+白文字「解除」、解除直後=赤の塗りつぶし+白文字「元に戻す」(同じ位置・同じ大きさ)。.save.on は学ぶ画面と共用のため不変。タップ領域44pxは維持 */
+.srs-row .save.srs-unsave{background:var(--blue);color:#fff;border:1.5px solid var(--blue);font-weight:700;min-width:5.5em}
+.srs-row .save.srs-unsave.srs-undo{background:var(--danger);border-color:var(--danger)}
