@@ -344,14 +344,92 @@
     return topBar() + '<h2 style="margin:4px 0 8px;color:var(--navy)">マイページ' + (DEV ? '<span class="kari">ダミー</span>' : '') + '</h2>' + (DEV ? '<div class="dummy">マイページはダミー画面です(正式仕様なし)。</div>' : '') +
       '<div class="pl">レベル設定(共通)</div>' + lvSeg('lvseg-me', true) +
       '<div class="lvnote">Standard: ' + LV_HINT.std + ' / Advanced: ' + LV_HINT.adv + '。目安であり、どちらも自由に選べます。</div>' +
-      '<button class="setrow" id="tutbtn">使い方(チュートリアル)を見る<span>&#8250;</span></button>' +
+      '<button class="setrow" id="tutbtn">使い方(チュートリアル)を見る<span>&#8250;</span></button>' + viewMeDl() +
       (DEV ? '<button class="setrow" id="resetbtn">端末内の試作データを消す(レベル・保存・学習記録・チュートリアル)<span>&#8250;</span></button>' +
         '<div class="setrow"><span>試作版ビルド</span><small>rev12 / Trial・未承認 / 数値・ジャンル・概要の一部は仮データ</small></div>' +
         '<div class="setrow"><span>元データの更新検知</span><small>' + (ST.warn.length ? '更新あり: ' + ST.warn.length + '件' : '異常なし(再生時に検査)') + '</small></div>' : '');
   }
 
+  /* ---------- APPUI-C ⑦ オフライン保存UI(共通UI。App(native)が window.EigoHost.offline を提供する環境だけで表示。Web版=capabilityなし=何も出さない) ----------
+     契約(v1): EigoHost.offline = { v:1, state(slug)->{status:'checking|none|busy|partial|saved|failed|unknown', pct, reason, ...}(同期), touch(slug), start(slug), remove(slug), summary()(同期), setLimit(bytes), shareLog(), refresh() }
+     変化通知=window の 'eigo-offline-change' イベント(detail:{slug|null})。判定はmode文字列でなく機能(capability)の有無。文言・CSSはこの共通ソースが唯一の定義。 */
+  function offCap() {
+    var h = window.EigoHost, o = h && h.offline;
+    return (o && o.v === 1 && typeof o.state === 'function' && typeof o.start === 'function' && typeof o.remove === 'function' && typeof o.summary === 'function') ? o : null;
+  }
+  function dlMB(b) { return (Math.round((Number(b) || 0) / 1048576 * 10) / 10) + 'MB'; }
+  function dlInner(slug) {   // 同期描画(記事ページ描画と同時にボタン骨格が出る。状態は adapter が同期で返す)
+    var o = offCap(); if (!o) return '';
+    var s = o.state(slug) || { status: 'checking' }, a = ' data-dl-slug="' + esc(slug) + '"';
+    var go = function (label) { return '<button type="button" class="dlmain dlbtn" data-dl-act="start"' + a + '>' + label + '</button>'; };
+    switch (s.status) {
+      case 'none':
+        return s.online === false ? '<button type="button" class="dlmain dlbtn" disabled' + a + '>オフライン用にダウンロード</button><div class="dlmsg">オフラインのためダウンロードできません。</div>' : go('オフライン用にダウンロード');
+      case 'busy':
+        var p = (typeof s.pct === 'number') ? Math.max(0, Math.min(100, s.pct)) : null;
+        return '<div class="dlmain dlbusy" data-dl-state="busy" role="status"><span>' + (s.waiting ? 'ネットワーク待ち(接続が戻ると自動で再開します)' : 'ダウンロード中' + (p == null ? '…' : ' ' + p + '%')) + '</span></div>' +
+          (p == null ? '' : '<div class="dlbar" aria-hidden="true"><i style="width:' + p + '%"></i></div>') + '<button type="button" class="dllink" data-dl-act="cancel"' + a + '>中止</button>';
+      case 'saved':
+        return '<div class="dlmain dldone" data-dl-state="saved" role="status">ダウンロード済み（オフラインでも聴けます）</div>';
+      case 'partial':
+        return '<div class="dlmsg dlerr" role="alert">' + dlWhy(s) + '</div>' + go('もう一度ダウンロード');
+      case 'failed':
+        return '<div class="dlmsg dlerr" role="alert">' + dlWhy(s, true) + '</div>' + go('もう一度ダウンロード');
+      case 'unknown':
+        return '<div class="dlmain dlchk" data-dl-state="unknown" role="status">保存状態を確認できません(オンラインでもう一度開いてください)</div>';
+      default:
+        return '<div class="dlmain dlchk" data-dl-state="checking" role="status">確認中…</div>';
+    }
+  }
+  var DL_GUIDE = '<a href="#/me">マイページ</a>の「オフライン保存の管理」で不要な保存を削除するか、上限を上げてください(自動では削除しません)。';
+  function dlWhy(s, lead) {   // lead=true: 失敗(何も保存できていない) / false: 一部のみ保存(途中終了)
+    if (s.reason === 'storage_limit') return (lead ? '保存容量の上限に達したためダウンロードできませんでした。' : '保存容量の上限に達したため、一部のみ保存されています。') + DL_GUIDE;
+    if (s.reason === 'stale') return '記事が更新されています。もう一度ダウンロードすると最新の音声を保存できます。';
+    if (s.reason === 'offline') return lead ? 'ネットワークに接続できないためダウンロードできませんでした。接続を確認してもう一度お試しください。' : '一部のみ保存されています(ネットワークが切れました)。接続を確認してもう一度ダウンロードしてください。';
+    return lead ? 'ダウンロードに失敗しました。もう一度お試しください。' : '一部のみ保存されています(途中で終了しました)。もう一度ダウンロードしてください。';
+  }
+  function dlSlotHtml(slug) { var o = offCap(); if (o && typeof o.touch === 'function') { try { o.touch(slug); } catch (e) { } } return o ? '<div class="dlslot" id="dlslot" data-dl-slug="' + esc(slug) + '" aria-live="polite">' + dlInner(slug) + '</div>' : ''; }
+  var DL_STATUS = { saved: '保存済み', partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません', none: '' };
+  function dlMgmtHtml() {   // マイページ「オフライン保存の管理」(旧・右上シートの容量/上限/削除/診断/オフライン表示を移設)
+    var o = offCap(); if (!o) return '';
+    var m = o.summary() || {}, h = '';
+    if (!m.loaded) return '<div class="dlmsg">確認中…</div>';
+    if (m.online === false) h += '<div class="dlmsg dloff" data-dl-offline="1">現在オフラインです。保存済みの記事は下の一覧からそのまま聴けます。</div>';
+    var pct = m.limitBytes > 0 ? Math.round(m.usedBytes / m.limitBytes * 100) : 0;
+    h += '<div class="dlmsg" data-dl-usage="1">保存容量: ' + dlMB(m.usedBytes) + ' / 上限 ' + dlMB(m.limitBytes) + (pct >= 80 ? ' <b class="dlerr">(残りわずか)</b>' : '') + '</div>';
+    h += '<label class="dlmsg">上限: <select data-dl-limit="1">' + [200, 500, 1024, 2048].map(function (mb) { var v = mb * 1048576; return '<option value="' + v + '"' + (v === m.limitBytes ? ' selected' : '') + '>' + (mb >= 1024 ? (mb / 1024) + 'GB' : mb + 'MB') + '</option>'; }).join('') + '</select> <small>(超えても自動削除しません)</small></label>';
+    var items = m.items || [];
+    h += '<div class="dlmsg"><b>保存した記事</b></div>';
+    h += items.length ? items.map(function (x) {
+      return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc(DL_STATUS[x.status] || '') + (x.bytes ? ' (' + dlMB(x.bytes) + ')' : '') + '</small>' +
+        '<button type="button" class="dllink" data-dl-act="remove" data-dl-slug="' + esc(x.slug) + '" aria-label="' + esc(x.title) + 'の保存を削除">削除</button></div>';
+    }).join('') : '<div class="dlmsg">まだ保存した記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。</div>';
+    h += '<div class="dlmsg"><button type="button" class="dllink" data-dl-act="share-log">ログを共有</button> <small>(または ファイルApp &gt; eigo-radio &gt; poc_log.jsonl)</small></div>';
+    return h;
+  }
+  function viewMeDl() { var o = offCap(); if (!o) return ''; try { if (o.refresh) o.refresh(); } catch (e) { } return '<div class="pl">オフライン保存の管理</div><div class="dlmgmt" id="medl" aria-live="polite">' + dlMgmtHtml() + '</div>'; }
+  window.addEventListener('eigo-offline-change', function (ev) {   // 変化通知: 現在表示中の骨格・管理欄だけを書き換える(骨格自体は描画時に同期で出ている)
+    if (!offCap()) return;
+    var sl = $('dlslot'), slug = ev && ev.detail && ev.detail.slug;
+    if (sl && route.name === 'player' && (!slug || slug === sl.getAttribute('data-dl-slug'))) sl.innerHTML = dlInner(sl.getAttribute('data-dl-slug'));
+    var md = $('medl'); if (md && route.name === 'me' && !md.querySelector('select:focus')) md.innerHTML = dlMgmtHtml();
+  });
+  document.addEventListener('click', function (e) {   // ダウンロード操作。チュートリアル中は無視(M8)。進行中・済み・確認中の再タップは adapter 側でも二重起動しない
+    var b = e.target.closest && e.target.closest('[data-dl-act]'); if (!b) return;
+    if (tutOn || b.disabled) return;
+    var o = offCap(); if (!o) return;
+    var act = b.getAttribute('data-dl-act'), slug = b.getAttribute('data-dl-slug');
+    if (act === 'start') { var s = o.state(slug); if (s && (s.status === 'busy' || s.status === 'saved' || s.status === 'checking')) return; o.start(slug); }
+    else if (act === 'cancel' || act === 'remove') o.remove(slug);
+    else if (act === 'share-log' && o.shareLog) o.shareLog();
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target; if (!t || !t.getAttribute || !t.hasAttribute('data-dl-limit') || tutOn) return;
+    var o = offCap(); if (o && o.setLimit) o.setLimit(Number(t.value));
+  });
+
   /* ---------- 画面: プレイヤー ---------- */
-  var KIND_HEAD = { topic: 'Topic', jtitle: '日本語タイトル', preview: 'Preview', oneline: 'In One Line' };
+  var KIND_HEAD ={ topic: 'Topic', jtitle: '日本語タイトル', preview: 'Preview', oneline: 'In One Line' };
   var JA_RE = /[ぁ-んァ-ヶ一-龠]/;
   function modeSegHtml(id) {   // APP-UI-USERTEST-FIX-01 ③: 聴く/学ぶ切替(上部=#modeseg、本文内3か所=class mseg-in)。同じ data-mode・同じ setMode を共用
     return '<div class="modeseg' + (id ? '' : ' mseg-in') + '"' + (id ? ' id="' + id + '"' : '') + ' role="group" aria-label="聴く/学ぶ"><button type="button" data-mode="listen" aria-pressed="' + (ST.mode === 'listen') + '">聴く</button><button type="button" data-mode="learn" aria-pressed="' + (ST.mode === 'learn') + '">学ぶ</button></div>';
@@ -362,7 +440,7 @@
       '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + '<span class="kari">仮</span></span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
       '<div id="pnotice"></div>' + lvSeg('lvseg-player') + '<div class="nowlv" id="nowlv"></div>' +
       modeSegHtml('modeseg') +
-      '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" data-fromstart aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' +
+      '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" data-fromstart aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' + dlSlotHtml(slug) +
       '<div id="pcontent"><div class="empty">読み込み中…</div></div>' +
       '<a class="fullink" href="../' + slug + '/enduser/index.html?lv=' + ST.level + '" target="_blank" rel="noopener">既存の完全版ページを開く &#8250;</a>' +
       '<div class="backbottom"><button type="button" class="iconbtn backbtn big" data-back id="backbottom" aria-label="' + esc(backInfo().label) + '"><span class="ba" aria-hidden="true">&#8249;</span><span class="bl">' + esc(backInfo().label) + '</span></button></div>';
@@ -1100,7 +1178,10 @@
             cb();
           });
         } }
-    ];
+    ].concat(offCap() ? [   // APPUI-C ⑦: オフライン保存の機能(capability)がある環境だけ+1頁(Web版は従来の6頁のまま)。実際の記事ページ上でDLボタンをspotlight(ダウンロードは実行しない・保存は変更しない)
+      { hash: '#/player/' + first, sel: ['#dlslot .dlmain'], title: 'オフラインで聴く', html: '<p>記事をダウンロードすると、電波が届かない場所でも音声を再生できます。</p>',
+        prep: function (cb) { waitFor(['#fsrow', '#dlslot .dlmain'], function () { cb(); }); } }
+    ] : []);
   }
   function tgtRect(i, e) {   // 対象の矩形。step.clip[i]=n なら対象の先頭n個の子要素までに切る(長い一覧=ジャンル一覧の先頭だけを示す。吹き出しの置き場を確保)
     var r = e.getBoundingClientRect(), c = TUT && TUT.steps[TUT.i].clip, n = c && c[i];

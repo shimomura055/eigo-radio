@@ -367,3 +367,25 @@ body.modelearn{--bg:#eef5ff;background:#e7eefa}
 /* ⑧ 復習帳の保存解除(APP-UI-UNDO-BUILD-01): 通常=青の塗りつぶし+白文字「解除」、解除直後=赤の塗りつぶし+白文字「元に戻す」(同じ位置・同じ大きさ)。.save.on は学ぶ画面と共用のため不変。タップ領域44pxは維持 */
 .srs-row .save.srs-unsave{background:var(--blue);color:#fff;border:1.5px solid var(--blue);font-weight:700;min-width:5.5em}
 .srs-row .save.srs-unsave.srs-undo{background:var(--danger);border-color:var(--danger)}
+
+/* APPUI-C ⑦ オフライン保存UI(Appのcapabilityがある時だけDOMが出る。Web版は要素なし) */
+.dlslot{margin:-2px 0 10px}
+body.modelearn .dlslot{display:none}
+.dlmain{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;border-radius:12px;padding:6px 12px;font-weight:700;font-size:15px;line-height:1.35;text-align:center}
+.dlbtn{border:1.5px solid var(--blue2);background:#fff;color:var(--blue2);cursor:pointer}
+.dlbtn:active{filter:brightness(.94)}
+.dlbtn[disabled]{opacity:.55;cursor:default}
+.dldone{border:1.5px solid #0a7a3d;background:#e8f6ee;color:#0a5a2e}
+.dlchk,.dlbusy{border:1.5px solid var(--line);background:#f1f4f9;color:var(--navy)}
+.dlbar{height:6px;margin:6px 2px 0;border-radius:3px;background:var(--line);overflow:hidden}
+.dlbar i{display:block;height:100%;background:var(--blue)}
+.dlmsg{margin:6px 2px;font-size:13px;line-height:1.55;color:var(--text)}
+.dlerr{color:#b00020}
+.dllink{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;border:0;background:none;color:var(--blue2);font-size:13px;text-decoration:underline;cursor:pointer}
+.dlmgmt{margin:0 0 8px}
+.dlmgmt label{display:block}
+.dlmgmt select{font:inherit;min-height:36px}
+.dlrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:2px 12px;margin:6px 0;font-size:14px}
+.dlrow a{flex:1 1 100%;min-width:0;font-weight:700;color:var(--navy);text-decoration:none;padding:8px 0 0}
+.dlrow small{flex:1 1 auto;color:var(--muted)}
+.dlrow .dllink{margin-left:auto}
