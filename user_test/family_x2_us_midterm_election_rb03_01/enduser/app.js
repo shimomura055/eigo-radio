@@ -120,7 +120,7 @@
       var wide = window.matchMedia('(min-width: 700px)').matches;
       out += card('Vocabulary & Expressions', L.vocab.map(function (it, vi) {
         var mean = (it.fields.filter(function (f) { return f.label === '本文中の意味'; })[0] || {}).html || '';
-        return '<details class="vi" id="vi-' + lv + '-' + vi + '"' + (wide ? ' open' : '') + '><summary><b class="vh">' + esc(it.heading) + '</b><span class="vm">' + mean + '</span>' + (it.audio ? '<button type="button" class="seek part vplay" data-act="vocab" data-i="' + vi + '" aria-label="' + esc(it.heading) + ' の英語音声を再生">▶ 英語音声</button>' : '') + '</summary><dl>' +
+        return '<details class="vi" id="vi-' + lv + '-' + vi + '"' + (wide ? ' open' : '') + (it.do_doing && it.do_doing.generic_word && it.do_doing.span_word ? ' data-dd="' + esc(it.do_doing.generic_word) + '" data-dds="' + esc(it.do_doing.span_word) + '"' : '') + '><summary><b class="vh">' + esc(it.heading) + '</b><span class="vm">' + mean + '</span>' + (it.audio ? '<button type="button" class="seek part vplay" data-act="vocab" data-i="' + vi + '" aria-label="' + esc(it.heading) + ' の英語音声を再生">▶ 英語音声</button>' : '') + '</summary><dl>' +
           it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></details>';
       }).join(''), { label: 'WORDS', id: 'vocab', cls: 'blk-vocab' });
     }
@@ -188,10 +188,18 @@
     return f;
   }
   /* heading → 本文tokens上の一意な一致範囲(wildcard=プレースホルダ。空配列=特定不可)。{ranges:[[s,e]..], n:一致数} */
-  function matchPhraseCore(heading, text, allowWild, gap) {
+  /* rev01-zb EM28: do/doing一般化の印gen={w:'do'|'doing', s:本文側の1語}。見出しにwがちょうど1語・先頭でない・sが英字1語(doing=ing形で5字以上・w自身でない)のときだけ有効。不正=null(従来の照合) */
+  function genOk(gen, hw) {
+    if (!gen || (gen.w !== 'do' && gen.w !== 'doing') || typeof gen.s !== 'string' || !/^[a-z]+$/.test(gen.s) || gen.s === gen.w || gen.s.length < 2) return -1;
+    if (gen.w === 'doing' && !(gen.s.length >= 5 && /ing$/.test(gen.s))) return -1;
+    var at = -1, n = 0; hw.forEach(function (t, i) { if (t.w === gen.w) { n++; at = i; } });
+    return (n === 1 && at > 0) ? at : -1;
+  }
+  function matchPhraseCore(heading, text, allowWild, gap, gen) {
     var ht = toks(heading).map(function (t) { return { w: t.w, ph: allowWild && !!PH[t.w], f: null }; });
     if (!ht.length || ht.every(function (t) { return t.ph; })) return { n: 0, ranges: [] };
     ht.forEach(function (t) { if (!t.ph) t.f = forms(t.w); });
+    var gi = genOk(gen, ht); if (gi >= 0 && !ht[gi].ph) ht[gi].f = ht[gi].f.concat([gen.s]);   // rev01-zb EM28: 一般化した見出しのdo/doing=本文の1語(完全一致)にも一致
     var qt = toks(text), hits = [];
     function rec(hi, qi, acc, g) {
       if (hi === ht.length) { hits.push(acc); return; }
@@ -212,7 +220,7 @@
     uniq[0].forEach(function (r) { if (cur && /^\s*$/.test(text.slice(prevEnd, r[0]))) cur[1] = r[1]; else { cur = [r[0], r[1]]; out.push(cur); } prevEnd = r[1]; });
     return { n: 1, ranges: out };
   }
-  function matchPhrase(heading, text, allowWild) { var r = matchPhraseCore(heading, text, allowWild, 0); return r.n === 0 ? matchPhraseCore(heading, text, allowWild, 1) : r; }   // rev01-r EM6
+  function matchPhrase(heading, text, allowWild, gen) { var r = matchPhraseCore(heading, text, allowWild, 0, gen); return r.n === 0 ? matchPhraseCore(heading, text, allowWild, 1, gen) : r; }   // rev01-r EM6
   function wrapRanges(dd, ranges) {
     var nodes = [], w = document.createTreeWalker(dd, NodeFilter.SHOW_TEXT, null), n, off = 0;
     while ((n = w.nextNode())) { nodes.push({ n: n, s: off, e: off + n.nodeValue.length }); off += n.nodeValue.length; }
@@ -228,7 +236,8 @@
   function emphasize() {
     var stats = { vocab: [], nuance: [], grammar: [] };
     function item(kind, box, heading, qLabel) {
-      var dd = ddOf(box, qLabel), text = dd ? dd.textContent : '', r = matchPhrase(heading, text, true);
+      var gw = box.getAttribute('data-dd'), gs = box.getAttribute('data-dds'), gen = (kind === 'vocab' && gw && gs) ? { w: gw, s: gs } : null;   // rev01-zb EM29
+      var dd = ddOf(box, qLabel), text = dd ? dd.textContent : '', r = matchPhrase(heading, text, true, gen);
       if (dd && r.ranges.length) wrapRanges(dd, r.ranges);
       stats[kind].push({ heading: heading, bold: r.ranges.length ? dd.querySelectorAll('strong.target-term').length : 0, matches: r.n, reason: r.ranges.length ? null : (r.n ? 'multiple_candidates' : 'no_match') });
     }
