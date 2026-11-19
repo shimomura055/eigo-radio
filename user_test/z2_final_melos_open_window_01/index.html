@@ -1,0 +1,141 @@
+<!doctype html><html lang='ja'><head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="dev_listen"><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Family Z2 最終版 試聴(開発用)</title><style>body{font-family:sans-serif;max-width:1000px;margin:0 auto;padding:12px;line-height:1.6}
+.warn{background:#fff3cd;border:1px solid #e0b000;padding:10px;margin:10px 0}
+.note{color:#555;font-size:.9em}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px;vertical-align:top;font-size:.92em}
+button.z2tab{padding:8px 12px;margin:4px 4px 4px 0;border:1px solid #888;border-radius:6px;background:#f4f4f4;cursor:pointer}
+button.z2tab.on{background:#2b6cb0;color:#fff}.panel{display:none;border:1px solid #ccc;border-radius:6px;padding:10px;margin:10px 0}.panel.on{display:block}
+audio{width:100%}.txt p{margin:.5em 0}.src{font-size:.85em;color:#444}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<h1>Family Z2 最終版 試聴ページ(開発用)</h1>
+<div class='warn'><b>開発用の試聴ページです。ユーザー本人の試聴確認前の成果物です。</b>公開ページが開いて全音声が再生できること(動作確認)と、ユーザー本人が聴いて内容に合格を出すこと(試聴PASS)は別です。通常のアプリ・Webの記事一覧には掲載されていません(掲載の判断は別途)。範囲: Z2 Story本文・TTS・QA・結合・試聴ページ。学習コーナー・Preview・End Userページは含みません。</div>
+<h2>注記</h2><ul><li>B案(演技指示)は<b>セリフのみ</b>に適用しています(比較Trialではナレーションにも適用していました)。</li><li>Standard本文は、人物紹介Prompt改善Trialで生成し、ユーザーが確認した本文の正式取込です。</li><li>『開いた窓』Standardの第1段落は、以前の手修正文ではなく、改善Promptから生成された文です。</li><li>話者(誰のセリフか)をAI PMが確定した箇所: なし(自動判定のみで確定。人手の確定は発生しませんでした)</li><li>学習コーナー・Preview・End User向けページ・記事一覧への掲載は、Z2では未配線です(このページは試聴用の単独ページです)。</li></ul>
+<h2>仕様(最終版)</h2><table>
+<tr><th>項目</th><th>内容</th></tr>
+<tr><td>対象</td><td>『走れメロス』『開いた窓』 x Standard / Advanced の4音声(本文のFull Storyのみ)</td></tr>
+<tr><td>Standard本文</td><td>D案(Must-keep選定→Writer)+人物紹介改善(版 Z2-STD-v1)。本文は、ユーザーが読んで採用した承認済みTrial出力の正式取込です(この実行で新規生成した本文ではありません)。『開いた窓』Standardの第1段落は人物紹介改善の出力文で、以前の手修正版ではありません。</td></tr>
+<tr><td>Advanced本文</td><td>既存の承認済みAdvanced本文を維持(再生成なし)</td></tr>
+<tr><td>ナレーション</td><td>Standard: gemini-3.8-flash-tts + Style P2 + 6%減速 / Advanced: gemini-3.8-flash-lite-tts + Style PD06 + 6%減速 / Voice: Aoede(設定は承認済みのまま維持)。Advancedのナレーションは今回の実行で全て再生成</td></tr>
+<tr><td>セリフ</td><td>gemini-2.5-pro-preview-tts / 速度加工なし(0%) / 人物別の声(メロス=Algieba・王=Charon・友人=Fenrir、開いた窓: Vera=Zephyr・Framton=Algieba・Mrs. Sappleton=Kore・men=Schedar)。全セリフを今回新規生成</td></tr>
+<tr><td>演技指示(B案)</td><td><b>セリフのみ</b>に適用(StandardとAdvanced共通)。ナレーションには適用していません。既存のStyle文言は削らず、末尾に追加しています。</td></tr>
+</table><p class='note'>Standard本文の取込元sha(参考): メロス ea2f45327765 / 開いた窓 2364ea2b50cd</p>
+<h2>音声と全文(タブで切替)</h2><div>
+<button class='z2tab on' data-target='p_melos_std'>走れメロス(Melos) / Standard(A2)</button>
+<button class='z2tab' data-target='p_melos_adv'>走れメロス(Melos) / Advanced(B1)</button>
+<button class='z2tab' data-target='p_open_window_std'>開いた窓(The Open Window) / Standard(A2)</button>
+<button class='z2tab' data-target='p_open_window_adv'>開いた窓(The Open Window) / Advanced(B1)</button>
+</div>
+<div class='panel on' id='p_melos_std'><h2>走れメロス(Melos) / Standard(A2)</h2><p class='note'>約204秒・clip 27本(ナレーター15・セリフ12)</p><audio controls preload='none' src='melos_std.mp3'></audio><div class='txt'><h3>Before the Last Light</h3>
+<p>Melos stood before the city’s ruler. “You are afraid of people, so you kill them. You never even listen to them.”</p>
+<p>The guards took hold of Melos. The ruler said he must die.</p>
+<p>“Please give me three days,” Melos said. “My sister is getting married. Let me go to her wedding. I promise to come back here to die.”</p>
+<p>“Return before sunset on the third day,” the ruler said. “Your friend must wait here. Come late, and I will kill him instead.”</p>
+<p>Melos turned to his friend. Before Melos could say anything, his friend held out his hands. He was ready for the guards to put chains on him.</p>
+<p>“Go to the wedding. I’m sure you’ll return.”</p>
+<p>At the wedding, Melos heard his sister laughing. He listened carefully. He wanted to keep that happy sound in his memory.</p>
+<p>Before sunrise on the third day, Melos started back toward the city.</p>
+<p>When he reached the river, the bridge was gone. Heavy rain had filled the river. He jumped into the fast water.</p>
+<p>The water pulled him down. He fought his way up and caught a branch. At last, he pulled himself onto the other side.</p>
+<p>Later, three men blocked his way. One held a knife. Melos hit that man with his stick. Then he escaped up the hill.</p>
+<p>By afternoon, his feet were bleeding. He fell beside a rock. He tried to stand, but his legs were too weak.</p>
+<p>He could stay here. Perhaps someone would help him. Then he could go home.</p>
+<p>His friend would die. Melos knew that. But for a moment, saving himself seemed easier than standing up.</p>
+<p>Then he remembered his friend’s hands, ready for the chains. His friend trusted him to return.</p>
+<p>Some water was running down the rock. Melos drank it. Slowly, he got to his knees. Then he stood and started walking again.</p>
+<p>As he reached the city, a bell rang. He ran toward the sound. A man stood over his friend, ready to bring down a sword.</p>
+<p>“Wait! I’ve come back!”</p>
+<p>His friend turned toward his voice. Melos fell into his arms.</p>
+<p>“I almost left you to die,” Melos said quietly.</p>
+<p>“And I almost lost my trust in you,” his friend said.</p>
+<p>They held each other close in the evening light.</p>
+<p>The ruler watched them.</p>
+<p>“Put the sword down,” he said. “Let both men go free.”</p>
+<p>Then he asked softly, “What must I do for someone to trust me like that?”</p>
+<p>He did not order anyone to answer. For the first time, he simply waited.</p></div></div>
+<div class='panel' id='p_melos_adv'><h2>走れメロス(Melos) / Advanced(B1)</h2><p class='note'>約176秒・clip 26本(ナレーター15・セリフ11)</p><audio controls preload='none' src='melos_adv.mp3'></audio><div class='txt'><h3>Before the Last Light</h3>
+<p>Melos’s voice rang through the hall. “You kill men because you fear them. You won’t even let them speak.”</p>
+<p>Silence followed. Then the guards seized the young shepherd, and the ruler sentenced him to death.</p>
+<p>“Give me three days,” Melos said. “My sister is getting married. Let me see her wedding. I will return.”</p>
+<p>The ruler smiled. “Your friend will stay here. If you are late, he dies instead.”</p>
+<p>Melos turned to his friend, but before he could speak, his friend held out his hands for the chains.</p>
+<p>“Go. I know you’ll come back.”</p>
+<p>At the wedding, his sister’s laughter rose above the other voices. Melos listened closely. He wanted to remember exactly how it sounded.</p>
+<p>Before dawn on the third day, he left for the city.</p>
+<p>At the river, he stopped. The bridge was gone. Rain had turned the water brown and violent. He stepped back, ran, and threw himself into the flood.</p>
+<p>The current pulled him under. He fought toward the light, caught a branch, and dragged himself onto the far bank.</p>
+<p>Farther along, three men blocked the road. A knife flashed. Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.</p>
+<p>By afternoon, every step hurt. Blood stained his feet. He fell beside a rock and tried to rise, but his legs would not obey.</p>
+<p>He could wait here. Someone might find him. He could go home.</p>
+<p>His friend would die.</p>
+<p>For one terrible moment, that seemed easier than getting up.</p>
+<p>Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise.</p>
+<p>Water dripped from a crack in the rock. Melos drank, pushed himself onto his knees, and stood.</p>
+<p>One step. Another.</p>
+<p>At the city gates, the execution bell rang.</p>
+<p>He ran toward the square. Above his friend, the sword was already raised.</p>
+<p>“Stop! I am here!”</p>
+<p>His friend turned. Melos fell against him.</p>
+<p>“I nearly abandoned you,” he whispered.</p>
+<p>“I nearly stopped believing,” his friend answered.</p>
+<p>They held each other as the last sunlight touched the walls.</p>
+<p>The ruler stared at them.</p>
+<p>“Lower the sword,” he said at last. “Free them both.”</p>
+<p>Then, more quietly, he asked, “How does a man earn such trust?”</p>
+<p>For the first time, he waited for an answer instead of ordering one.</p></div></div>
+<div class='panel' id='p_open_window_std'><h2>開いた窓(The Open Window) / Standard(A2)</h2><p class='note'>約179秒・clip 27本(ナレーター13・セリフ14)</p><audio controls preload='none' src='open_window_std.mp3'></audio><div class='txt'><h3>The Open Window</h3>
+<p>Framton was visiting a woman in the country. He felt nervous as he waited. Her young niece, Vera, sat with him.</p>
+<p>“My aunt will join us soon,” Vera said. “Do you know her well?”</p>
+<p>“Not really,” he answered.</p>
+<p>Vera looked towards a large window. It was open to the garden.</p>
+<p>“Something terrible happened to her three years ago. Her husband and two brothers left through that window. They went hunting, and their dog followed them. Later, they tried to cross some wet ground. They fell into deep mud. No one ever found their bodies.”</p>
+<p>“That’s awful,” said Framton.</p>
+<p>“My aunt believes they’re coming home. Every evening, she leaves this window open for them. Her husband was carrying a white coat over his arm that day.”</p>
+<p>Vera kept looking at the garden.</p>
+<p>“On evenings like this, I sometimes feel they might come back.”</p>
+<p>Just then, her aunt came into the room with a smile.</p>
+<p>“I hope you enjoyed talking to Vera. Is the open window all right? My husband and brothers are coming home soon. They’ll have mud all over their boots!”</p>
+<p>Framton felt cold with fear. She really was waiting for them.</p>
+<p>He started talking about his health. But the woman hardly listened. Her eyes kept moving towards the window.</p>
+<p>“There they are! They’re home at last!”</p>
+<p>Vera’s eyes opened wide. She looked terribly afraid.</p>
+<p>Framton turned to see what was outside.</p>
+<p>Three men were walking across the garden. They carried guns. One had a white coat over his arm. A dog walked behind them.</p>
+<p>Framton could hardly breathe. Dead men were walking towards him.</p>
+<p>He picked up his hat and rushed from the room. Soon he was running down the road.</p>
+<p>The men came in through the window, with mud on their boots.</p>
+<p>“Who was that man?” her husband asked.</p>
+<p>“What a strange visitor,” his wife replied. “He talked about feeling nervous. Then he left without a word.”</p>
+<p>“The dog frightened him,” Vera said in a calm voice. “He told me he was very afraid of dogs. Once, in India, some dogs chased him into a deep hole. He had to stay there all night. The dogs stood above him and barked.”</p>
+<p>Vera had a special skill. She could make up stories in seconds and make people believe them.</p></div></div>
+<div class='panel' id='p_open_window_adv'><h2>開いた窓(The Open Window) / Advanced(B1)</h2><p class='note'>約201秒・clip 33本(ナレーター16・セリフ17)</p><audio controls preload='none' src='open_window_adv.mp3'></audio><div class='txt'><h3>The Open Window</h3>
+<p>Framton sat on the edge of his chair, turning his letter of introduction between his fingers. His doctor had recommended peace and country air, but visiting strangers was hardly peaceful.</p>
+<p>“My aunt will be down soon,” said Vera, her fifteen-year-old niece. “Do you know much about her?”</p>
+<p>“Almost nothing,” he admitted.</p>
+<p>Vera glanced towards the French window, which stood wide open to the lawn.</p>
+<p>“Her great tragedy happened three years ago today.”</p>
+<p>Framton stopped turning the letter.</p>
+<p>“Her husband and her two young brothers went out shooting through that window. Their little brown spaniel went with them. They tried to cross a bog, but the ground gave way beneath them. They all disappeared. Their bodies were never found.”</p>
+<p>“How terrible,” Framton murmured.</p>
+<p>“My aunt still thinks they’ll come back. She keeps the window open until dark, waiting for them.” Vera’s voice grew quieter. “Her husband had his white coat over his arm. Her youngest brother was singing, ‘Bertie, why do you bound?’ He always sang it to tease her.”</p>
+<p>She looked out across the empty lawn.</p>
+<p>“Sometimes, on evenings like this, I almost expect to see them.”</p>
+<p>Before Framton could reply, her aunt hurried into the room.</p>
+<p>“I hope Vera has kept you company! You don’t mind the open window? My husband and brothers will be back soon. They’ve been shooting. Their boots will be covered in mud, of course!”</p>
+<p>Framton felt a chill. So she really was waiting.</p>
+<p>He began describing his illness, trying to keep his eyes away from the window. His hostess listened with only half her attention. Again and again, she looked past him towards the lawn.</p>
+<p>Then her face brightened.</p>
+<p>“Here they are at last!”</p>
+<p>Vera stared outside, her eyes wide with horror.</p>
+<p>Framton turned.</p>
+<p>Three figures were crossing the lawn in the fading light, carrying guns. A white coat hung over one man’s arm. A brown spaniel followed close behind.</p>
+<p>Across the quiet garden came a young voice:</p>
+<p>“Bertie, why do you bound?”</p>
+<p>Framton could scarcely breathe. The dead were coming towards the house.</p>
+<p>He grabbed his hat and stick and rushed out. Within seconds, he was running down the drive.</p>
+<p>The men stepped through the window, muddy and hungry.</p>
+<p>“Who was that?” asked the husband.</p>
+<p>“A most peculiar visitor,” his wife said. “He talked about his nerves, then suddenly ran away.”</p>
+<p>“It was the spaniel,” Vera said calmly. “He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there, with them snarling above him.”</p>
+<p>Inventing convincing stories at a moment’s notice was Vera’s speciality.</p></div></div>
+<script>document.querySelectorAll('button.z2tab').forEach(function(b){b.addEventListener('click',function(){
+document.querySelectorAll('button.z2tab').forEach(function(x){x.classList.remove('on')});
+document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');var a=p.querySelector('audio');if(a){a.pause();}});
+b.classList.add('on');document.getElementById(b.dataset.target).classList.add('on');});});</script></body></html>
