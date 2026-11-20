@@ -37,7 +37,12 @@
   /* ---------- util ---------- */
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; }); }
   function fmt(t) { t = Math.max(0, t || 0); var m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
-  function item(slug) { return ST.cat.items.filter(function (x) { return x.slug === slug; })[0]; }
+  /* ARTICLE-LISTING-STATE-IMAGE-KARI-01: item(slug)は直URL・保存済み記事・ダウンロード済み・復習帳の「解決」用。一覧に出す記事は items のみ(unlisted_items=旧版[公開URL維持・一覧除外]は解決にだけ使い、
+     一覧・新着・検索・おまかせ・連続再生の候補・ジャンル棚[byNew/listItems/genreCount]には使わない)。unlisted_items無し(旧catalog)でも従来どおり動く。 */
+  function item(slug) {
+    var c = ST.cat, a = c.items.filter(function (x) { return x.slug === slug; })[0];
+    return a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+  }
   function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' (' + r.status + ')'); return r.json(); }); }
   /* ECUI B(承継実装1): player系の真値(音声URL・総尺・同期)は article.json / sync_*.json。catalogは一覧表示用(カード分数・検索)のみ。
      例外: カード等のクリック内で同期的に src設定+play() する必要がある(iOS)ため、記事が未取得の瞬間だけ catalog の値で暫定再生し、取得完了後に reconcileAudio() が article の値へ差し替える。 */
@@ -77,7 +82,7 @@
     var h = 0; for (var i = 0; i < it.slug.length; i++) h = (h * 31 + it.slug.charCodeAt(i)) % 360;
     h = 205 + (h % 40);
     var u = thumbUrl(it);
-    return '<div class="thumb" style="background:linear-gradient(135deg,hsl(' + h + ',72%,48%),hsl(' + (h + 14) + ',68%,20%))"><span class="fam">' + esc(it.family) + '</span><span class="k">仮</span>' +
+    return '<div class="thumb" style="background:linear-gradient(135deg,hsl(' + h + ',72%,48%),hsl(' + (h + 14) + ',68%,20%))"><span class="fam">' + esc(it.family) + '</span>' + (it.approved === true ? '' : '<span class="k">仮</span>') +
       (u ? '<img src="' + u + '" alt="" loading="lazy" style="position:absolute;inset:0">' : '') +
       (dur ? '<span class="dur">' + Math.round(it.levels[ST.level].total_sec / 60) + '分</span>' : '') + '</div>';
   }
@@ -210,7 +215,7 @@
     var prev = cur.slug, wasHere = route.name === 'player' && route.arg === prev;
     startPlay(cur.queue[n], { queue: cur.queue, qi: n, at: 0 });
     if (wasHere) location.hash = '#/player/' + cur.queue[n];   // 視聴ページで聴いていた場合は次の記事の視聴ページへ追従
-    toast('連続再生: 次は「' + item(cur.queue[n]).title_ja + '」(' + LV[ST.level] + ')');
+    toast('連続再生: 次は「' + ((item(cur.queue[n]) || {}).title_ja || '') + '」(' + LV[ST.level] + ')');
     return true;
   }
   A.addEventListener('ended', function () { if (cur) savePos(cur.slug, cur.level, 0); if (!nextInQueue()) refresh(); });
@@ -437,7 +442,7 @@
   function viewPlayer(slug) {
     var it = item(slug); if (!it) return topBar({ back: true }) + '<div class="empty">記事が見つかりません</div>';
     return topBar({ back: true }) +
-      '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + '<span class="kari">仮</span></span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
+      '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + (it.approved === true ? '' : '<span class="kari">仮</span>') + '</span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
       '<div id="pnotice"></div>' + lvSeg('lvseg-player') + '<div class="nowlv" id="nowlv"></div>' +
       modeSegHtml('modeseg') +
       '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" data-fromstart aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' + dlSlotHtml(slug) +
