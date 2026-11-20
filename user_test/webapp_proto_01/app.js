@@ -82,7 +82,7 @@
     var h = 0; for (var i = 0; i < it.slug.length; i++) h = (h * 31 + it.slug.charCodeAt(i)) % 360;
     h = 205 + (h % 40);
     var u = thumbUrl(it);
-    return '<div class="thumb" style="background:linear-gradient(135deg,hsl(' + h + ',72%,48%),hsl(' + (h + 14) + ',68%,20%))"><span class="fam">' + esc(it.family) + '</span>' + (it.approved === true ? '' : '<span class="k">仮</span>') +
+    return '<div class="thumb" style="background:linear-gradient(135deg,hsl(' + h + ',72%,48%),hsl(' + (h + 14) + ',68%,20%))"><span class="fam">' + esc(it.family) + '</span>' + (it.approved === true || it.legacy === true ? '' : '<span class="k">仮</span>') +
       (u ? '<img src="' + u + '" alt="" loading="lazy" style="position:absolute;inset:0">' : '') +
       (dur ? '<span class="dur">' + Math.round(it.levels[ST.level].total_sec / 60) + '分</span>' : '') + '</div>';
   }
@@ -442,7 +442,7 @@
   function viewPlayer(slug) {
     var it = item(slug); if (!it) return topBar({ back: true }) + '<div class="empty">記事が見つかりません</div>';
     return topBar({ back: true }) +
-      '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + (it.approved === true ? '' : '<span class="kari">仮</span>') + '</span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
+      '<div class="ptitle">' + thumbHtml(it, false) + '<div><h1>' + esc(it.title_ja) + '</h1><p class="en">' + esc(it.title_en) + '</p><div class="chips"><span class="chip">' + esc(it.genres[0]) + (it.approved === true || it.legacy === true ? '' : '<span class="kari">仮</span>') + '</span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div></div></div>' +
       '<div id="pnotice"></div>' + lvSeg('lvseg-player') + '<div class="nowlv" id="nowlv"></div>' +
       modeSegHtml('modeseg') +
       '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" data-fromstart aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' + dlSlotHtml(slug) +
