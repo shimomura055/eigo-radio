@@ -1,0 +1,578 @@
+{
+  "schema": "enduser_build_info_v1",
+  "id": "family_z2_the_open_window_01",
+  "family": "Z",
+  "asset_build": "rev01-zb",
+  "dev_index_sha256": "9b95f9575eeefee02dc159e7553c6cb545ab2d1bced691d41bd69cf6b8bcbcd3",
+  "audio_sha256": {
+    "audio_advanced/OpenWindow_b1b_full.mp3": "42dc2e2e5974c617b897f938f57e9780f8aac24473cb1a550e533384e12d29a3",
+    "audio_advanced/b1b_01.mp3": "7a8308132143a372e9154c3b0ed151c9de3eadf1f0cf8cc1fdbbccb13b3012e3",
+    "audio_advanced/b1b_02.mp3": "a21db2f5b09d5b266c216e5ebf069092e807056661aec3856b911a673cf9654e",
+    "audio_advanced/b1b_04.mp3": "f393eb7fe3a5a17342a8765888b1dbfa0cf91295b226888c343c39520d2c7109",
+    "audio_advanced/b1b_05.mp3": "c359e99030d8bd0ed993ee3575ab6388ca5337e59833cff7ce181df94bdc1bad",
+    "audio_advanced/b1b_07.mp3": "e079e867793306f4be89a3c50a9111099b674550917cf341dbc06fbc98af240d",
+    "audio_advanced/b1b_22.mp3": "88ed0e8d10c6d40f03c8d52179f119146ee832043758d2389ac23ca7096a50dd",
+    "audio_advanced/b1b_30.mp3": "f2ac969157e9dd2c00b9ccb4233f193985e7650c80b0d1814f4ec71b03cba440",
+    "audio_advanced/b1b_p1.mp3": "f284bd90db4a5ae384b4f62e0df8ee76a2a2595501a45ddbfefc6ae4cb82fd1c",
+    "audio_advanced/b1b_p2.mp3": "193bcb7066774e8ed835ae39366928720eadd1ef0ce1d9050d02c2ef09e9ecff",
+    "audio_advanced/b1b_p3.mp3": "f975121ddb83b54c95b835544b2aab51ae501476a679d93f30de5f94f225bd85",
+    "audio_standard/OpenWindow_a2_full.mp3": "42f1a3a1f18b03810988a7954a02bdc98baddbfc99b0e4872bf830db95708529",
+    "audio_standard/a2_01.mp3": "e69b4760b56e306c0f4b0b97a3f1d41dc937f7d8df8ddc346c6f6516f9e73541",
+    "audio_standard/a2_02.mp3": "1e2914288dfed9446ef20288e9760aa3b6197483fab41766d1ba0c6974619816",
+    "audio_standard/a2_03.mp3": "651807a176dc32859e4b26cbe261db1aea648ad6599939c5ee49d893019036b8",
+    "audio_standard/a2_05.mp3": "53f9d99558fdfcfbfd874a1e61a12e8ff71d1c7255c15a2130dd6be6663d3072",
+    "audio_standard/a2_06.mp3": "b4ded994665754c9f99030a0d7d9805687daa5acb1b346892dfef7a5e27b4259",
+    "audio_standard/a2_08.mp3": "4889179f2c01eeeefab212ee165a0d93268346f084fb7f22fcc79b2b81eaec8f",
+    "audio_standard/a2_21.mp3": "39af14870fd47bc7860bd0fd3560a191a25b7b1e1d529dfc02619c6de31d7cd2",
+    "audio_standard/a2_27.mp3": "c0a748d10ce6dd0210412148efefb74c972d556fa1211fad3c8321db7697aec4",
+    "audio_standard/a2_p1.mp3": "e05473af39a0c2ffc188c4af383ca1679d9f32d8331ed178a42d3160e8a165d7",
+    "audio_standard/a2_p2.mp3": "0f62e353c7e5be9a7a7dd10a1d4024caae75153932f630526b10147e29ad21a5",
+    "audio_standard/a2_p3.mp3": "273a7302db29204c1511af597c36f04fe77bc69bdb8014d91c8d3ee5fd51b332"
+  },
+  "assets": {
+    "index.html": "f8b2c29d60b76c05642eeed7eeae6b2000a3b5afb83f154e8b7566acc592a437",
+    "app.js": "51793929ec56fcf5266d44ba34d3ea8070e3a3a5a348118603324a9f119d5fb9",
+    "style.css": "782d54c4b076debb1aab91b1e30dd2283445fa45f20a982c9b79c5bc7797349e"
+  },
+  "files": {
+    "data/article.json": "c3aef4420604bae8236df52f73daabbf2c5c661d9ff4706299a6fec9967dcc30",
+    "data/sync_std.json": "3840dc98a4471b70d9af8241cc608a7a30623ef2060965f221525a84bf88ee59",
+    "data/sync_adv.json": "7d3f34bd8254d6064e4ff1f241b589720fce7415c27a8fbe27e5bcba621e34d7",
+    "index.html": "f8b2c29d60b76c05642eeed7eeae6b2000a3b5afb83f154e8b7566acc592a437",
+    "app.js": "51793929ec56fcf5266d44ba34d3ea8070e3a3a5a348118603324a9f119d5fb9",
+    "style.css": "782d54c4b076debb1aab91b1e30dd2283445fa45f20a982c9b79c5bc7797349e"
+  },
+  "sync": {
+    "std": {
+      "engine": "faster-whisper",
+      "model": "medium",
+      "params": {
+        "engine": "faster-whisper",
+        "device": "cpu",
+        "compute_type": "int8",
+        "beam_size": 5,
+        "condition_on_previous_text": false,
+        "vad_filter": false,
+        "word_timestamps": true,
+        "sil_db": -40.0,
+        "min_sil_s": 0.08,
+        "align_mode": "direct",
+        "time_base": "row_local_seconds",
+        "languages": "ja if CJK else en (kp window: en)"
+      },
+      "gate_status": "PASS",
+      "source_sha256": "a203965517dcfee1799b7fabfca10dd4930b0f171c213e33cc794d923a1178fe",
+      "rows": 8,
+      "sentences": 69,
+      "min_row_ratio": 0.9155,
+      "low_conf_rows": 3
+    },
+    "adv": {
+      "engine": "faster-whisper",
+      "model": "medium",
+      "params": {
+        "engine": "faster-whisper",
+        "device": "cpu",
+        "compute_type": "int8",
+        "beam_size": 5,
+        "condition_on_previous_text": false,
+        "vad_filter": false,
+        "word_timestamps": true,
+        "sil_db": -40.0,
+        "min_sil_s": 0.08,
+        "align_mode": "direct",
+        "time_base": "row_local_seconds",
+        "languages": "ja if CJK else en (kp window: en)"
+      },
+      "gate_status": "PASS",
+      "source_sha256": "56e9d0e7be1d6dbe95c1db8b0018e4ee7312587994905763651ac87e0ec9a5ed",
+      "rows": 7,
+      "sentences": 64,
+      "min_row_ratio": 0.9815,
+      "low_conf_rows": 3
+    }
+  },
+  "translation_coverage": {
+    "std": {
+      "topic": {
+        "blocks": 1,
+        "translated": 0,
+        "source": "none_approved_translation_hidden"
+      },
+      "story": {
+        "blocks": 3,
+        "translated": 3,
+        "source": "generated"
+      }
+    },
+    "adv": {
+      "topic": {
+        "blocks": 1,
+        "translated": 0,
+        "source": "none_approved_translation_hidden"
+      },
+      "preview": {
+        "blocks": 1,
+        "translated": 1,
+        "source": "generated"
+      },
+      "story": {
+        "blocks": 3,
+        "translated": 3,
+        "source": "generated"
+      },
+      "comment": {
+        "blocks": 2,
+        "translated": 2,
+        "source": "generated"
+      }
+    }
+  },
+  "glossary": {
+    "std": "applied",
+    "adv": "applied"
+  },
+  "ja_manuscript": null,
+  "warnings": [
+    "std: 低信頼度境界を持つ行 3件(記録のみ)",
+    "adv: 低信頼度境界を持つ行 3件(記録のみ)"
+  ],
+  "link_targets": {
+    "parts": {
+      "std": [
+        {
+          "key": "std_04",
+          "kind": "preview",
+          "status": "na_ja_only",
+          "sentences": 2,
+          "linked": 0,
+          "how": []
+        },
+        {
+          "key": "std_06",
+          "kind": "story",
+          "status": "generated",
+          "sentences": 23,
+          "linked": 23,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "std_07",
+          "kind": "comment",
+          "status": "na_ja_only",
+          "sentences": 2,
+          "linked": 0,
+          "how": []
+        },
+        {
+          "key": "std_08",
+          "kind": "story",
+          "status": "generated",
+          "sentences": 21,
+          "linked": 21,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "std_09",
+          "kind": "comment",
+          "status": "na_ja_only",
+          "sentences": 2,
+          "linked": 0,
+          "how": []
+        },
+        {
+          "key": "std_10",
+          "kind": "story",
+          "status": "generated",
+          "sentences": 17,
+          "linked": 17,
+          "how": [
+            "gen"
+          ]
+        }
+      ],
+      "adv": [
+        {
+          "key": "adv_03",
+          "kind": "preview",
+          "status": "generated",
+          "sentences": 2,
+          "linked": 2,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "adv_05",
+          "kind": "story",
+          "status": "generated",
+          "sentences": 21,
+          "linked": 21,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "adv_06",
+          "kind": "comment",
+          "status": "generated",
+          "sentences": 2,
+          "linked": 2,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "adv_07",
+          "kind": "story",
+          "status": "generated",
+          "sentences": 15,
+          "linked": 15,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "adv_08",
+          "kind": "comment",
+          "status": "generated",
+          "sentences": 2,
+          "linked": 2,
+          "how": [
+            "gen"
+          ]
+        },
+        {
+          "key": "adv_09",
+          "kind": "story",
+          "status": "generated",
+          "sentences": 21,
+          "linked": 21,
+          "how": [
+            "gen"
+          ]
+        }
+      ]
+    },
+    "summary": {
+      "std": {
+        "preview": {
+          "parts": 1,
+          "sentences": 2,
+          "linked": 0,
+          "status": {
+            "na_ja_only": 1
+          }
+        },
+        "story": {
+          "parts": 3,
+          "sentences": 61,
+          "linked": 61,
+          "status": {
+            "generated": 3
+          }
+        },
+        "comment": {
+          "parts": 2,
+          "sentences": 4,
+          "linked": 0,
+          "status": {
+            "na_ja_only": 2
+          }
+        }
+      },
+      "adv": {
+        "preview": {
+          "parts": 1,
+          "sentences": 2,
+          "linked": 2,
+          "status": {
+            "generated": 1
+          }
+        },
+        "story": {
+          "parts": 3,
+          "sentences": 57,
+          "linked": 57,
+          "status": {
+            "generated": 3
+          }
+        },
+        "comment": {
+          "parts": 2,
+          "sentences": 4,
+          "linked": 4,
+          "status": {
+            "generated": 2
+          }
+        }
+      }
+    }
+  },
+  "thumbnail": {
+    "file": "thumb.png",
+    "sha256": "e36c0aae18c4465c5c32101d3b0649316e062b97a9d41c04c09d709dc50fac9c",
+    "w": 256,
+    "h": 256,
+    "title_en": "The Open Window.",
+    "title_ja": "開いた窓",
+    "input_sha256": "02a8332a3887d7f368443404c2892ccfeeec2340794da2f91c2e82fc259a3b4c",
+    "model": "gpt-image-2",
+    "quality": "low",
+    "size": "1024x1024",
+    "template_sha256": "667ee920a50859a0d0670a603d5c35dfe18b250bdb65dbdd84ffbffa7d30b975"
+  },
+  "generated_translation": {
+    "model": "gpt-6-luna",
+    "prompt_sha256": "afd3b458b926b211b11e8b1c4de88afdf4b9b93f1db754f44881029ff92626e0",
+    "parts": {
+      "std": {
+        "std_06": {
+          "en_sha256": "23eb1b5a8d652c28fe2b6986d9f33ec648ddeb75101a838052232597d998b691",
+          "ja_sha256": "30cd9a1578936f537de8b4e235927176cf813a78ab6abada297fc1224f25b45d",
+          "sentences": 23,
+          "context_applied": false,
+          "context_lines": 7,
+          "paragraphs": 12,
+          "context_paragraphs": 12
+        },
+        "std_08": {
+          "en_sha256": "2ffda31eb970e11db3080b4014e2027e7b5aa1e874d4a008ba219a1e2c113220",
+          "ja_sha256": "1e069be54adaac068253d617687c7f7079f4e77195665576ed55afefff6d03fc",
+          "sentences": 21,
+          "context_applied": false,
+          "context_lines": 8,
+          "paragraphs": 5,
+          "context_paragraphs": 5
+        },
+        "std_10": {
+          "en_sha256": "ca7ed56b77d3e581b5da50a6201c3e91ba955e5c00a261e2f167df433df82a3b",
+          "ja_sha256": "76134772bb94251bb965b8e0d6e42e5b5968ae61364a7488ed965bb5bc8b29a2",
+          "sentences": 17,
+          "context_applied": false,
+          "context_lines": 9,
+          "paragraphs": 10,
+          "context_paragraphs": 10
+        }
+      },
+      "adv": {
+        "adv_03": {
+          "en_sha256": "3d89063583879236efcec684d5b13bb3fba9aad3d62023c829360a5ae4f7ca30",
+          "ja_sha256": "05a6c6710b52974c49cf5b370528ad90dc56f967ca0b53d20ea93b1621520064",
+          "sentences": 2,
+          "context_applied": false,
+          "context_lines": 8,
+          "paragraphs": 1,
+          "context_paragraphs": 1
+        },
+        "adv_05": {
+          "en_sha256": "89b48af2ef8a0cc4136dea9f9e05728d9e46d109320c63b8cf607b82a8a37e54",
+          "ja_sha256": "d9d6f844f73f8dbe72004a50b31e1eee72f9e6129e4d6a40a31a190a798395e4",
+          "sentences": 21,
+          "context_applied": false,
+          "context_lines": 8,
+          "paragraphs": 14,
+          "context_paragraphs": 14
+        },
+        "adv_06": {
+          "en_sha256": "733945089ba5aff742af854db059c4d1e94e4f5afa786240a6c3ae60bf234e6d",
+          "ja_sha256": "177fb233810c5c6ec7a9a12ce8f2ed592f249eacc40e67036ebe855872933cea",
+          "sentences": 2,
+          "context_applied": false,
+          "context_lines": 9,
+          "paragraphs": 1,
+          "context_paragraphs": 1
+        },
+        "adv_07": {
+          "en_sha256": "c75eddcfc361c440e3c022045d35a596b613a3d4d2d46a0644de519557fcc5f4",
+          "ja_sha256": "f1f56b9824d88ed0389b5481702c51b4ce408d068dc5e6de51d5993093736561",
+          "sentences": 15,
+          "context_applied": false,
+          "context_lines": 8,
+          "paragraphs": 7,
+          "context_paragraphs": 7
+        },
+        "adv_08": {
+          "en_sha256": "59080d2ba688aa4a449327dbf9fd7f59eddec8246ab7b1bfd4ee609d0fc27de3",
+          "ja_sha256": "2add5a855b051a6f110f4a1116bd92ce069325fc6f88812bca12a71a2c1786c2",
+          "sentences": 2,
+          "context_applied": false,
+          "context_lines": 8,
+          "paragraphs": 1,
+          "context_paragraphs": 1
+        },
+        "adv_09": {
+          "en_sha256": "0e77d0a431cbc3c28d74d067017b76f213c29a0f9ce2b33b60a79dbf6097759f",
+          "ja_sha256": "df0c25cfc21828a21e44e2c1e08a17da5287574b604133b836434f69c8f607d5",
+          "sentences": 21,
+          "context_applied": false,
+          "context_lines": 9,
+          "paragraphs": 12,
+          "context_paragraphs": 12
+        }
+      }
+    },
+    "failures": [],
+    "api_calls": {
+      "translate": 0
+    },
+    "cache_hits": 63,
+    "verification": "none(2026-11-03 ユーザー正式決定: 翻訳後の検査AI廃止。決定論チェック[構造・文数・数値]のみ)",
+    "context": {
+      "method": "E-v1",
+      "parts": 0,
+      "cached_parts": 9
+    }
+  },
+  "judge": {
+    "model": "gpt-6-luna",
+    "prompt_sha256": "75dd28ec852a8951aedd28118f796c4005908ab8be835455b7f417c0ffab3f77",
+    "calls": 0,
+    "pairs": 0,
+    "ok": 0,
+    "cache_hits": 0,
+    "failures": []
+  },
+  "ja_align": {
+    "method": "tiered_dp_embed_v2",
+    "model": "text-embedding-3-large",
+    "dims": 1024,
+    "params": {
+      "lam": 2.0,
+      "len_w": 1.0,
+      "pen_12": 0.9,
+      "pen_22": 4.0,
+      "pen_13": 1.5,
+      "skip": 3.0,
+      "tau": 0.5,
+      "delta_path": 0.1,
+      "delta_group": 0.0,
+      "delta_sent": 0.0,
+      "delta_group_en": -0.1,
+      "delta_sent_en": -0.1,
+      "tau_para": 0.55,
+      "tau_floor": 0.4,
+      "det_len_lo": 1.2,
+      "det_len_hi": 6.0,
+      "eq_tau": 0.3,
+      "eq_margin": 0.03,
+      "tau_para_eq": 0.45,
+      "soft_T": 0.2,
+      "soft_p": 0.95,
+      "judge_tau": 0.3
+    },
+    "applicable": true,
+    "coverage": {
+      "std": {
+        "story_parts": 3,
+        "sentences_total": 61,
+        "sentences_linked": 61,
+        "groups_total": 61,
+        "groups_null": 0,
+        "reasons": {},
+        "linked_by_how": {
+          "gen": 61
+        },
+        "coverage": 1.0
+      },
+      "adv": {
+        "story_parts": 6,
+        "sentences_total": 63,
+        "sentences_linked": 63,
+        "groups_total": 63,
+        "groups_null": 0,
+        "reasons": {},
+        "linked_by_how": {
+          "gen": 63
+        },
+        "coverage": 1.0
+      }
+    },
+    "input_sha256": {
+      "std": {
+        "std_06": "c184eecc68b53129842aed9c2fb74e079c707067174f19ebb7aaa09a8570db67",
+        "std_08": "64e1a5e3aa840d8a8e8e33d355d198e98a2eaaf2ae8d3aa7fe69074e4df0a3a6",
+        "std_10": "03a6412d9d57a3ee49dd6f5f9259eae2ab0f41dc7ef823dfed0d6e4128bba731"
+      },
+      "adv": {
+        "adv_03": "5049e700ab3e68a954e8a0d7359591ffb493c4eed2c072c240160e51290fc71e",
+        "adv_05": "34161e56f3bd41d666058b78ffdfa3150b6b7e71a8360b39785396dedce54b99",
+        "adv_06": "fabbe29d8d8dbfe6e3f5d5f07cb873f66ee2be0afede90c1d054caa7a264da5f",
+        "adv_07": "07157ea8c487c94dca25a868c5e77692777cb80e87418f9690dc17c3589e6151",
+        "adv_08": "fe8009bf60ee34850a2734c11b51ad504c6e1b5bfd1ea07dfce82b7934111de0",
+        "adv_09": "6000fc061fbb46df631df2c99409208f4453e13f5753e50d4645dde234b5b6a8"
+      }
+    },
+    "degraded": [],
+    "embedding": {
+      "api_calls": 0,
+      "tokens": 0,
+      "cached_hits": 0
+    }
+  },
+  "episode_check": {
+    "std": {
+      "rows_checked": 11,
+      "rows_skipped_silent": 0,
+      "max_abs_lag_s": 0.0,
+      "min_corr": 0.99952,
+      "episode_dur_s": 257.04,
+      "timeline_total_s": 257.012,
+      "length_diff_s": 0.028,
+      "length_basis": "run_timeline"
+    },
+    "adv": {
+      "rows_checked": 10,
+      "rows_skipped_silent": 0,
+      "max_abs_lag_s": 0.0,
+      "min_corr": 0.99957,
+      "episode_dur_s": 256.82,
+      "timeline_total_s": 256.792,
+      "length_diff_s": 0.028,
+      "length_basis": "run_timeline"
+    }
+  },
+  "translation_unify": {
+    "status": "done",
+    "input_set_sha256": "474ce9bbc705327b89f1442adcfe560533a50f9ddbbcb26034dd4b32681d4a10",
+    "separate_senses": [
+      "come in through~come in"
+    ],
+    "unified": [
+      "at last",
+      "make up"
+    ]
+  },
+  "timeline_check": {
+    "std": {
+      "checked": true,
+      "rows": 11,
+      "timeline_entries": 39
+    },
+    "adv": {
+      "checked": true,
+      "rows": 10,
+      "timeline_entries": 44
+    }
+  },
+  "vocab_audio": {
+    "required": true,
+    "files": {
+      "audio/vocab_a2_1.mp3": "6170071119114781c1b91401788763029737f514b77a2b916a69d6fdc8fec5f4",
+      "audio/vocab_a2_2.mp3": "8b42bcd12bb4e8b5f3a719204faa2e3b6a5b21158f2d1a359726bda306aea11f",
+      "audio/vocab_a2_3.mp3": "e1b01333534baa45cf78e4b62e9ade3f7df42a8e4e1ca1e466f25446845e3434",
+      "audio/vocab_a2_4.mp3": "1cc1fc95632422b0ef8b24fb8a5b344ba3b457dc46f3e2d5828abd35d106b3ba",
+      "audio/vocab_a2_5.mp3": "2dc1b2069ad5c36bc6fb226be2d6c5d818fb224e194573451fc71c3be2bd0466",
+      "audio/vocab_b1b_1.mp3": "85ae1c7c54b7fe1736b7052a1fd0d02383bd02d57bd96cd55a49c44db5870929",
+      "audio/vocab_b1b_2.mp3": "d9d29f68001598ccd5d6c317d844f417f1eeb28a4e1dd9d9b35626dcd8c71784",
+      "audio/vocab_b1b_3.mp3": "7009173370e13fa6cf6928dac3eadc7750987db32febeefe291e237340972720",
+      "audio/vocab_b1b_4.mp3": "f0879e76416cb7fff04d6990393d6b58a702d1958fcc24bf4c8087121bd2d0ca",
+      "audio/vocab_b1b_5.mp3": "0c16e27a7f42cfea85292962d386e6da535f2b86d22bbd0c60a9b56189f14cb6"
+    },
+    "items": 10
+  }
+}
