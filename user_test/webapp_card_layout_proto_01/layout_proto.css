@@ -1,0 +1,43 @@
+/* [試作] 記事カードのレイアウト比較用(正式版ではない)。現行(lay=cur)は style.css のまま。a/b/c だけこのCSSが効く。
+   文字サイズ・行間は現行と同じ(題名15px/1.35、概要12.5px/1.45、チップ11px)。概要は行数制限なしで全文表示。 */
+html:not([data-lay="cur"]) .cgrid{display:grid;align-items:start;column-gap:10px;row-gap:6px}
+html:not([data-lay="cur"]) .cgrid .cmain{grid-area:main;min-width:0}
+html:not([data-lay="cur"]) .cgrid .thumb{grid-area:thumb}
+html:not([data-lay="cur"]) .cgrid .acts{grid-area:acts;display:flex;align-items:center;justify-content:flex-end}
+html:not([data-lay="cur"]) .cgrid .sum{grid-area:sum;margin:0;width:auto;display:block;-webkit-line-clamp:unset;overflow:visible}
+html:not([data-lay="cur"]) .cgrid .cardplay{width:48px;height:48px}
+.cardfav{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:#d6336c;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0}
+.cardfav svg{width:24px;height:24px;fill:none;stroke:#d6336c;stroke-width:1.9;stroke-linejoin:round}
+.cardfav[aria-pressed="true"] svg{fill:#d6336c}
+.cardfav:active{background:#fde8ef}
+/* 案a: 現行の構成のまま。♡は再生ボタンの下。概要は全幅で全文 */
+html[data-lay="a"] .cgrid{grid-template-columns:88px minmax(0,1fr) 48px;grid-template-areas:"thumb main acts" "sum sum sum"}
+html[data-lay="a"] .cgrid .thumb{width:88px;height:88px}
+html[data-lay="a"] .cgrid .acts{flex-direction:column;gap:0;align-self:start}
+/* 案b: サムネを64pxに縮小。♡は概要の行の右端(再生ボタンの真下)に置き、上段は題名/チップ/再生だけにして低く保つ */
+html[data-lay="b"] .cgrid{grid-template-columns:64px minmax(0,1fr) 48px;grid-template-areas:"thumb main play" "sum sum fav"}
+html[data-lay="b"] .cgrid .acts{display:contents}
+html[data-lay="b"] .cgrid .cardplay{grid-area:play;align-self:start}
+html[data-lay="b"] .cgrid .cardfav{grid-area:fav;justify-self:center;align-self:start;margin-top:-6px}
+html[data-lay="b"] .cgrid .thumb{width:64px;height:64px}
+html[data-lay="b"] .cgrid .thumb .fam{font-size:30px}
+/* 案c: サムネを72pxに縮小。♡はサムネの右上に重ねる。概要は全幅 */
+html[data-lay="c"] .cgrid{grid-template-columns:72px minmax(0,1fr) 48px;grid-template-areas:"thumb main play" "sum sum sum"}
+html[data-lay="c"] .cgrid .acts{display:contents}
+html[data-lay="c"] .cgrid .cardplay{grid-area:play;align-self:start}
+html[data-lay="c"] .cgrid .thumb{width:72px;height:72px}
+html[data-lay="c"] .cgrid .thumb .fam{font-size:34px}
+html[data-lay="c"] .cgrid .cardfav{grid-area:thumb;justify-self:end;align-self:start;margin:-8px -8px 0 0;z-index:3;padding:7px;background:rgba(255,255,255,.93);background-clip:content-box;border-radius:50%}
+html[data-lay="c"] .cgrid .cardfav svg{width:20px;height:20px}
+@media(max-width:380px){
+  html[data-lay="a"] .cgrid{grid-template-columns:76px minmax(0,1fr) 44px}
+  html[data-lay="a"] .cgrid .thumb{width:76px;height:76px}
+  html:not([data-lay="cur"]) .cgrid .cardplay{width:44px;height:44px}
+  html[data-lay="b"] .cgrid{grid-template-columns:56px minmax(0,1fr) 44px}
+  html[data-lay="b"] .cgrid .thumb{width:56px;height:56px}
+  html[data-lay="c"] .cgrid{grid-template-columns:64px minmax(0,1fr) 44px}
+  html[data-lay="c"] .cgrid .thumb{width:64px;height:64px}
+}
+/* 試作の目印(このページは正式版ではない) */
+.protobar{background:#fff7d6;color:#5a4300;font-size:12px;line-height:1.5;padding:6px 12px;border-bottom:1px solid #e8d68a;text-align:center}
+.protobar a{color:#5a4300;font-weight:700}

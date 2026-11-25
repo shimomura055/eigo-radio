@@ -1,0 +1,79 @@
+<!doctype html><html lang="ja"><head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="ui_verify"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>記事カード配置の試作(正式版ではない)</title>
+<style>body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;margin:0;padding:12px;color:#14213d;background:#f7faff;line-height:1.6;font-size:15px}
+h1{font-size:19px;margin:6px 0}h2{font-size:16px;margin:22px 0 6px;border-left:4px solid #1d4fd8;padding-left:8px}.warn{background:#fff7d6;border:1px solid #e8d68a;border-radius:10px;padding:8px 12px;font-size:13.5px}
+table{border-collapse:collapse;font-size:12.5px;margin:6px 0;display:block;overflow-x:auto}td,th{border:1px solid #cfd9ee;padding:3px 7px;text-align:center;white-space:nowrap}th{background:#e8f0ff}td.l{text-align:left;white-space:normal;min-width:180px}
+a.btn{display:inline-block;background:#1d4fd8;color:#fff;text-decoration:none;border-radius:999px;padding:6px 14px;margin:3px 4px 3px 0;font-weight:700;font-size:13.5px}a.btn.s{background:#e8f0ff;color:#0a3bbd}
+.sel button{border:1.5px solid #1d4fd8;background:#fff;color:#1d4fd8;border-radius:999px;padding:5px 14px;margin:2px;font-weight:700}.sel button.on{background:#1d4fd8;color:#fff}
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cols figure{margin:0}.cols img{width:100%;border:1px solid #cfd9ee;border-radius:6px}.cols figcaption{font-size:12px;text-align:center;font-weight:700}
+@media(max-width:700px){.cols{grid-template-columns:repeat(2,minmax(0,1fr))}}small{color:#5d6b88}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<h1>記事カード配置の試作(正式版ではない)</h1>
+<div class="warn"><b>これは試作です。正式版のアプリ・Webではありません。</b>記事一覧のカードの見せ方を比べるための画面で、♡(お気に入り)は押すと見た目が切り替わるだけです(保存・集計はしません)。
+下のスクリーンショットは<b>実機ではなく、PCのブラウザをスマホの画面幅にして撮影</b>したものです。実際の見え方は、下の「動く試作」をお手元のスマホで開いて確認してください(文字の幅は端末のフォントで多少変わります)。</div>
+<h2>1. 動く試作(スマホで開いて比べられます)</h2><p><small>実際のカタログ(現在の10記事)・実際のスタイルで動きます。各リンクは新しいタブでも開けます。♡を押すと塗りつぶしに変わります。</small></p><table><tr><th>案</th><th>説明</th><th>開く</th></tr>
+<tr><th>現行(比較用)</th><td class="l">現行の正式版と同じ表示(概要は2行で切れる。♡なし)。</td><td><a class="btn" href="app.html?lay=cur&notut=1#/list?g=all">記事一覧</a><a class="btn s" href="app.html?lay=cur&notut=1#/home">ホーム</a><a class="btn s" href="app.html?lay=cur&notut=1#/search">記事を探す</a></td></tr>
+<tr><th>案A</th><td class="l">現行の構成のまま、概要を全文表示。サムネ88px。♡は再生ボタンの下(上段の右)。</td><td><a class="btn" href="app.html?lay=a&notut=1#/list?g=all">記事一覧</a><a class="btn s" href="app.html?lay=a&notut=1#/home">ホーム</a><a class="btn s" href="app.html?lay=a&notut=1#/search">記事を探す</a></td></tr>
+<tr><th>案B</th><td class="l">サムネ64pxに縮小。♡は概要の行の右端(再生ボタンの真下)。上段は題名・チップ・再生だけ。</td><td><a class="btn" href="app.html?lay=b&notut=1#/list?g=all">記事一覧</a><a class="btn s" href="app.html?lay=b&notut=1#/home">ホーム</a><a class="btn s" href="app.html?lay=b&notut=1#/search">記事を探す</a></td></tr>
+<tr><th>案C</th><td class="l">サムネ72pxに縮小。♡はサムネの右上に重ねる。概要は全幅で全文表示。再生は現行どおり右上。</td><td><a class="btn" href="app.html?lay=c&notut=1#/list?g=all">記事一覧</a><a class="btn s" href="app.html?lay=c&notut=1#/home">ホーム</a><a class="btn s" href="app.html?lay=c&notut=1#/search">記事を探す</a></td></tr>
+</table><p><small>ホーム・記事を探す・ジャンル別一覧も同じカード部品なので、同じ配置になります。</small></p>
+<h2>2. スクリーンショット比較(PCブラウザのスマホ幅表示・実機ではない)</h2><p><small>記事一覧の最初のカードを画面上部に合わせた1画面分です。画面幅を選んでください。</small></p><div class="sel" id="sel">
+<button type="button" data-w="320">幅320px</button>
+<button type="button" data-w="360">幅360px</button>
+<button type="button" data-w="375">幅375px</button>
+<button type="button" data-w="390" class=on>幅390px</button>
+<button type="button" data-w="430">幅430px</button>
+</div><div class="cols" id="cols">
+<figure><img data-lay="cur" src="shots/list_cur_390.jpg" alt="現行(比較用) 幅390px"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img data-lay="a" src="shots/list_a_390.jpg" alt="案A 幅390px"><figcaption>案A</figcaption></figure>
+<figure><img data-lay="b" src="shots/list_b_390.jpg" alt="案B 幅390px"><figcaption>案B</figcaption></figure>
+<figure><img data-lay="c" src="shots/list_c_390.jpg" alt="案C 幅390px"><figcaption>案C</figcaption></figure>
+</div><h3 style="font-size:14px;margin-top:14px">概要が90字の記事(走れメロス)と、題名が最長(25字)の記事</h3><p><small>幅320pxと390pxで、該当カードだけを拡大して撮影しました。</small></p>
+<p style="margin:8px 0 2px"><b>概要90字(走れメロス) / 幅320px</b></p><div class="cols">
+<figure><img src="shots/card_melos90_cur_320.jpg" alt="現行(比較用)" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/card_melos90_a_320.jpg" alt="案A" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/card_melos90_b_320.jpg" alt="案B" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/card_melos90_c_320.jpg" alt="案C" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<p style="margin:8px 0 2px"><b>概要90字(走れメロス) / 幅390px</b></p><div class="cols">
+<figure><img src="shots/card_melos90_cur_390.jpg" alt="現行(比較用)" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/card_melos90_a_390.jpg" alt="案A" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/card_melos90_b_390.jpg" alt="案B" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/card_melos90_c_390.jpg" alt="案C" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<p style="margin:8px 0 2px"><b>題名が最長(25字)の記事 / 幅320px</b></p><div class="cols">
+<figure><img src="shots/card_longtitle_cur_320.jpg" alt="現行(比較用)" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/card_longtitle_a_320.jpg" alt="案A" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/card_longtitle_b_320.jpg" alt="案B" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/card_longtitle_c_320.jpg" alt="案C" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<p style="margin:8px 0 2px"><b>題名が最長(25字)の記事 / 幅390px</b></p><div class="cols">
+<figure><img src="shots/card_longtitle_cur_390.jpg" alt="現行(比較用)" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/card_longtitle_a_390.jpg" alt="案A" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/card_longtitle_b_390.jpg" alt="案B" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/card_longtitle_c_390.jpg" alt="案C" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<h2>3. 計測表(最新カタログ10記事。PCブラウザのスマホ幅表示での実測)</h2><p><small>カード高さ=10記事の平均(px)。1画面で完全に見える記事数=記事一覧で最初のカードを上部バー直下に合わせ、下部ナビより上に収まる記事数。概要が切れる記事=概要が2行で切れる(現行)/全文表示(案)。文字サイズは全案で同じ(題名15px・概要12.5px・行間1.45)。</small></p>
+<table><tr><th>幅(px)</th><th>案</th><th>カード高さ 平均(最小〜最大)</th><th>1画面で完全に見える記事数</th><th>概要の最大行数</th><th>概要が切れる記事</th><th>題名が切れる記事</th><th>概要90字の記事の高さ/行数</th></tr>
+<tr><td>320</td><td>現行(比較用)</td><td>153(142〜158)</td><td>2</td><td>5行</td><td>10/10(最大48字)</td><td>7/10</td><td>142px/5行</td></tr>
+<tr><td>320</td><td>案A</td><td>193(174〜210)</td><td>2</td><td>5行</td><td>0/10</td><td>7/10</td><td>207px/5行</td></tr>
+<tr><td>320</td><td>案B</td><td>206(190〜228)</td><td>2</td><td>6行</td><td>0/10</td><td>5/10</td><td>208px/6行</td></tr>
+<tr><td>320</td><td>案C</td><td>188(172〜210)</td><td>2</td><td>5行</td><td>0/10</td><td>6/10</td><td>190px/5行</td></tr>
+<tr><td>360</td><td>現行(比較用)</td><td>144(142〜158)</td><td>4</td><td>4行</td><td>10/10(最大42字)</td><td>3/10</td><td>142px/4行</td></tr>
+<tr><td>360</td><td>案A</td><td>185(170〜192)</td><td>3</td><td>4行</td><td>0/10</td><td>3/10</td><td>188px/4行</td></tr>
+<tr><td>360</td><td>案B</td><td>171(156〜186)</td><td>3</td><td>5行</td><td>0/10</td><td>0/10</td><td>175px/5行</td></tr>
+<tr><td>360</td><td>案C</td><td>164(150〜172)</td><td>3</td><td>4行</td><td>0/10</td><td>3/10</td><td>164px/4行</td></tr>
+<tr><td>375</td><td>現行(比較用)</td><td>142(142〜142)</td><td>4</td><td>4行</td><td>10/10(最大41字)</td><td>0/10</td><td>142px/4行</td></tr>
+<tr><td>375</td><td>案A</td><td>181(170〜188)</td><td>3</td><td>4行</td><td>0/10</td><td>0/10</td><td>188px/4行</td></tr>
+<tr><td>375</td><td>案B</td><td>166(150〜186)</td><td>3</td><td>5行</td><td>0/10</td><td>0/10</td><td>175px/5行</td></tr>
+<tr><td>375</td><td>案C</td><td>159(150〜168)</td><td>4</td><td>4行</td><td>0/10</td><td>0/10</td><td>164px/4行</td></tr>
+<tr><td>390</td><td>現行(比較用)</td><td>154(154〜154)</td><td>4</td><td>4行</td><td>10/10(最大37字)</td><td>0/10</td><td>154px/4行</td></tr>
+<tr><td>390</td><td>案A</td><td>180(174〜192)</td><td>3</td><td>4行</td><td>0/10</td><td>0/10</td><td>192px/4行</td></tr>
+<tr><td>390</td><td>案B</td><td>167(150〜183)</td><td>4</td><td>5行</td><td>0/10</td><td>0/10</td><td>183px/5行</td></tr>
+<tr><td>390</td><td>案C</td><td>160(154〜172)</td><td>4</td><td>4行</td><td>0/10</td><td>0/10</td><td>172px/4行</td></tr>
+<tr><td>430</td><td>現行(比較用)</td><td>154(154〜154)</td><td>4</td><td>3行</td><td>10/10(最大30字)</td><td>0/10</td><td>154px/3行</td></tr>
+<tr><td>430</td><td>案A</td><td>174(174〜174)</td><td>4</td><td>3行</td><td>0/10</td><td>0/10</td><td>174px/3行</td></tr>
+<tr><td>430</td><td>案B</td><td>159(150〜168)</td><td>4</td><td>4行</td><td>0/10</td><td>0/10</td><td>164px/4行</td></tr>
+<tr><td>430</td><td>案C</td><td>154(154〜154)</td><td>4</td><td>3行</td><td>0/10</td><td>0/10</td><td>154px/3行</td></tr>
+</table><p><small>題名が切れる記事は、現行の仕様(題名は2行まで)が幅の狭い端末で効いたもので、案Bも2行までのままです(今回の試作では変えていません)。</small></p>
+<script>(function(){var imgs=document.querySelectorAll('#cols img'),bs=document.querySelectorAll('#sel button');
+bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(x){x.className=''});b.className='on';imgs.forEach(function(i){i.src='shots/list_'+i.dataset.lay+'_'+b.dataset.w+'.jpg';i.alt=i.alt.replace(/幅\d+px/,'幅'+b.dataset.w+'px')})})})})();</script></body></html>
