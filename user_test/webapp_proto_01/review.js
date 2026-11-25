@@ -43,7 +43,11 @@
     h += '<div class="srs-today" data-srs-today="' + total + '"><b>今日の復習 ' + total + '件</b><span class="srs-sub">(新規 ' + m.counts.newShown + ' / 復習 ' + (total - m.counts.newShown) + ')</span>' +
       (m.counts.newDeferred ? '<span class="srs-sub" data-srs-deferred="' + m.counts.newDeferred + '">新規はあと' + m.counts.newDeferred + '件(明日以降)</span>' : '') + '</div>';
     if (total) h += '<button type="button" class="bigbtn srs-start" data-srs-start>始める</button>';
-    else h += '<div class="empty" data-srs-empty>' + (m.items.length ? '今日の復習は完了です' + (m.nextDue ? '(次回 ' + esc(m.nextDue) + ')' : '') : '保存した表現はまだありません。記事の「学ぶ」から保存できます。') + '</div>';
+    else {
+      h += '<div class="empty" data-srs-empty>' + (m.items.length ? '今日の復習は完了です' + (m.nextDue ? '(次回 ' + esc(m.nextDue) + ')' : '') : '保存した表現はまだありません。記事の「学ぶ」から保存できます。') + '</div>';
+      /* USER-TEST-FEEDBACK ②: 同日再復習。「今日の復習は完了です」の下(既存ボタンと同じブルー)。残り0件かつ再復習対象1件以上の時だけ(m.redoOk) */
+      if (m.redoOk) h += '<button type="button" class="bigbtn srs-start srs-redo" data-srs-redo>もう一度復習する</button>';
+    }
     if (m.netfail) h += '<div class="srs-warn" data-srs-warn="netfail" data-srs-netfail="' + m.netfail + '">通信できなかった項目が' + m.netfail + '件あります。今回は飛ばしました(予定は変わりません)。<button type="button" class="srs-link" data-srs-retry>再読込</button></div>';
     if (m.orphans.length) h += '<div class="srs-warn" data-srs-warn="orphan" data-srs-orphan-count="' + m.orphans.length + '">元データが見つかりません: ' + m.orphans.length + '件(出題・評価の対象外)<button type="button" class="srs-link" data-srs-remove-orphans>まとめて解除</button></div>';
     h += '<h3 class="srs-h3">保存した表現 ' + m.items.length + '件</h3>';
@@ -57,12 +61,13 @@
     });
     return h + '</section>';
   }
-  function sessionHeader(s) { return '<div class="srs-prog" data-srs-progress="' + s.remaining + '">今日の残り <b>' + s.remaining + '</b>件<button type="button" class="srs-link" data-srs-end>ここで終了</button></div>'; }
+  /* ②: 再復習(sess.rerun)は「今日の残り」でなく「もう一度復習 残り」(当日完了状態と矛盾しない文言)。通常復習の表示は不変 */
+  function sessionHeader(sess) { return '<div class="srs-prog" data-srs-progress="' + sess.remaining + '">' + (sess.rerun ? 'もう一度復習 残り' : '今日の残り') + ' <b>' + sess.remaining + '</b>件<button type="button" class="srs-link" data-srs-end>ここで終了</button></div>'; }
   var SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-  /* WUI4 改善②: スピーカー再生ボタン。音声の有無は resolved 項目(保存key=slug|level|表現 → 同レベルの article.json 項目 → audio)で決まる。無ければ無効表示(別音声で代替しない) */
+  /* WUI4 改善②: スピーカー再生ボタン。音声の有無は resolved 項目(保存key=slug|level|表現 → 同レベルの article.json 項目 → audio)で決まる。
+     USER-TEST-FEEDBACK ⑦(原文§2⑦「音声が存在しない表現については、音声再生ボタンを表示しない」)で旧規則「無ければ無効表示」を更新: 音声が無ければボタン自体を描画しない(別音声で代替しない) */
   function spkHtml(en, has) {
-    return has ? '<button type="button" class="srs-spk" data-srs-play aria-label="' + esc(en) + ' の英語音声を再生">' + SPK + '</button>'
-      : '<button type="button" class="srs-spk" disabled aria-disabled="true" data-srs-noaudio aria-label="音声なし" title="この表現の音声はありません">' + SPK + '</button>';
+    return has ? '<button type="button" class="srs-spk" data-srs-play aria-label="' + esc(en) + ' の英語音声を再生">' + SPK + '</button>' : '';
   }
   function enRow(it, has) { return '<div class="srs-enrow"><div class="srs-en len-' + enLen(it.en) + '" data-srs-en>' + esc(it.en) + '</div>' + spkHtml(it.en, has) + '</div>'; }
   function enLen(en) { var n = String(en || '').length; return n <= 12 ? 's' : n <= 28 ? 'm' : 'l'; }   // WUG2: 表示サイズ階層のみ(出題内容・保存・スケジュールとは無関係)
@@ -80,10 +85,12 @@
       '<div class="srs-body"><div class="srs-q">' + enRow(it, has) + '</div>' +
       '<div class="srs-card" data-srs-card>' + cardHtml + '</div></div><div class="srs-bar srs-grades" data-srs-grades>' + btns + '</div></section>';
   }
-  function doneHtml(sum, notice) {
-    return '<section class="srs-done" data-srs-view="done"><h2 class="srs-h">おつかれさまでした</h2>' + (notice ? '<div class="srs-note" data-srs-notice>' + esc(notice) + '</div>' : '') + '<div class="srs-today" data-srs-done-count="' + sum.n + '"><b>' + sum.n + '回 評価しました</b></div>' +
+  function doneHtml(sum, notice, opt) {   // opt={rerun:再復習の完了画面か, redoOk:もう一度復習ボタンを出すか}(省略=従来表示)
+    opt = opt || {};
+    return '<section class="srs-done" data-srs-view="done"' + (opt.rerun ? ' data-srs-redo-done="1"' : '') + '><h2 class="srs-h">おつかれさまでした</h2>' + (notice ? '<div class="srs-note" data-srs-notice>' + esc(notice) + '</div>' : '') + '<div class="srs-today" data-srs-done-count="' + sum.n + '"><b>' + (opt.rerun ? 'もう一度復習 ' : '') + sum.n + '回 評価しました</b></div>' +
       '<div class="srs-sub">' + ['again', 'hard', 'good', 'easy'].map(function (g) { return GLABEL[g] + ' ' + sum.by[g]; }).join(' / ') + '</div>' +
-      '<button type="button" class="bigbtn" data-srs-home>復習帳に戻る</button></section>';
+      '<button type="button" class="bigbtn" data-srs-home>復習帳に戻る</button>' +
+      (opt.redoOk ? '<button type="button" class="bigbtn srs-redo srs-redo-done" data-srs-redo>もう一度復習する</button>' : '') + '</section>';   // ②: 「復習帳に戻る」の下
   }
 
   /* ---------- コントローラ ---------- */
@@ -172,6 +179,18 @@
         return { st: st, items: items };
       });
     }
+    /* ② 同日再復習の対象・可否(保存データから毎回導出。新しい永続データは持たない)。
+       可否=その時点のキューを再計算し「1回目が残り0件」かつ「再復習対象1件以上」。残り0件の判定は orphan(出題・評価の対象外)以外すべて数える=
+       通信失敗で飛ばした項目・まだ読み込んでいない項目(他タブで新規保存)が残っている間は1回目が未完了とみなし再復習させない。
+       対象=当日(JST)の履歴(history.t===today)を持つ項目のうち出題可能(status ok)なもの。再復習は履歴を書かないので対象集合は再復習で変わらない。
+       固定rngを使うのは件数だけが必要で、注入rng(テストの再現性)を消費しないため */
+    function redoCalc(items, settings) {
+      var t = today(), bq = SRS.buildQueue(items, t, { rng: SRS.mulberry32(1), newPerDay: settings ? settings.newPerDay : undefined });
+      var pending = bq.queue.filter(function (i) { return V.status[i.key] !== 'orphan'; }).length;
+      var targets = items.filter(function (i) { return V.status[i.key] === 'ok' && i.history.some(function (h) { return h.t === t; }); });
+      return { pending: pending, targets: targets, eligible: pending === 0 && targets.length > 0 };
+    }
+    function redoNow() { var st = store.load(); return st.status === 'ok' && redoCalc(st.state.items, st.state.settings).eligible; }
     function homeModel(p) {
       var items = p.items, t = today(), bq = SRS.buildQueue(items, t, { rng: deps.rng, newPerDay: p.st.status === 'ok' ? p.st.state.settings.newPerDay : undefined });
       var part = SRS.partitionByStatus(bq.queue, function (i) { return V.status[i.key]; });
@@ -179,7 +198,8 @@
       var future = items.filter(function (i) { return i.state !== 'new' && i.due > t && V.status[i.key] !== 'orphan'; }).map(function (i) { return i.due; }).sort()[0];
       var newShown = part.queue.filter(function (i) { return i.state === 'new'; }).length;
       return { storeStatus: p.st.status, items: items, queue: part.queue, orphans: items.filter(function (i) { return orphanKeys[i.key]; }), orphanKeys: orphanKeys, netfail: netfail, nextDue: future,
-        counts: { remaining: part.queue.length, newShown: newShown, newDeferred: bq.counts.newDeferred }, rows: rowsModel(items) };
+        counts: { remaining: part.queue.length, newShown: newShown, newDeferred: bq.counts.newDeferred }, rows: rowsModel(items),
+        redoOk: p.st.status === 'ok' && redoCalc(items, p.st.state.settings).eligible };
     }
     function showHome() {
       V.phase = 'home'; stopAudio();
@@ -189,11 +209,32 @@
       dismiss(); V.sess = { queue: V.model.queue.slice(), total: V.model.queue.length, remaining: V.model.queue.length }; V.sum = { n: 0, by: { again: 0, hard: 0, good: 0, easy: 0 } }; V.notice = '';
       showAsk();
     }
+    /* ② 再復習の開始: 1回目と同じく「解除の元に戻す」の受付を打ち切り、読込み直して可否を再判定(別タブの変更・飛ばした項目の再読込を反映)。
+       不可なら開始せずホームへ。再復習セッションは保存データを一切書かない(下のgradeRedo)。セッションの種別はV.sess.rerun(開始のたびに新しいsessを作る=切替フラグの取り残しなし) */
+    function startRedo() {
+      if (V.redoBusy) return; V.redoBusy = true; dismiss(); stopAudio();
+      return prepare().then(function (p) {
+        V.redoBusy = false;
+        var rc = p.st.status === 'ok' ? redoCalc(p.items, p.st.state.settings) : null;
+        if (!rc || !rc.eligible) return showHome();
+        var q = SRS.shuffle(rc.targets.map(function (i) { return JSON.parse(JSON.stringify(i)); }), deps.rng);
+        V.sess = { queue: q, total: q.length, remaining: q.length, rerun: true, agains: {} }; V.sum = { n: 0, by: { again: 0, hard: 0, good: 0, easy: 0 } }; V.notice = '';
+        showAsk();
+      }, function () { V.redoBusy = false; return showHome(); });
+    }
+    function gradeRedo(g) {   // 1回目と同じ体験(「忘れた」は約10件後に再挿入、同日の「忘れた」上限=SRS.P.againCap)だが、store・SRS.scheduleを呼ばない(次回復習日・習熟度・履歴を変えない)
+      var it = cur(); stopAudio(); V.sess.queue.shift();
+      var live = store.state().items.some(function (x) { return x.key === it.key; });   // 読取のみ。別タブで登録解除済みの項目は以後出題しない
+      if (!live) { V.notice = '別のタブで解除されたため、この項目は飛ばしました'; return showAsk(); }
+      V.sum.n++; V.sum.by[g]++;
+      if (g === 'again') { var n = V.sess.agains[it.key] = (V.sess.agains[it.key] || 0) + 1; if (n <= SRS.P.againCap) V.sess.queue.splice(SRS.reinsertIndex(V.sess.queue.length), 0, it); }
+      showAsk();
+    }
     function hasAudio(it) { var x = it && V.resolved[it.key]; return !!(x && x.audio && x.audio.url); }
     function stopAudio() { if (deps.stopAudio) deps.stopAudio(); }
     function cur() { return V.sess && V.sess.queue[0]; }
     function showAsk() {
-      if (!cur()) { V.phase = 'done'; setHtml(doneHtml(V.sum, V.notice)); V.notice = ''; if (deps.onChange) deps.onChange('done'); return; }
+      if (!cur()) { V.phase = 'done'; setHtml(doneHtml(V.sum, V.notice, { rerun: !!V.sess.rerun, redoOk: redoNow() })); V.notice = ''; if (deps.onChange) deps.onChange('done'); return; }
       V.phase = 'ask'; V.sess.remaining = V.sess.queue.length; setHtml(askHtml(V.sess, cur(), V.notice, hasAudio(cur()))); V.notice = '';
       if (deps.onChange) deps.onChange('ask');
     }
@@ -203,6 +244,7 @@
     }
     function grade(g) {
       var it = cur(); if (!it || V.phase !== 'answer') return;
+      if (V.sess.rerun) return gradeRedo(g);
       stopAudio();
       var r = store.grade(it.key, g, it.history.length);   // 評価直前に再読込(R5)
       V.sess.queue.shift();
@@ -217,7 +259,7 @@
       if (!t || !t.closest) return;
       if ((b = t.closest('[data-srs-start]'))) return startSession();
       if ((b = t.closest('[data-srs-play]'))) { var pi = cur(), px = pi && V.resolved[pi.key]; if (px && px.audio && px.audio.url && deps.playAudio) deps.playAudio(px.audio); return; }   // 評価・答え表示・スケジュールには触れない(再生のみ)
-      if ((b = t.closest('[data-srs-noaudio]'))) return;
+      if ((b = t.closest('[data-srs-redo]'))) return startRedo();
       if ((b = t.closest('[data-srs-show]'))) return showAnswer();
       if ((b = t.closest('[data-srs-grade]'))) return grade(b.getAttribute('data-srs-grade'));
       if ((b = t.closest('[data-srs-undo]'))) return undo(b.getAttribute('data-srs-undo'));

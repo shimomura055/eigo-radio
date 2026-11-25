@@ -8,8 +8,8 @@
   var LV = { std: 'Standard', adv: 'Advanced' };
   var CAPON = true;   // ECUI B(REF承継): 日本語字幕(dockの日本語キャプチャ)。既定ON。設定=端末保存(wut01.caption)、URL ?caption=0 はそのrouteの間だけ上書き
   var LV_HINT = { std: 'TOEIC 800点未満／英検2級程度を目安', adv: 'TOEIC 800点以上／英検準1級以上を目安' };   // 原文§4-4(ユーザー決定)
-  var RATE_MIN = 0.5, RATE_MAX = 1.2, RATE_STEP = 0.05;   // PLAYBACK-SPEED-SLIDER-PRODUCTION-01: 6段階ボタン→スライダー(ユーザー承認範囲0.5〜1.2倍・0.05刻み)
-  function normRate(v) {   // 保存済み値(旧6段階値0.8/0.9等・旧0.75/1.25/1.5等を含む)を0.5〜1.2へclampし0.05刻みへ丸める。数値でなければ1.0。旧6段階値は全て0.05格子上なので不変
+  var RATE_MIN = 0.5, RATE_MAX = 1.5, RATE_STEP = 0.05;   // PLAYBACK-SPEED-SLIDER-PRODUCTION-01: 6段階ボタン→スライダー(ユーザー承認範囲0.5〜1.2倍・0.05刻み → USER-TEST-FEEDBACK-UI-FUNCTION-IMPROVEMENT-01 ①で上限1.5倍(0.5〜1.5倍・0.05刻み。下限/初期値/刻み/保存キーは不変))
+  function normRate(v) {   // 保存済み値(旧6段階値0.8/0.9等・旧0.75/1.25/1.5等を含む)を0.5〜1.5へclampし0.05刻みへ丸める。数値でなければ1.0。旧6段階値は全て0.05格子上なので不変
     v = Number(v); if (!isFinite(v) || v <= 0) return 1;
     return Math.round(Math.round(Math.min(RATE_MAX, Math.max(RATE_MIN, v)) / RATE_STEP) * RATE_STEP * 100) / 100;
   }
@@ -308,10 +308,34 @@
     var eu = new URL('../' + slug + '/enduser/', location.href), d = ART[slug];
     return { baseV: eu.href, baseK: new URL((d && d.art.audio_base) || '../', eu).href };
   }
-  function reviewLookup(art, level, en, bases) {   // 保存レベルの項目のみ(別レベル代用禁止)。pwcard.js(buildPWItems)の出力から引く
+  /* USER-TEST-FEEDBACK ⑦: 下線のみ(lk3)表現の復習帳登録。識別は既存と同じ key=slug|level|normEn(en)(新しい識別子・保存形式の変更なし)。
+     lk3の候補=吹き出しで保存できる(M3照合を通ったパートの)lk3項目の glossary[].en/ja(既存の英語表現・日本語の意味を再利用。追加生成・TTSなし)。
+     同じレベル内で同じ英語表現(normEn)が複数あり日本語の意味が異なる場合(曖昧)は「最初の一致」を返さず、保存も出さず・復習側もorphanとする(保存時と違う意味を出さない)。
+     太字側(PWI=Phrase/Word)と見出しが重なる場合も同じ(PWI側が既存の保存対象。lk3経由の別登録は作らない)。全公開記事の走査では曖昧・重なりとも0件(REF) */
+  var LK3C = (typeof WeakMap === 'function') ? new WeakMap() : null;
+  function lk3Cands(L) {   // -> [{k:normEn(en), en, ja}] 吹き出しで開けるlk3(ok・en/ja有)のみ。レベルごとに1回だけ計算
+    if (LK3C && LK3C.has(L)) return LK3C.get(L);
+    var out = [], ck = WURBubble.checkLevel(L);
+    Object.keys(ck.byKey).forEach(function (key) {
+      var e = ck.byKey[key], g = e.gl;
+      if (e.ok && e.lk === 'lk3' && e.vi == null && g && g.en && g.ja && PWCard.normEn(g.en)) out.push({ k: PWCard.normEn(g.en), en: g.en, ja: g.ja });
+    });
+    if (LK3C) LK3C.set(L, out);
+    return out;
+  }
+  function lk3Resolve(L, en, bases) {   // -> {en, ja} | null(候補なし/曖昧/PWI見出しと重複)
+    var k = PWCard.normEn(en); if (!k || !L) return null;
+    var c = lk3Cands(L).filter(function (x) { return x.k === k; });
+    if (!c.length || c.some(function (x) { return x.ja !== c[0].ja; })) return null;
+    if (PWCard.buildPWItems(L, '', '').some(function (x) { return PWCard.normEn(x.en) === k; })) return null;
+    return { en: c[0].en, ja: c[0].ja };
+  }
+  function reviewLookup(art, level, en, bases) {   // 保存レベルの項目のみ(別レベル代用禁止)。pwcard.js(buildPWItems)の出力→無ければ下線のみ(lk3)のglossaryから引く
     var L = art && art.levels && art.levels[level]; if (!L || !bases) return null;
     var k = PWCard.normEn(en), hit = PWCard.buildPWItems(L, bases.baseV, bases.baseK).filter(function (x) { return PWCard.normEn(x.en) === k; })[0];
-    return hit || null;
+    if (hit) return hit;
+    var g = lk3Resolve(L, en);   // ⑦: 音声なしのlk3項目。det空・audio=null(復習の答え側は日本語の意味のみ・音声ボタンなし)
+    return g ? { en: g.en, kp: false, ja: g.ja, jaHtml: false, jaPending: false, det: [], audio: null } : null;
   }
   function levelsOf(slug, en) {   // 旧wut01.savedの移行用: その表現があるレベル(データで決定)
     var d = ART[slug], k = PWCard.normEn(en), out = [];
@@ -986,15 +1010,18 @@
       if (idx >= 0) x = PWI[idx];
     }
     var ja = x && x.ja ? (x.jaHtml ? x.ja : esc(x.ja)) : esc(g.ja || '');
-    return { en: x ? x.en : (g.en || entry.form), ja: ja, idx: idx, audio: !!(x && x.audio), more: idx >= 0 };
+    /* ⑦: save=復習帳へ保存できる。従来=PWI項目に対応する時(idx>=0)のみ → 下線のみ(lk3)も、保存可能(lk3Resolve: 曖昧・太字重複でない)なら保存ボタンを出す。
+       「学ぶ画面で詳しく見る」(more)は従来どおりPWI対応時のみ */
+    var save = idx >= 0 || (entry.lk === 'lk3' && entry.vi == null && !!lk3Resolve(L, g.en || ''));
+    return { en: x ? x.en : (g.en || entry.form), ja: ja, idx: idx, audio: !!(x && x.audio), more: idx >= 0, save: save };
   }
   function openBubble(entry, wordEl) {
     var b = $('bubble'), m = bubbleModel(entry);
     bubEntry = entry; bubWord = wordEl; markWordSel(wordEl);
     b.innerHTML = '<div class="bub-hd"><span class="bub-lab">本文中の意味</span><button type="button" class="bub-x" id="bubclose" aria-label="吹き出しを閉じる">&times;</button></div>' +
       '<div class="bub-en" lang="en">' + esc(m.en) + '</div><div class="bub-ja" lang="ja">' + m.ja + '</div>' +
-      ((m.audio || m.more) ? '<div class="bub-act">' + (m.audio ? '<button type="button" class="pwplay" data-pwplay="' + m.idx + '" aria-label="' + esc(m.en) + ' の音声を再生(本編は一時停止します)">' + IC.play + '</button>' : '') +
-        (m.more ? (function () { var on = store.isSaved(route.arg, ST.level, m.en); return '<button type="button" class="save bub-save' + (on ? ' on' : '') + '" data-save="' + esc(m.en) + '" aria-pressed="' + on + '">' + (on ? '保存済' : '保存') + '</button>'; })() : '') +
+      ((m.audio || m.more || m.save) ? '<div class="bub-act">' + (m.audio ? '<button type="button" class="pwplay" data-pwplay="' + m.idx + '" aria-label="' + esc(m.en) + ' の音声を再生(本編は一時停止します)">' + IC.play + '</button>' : '') +
+        (m.save ? (function () { var on = store.isSaved(route.arg, ST.level, m.en); return '<button type="button" class="save bub-save' + (on ? ' on' : '') + '" data-save="' + esc(m.en) + '" aria-pressed="' + on + '">' + (on ? '保存済' : '保存') + '</button>'; })() : '') +
         (m.more ? '<button type="button" class="bub-more" data-bubmore="' + m.idx + '">学ぶ画面で詳しく見る &#8250;</button>' : '') + '</div>' : '');
     b.hidden = false; b.setAttribute('data-lk', entry.lk);
     placeBubble();
