@@ -177,7 +177,7 @@
     var at = o.at != null ? o.at : (same ? null : savedPos(slug, lv));
     cur = { slug: slug, level: lv, queue: o.queue || null, qi: o.qi || 0, loaded: same && A.readyState >= 1, startAt: at, playReq: true };
     activeUnit = null; follow = true; stopItemAudio(); clearManual('resume');
-    if (!same) { A.src = url; A.load(); }
+    if (!same) { pfMainYield(url); A.src = url; A.load(); }
     setRate();
     if (at != null) onMeta(function () { A.currentTime = at; });
     playNow();
@@ -189,7 +189,7 @@
     var want = audioUrl(slug, cur.level);
     if (stripQ(want) === stripQ(A.src)) return;
     var wasPlaying = !A.paused || (!!A.error && cur.playReq), at = cur.loaded ? (A.currentTime || 0) : (cur.startAt != null ? cur.startAt : savedPos(slug, cur.level)), c = cur;
-    c.loaded = false; A.src = want; A.load(); setRate();
+    c.loaded = false; pfMainYield(want); A.src = want; A.load(); setRate();
     onMeta(function () { if (cur === c) { A.currentTime = at; c.loaded = true; } });
     if (wasPlaying) playNow();
   }
@@ -229,7 +229,7 @@
     if (cur && A.src && cur.level !== next) {   // 読込済みの音声がある場合: 一時停止し、相手レベルの「保存位置(無ければ先頭)」で待機
       var c = cur, at = savedPos(c.slug, next), was = !A.paused;
       A.pause(); c.level = next; c.loaded = false; activeUnit = null;
-      A.src = audioUrl(c.slug, next); A.load(); setRate();
+      pfMainYield(audioUrl(c.slug, next)); A.src = audioUrl(c.slug, next); A.load(); setRate();
       p = new Promise(function (resolve) {
         onMeta(function () {
           if (cur === c) { A.currentTime = at; c.loaded = true; }
@@ -622,6 +622,7 @@
     activeUnit = null; audioSid = null; activePh = null;
     if (ST.mode === 'listen') markWords(el, glossFor(slug));
     placePanel(true); updateActive(true); updateCaption();
+    pfSync();
   }
   function hasJa(slug) { var d = ART[slug]; return !!(d && Object.keys(d.jaBy[ST.level]).length); }
   function buildUnits(slug, L) {   // A-4: 全音声区間(文/Key Phrase/導入ナレーション)の時間帯と表示要素の対応
@@ -783,11 +784,89 @@
   PA.addEventListener('timeupdate', function () { if (paNow && paNow.end != null && PA.currentTime >= paNow.end) stopItemAudio(); });
   PA.addEventListener('ended', function () { stopItemAudio(); });
   function stopItemAudio() { if (paNow == null) return; PA.pause(); paNow = null; Array.prototype.forEach.call(document.querySelectorAll('.pwplay.on'), function (b) { b.classList.remove('on'); b.innerHTML = IC.play; }); }
+  /* ---------- 先読み(USER-TEST-FEEDBACK ③案3・2026-11-25 ユーザー正式決定 §3。Web版) ----------
+     仕様: 記事一覧=先読みなし / 記事ページ入場=本編冒頭5秒(128kbps CBR=80,000B)をRange取得 / 「学ぶ」入場=該当レベルの単語・表現clipを丸ごと取得(fetch→Blob URL)。
+     本編の全編先読みはしない(隠し<audio preload=auto>は使わない)。再生ボタンは先読みPromiseを待たない。離脱・レベル切替で未完了はAbort。
+     実装差替hook契約(M6): アプリは同じapp.jsを同梱するため、先読みの実体は window.EigoHost.prefetch で差し替えられる。
+       EigoHost.prefetch = { clip(url, signal) -> Promise<再生用URL|null>, main(url, bytes, signal) -> Promise<void>, release(playUrl) -> void }
+       adapter存在時(EigoHost.mode が 'browser' 以外)で prefetch 未定義なら既定no-op(blob:URLをnative playerへ渡さない)。詳細=docs/research/USER-TEST-FEEDBACK-UI-FUNCTION-IMPROVEMENT-01/PREFETCH_HOOK_CONTRACT_11.md */
+  var PF_MAIN_BYTES = 80000, PF_TTL_MS = 540000;   // 128kbps x 5s / HTTPキャッシュ(max-age=600)より短い有効期間
+  /* WebKit系(Safari・iOSの全ブラウザ。UA判定)では先読みを行わない。実測(Windows版WebKit): (1)Range fetchの結果を<audio>が再利用せず先読み80KBとは別に本編を0から再取得=80KBが無駄 (2)blob:のaudio/mpegは再生できない(MEDIA_ERR_SRC_NOT_SUPPORTED=従来URLへ再試行となり先読みなしより遅い)。実機Safari/iOSは未確認のため、効果が確認できるまでChromium系のみ有効。Blobが再生できない環境を実行時に検出したら以後のclip先読みも止める(pfBlobFail) */
+  var PF_UA = String((window.navigator && navigator.userAgent) || ''), PF_WEBKIT = (/AppleWebKit/.test(PF_UA) && !/(Chrome|Chromium|Edg|OPR|SamsungBrowser)\//.test(PF_UA)) || /(CriOS|FxiOS|EdgiOS)/.test(PF_UA), pfBlobFail = false;
+  var pfClip = {}, pfBlobOrig = {}, pfMain = {};   // clip: 絶対URL -> {play:blob URL|null, ctl, done, bad} / blob URL -> 元URL / main: 絶対URL -> {t, ctl, done}
+  var PF_WEB = {
+    clip: function (url, signal) {
+      return fetch(url, { signal: signal }).then(function (r) { if (!r.ok) throw new Error('clip ' + r.status); return r.arrayBuffer(); })
+        .then(function (buf) { return URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' })); });
+    },
+    main: function (url, bytes, signal) {
+      return fetch(url, { headers: { Range: 'bytes=0-' + (bytes - 1) }, signal: signal }).then(function (r) { if (!(r.status === 206 || r.status === 200)) throw new Error('main ' + r.status); return r.arrayBuffer(); }).then(function () { });
+    },
+    release: function (u) { try { URL.revokeObjectURL(u); } catch (e) { } }
+  };
+  var PF_NOOP = { clip: function () { return Promise.resolve(null); }, main: function () { return Promise.resolve(); }, release: function () { } };
+  function pfImpl() {
+    var h = window.EigoHost;
+    if (h && h.prefetch) return h.prefetch;
+    if (h && h.mode && h.mode !== 'browser') return PF_NOOP;   // native adapter(M6): 既定no-op
+    if (PF_WEBKIT) return PF_NOOP;   // Web既定実装はWebKit系では使わない(上記)。差替hook(native)はUAに関わらず使う
+    return PF_WEB;
+  }
+  function pfReleaseClip(u) {
+    var c = pfClip[u]; if (!c) return;
+    if (c.ctl) { try { c.ctl.abort(); } catch (e) { } }
+    if (c.play) { if (PA.src === c.play) { PA.pause(); if (paNow) stopItemAudio(); } try { pfImpl().release(c.play); } catch (e) { } delete pfBlobOrig[c.play]; }   // M7: 再生停止の後にrevoke
+    delete pfClip[u];
+  }
+  function pfSync() {   // 画面状態(経路・モード・レベル・記事)に合わせて先読みを開始/中止。冪等
+    var want = {}, wantMainUrl = null, impl = pfImpl(), onPlayer = route && route.name === 'player' && !tutOn, slug = onPlayer ? route.arg : null;
+    if (onPlayer && ART[slug]) {
+      if (ST.mode === 'learn' && !pfBlobFail && PWI && PWI.length) PWI.forEach(function (x) { if (x && x.audio && x.audio.url && x.audio.start == null) want[x.audio.url] = 1; });
+      wantMainUrl = audioUrl(slug, ST.level);
+    }
+    Object.keys(pfClip).forEach(function (u) {   // 完了済みは同じ記事・レベルの範囲で保持(learn<->listen往復で再取得しない)。未完了は不要なら中止
+      var c = pfClip[u], keep = false;
+      if (onPlayer && ART[slug]) { var inLvl = PWI && PWI.some(function (x) { return x && x.audio && x.audio.url === u; }); keep = !!inLvl && !pfBlobFail && (c.done || !!want[u]); }
+      if (!keep) pfReleaseClip(u);
+    });
+    Object.keys(pfMain).forEach(function (u) { var m = pfMain[u]; if (m.ctl && u !== wantMainUrl) { try { m.ctl.abort(); } catch (e) { } delete pfMain[u]; } });
+    Object.keys(want).forEach(function (u) {
+      if (pfClip[u] || stripQ(PA.src) === stripQ(u)) return;   // 再取得しない / 再生中・設定済みは先読みしない
+      var ctl = (typeof AbortController === 'function') ? new AbortController() : null, c = pfClip[u] = { play: null, ctl: ctl, done: false }, pr;
+      try { pr = impl.clip(u, ctl && ctl.signal); } catch (e) { pr = Promise.reject(e); }
+      Promise.resolve(pr).then(function (pu) {
+        if (pfClip[u] !== c) { if (pu && /^blob:/.test(pu)) { try { impl.release(pu); } catch (e) { } } return; }   // 中止後に届いた分は捨てる
+        c.ctl = null; c.done = true; if (pu) { c.play = pu; pfBlobOrig[pu] = u; }
+      }, function () { if (pfClip[u] === c) delete pfClip[u]; });   // 失敗=従来動作(URL再生)へ。再試行は次回のpfSyncで
+    });
+    if (wantMainUrl) {
+      var m = pfMain[wantMainUrl], fresh = m && (m.ctl || (m.done && Date.now() - m.t < PF_TTL_MS));
+      if (!fresh && !(A.src && stripQ(A.src) === stripQ(wantMainUrl))) {   // 同じ音声が設定済み・再生中なら先読みしない
+        var mctl = (typeof AbortController === 'function') ? new AbortController() : null, mm = pfMain[wantMainUrl] = { t: Date.now(), ctl: mctl, done: false }, u2 = wantMainUrl, mp;
+        try { mp = impl.main(u2, PF_MAIN_BYTES, mctl && mctl.signal); } catch (e) { mp = Promise.reject(e); }
+        Promise.resolve(mp).then(function () { mm.ctl = null; mm.done = true; mm.t = Date.now(); }, function () { if (pfMain[u2] === mm) delete pfMain[u2]; });
+      }
+    }
+  }
+  function pfMainYield(url) {   // 再生要求でAのsrcを設定する直前: 同じ本編の未完了の先読みを中止する。中止しないと<audio>の取得が先読みのcache書込の完了待ち+続きの再取得で、先読みなしより遅くなる(実測: 回線を絞った入場直後のclick)
+    var m = pfMain[url]; if (m && m.ctl) { try { m.ctl.abort(); } catch (e) { } delete pfMain[url]; }
+  }
+  function pfClipUrl(au) {   // 再生に使うURL: 先読み済みBlob URLがあれば優先、無ければ従来のURL(未完了でも待たない)
+    var c = au && au.start == null ? pfClip[au.url] : null;
+    return c && c.play && !c.bad ? c.play : null;
+  }
+  PA.addEventListener('error', function () {   // Blob再生に失敗したら従来URLで1回だけ再試行
+    var o = pfBlobOrig[PA.src]; if (!o || !paNow) return;
+    var c = pfClip[o]; if (c) c.bad = true;
+    pfBlobFail = true;   // この環境はBlob音声を再生できない: 以後のclip先読みを止める(次のpfSyncで保持分も解放)
+    PA.src = o; var p = PA.play(); if (p && p.catch) p.catch(function () { });
+    pfSync();
+  });
   function playItemAudio(i) {
     var x = PWI[i]; if (!x || !x.audio) return;
     var same = paNow && paNow.i === i; stopItemAudio(); if (same) return;
     A.pause();
-    PA.src = x.audio.url + (x.audio.start != null ? '#t=' + x.audio.start + ',' + x.audio.end : ''); paNow = { i: i, end: x.audio.end != null ? x.audio.end : null };
+    PA.src = pfClipUrl(x.audio) || (x.audio.url + (x.audio.start != null ? '#t=' + x.audio.start + ',' + x.audio.end : '')); paNow = { i: i, end: x.audio.end != null ? x.audio.end : null };
     var p = PA.play(); if (p && p.catch) p.catch(function (e) { if (e.name !== 'AbortError') console.warn('item audio', e.name); });
     var b = document.querySelector('[data-pwplay="' + i + '"]'); if (b) { b.classList.add('on'); b.innerHTML = IC.pause; }
   }
@@ -883,7 +962,7 @@
     if (keepScroll !== false) window.scrollTo(0, y);
   }
   function onRoute() { var prevRoute = route, oldName = curHash ? parseHashStr(curHash).name : null, nh = location.hash || '#/home', nn = parseHashStr(nh).name; if (curHash && curHash !== nh && !(oldName === 'player' && nn === 'player') && oldName !== nn) fromHash = curHash; curHash = nh; route = parseHash(); if (route.name === 'player' && (prevRoute.name !== 'player' || prevRoute.arg !== route.arg)) ST.mode = 'listen'; applyRouteParams();   // WUI4 改善③: 一覧/ホーム/ミニ/戻る/別記事から記事を開く=聴く。同一記事内(?lv=等のhash変更)は維持
- manual = null; ST.sel = null; closeBubble(true); audioSid = null; activePh = null; activeUnit = null; units = []; sentEls = {}; follow = true; placePanel(true); stopItemAudio(); rerender(false); window.scrollTo(0, 0); }
+ manual = null; ST.sel = null; closeBubble(true); audioSid = null; activePh = null; activeUnit = null; units = []; sentEls = {}; follow = true; placePanel(true); stopItemAudio(); rerender(false); pfSync(); window.scrollTo(0, 0); }
   window.addEventListener('hashchange', onRoute);
 
   /* ---------- 一覧のうち「refresh」: 再生状態をDOMへ反映(再描画なし) ---------- */
@@ -1480,6 +1559,6 @@
     ST.cat = r;
     setRate(); onRoute(); migrateSaved();
     if (!lsGet(K_TUT, false) && !QS.get('notut')) setTimeout(startTutorial, 300);
-    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); } };
+    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
   }).catch(function (e) { $('view').innerHTML = '<div class="empty" role="alert" data-load-error="1">一覧データ(catalog_auto.json)を読み込めませんでした: ' + esc(e.message) + '</div>'; });
 })();
