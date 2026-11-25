@@ -6,7 +6,7 @@ table{border-collapse:collapse;font-size:12.5px;margin:6px 0;display:block;overf
 a.btn{display:inline-block;background:#1d4fd8;color:#fff;text-decoration:none;border-radius:999px;padding:6px 14px;margin:3px 4px 3px 0;font-weight:700;font-size:13.5px}a.btn.s{background:#e8f0ff;color:#0a3bbd}
 .sel button{border:1.5px solid #1d4fd8;background:#fff;color:#1d4fd8;border-radius:999px;padding:5px 14px;margin:2px;font-weight:700}.sel button.on{background:#1d4fd8;color:#fff}
 .cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cols figure{margin:0}.cols img{width:100%;border:1px solid #cfd9ee;border-radius:6px}.cols figcaption{font-size:12px;text-align:center;font-weight:700}
-@media(max-width:700px){.cols{grid-template-columns:repeat(2,minmax(0,1fr))}}small{color:#5d6b88}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+@media(max-width:700px){.cols{grid-template-columns:repeat(2,minmax(0,1fr))}}small{color:#5d6b88}[hidden]{display:none!important}</style></head><body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
 <h1>記事カード配置の試作(正式版ではない)</h1>
 <div class="warn"><b>これは試作です。正式版のアプリ・Webではありません。</b>記事一覧のカードの見せ方を比べるための画面で、♡(お気に入り)は押すと見た目が切り替わるだけです(保存・集計はしません)。再生ボタンは見た目の確認用で、試作では音は出ません。
 下のスクリーンショットは<b>実機ではなく、PCのブラウザをスマホの画面幅にして撮影</b>したものです。実際の見え方は、下の「動く試作」をお手元のスマホで開いて確認してください(文字の幅は端末のフォントで多少変わります)。</div>
@@ -22,11 +22,37 @@ a.btn{display:inline-block;background:#1d4fd8;color:#fff;text-decoration:none;bo
 <button type="button" data-w="375">幅375px</button>
 <button type="button" data-w="390" class=on>幅390px</button>
 <button type="button" data-w="430">幅430px</button>
-</div><div class="cols" id="cols">
-<figure><img data-lay="cur" src="shots/list_cur_390.jpg" alt="現行(比較用) 幅390px"><figcaption>現行(比較用)</figcaption></figure>
-<figure><img data-lay="a" src="shots/list_a_390.jpg" alt="案A 幅390px"><figcaption>案A</figcaption></figure>
-<figure><img data-lay="b" src="shots/list_b_390.jpg" alt="案B 幅390px"><figcaption>案B</figcaption></figure>
-<figure><img data-lay="c" src="shots/list_c_390.jpg" alt="案C 幅390px"><figcaption>案C</figcaption></figure>
+</div>
+<div class="cols wcol" data-w="320" hidden>
+<figure><img src="shots/list_cur_320.jpg" alt="現行(比較用) 幅320px" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/list_a_320.jpg" alt="案A 幅320px" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/list_b_320.jpg" alt="案B 幅320px" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/list_c_320.jpg" alt="案C 幅320px" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<div class="cols wcol" data-w="360" hidden>
+<figure><img src="shots/list_cur_360.jpg" alt="現行(比較用) 幅360px" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/list_a_360.jpg" alt="案A 幅360px" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/list_b_360.jpg" alt="案B 幅360px" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/list_c_360.jpg" alt="案C 幅360px" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<div class="cols wcol" data-w="375" hidden>
+<figure><img src="shots/list_cur_375.jpg" alt="現行(比較用) 幅375px" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/list_a_375.jpg" alt="案A 幅375px" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/list_b_375.jpg" alt="案B 幅375px" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/list_c_375.jpg" alt="案C 幅375px" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<div class="cols wcol" data-w="390">
+<figure><img src="shots/list_cur_390.jpg" alt="現行(比較用) 幅390px" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/list_a_390.jpg" alt="案A 幅390px" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/list_b_390.jpg" alt="案B 幅390px" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/list_c_390.jpg" alt="案C 幅390px" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
+<div class="cols wcol" data-w="430" hidden>
+<figure><img src="shots/list_cur_430.jpg" alt="現行(比較用) 幅430px" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/list_a_430.jpg" alt="案A 幅430px" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/list_b_430.jpg" alt="案B 幅430px" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/list_c_430.jpg" alt="案C 幅430px" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
 </div><h3 style="font-size:14px;margin-top:14px">概要が90字の記事(走れメロス)と、題名が最長(25字)の記事</h3><p><small>幅320pxと390pxで、該当カードだけを拡大して撮影しました。</small></p>
 <p style="margin:8px 0 2px"><b>概要90字(走れメロス) / 幅320px</b></p><div class="cols">
 <figure><img src="shots/card_melos90_cur_320.jpg" alt="現行(比較用)" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
@@ -52,6 +78,16 @@ a.btn{display:inline-block;background:#1d4fd8;color:#fff;text-decoration:none;bo
 <figure><img src="shots/card_longtitle_b_390.jpg" alt="案B" loading="lazy"><figcaption>案B</figcaption></figure>
 <figure><img src="shots/card_longtitle_c_390.jpg" alt="案C" loading="lazy"><figcaption>案C</figcaption></figure>
 </div>
+<h3 style="font-size:14px;margin-top:14px">全10記事を縦に並べた全体(幅390px)</h3><div class="cols">
+<figure><img src="shots/full_cur_390.jpg" alt="現行(比較用) 全体" loading="lazy"><figcaption>現行(比較用)</figcaption></figure>
+<figure><img src="shots/full_a_390.jpg" alt="案A 全体" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/full_b_390.jpg" alt="案B 全体" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/full_c_390.jpg" alt="案C 全体" loading="lazy"><figcaption>案C</figcaption></figure>
+</div><h3 style="font-size:14px;margin-top:14px">♡を押して登録済みにした見た目(幅390px。現行には♡がありません)</h3><div class="cols">
+<figure><img src="shots/fav_on_a_390.jpg" alt="案A ♡登録済み" loading="lazy"><figcaption>案A</figcaption></figure>
+<figure><img src="shots/fav_on_b_390.jpg" alt="案B ♡登録済み" loading="lazy"><figcaption>案B</figcaption></figure>
+<figure><img src="shots/fav_on_c_390.jpg" alt="案C ♡登録済み" loading="lazy"><figcaption>案C</figcaption></figure>
+</div>
 <h2>3. 計測表(最新カタログ10記事。PCブラウザのスマホ幅表示での実測)</h2><p><small>カード高さ=10記事の平均(px)。1画面で完全に見える記事数=記事一覧で最初のカードを上部バー直下に合わせ、下部ナビより上に収まる記事数。概要が切れる記事=概要が2行で切れる(現行)/全文表示(案)。文字サイズは全案で同じ(題名15px・概要12.5px・行間1.45)。</small></p>
 <table><tr><th>幅(px)</th><th>案</th><th>カード高さ 平均(最小〜最大)</th><th>1画面で完全に見える記事数</th><th>概要の最大行数</th><th>概要が切れる記事</th><th>題名が切れる記事</th><th>概要90字の記事の高さ/行数</th></tr>
 <tr><td>320</td><td>現行(比較用)</td><td>153(142〜158)</td><td>2</td><td>5行</td><td>10/10(最大48字)</td><td>7/10</td><td>142px/5行</td></tr>
@@ -75,5 +111,5 @@ a.btn{display:inline-block;background:#1d4fd8;color:#fff;text-decoration:none;bo
 <tr><td>430</td><td>案B</td><td>159(150〜168)</td><td>4</td><td>4行</td><td>0/10</td><td>0/10</td><td>164px/4行</td></tr>
 <tr><td>430</td><td>案C</td><td>154(154〜154)</td><td>4</td><td>3行</td><td>0/10</td><td>0/10</td><td>154px/3行</td></tr>
 </table><p><small>題名が切れる記事は、現行の仕様(題名は2行まで)が幅の狭い端末で効いたもので、案Bも2行までのままです(今回の試作では変えていません)。</small></p>
-<script>(function(){var imgs=document.querySelectorAll('#cols img'),bs=document.querySelectorAll('#sel button');
-bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(x){x.className=''});b.className='on';imgs.forEach(function(i){i.src='shots/list_'+i.dataset.lay+'_'+b.dataset.w+'.jpg';i.alt=i.alt.replace(/幅\d+px/,'幅'+b.dataset.w+'px')})})})})();</script></body></html>
+<script>(function(){var bs=document.querySelectorAll('#sel button'),cs=document.querySelectorAll('.wcol');
+bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(x){x.className=''});b.className='on';cs.forEach(function(c){c.hidden=(c.dataset.w!==b.dataset.w)})})})})();</script></body></html>
