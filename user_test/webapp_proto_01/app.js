@@ -329,8 +329,8 @@
      一覧内で♡を外してもカードはその場に残す(誤タップで消えない・もう一度押せば戻る)。次に開いた時に反映。サーバー送信・端末間同期はない(端末内のみ)旨を明記 ---------- */
   function favItems() {
     var m = {}; ST.cat.items.forEach(function (x) { m[x.slug] = x; });
-    return FAV.map(function (f, i) { return { f: f, i: i }; }).sort(function (p, q) { return (q.f.addedAt - p.f.addedAt) || (q.i - p.i); })
-      .map(function (p) { return m[p.f.slug]; }).filter(Boolean);
+    return FAV.map(function (f, i) { return { f: f, i: i }; }).sort(function (ra, rb) { return (rb.f.addedAt - ra.f.addedAt) || (rb.i - ra.i); })
+      .map(function (r) { return m[r.f.slug]; }).filter(Boolean);
   }
   function viewFav() {
     var items = favItems();
