@@ -787,6 +787,8 @@
   /* ---------- 先読み(USER-TEST-FEEDBACK ③案3・2026-11-25 ユーザー正式決定 §3。Web版) ----------
      仕様: 記事一覧=先読みなし / 記事ページ入場=本編冒頭5秒(128kbps CBR=80,000B)をRange取得 / 「学ぶ」入場=該当レベルの単語・表現clipを丸ごと取得(fetch→Blob URL)。
      本編の全編先読みはしない(隠し<audio preload=auto>は使わない)。再生ボタンは先読みPromiseを待たない。離脱・レベル切替で未完了はAbort。
+     【本編5秒先読みのWeb既定は無効(2026-11-25 実測)】公開CDN(GitHub Pages)の応答は Vary: Accept-Encoding。fetchのRange応答と<audio>の取得はAccept-Encodingが異なるため、先読みは<audio>に再利用されず(再取得)、80KBが無駄になるうえ、同じURLのHTTPキャッシュ(<audio>が作った分)を壊して再入場が遅くなる(公開URLの実測で+170〜470ms)。native hookのmain(url, bytes, signal)は契約として残す。
+     clipの先読みは直列(同時1本)で、先読みが済んでいないclipをtapしたら進行中の先読みを中止して従来URLで再生する(回線帯域をtapした再生へ譲る)。
      実装差替hook契約(M6): アプリは同じapp.jsを同梱するため、先読みの実体は window.EigoHost.prefetch で差し替えられる。
        EigoHost.prefetch = { clip(url, signal) -> Promise<再生用URL|null>, main(url, bytes, signal) -> Promise<void>, release(playUrl) -> void }
        adapter存在時(EigoHost.mode が 'browser' 以外)で prefetch 未定義なら既定no-op(blob:URLをnative playerへ渡さない)。詳細=docs/research/USER-TEST-FEEDBACK-UI-FUNCTION-IMPROVEMENT-01/PREFETCH_HOOK_CONTRACT_11.md */
@@ -796,12 +798,10 @@
   var pfClip = {}, pfBlobOrig = {}, pfMain = {};   // clip: 絶対URL -> {play:blob URL|null, ctl, done, bad} / blob URL -> 元URL / main: 絶対URL -> {t, ctl, done}
   var PF_WEB = {
     clip: function (url, signal) {
-      return fetch(url, { signal: signal }).then(function (r) { if (!r.ok) throw new Error('clip ' + r.status); return r.arrayBuffer(); })
+      return fetch(url, { signal: signal, cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('clip ' + r.status); return r.arrayBuffer(); })   // no-store: HTTPキャッシュを読み書きしない(Vary:Accept-Encodingで<audio>が作った同じURLのキャッシュを壊し、tapが遅くなるのを防ぐ。データはBlobが保持)
         .then(function (buf) { return URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' })); });
     },
-    main: function (url, bytes, signal) {
-      return fetch(url, { headers: { Range: 'bytes=0-' + (bytes - 1) }, signal: signal }).then(function (r) { if (!(r.status === 206 || r.status === 200)) throw new Error('main ' + r.status); return r.arrayBuffer(); }).then(function () { });
-    },
+    main: function () { return Promise.resolve(); },   // Web既定は本編を先読みしない(上記)
     release: function (u) { try { URL.revokeObjectURL(u); } catch (e) { } }
   };
   var PF_NOOP = { clip: function () { return Promise.resolve(null); }, main: function () { return Promise.resolve(); }, release: function () { } };
@@ -830,15 +830,7 @@
       if (!keep) pfReleaseClip(u);
     });
     Object.keys(pfMain).forEach(function (u) { var m = pfMain[u]; if (m.ctl && u !== wantMainUrl) { try { m.ctl.abort(); } catch (e) { } delete pfMain[u]; } });
-    Object.keys(want).forEach(function (u) {
-      if (pfClip[u] || stripQ(PA.src) === stripQ(u)) return;   // 再取得しない / 再生中・設定済みは先読みしない
-      var ctl = (typeof AbortController === 'function') ? new AbortController() : null, c = pfClip[u] = { play: null, ctl: ctl, done: false }, pr;
-      try { pr = impl.clip(u, ctl && ctl.signal); } catch (e) { pr = Promise.reject(e); }
-      Promise.resolve(pr).then(function (pu) {
-        if (pfClip[u] !== c) { if (pu && /^blob:/.test(pu)) { try { impl.release(pu); } catch (e) { } } return; }   // 中止後に届いた分は捨てる
-        c.ctl = null; c.done = true; if (pu) { c.play = pu; pfBlobOrig[pu] = u; }
-      }, function () { if (pfClip[u] === c) delete pfClip[u]; });   // 失敗=従来動作(URL再生)へ。再試行は次回のpfSyncで
-    });
+    pfWant = Object.keys(want); pfPump();
     if (wantMainUrl) {
       var m = pfMain[wantMainUrl], fresh = m && (m.ctl || (m.done && Date.now() - m.t < PF_TTL_MS));
       if (!fresh && !(A.src && stripQ(A.src) === stripQ(wantMainUrl))) {   // 同じ音声が設定済み・再生中なら先読みしない
@@ -851,10 +843,35 @@
   function pfMainYield(url) {   // 再生要求でAのsrcを設定する直前: 同じ本編の未完了の先読みを中止する。中止しないと<audio>の取得が先読みのcache書込の完了待ち+続きの再取得で、先読みなしより遅くなる(実測: 回線を絞った入場直後のclick)
     var m = pfMain[url]; if (m && m.ctl) { try { m.ctl.abort(); } catch (e) { } delete pfMain[url]; }
   }
+  var pfWant = [], pfPaused = false;
+  function pfPump() {   // clip先読みは直列(同時1本): 帯域を先読みで埋めず、tapした再生・他の通信を妨げない
+    if (pfPaused) return;
+    var impl = pfImpl();
+    for (var i = 0; i < pfWant.length; i++) { var q = pfClip[pfWant[i]]; if (q && q.ctl) return; }   // 進行中あり
+    for (var j = 0; j < pfWant.length; j++) {
+      var u = pfWant[j];
+      if (pfClip[u] || (pfFail[u] || 0) >= 2 || stripQ(PA.src) === stripQ(u)) continue;   // 再取得しない / 再生中・設定済みは先読みしない
+      var ctl = (typeof AbortController === 'function') ? new AbortController() : null, c = pfClip[u] = { play: null, ctl: ctl, done: false }, pr;
+      try { pr = impl.clip(u, ctl && ctl.signal); } catch (e) { pr = Promise.reject(e); }
+      Promise.resolve(pr).then(function (pu) {
+        if (pfClip[u] !== c) { if (pu && /^blob:/.test(pu)) { try { impl.release(pu); } catch (e) { } } return; }   // 中止後に届いた分は捨てる
+        c.ctl = null; c.done = true; if (pu) { c.play = pu; pfBlobOrig[pu] = u; }
+        pfPump();
+      }, function () { if (pfClip[u] === c) { delete pfClip[u]; pfFail[u] = (pfFail[u] || 0) + 1; } pfPump(); });   // 失敗=従来動作(URL再生)へ。同じ項目は2回まで再試行
+      return;
+    }
+  }
+  var pfFail = {};
+  function pfYieldClips() {   // 先読み未完了のclipをtap: 進行中の先読みを中止し(帯域をtapした再生へ譲る)、再生が始まるまで先読みを止める
+    pfPaused = true; clearTimeout(pfYieldClips.t); pfYieldClips.t = setTimeout(pfResume, 5000);
+    Object.keys(pfClip).forEach(function (u) { var c = pfClip[u]; if (c && c.ctl) { try { c.ctl.abort(); } catch (e) { } delete pfClip[u]; } });
+  }
+  function pfResume() { clearTimeout(pfYieldClips.t); if (!pfPaused) return; pfPaused = false; pfPump(); }
   function pfClipUrl(au) {   // 再生に使うURL: 先読み済みBlob URLがあれば優先、無ければ従来のURL(未完了でも待たない)
     var c = au && au.start == null ? pfClip[au.url] : null;
     return c && c.play && !c.bad ? c.play : null;
   }
+  ['playing', 'pause', 'ended'].forEach(function (n) { PA.addEventListener(n, function () { if (pfPaused) pfResume(); }); });
   PA.addEventListener('error', function () {   // Blob再生に失敗したら従来URLで1回だけ再試行
     var o = pfBlobOrig[PA.src]; if (!o || !paNow) return;
     var c = pfClip[o]; if (c) c.bad = true;
@@ -866,7 +883,7 @@
     var x = PWI[i]; if (!x || !x.audio) return;
     var same = paNow && paNow.i === i; stopItemAudio(); if (same) return;
     A.pause();
-    PA.src = pfClipUrl(x.audio) || (x.audio.url + (x.audio.start != null ? '#t=' + x.audio.start + ',' + x.audio.end : '')); paNow = { i: i, end: x.audio.end != null ? x.audio.end : null };
+    var pfu = pfClipUrl(x.audio); if (!pfu) pfYieldClips(); PA.src = pfu || (x.audio.url + (x.audio.start != null ? '#t=' + x.audio.start + ',' + x.audio.end : '')); paNow = { i: i, end: x.audio.end != null ? x.audio.end : null };
     var p = PA.play(); if (p && p.catch) p.catch(function (e) { if (e.name !== 'AbortError') console.warn('item audio', e.name); });
     var b = document.querySelector('[data-pwplay="' + i + '"]'); if (b) { b.classList.add('on'); b.innerHTML = IC.pause; }
   }
