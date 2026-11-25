@@ -14,7 +14,7 @@
     return Math.round(Math.round(Math.min(RATE_MAX, Math.max(RATE_MIN, v)) / RATE_STEP) * RATE_STEP * 100) / 100;
   }
   var SKIP = 10;   // 既存End Userと同じ±10秒(H-4)
-  var K_LEVEL = 'wut01.level', K_TUT = 'wut01.tutorial_done', K_SAVED = 'wut01.saved', K_STATS = 'wut01.stats', K_RATE = 'wut01.rate', K_CAP = 'wut01.caption';
+  var K_LEVEL = 'wut01.level', K_TUT = 'wut01.tutorial_done', K_SAVED = 'wut01.saved', K_STATS = 'wut01.stats', K_RATE = 'wut01.rate', K_CAP = 'wut01.caption', K_FAV = 'wut01.fav.v1';
   var QS = new URLSearchParams(location.search);
   /* MP_01: 開発用表示(マイページのダミー表記・試作データ消去・試作版ビルド・更新検知)はモニター向けでは非表示。開発環境は ?dev=1 または localStorage 'wut01.dev'='1' で従来どおり表示(保存データ・機能は変更しない) */
   var DEV = (function () { try { return QS.get('dev') === '1' || window.localStorage.getItem('wut01.dev') === '1'; } catch (e) { return QS.get('dev') === '1'; } })();
@@ -254,12 +254,43 @@
   function chips(it) {
     return '<div class="chips"><span class="chip">' + esc(it.genres[0]) + '</span><span class="chip lv' + (ST.level === 'adv' ? 'adv' : '') + '" data-lvchip>' + LV[ST.level] + '</span></div>';
   }
-  function cardHtml(it, queueName) {   // A-2: 再生ボタンはカード上側(右上)。概要はその下でカード横幅いっぱい(行数は2行のまま)
-    var on = isCur(it.slug) && !A.paused;
+  /* ---------- お気に入り(♡) USER-TEST-FEEDBACK ⑤基本機能(2026-11-25 ユーザー決定): 端末内保存のみ(新キー wut01.fav.v1 = {schema:1, items:[{slug, addedAt}]}、順序=追加順)。
+     サーバー送信・集計・端末間同期はしない。復習帳(wut01.review.v1)・保存表現(wut01.saved)とは別キーで既存データに触れない。
+     破損データ(JSON不正・schema違い・items不正・重複・slug型違い)は読取時に無害化し画面を壊さない(元データは次の登録/解除まで書き換えない)。書込不可(private mode等)は登録状態を変えずtoast。 */
+  function favSanitize(raw) {
+    var out = [], seen = {};
+    try {
+      var o = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+      if (o && typeof o === 'object' && o.schema === 1 && Array.isArray(o.items)) o.items.forEach(function (x) {
+        if (x && typeof x === 'object' && typeof x.slug === 'string' && x.slug && !seen[x.slug]) { seen[x.slug] = 1; out.push({ slug: x.slug, addedAt: (typeof x.addedAt === 'number' && isFinite(x.addedAt)) ? x.addedAt : 0 }); }
+      });
+    } catch (e) { out = []; }
+    return out;
+  }
+  function favRead() { var raw = null; try { raw = localStorage.getItem(K_FAV); } catch (e) { raw = null; } return raw == null ? [] : favSanitize(raw); }
+  var FAV = favRead();
+  function isFav(slug) { return FAV.some(function (x) { return x.slug === slug; }); }
+  function favLabel(title, on) { return title + ' をお気に入り' + (on ? 'から外す' : 'に登録'); }
+  function favSync() {   // 画面上の全♡を現在の状態へ(再描画なし)
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fav]'), function (b) {
+      var on = isFav(b.getAttribute('data-fav')); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.setAttribute('aria-label', favLabel(b.getAttribute('data-ttl') || '', on));
+    });
+  }
+  function favToggle(slug) {   // -> true=保存できた / false=保存できず(状態は変えない)
+    var cur0 = favRead(), had = cur0.some(function (x) { return x.slug === slug; });   // 他タブの変更を取り込んでから更新(読取→更新→書込)
+    var next = had ? cur0.filter(function (x) { return x.slug !== slug; }) : cur0.concat([{ slug: slug, addedAt: Date.now() }]);
+    try { localStorage.setItem(K_FAV, JSON.stringify({ schema: 1, items: next })); } catch (e) { return false; }
+    FAV = next; favSync(); return true;
+  }
+  var FAV_HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.5 8 3.4 5 6.6 5c1.9 0 3.5 1 5.4 3 1.9-2 3.5-3 5.4-3 3.2 0 5.1 3 3.9 6.3-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg>';
+  window.addEventListener('storage', function (e) { if (e.key === K_FAV || e.key === null) { FAV = favRead(); favSync(); } });   // 他タブでの登録/解除を反映
+  function cardHtml(it, queueName) {   // A案(2026-11-25ユーザー正式採用): 上段=サムネ・題名/チップ・右列(♡が上・再生が下)、下段=概要を全幅・全文表示
+    var on = isCur(it.slug) && !A.paused, fv = isFav(it.slug);
     return '<article class="card' + (isCur(it.slug) ? ' now' : '') + '" data-open="' + it.slug + '" data-q="' + (queueName || '') + '" tabindex="0">' +
-      '<div class="ctop">' + thumbHtml(it, true) + '<div class="cmain"><h4>' + esc(it.title_ja) + '</h4>' + chips(it) + '</div>' +
+      '<div class="cgrid">' + thumbHtml(it, true) + '<div class="cmain"><h4>' + esc(it.title_ja) + '</h4>' + chips(it) + '</div>' +
+      '<div class="acts"><button type="button" class="cardfav" data-fav="' + it.slug + '" data-ttl="' + esc(it.title_ja) + '" aria-pressed="' + (fv ? 'true' : 'false') + '" aria-label="' + esc(favLabel(it.title_ja, fv)) + '">' + FAV_HEART + '</button>' +
       '<button type="button" class="cardplay' + (on ? ' on' : '') + '" data-play="' + it.slug + '" data-q="' + (queueName || '') + '" aria-label="' + esc(it.title_ja) + ' を' + LV[ST.level] + 'で' + (on ? '一時停止' : '再生') + '">' + (on ? IC.pause : IC.play) + '</button></div>' +
-      '<p class="sum">' + esc(it.summary_ja) + '</p></article>';
+      '<p class="sum">' + esc(it.summary_ja) + '</p></div></article>';
   }
   function byNew() { return ST.cat.items.slice().sort(function (a, b) { return (b.added_ts - a.added_ts) || (a.slug < b.slug ? -1 : 1); }); }
 
@@ -293,6 +324,19 @@
     var hit = byNew().filter(function (it) { var hay = norm([it.title_ja, it.title_en, it.summary_ja, it.keywords.join(' ')].join(' ')); return terms.every(function (t) { return hay.indexOf(t) >= 0; }); });
     br.classList.add('hide');
     res.innerHTML = '<div class="sh" style="margin-top:12px"><h3>検索結果 ' + hit.length + '件</h3></div>' + (hit.length ? '<div class="cards">' + hit.map(function (it) { return cardHtml(it, 'search'); }).join('') + '</div>' : '<div class="empty">該当する記事がありません</div>');
+  }
+  /* ---------- 画面: お気に入り記事(マイページ→) USER-TEST-FEEDBACK ⑤基本機能(原文「お気に入り記事一覧・マイページからを基本」)。登録が新しい順。カタログ外(非掲載)の保存は表示せず保持(再掲載で復活)。
+     一覧内で♡を外してもカードはその場に残す(誤タップで消えない・もう一度押せば戻る)。次に開いた時に反映。サーバー送信・端末間同期はない(端末内のみ)旨を明記 ---------- */
+  function favItems() {
+    var m = {}; ST.cat.items.forEach(function (x) { m[x.slug] = x; });
+    return FAV.map(function (f, i) { return { f: f, i: i }; }).sort(function (p, q) { return (q.f.addedAt - p.f.addedAt) || (q.i - p.i); })
+      .map(function (p) { return m[p.f.slug]; }).filter(Boolean);
+  }
+  function viewFav() {
+    var items = favItems();
+    return topBar({ back: true }) + '<h2 style="margin:4px 0 4px;color:var(--navy)">お気に入り記事<small style="font-size:13px;color:var(--muted);margin-left:8px">' + items.length + '件</small></h2>' +
+      '<p class="lvnote" style="margin-top:0">この端末にだけ保存されています(別の端末へは引き継がれません)。登録が新しい順に表示します。</p>' +
+      (items.length ? '<div class="cards">' + items.map(function (it) { return cardHtml(it, 'fav'); }).join('') + '</div>' : '<div class="empty">お気に入りの記事はまだありません<br>記事一覧のハート(♡)を押すと、ここに登録されます</div>');
   }
   /* ---------- 画面: 一覧 ---------- */
   function listItems(g) { return byNew().filter(function (it) { return g === 'all' || it.genres.indexOf(ST.cat.genres[+g]) >= 0; }); }
@@ -374,6 +418,7 @@
       '<div class="pl">レベル設定(共通)</div>' + lvSeg('lvseg-me', true) +
       '<div class="lvnote">Standard: ' + LV_HINT.std + ' / Advanced: ' + LV_HINT.adv + '。目安であり、どちらも自由に選べます。</div>' +
       '<button class="setrow" id="tutbtn">使い方(チュートリアル)を見る<span>&#8250;</span></button>' + viewMeDl() +
+      '<a class="setrow" id="favrow" href="#/fav">お気に入り記事<span>' + favItems().length + '件 &#8250;</span></a>' +
       (DEV ? '<button class="setrow" id="resetbtn">端末内の試作データを消す(レベル・保存・学習記録・チュートリアル)<span>&#8250;</span></button>' +
         '<div class="setrow"><span>試作版ビルド</span><small>rev12 / Trial・未承認 / 数値・ジャンル・概要の一部は仮データ</small></div>' +
         '<div class="setrow"><span>元データの更新検知</span><small>' + (ST.warn.length ? '更新あり: ' + ST.warn.length + '件' : '異常なし(再生時に検査)') + '</small></div>' : '');
@@ -797,10 +842,10 @@
   /* ---------- ルーティング ---------- */
   var route = { name: 'home', arg: null, qs: new URLSearchParams() };
   var fromHash = null, curHash = null;   // WUG A-3: アプリ内の遷移元(画面の種類が変わった時だけ更新。連続再生で記事→記事へ進んでも遷移元は保持)
-  var BACK_LAB = { home: 'ホーム', list: '一覧', search: '検索', review: '復習帳', me: 'マイページ' };
+  var BACK_LAB = { home: 'ホーム', list: '一覧', search: '検索', review: '復習帳', me: 'マイページ', fav: 'お気に入り' };
   function backInfo() {
     var h = fromHash;
-    if (!h || h === curHash || h.indexOf('#/player') === 0) h = route.name === 'list' ? '#/search' : '#/home';   // 遷移元が不明(直接アクセス等)のときの既定
+    if (!h || h === curHash || h.indexOf('#/player') === 0) h = route.name === 'list' ? '#/search' : (route.name === 'fav' ? '#/me' : '#/home');   // 遷移元が不明(直接アクセス等)のときの既定
     var nm = h.slice(2).split(/[\/?]/)[0];
     return { hash: h, label: (BACK_LAB[nm] || 'ホーム') + 'に戻る' };
   }
@@ -819,6 +864,7 @@
     switch (route.name) {
       case 'search': html = viewSearch(); break;
       case 'list': html = viewList(route.qs.get('g') || 'all'); break;
+      case 'fav': html = viewFav(); break;
       case 'player': html = viewPlayer(route.arg); break;
       case 'review': html = viewReview(); break;
       case 'me': html = viewMe(); break;
@@ -827,7 +873,7 @@
     v.innerHTML = html; syncModeClass();
     if (route.name === 'review') mountReview(); else if (reviewCtl) { reviewCtl.destroy(); reviewCtl = null; }
     Array.prototype.forEach.call(document.querySelectorAll('#nav a'), function (a) {
-      var t = a.dataset.tab, cur_ = route.name === t || (t === 'search' && route.name === 'list');
+      var t = a.dataset.tab, cur_ = route.name === t || (t === 'search' && route.name === 'list') || (t === 'me' && route.name === 'fav');
       if (cur_) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     var dk = $('dock'); dk.hidden = route.name !== 'player'; document.body.classList.toggle('hasdock', route.name === 'player'); setRatePop(false);
@@ -1073,6 +1119,11 @@
     var rb = t.closest('#ratereset'); if (rb) { pickRate(1); return; }   // 1.0xへ戻すボタン(1案)
     if (tutOn && !t.closest('#tut')) return;
     if ((b = t.closest('[data-lv]'))) { setLevel(b.dataset.lv); return; }
+    if ((b = t.closest('[data-fav]'))) {   // ♡: 登録/解除のみ(カードを開かない・再生しない)。チュートリアル中は上の tutOn 判定で操作不可
+      e.stopPropagation();
+      if (!favToggle(b.dataset.fav)) toast('お気に入りを保存できませんでした(この端末では保存データを使えません)');
+      return;
+    }
     if ((b = t.closest('[data-play]'))) {   // 記事カードの再生: ワンタップ・選択中レベル・中間画面なし
       e.stopPropagation();
       var slug = b.dataset.play;
@@ -1096,7 +1147,7 @@
     if ((b = t.closest('[data-open]'))) { if (route.name === 'player' && route.arg === b.dataset.open) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; } location.hash = '#/player/' + b.dataset.open; return; }
     if (t.closest('[data-back]')) { location.hash = backInfo().hash; return; }   // 履歴を戻るのではなくアプリ内の遷移元へ。再生中の音声には触れない
     if (t.closest('#helpbtn') || t.closest('#tutbtn')) { startTutorial(); return; }
-    if (t.closest('#resetbtn')) { [K_LEVEL, K_TUT, K_SAVED, K_STATS, K_RATE, K_POS, K_CAP].forEach(function (k) { try { localStorage.removeItem(k); } catch (er) { } }); if (store.load().status === 'failed') store.resetAfterFailure(); else store.clearAll(); toast('端末内の試作データを消しました'); ST.level = 'std'; ST.lvTemp = false; capSet(true, false); rerender(); return; }
+    if (t.closest('#resetbtn')) { [K_LEVEL, K_TUT, K_SAVED, K_STATS, K_RATE, K_POS, K_CAP, K_FAV].forEach(function (k) { try { localStorage.removeItem(k); } catch (er) { } }); if (store.load().status === 'failed') store.resetAfterFailure(); else store.clearAll(); toast('端末内の試作データを消しました'); ST.level = 'std'; ST.lvTemp = false; capSet(true, false); rerender(); return; }
     if ((b = t.closest('[data-save]'))) {   // 学ぶ画面・吹き出し共通: 同じstore.toggle(クリック毎のAI生成なし)
       var en = b.dataset.save, r = store.toggle(route.arg, ST.level, en, (item(route.arg) || {}).title_ja);
       if (!r.ok) { toast('保存できませんでした(この端末では保存データを使えません)'); return; }

@@ -46,8 +46,12 @@ a{color:var(--blue)}
 .cards{display:grid;gap:10px}
 .card{display:block;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 2px 10px rgba(16,40,94,.06);cursor:pointer;position:relative}
 .card.now{border-color:var(--blue);box-shadow:0 0 0 2px rgba(29,79,216,.15)}
-.ctop{display:grid;grid-template-columns:88px minmax(0,1fr) 48px;gap:10px;align-items:start}
-.ctop .thumb{width:88px;height:88px}
+/* 記事カード(A案正式採用 2026-11-25 USER-TEST-FEEDBACK ④⑤): 上段=サムネ88px・題名/チップ・右列(♡が上・再生が下)、下段=概要を全幅・全文表示(行数制限なし)。文字サイズ・サムネサイズは従来と同一 */
+.cgrid{display:grid;grid-template-columns:88px minmax(0,1fr) 48px;grid-template-areas:"thumb main acts" "sum sum sum";column-gap:10px;row-gap:6px;align-items:start}
+.cgrid .thumb{grid-area:thumb;width:88px;height:88px}
+.cgrid .cmain{grid-area:main}
+.cgrid .acts{grid-area:acts;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;align-self:start}
+.cgrid .sum{grid-area:sum}
 .cmain{min-width:0}
 .thumb{position:relative;width:96px;height:96px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#2b5fd9,#10285e);color:#fff;display:flex;align-items:center;justify-content:center}
 .thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -59,11 +63,15 @@ a{color:var(--blue)}
 .chip{background:var(--soft);color:var(--blue2);font-size:11px;font-weight:700;border-radius:999px;padding:1px 9px;white-space:nowrap}
 .chip.lv{background:var(--blue);color:#fff}
 .chip.lvadv{background:var(--navy);color:#fff}
-.sum{margin:8px 0 0;width:100%;font-size:12.5px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sum{margin:0;width:auto;font-size:12.5px;color:var(--muted);line-height:1.45;display:block;overflow:visible}
 .cardplay{width:48px;height:48px;border-radius:50%;border:0;background:var(--soft);color:var(--blue);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
 .cardplay svg{width:22px;height:22px;fill:var(--blue)}
 .cardplay.on{background:var(--blue)}
 .cardplay.on svg{fill:#fff}
+.cardfav{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:#d6336c;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0}
+.cardfav svg{width:24px;height:24px;fill:none;stroke:#d6336c;stroke-width:1.9;stroke-linejoin:round}
+.cardfav[aria-pressed="true"] svg{fill:#d6336c}
+.cardfav:active{background:#fde8ef}
 .search{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #b9cdf7;border-radius:14px;padding:0 12px;min-height:50px}
 .search input{border:0;outline:0;flex:1;min-width:0;font:inherit;background:transparent;min-height:44px}
 .search svg{width:20px;height:20px;stroke:var(--blue);stroke-width:2;fill:none}
@@ -149,6 +157,7 @@ details.vi dd p,.gr dd p{margin:4px 0}
 .dummy{background:#fff8e1;border:1px dashed #e0c564;border-radius:12px;padding:10px 14px;color:#7a5b00;font-size:13px;margin:10px 0}
 .setrow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 14px;min-height:56px;margin:8px 0;font-weight:700;color:var(--navy);width:100%;text-align:left;cursor:pointer}
 div.setrow{cursor:default}
+a.setrow{text-decoration:none}
 #mini{position:fixed;left:50%;transform:translateX(-50%);width:min(100%,var(--colw));bottom:var(--nav-total);z-index:30;padding:0 10px 6px}
 #mini[hidden]{display:none}
 .miniin{position:relative;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #bcd0f5;border-radius:16px;box-shadow:0 6px 20px rgba(16,40,94,.18);padding:6px 8px 8px 8px;min-height:var(--mini-h);overflow:hidden}
@@ -187,8 +196,8 @@ div.setrow{cursor:default}
 #tut .btns button{min-height:44px;border-radius:999px;padding:0 18px;font-weight:800;cursor:pointer;border:1.5px solid #b9cdf7;background:#fff;color:var(--navy)}
 #tut .btns button.pri{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:0}
 @media(max-width:380px){
-  .ctop{grid-template-columns:76px minmax(0,1fr) 44px}
-  .ctop .thumb{width:76px;height:76px}
+  .cgrid{grid-template-columns:76px minmax(0,1fr) 44px}
+  .cgrid .thumb{width:76px;height:76px}
   .cardplay{width:44px;height:44px}
   .ctrl{grid-template-columns:40px 54px 44px 54px 44px}
   .ctrl .pp{width:54px;height:54px}
