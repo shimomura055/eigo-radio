@@ -553,8 +553,10 @@
     if (L.think_express && L.think_express.length) {   /* TEX 委任_03: Think & Express(文法の次=3番目。キー無し=非表示。回答例は<details>初期閉・入力欄/採点/履歴/TTSなし) */
       out += '<section class="secbox te-box" id="thinkbox"><h3>Think &amp; Express<small>自分の考えを英語で</small></h3>' + L.think_express.map(function (it) {
         var f = {}; it.fields.forEach(function (x) { f[x.label] = x.html; });
+        /* TE-DISPLAY 委任_06: 賛否・二択の新形式(6項目)は同じ<details>内に区切り線+もう一つの回答例(英+訳)。キー無し(旧形式・自由回答)は''=従来とバイト同一 */
+        var a2 = f['もう一つの回答例'] ? '<hr class="te-sep"><p class="te-en te-a2">' + f['もう一つの回答例'] + '</p><p class="te-ja te-a2">' + (f['もう一つの回答例の日本語訳'] || '') + '</p>' : '';
         return '<div class="te"><div class="te-q"><p class="te-en">' + (f['質問'] || '') + '</p><p class="te-ja">' + (f['質問の日本語訳'] || '') + '</p></div>' +
-          '<details class="te-ans"><summary>回答例を見る</summary><div class="te-a"><p class="te-en">' + (f['回答例'] || '') + '</p><p class="te-ja">' + (f['回答例の日本語訳'] || '') + '</p></div></details></div>';
+          '<details class="te-ans"><summary>回答例を見る</summary><div class="te-a"><p class="te-en">' + (f['回答例'] || '') + '</p><p class="te-ja">' + (f['回答例の日本語訳'] || '') + '</p>' + a2 + '</div></details></div>';
       }).join('') + '</section>';
     }
     out += '<section class="secbox"><h3>保存・復習</h3><p class="lvnote" style="text-align:left;margin:0 0 8px">各項目の「保存」で、この端末内(仮動作)に保存できます。</p><a class="setrow" href="#/review" style="text-decoration:none">復習帳を開く<span>&#8250;</span></a></section>';
