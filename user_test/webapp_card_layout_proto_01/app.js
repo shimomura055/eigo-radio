@@ -4,7 +4,10 @@
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
-  var A = $('aud');
+  /* [試作] 音は出さない(試作ページを音声なしページとして公開するため、再生要素は何もしない代替物にしている。カード配置の確認専用) */
+  function noAudio() { var e = document.createElement('div'); e.paused = true; e.currentTime = 0; e.duration = NaN; e.src = ''; e.readyState = 0; e.playbackRate = 1; e.defaultPlaybackRate = 1; e.seeking = false;
+    e.play = function () { return Promise.resolve(); }; e.pause = function () { }; e.load = function () { }; return e; }
+  var A = noAudio();
   var LV = { std: 'Standard', adv: 'Advanced' };
   var CAPON = true;   // ECUI B(REF承継): 日本語字幕(dockの日本語キャプチャ)。既定ON。設定=端末保存(wutcl.caption)、URL ?caption=0 はそのrouteの間だけ上書き
   var LV_HINT = { std: 'TOEIC 800点未満／英検2級程度を目安', adv: 'TOEIC 800点以上／英検準1級以上を目安' };   // 原文§4-4(ユーザー決定)
@@ -726,7 +729,7 @@
     if (t >= solo.end - 0.02) { solo = null; A.pause(); }
   }
   /* Phrase/Word個別音声(既存音声がある項目のみ)。本編の音声とは別要素で再生し、再生中は本編を一時停止する */
-  var PA = new Audio(), paNow = null;
+  var PA = noAudio(), paNow = null;
   PA.addEventListener('timeupdate', function () { if (paNow && paNow.end != null && PA.currentTime >= paNow.end) stopItemAudio(); });
   PA.addEventListener('ended', function () { stopItemAudio(); });
   function stopItemAudio() { if (paNow == null) return; PA.pause(); paNow = null; Array.prototype.forEach.call(document.querySelectorAll('.pwplay.on'), function (b) { b.classList.remove('on'); b.innerHTML = IC.play; }); }
