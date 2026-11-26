@@ -38,9 +38,11 @@
       <div class="cur" id="daynote"></div>
       <label class="fld">今日の無料記事(無料会員のとき)
         <select id="selart"></select></label>
-      <div class="row2"><button type="button" id="midnight">翌日0時になった(無料枠リセット)</button></div>
+      <div class="row2"><button type="button" id="midnight">翌日0時になった(日付が進む・無料枠リセット)</button></div>
       <label class="chk"><input type="checkbox" id="chkoff"> オフラインにする</label>
-      <label class="chk"><input type="checkbox" id="chkgrace"> 有料会員で契約期限後に通信できない状態(猶予表示・文言案)</label>
+      <label class="chk"><input type="checkbox" id="chkgrace"> 有料会員・解約済みで契約期限後に通信できない状態(猶予表示・文言案。オフラインのときだけ表示)</label>
+      <div class="row2" id="endrow" hidden><button type="button" id="endcontract">契約期間が終わった(有料→無料会員)</button></div>
+      <div class="row2" id="pendrow" hidden><button type="button" id="pendok">保留中の購入が承認された</button><button type="button" id="penddecl">保留中の購入が承認されなかった</button></div>
       <label class="fld">定期販促: 前回の案内表示からの経過日数 <b id="promoval">3</b>日(7日以上でホームを開くと表示)
         <input type="range" id="promo" min="0" max="14" value="3"></label>
       <div class="row2"><button type="button" id="reopenhome">ホームを開き直す</button><button type="button" id="resetall">最初の状態に戻す</button></div>
@@ -48,7 +50,7 @@
     </section>
 
     <section>
-      <h2>3. 確認画面13種へ直接ジャンプ</h2>
+      <h2>3. 確認画面13種+追加1種へ直接ジャンプ</h2>
       <ol class="screens" id="screens"></ol>
     </section>
     <section class="small">
