@@ -413,12 +413,25 @@
     });
     migrateSaved().then(function () { if (reviewCtl === ctl && $('srsroot') === el) ctl.mount(el); });
   }
+  /* サポート・規約リンク(RELEASE-LEGAL-SUPPORT-PAGES-01): 公開済みの法務・サポートページ(公開rootの /support/ /privacy/)へ。未公開ページ(利用規約・特商法)はここへ足すまで出さない。
+     URLは host config(window.EIGO_HOST_CONFIG.pagesBase。アプリ側が提供)があればそれを基準に、無ければ現在のページURLを基準に相対で導く(URLの直書きはしない)。 */
+  var LEGAL_LINKS = [['support', 'サポート・お問い合わせ'], ['privacy', 'プライバシーポリシー']];
+  function legalHref(key) {
+    var base = (window.EIGO_HOST_CONFIG && window.EIGO_HOST_CONFIG.pagesBase) || location.href;
+    try { return new URL('../../' + key + '/', base).href; } catch (e) { return '../../' + key + '/'; }
+  }
+  function viewMeLegal() {
+    return '<div class="pl">サポート・規約</div>' + LEGAL_LINKS.map(function (x) {
+      return '<a class="setrow" data-legal="' + x[0] + '" href="' + esc(legalHref(x[0])) + '" target="_blank" rel="noopener">' + x[1] + '<span>&#8250;</span></a>';
+    }).join('');
+  }
   function viewMe() {
     return topBar() + '<h2 style="margin:4px 0 8px;color:var(--navy)">マイページ' + (DEV ? '<span class="kari">ダミー</span>' : '') + '</h2>' + (DEV ? '<div class="dummy">マイページはダミー画面です(正式仕様なし)。</div>' : '') +
       '<div class="pl">レベル設定(共通)</div>' + lvSeg('lvseg-me', true) +
       '<div class="lvnote">Standard: ' + LV_HINT.std + ' / Advanced: ' + LV_HINT.adv + '。目安であり、どちらも自由に選べます。</div>' +
       '<button class="setrow" id="tutbtn">使い方(チュートリアル)を見る<span>&#8250;</span></button>' + viewMeDl() +
       '<a class="setrow" id="favrow" href="#/fav">お気に入り記事<span>' + favItems().length + '件 &#8250;</span></a>' +
+      viewMeLegal() +
       (DEV ? '<button class="setrow" id="resetbtn">端末内の試作データを消す(レベル・保存・学習記録・チュートリアル)<span>&#8250;</span></button>' +
         '<div class="setrow"><span>試作版ビルド</span><small>rev12 / Trial・未承認 / 数値・ジャンル・概要の一部は仮データ</small></div>' +
         '<div class="setrow"><span>元データの更新検知</span><small>' + (ST.warn.length ? '更新あり: ' + ST.warn.length + '件' : '異常なし(再生時に検査)') + '</small></div>' : '');
