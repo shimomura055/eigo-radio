@@ -799,22 +799,43 @@
   function stopItemAudio() { if (paNow == null) return; PA.pause(); paNow = null; Array.prototype.forEach.call(document.querySelectorAll('.pwplay.on'), function (b) { b.classList.remove('on'); b.innerHTML = IC.play; }); }
   /* ---------- 先読み(USER-TEST-FEEDBACK ③案3・2026-11-25 ユーザー正式決定 §3。Web版) ----------
      仕様: 記事一覧=先読みなし / 記事ページ入場=本編冒頭5秒(128kbps CBR=80,000B)をRange取得 / 「学ぶ」入場=該当レベルの単語・表現clipを丸ごと取得(fetch→Blob URL)。
-     本編の全編先読みはしない(隠し<audio preload=auto>は使わない)。再生ボタンは先読みPromiseを待たない。離脱・レベル切替で未完了はAbort。
-     【本編5秒先読みのWeb既定は無効(2026-11-25 実測)】公開CDN(GitHub Pages)の応答は Vary: Accept-Encoding。fetchのRange応答と<audio>の取得はAccept-Encodingが異なるため、先読みは<audio>に再利用されず(再取得)、80KBが無駄になるうえ、同じURLのHTTPキャッシュ(<audio>が作った分)を壊して再入場が遅くなる(公開URLの実測で+170〜470ms)。native hookのmain(url, bytes, signal)は契約として残す。
+     本編の全編先読みはしない(preload=autoは使わない)。再生ボタンは先読みPromiseを待たない。離脱・レベル切替で未完了はAbort。
+     【本編冒頭の先読み(U2・2026-11-26)】fetchのRange先読みは<audio>に再利用されない(公開CDN=GitHub Pagesは Vary: Accept-Encoding。fetchとmedia要素でAccept-Encodingが違いHTTPキャッシュ上は別エントリ。media要素は常に Range bytes=0- を出す)ため、再生側と同じmedia取得経路=隠し<audio preload=metadata>で先読みする(PF_WEB.main)。Aが後で同じURLを取得すると冒頭分はHTTPキャッシュから供給され再取得されない(実測 docs/research/USER-TEST-FEEDBACK-UI-FUNCTION-IMPROVEMENT-01/U2_BODY_PRELOAD/RESULT_U2.md)。取得量はブラウザの判断(公開CDN実測 約50〜100KB≒冒頭3〜6秒)。WebKit系(Safari/iOS)は実測で約500KB取得するため行わない(PF_WEBKIT)。native hookのmain(url, bytes, signal)は契約として残す。
      clipの先読みは直列(同時1本)で、先読みが済んでいないclipをtapしたら進行中の先読みを中止して従来URLで再生する(回線帯域をtapした再生へ譲る)。
      実装差替hook契約(M6): アプリは同じapp.jsを同梱するため、先読みの実体は window.EigoHost.prefetch で差し替えられる。
        EigoHost.prefetch = { clip(url, signal) -> Promise<再生用URL|null>, main(url, bytes, signal) -> Promise<void>, release(playUrl) -> void }
        adapter存在時(EigoHost.mode が 'browser' 以外)で prefetch 未定義なら既定no-op(blob:URLをnative playerへ渡さない)。詳細=docs/research/USER-TEST-FEEDBACK-UI-FUNCTION-IMPROVEMENT-01/PREFETCH_HOOK_CONTRACT_11.md */
   var PF_MAIN_BYTES = 80000, PF_TTL_MS = 540000;   // 128kbps x 5s / HTTPキャッシュ(max-age=600)より短い有効期間
-  /* WebKit系(Safari・iOSの全ブラウザ。UA判定)では先読みを行わない。実測(Windows版WebKit): (1)Range fetchの結果を<audio>が再利用せず先読み80KBとは別に本編を0から再取得=80KBが無駄 (2)blob:のaudio/mpegは再生できない(MEDIA_ERR_SRC_NOT_SUPPORTED=従来URLへ再試行となり先読みなしより遅い)。実機Safari/iOSは未確認のため、効果が確認できるまでChromium系のみ有効。Blobが再生できない環境を実行時に検出したら以後のclip先読みも止める(pfBlobFail) */
+  /* WebKit系(Safari・iOSの全ブラウザ。UA判定)では先読みを行わない。実測(Windows版WebKit): (1)Range fetchの結果を<audio>が再利用せず先読み80KBとは別に本編を0から再取得=80KBが無駄 (2)blob:のaudio/mpegは再生できない(MEDIA_ERR_SRC_NOT_SUPPORTED=従来URLへ再試行となり先読みなしより遅い)。(3)本編を隠し<audio preload=metadata>で先読みする方式(U2)もWindows版WebKitでは約500KBを取得し冒頭5秒に収まらない(buffered不明)。実機Safari/iOSは未確認のため、効果が確認できるまでChromium系のみ有効。Blobが再生できない環境を実行時に検出したら以後のclip先読みも止める(pfBlobFail) */
   var PF_UA = String((window.navigator && navigator.userAgent) || ''), PF_WEBKIT = (/AppleWebKit/.test(PF_UA) && !/(Chrome|Chromium|Edg|OPR|SamsungBrowser)\//.test(PF_UA)) || /(CriOS|FxiOS|EdgiOS)/.test(PF_UA), pfBlobFail = false;
   var pfClip = {}, pfBlobOrig = {}, pfMain = {};   // clip: 絶対URL -> {play:blob URL|null, ctl, done, bad} / blob URL -> 元URL / main: 絶対URL -> {t, ctl, done}
+  var PF_PRE = {};   // 本編先読み用の隠し<audio>: 絶対URL -> 要素(Web既定実装のみ。native hookは使わない)
+  function pfPreRelease(u) { var e = PF_PRE[u]; if (!e) return; delete PF_PRE[u]; try { e.removeAttribute('src'); e.load(); } catch (x) { } }
   var PF_WEB = {
     clip: function (url, signal) {
       return fetch(url, { signal: signal, cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('clip ' + r.status); return r.arrayBuffer(); })   // no-store: HTTPキャッシュを読み書きしない(Vary:Accept-Encodingで<audio>が作った同じURLのキャッシュを壊し、tapが遅くなるのを防ぐ。データはBlobが保持)
         .then(function (buf) { return URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' })); });
     },
-    main: function () { return Promise.resolve(); },   // Web既定は本編を先読みしない(上記)
+    main: function (url, bytes, signal) {   // 本編冒頭の先読み(U2): 再生用Aとは別の隠し<audio preload=metadata>にsrcを設定する(fetch/Blobではない)。<audio>同士は同じメディア取得経路(Range bytes=0-・Accept-Encoding identity)でHTTPキャッシュを共有するため、Aが後で同じURLを取得するとき冒頭分をキャッシュから受ける。取得量はブラウザの<audio preload=metadata>の判断(実測 約16〜90KB=冒頭1〜5秒)
+      return new Promise(function (resolve, reject) {
+        pfPreRelease(url);
+        var e = document.createElement('audio'), fin = false, to = 0, evs = ['loadeddata', 'canplay', 'suspend'];
+        function done(ok, err) {
+          if (fin) return; fin = true; clearTimeout(to);
+          evs.forEach(function (n) { e.removeEventListener(n, onOk); }); e.removeEventListener('error', onErr);
+          if (signal) signal.removeEventListener('abort', onAbort);
+          if (ok) resolve(); else reject(err || new Error('main prefetch'));
+        }
+        function onOk() { done(true); }
+        function onErr() { if (PF_PRE[url] === e) pfPreRelease(url); done(false, new Error('main prefetch error')); }
+        function onAbort() { if (PF_PRE[url] === e) pfPreRelease(url); done(false, new Error('abort')); }
+        evs.forEach(function (n) { e.addEventListener(n, onOk); }); e.addEventListener('error', onErr);
+        if (signal) { if (signal.aborted) { onAbort(); return; } signal.addEventListener('abort', onAbort); }
+        to = setTimeout(function () { if (e.readyState < 1) { if (PF_PRE[url] === e) pfPreRelease(url); done(false, new Error('main prefetch timeout')); } else done(true); }, 15000);   // 15秒たってもメタデータすら取れなければ失敗扱いで解放(オフライン等。再生は従来どおり)。取得済みなら完了扱い(要素は保持して再生側のキャッシュ再利用に任せる)
+        e.preload = 'metadata'; PF_PRE[url] = e; e.src = url;
+      });
+    },
+    mainRelease: function (url) { pfPreRelease(url); },   // 離脱・レベル切替・再生開始後(playing)に要素を解放(接続・メモリを持ち続けない)
     release: function (u) { try { URL.revokeObjectURL(u); } catch (e) { } }
   };
   var PF_NOOP = { clip: function () { return Promise.resolve(null); }, main: function () { return Promise.resolve(); }, release: function () { } };
@@ -842,10 +863,10 @@
       if (onPlayer && ART[slug]) { var inLvl = PWI && PWI.some(function (x) { return x && x.audio && x.audio.url === u; }); keep = !!inLvl && !pfBlobFail && (c.done || !!want[u]); }
       if (!keep) pfReleaseClip(u);
     });
-    Object.keys(pfMain).forEach(function (u) { var m = pfMain[u]; if (m.ctl && u !== wantMainUrl) { try { m.ctl.abort(); } catch (e) { } delete pfMain[u]; } });
+    Object.keys(pfMain).forEach(function (u) { var m = pfMain[u]; if (u === wantMainUrl) return; if (m.ctl) { try { m.ctl.abort(); } catch (e) { } delete pfMain[u]; } if (impl.mainRelease) { try { impl.mainRelease(u); } catch (e) { } } });   // 離脱・レベル切替: 未完了は中止して破棄(従来どおり)。完了済みの記録はTTLまで残す(再入場で再呼出ししない=契約)が、隠し<audio>は解放する(先頭分はHTTPキャッシュに残り、再生側のAが再利用する)
     pfWant = Object.keys(want); pfPump();
     if (wantMainUrl) {
-      var m = pfMain[wantMainUrl], fresh = m && (m.ctl || (m.done && Date.now() - m.t < PF_TTL_MS));
+      var m = pfMain[wantMainUrl], fresh = m && (m.ctl || (m.done && Date.now() - m.t < PF_TTL_MS && (!impl.mainRelease || PF_PRE[wantMainUrl])));   // Web既定は隠し<audio>が解放済み(離脱後の再入場)なら作り直す(先頭分はHTTPキャッシュから読むので通信は増えない)。native hookは従来どおり記録だけでTTL内は再呼出ししない
       if (!fresh && !(A.src && stripQ(A.src) === stripQ(wantMainUrl))) {   // 同じ音声が設定済み・再生中なら先読みしない
         var mctl = (typeof AbortController === 'function') ? new AbortController() : null, mm = pfMain[wantMainUrl] = { t: Date.now(), ctl: mctl, done: false }, u2 = wantMainUrl, mp;
         try { mp = impl.main(u2, PF_MAIN_BYTES, mctl && mctl.signal); } catch (e) { mp = Promise.reject(e); }
@@ -885,6 +906,7 @@
     return c && c.play && !c.bad ? c.play : null;
   }
   ['playing', 'pause', 'ended'].forEach(function (n) { PA.addEventListener(n, function () { if (pfPaused) pfResume(); }); });
+  A.addEventListener('playing', function () { if (A.src) pfPreRelease(A.src); });   // Aが再生を始めたら、同じURLの先読み用の隠し<audio>は役目を終えるので解放(接続・メモリを持たない)
   PA.addEventListener('error', function () {   // Blob再生に失敗したら従来URLで1回だけ再試行
     var o = pfBlobOrig[PA.src]; if (!o || !paNow) return;
     var c = pfClip[o]; if (c) c.bad = true;
@@ -1589,6 +1611,6 @@
     ST.cat = r;
     setRate(); onRoute(); migrateSaved();
     if (!lsGet(K_TUT, false) && !QS.get('notut')) setTimeout(startTutorial, 300);
-    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
+    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, pre: PF_PRE, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
   }).catch(function (e) { $('view').innerHTML = '<div class="empty" role="alert" data-load-error="1">一覧データ(catalog_auto.json)を読み込めませんでした: ' + esc(e.message) + '</div>'; });
 })();
