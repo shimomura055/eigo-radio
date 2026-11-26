@@ -71,6 +71,20 @@
     };
   }
   host.membership = membership;
+  // C4c H2: mark playItem calls made from the review screen (復習帳) so the native gate may play their short card clips for a free member. Only a claim: the native gate checks the clip shape.
+  function installReviewPurpose() {
+    var cap = root.Capacitor;
+    if (!cap || typeof cap.nativePromise !== 'function' || cap.__eigoReviewPurpose) return;
+    var base = cap.nativePromise;
+    cap.nativePromise = function (pluginName, methodName, options) {
+      if (pluginName === 'EigoNativePlayer' && methodName === 'playItem' && inReviewContext() && options && typeof options === 'object' && options.id == null) {
+        var o = {}; for (var k in options) o[k] = options[k]; o.purpose = 'review'; options = o;
+      }
+      return base.call(cap, pluginName, methodName, options);
+    };
+    cap.__eigoReviewPurpose = true;
+  }
+  installReviewPurpose();
 
   /* ---------------------------------------------------------------- G9: article data fetch gate */
   var DATA_RE = /\/([^\/?#]+)\/enduser\/data\/(?:article|sync_std|sync_adv)\.json(?:[?#]|$)/;

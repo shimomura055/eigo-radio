@@ -87,3 +87,34 @@
 .em-consent .em-ch{margin:12px 0 2px;font-size:14px;color:var(--navy,#10285e)}
 .em-closerow{text-align:center;margin-top:6px}
 .em-linkbtn{border:0;background:transparent;color:var(--muted,#5b6b8c);font-size:14px;text-decoration:underline;padding:10px;min-height:44px;cursor:pointer;font-family:inherit}
+/* B5: first notice = one screen. The text area scrolls inside; the two buttons sit in their own opaque block under it (never over the text). */
+.em-full[data-em-full="intro"]:not([hidden]){display:flex;flex-direction:column;overflow:hidden;padding:0}
+.em-intro{height:100%;min-height:0;width:100%;max-width:520px;margin:0 auto}
+.em-intro-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(18px + env(safe-area-inset-top,0px)) 20px 8px}
+.em-intro .em-introacts{position:static;flex:none;background:#fff;border-top:1px solid var(--line,#dbe3f3);margin:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px))}
+.em-intro-body h2{margin:0 0 8px}
+.em-intro-body ul{margin:6px 0 8px}
+.em-intro-body li{font-size:14px;line-height:1.5;padding-top:2px;padding-bottom:2px}
+.em-intro-body li::before{top:8px}
+.em-consent{margin-top:8px;padding-top:2px}
+.em-consent h2.em-ch2{font-size:16px;margin:8px 0 4px}
+.em-intro-body .em-consent p{font-size:13.5px;line-height:1.55;margin:4px 0}
+.em-morebtn{padding:4px 0;min-height:40px;color:var(--blue,#1d4fd8);font-weight:700}
+.em-more{margin:2px 0 6px;padding:4px 12px 2px;background:var(--soft2,#eef4ff);border-radius:12px}
+.em-more[hidden]{display:none}
+.em-eqacts .em-btn{min-height:48px;font-size:16px}
+/* B5: narrow phones (320 wide): the price line of the join screen must not break inside "(税込)" */
+@media (max-width:360px){.em-pricecard .em-amt{font-size:25px;white-space:nowrap}.em-price{font-size:20px}}
+/* B5: short screens (iPhone SE class, 568 high): tighter spacing so the whole first notice is visible without scrolling where possible; the body still scrolls above the buttons when it is not */
+@media (max-height:600px){
+.em-eqacts{gap:8px}.em-eqacts .em-btn{min-height:44px;font-size:15px}
+.em-intro .em-introacts{padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px))}
+.em-intro-body{padding:calc(12px + env(safe-area-inset-top,0px)) 16px 4px}
+.em-intro-body h2{font-size:20px;margin-bottom:4px}
+.em-intro-body li{font-size:13px;line-height:1.45;padding-top:1px;padding-bottom:1px}
+.em-intro-body .em-consent p{font-size:13px;line-height:1.5;margin:3px 0}
+.em-consent h2.em-ch2{font-size:15px;margin:6px 0 2px}
+.em-morebtn{min-height:34px}
+}
+/* B5: wide screens (the PC view of the preview): the join screen is a reading column, not the full window width */
+@media (min-width:700px){.em-full[data-em-full="join"]>*{max-width:520px;margin-left:auto;margin-right:auto}}

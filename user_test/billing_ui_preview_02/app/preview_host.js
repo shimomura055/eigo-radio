@@ -21,6 +21,22 @@
     return realFetch(input, init);
   };
 
+  /* ---- <img> thumbnails: same mapping as the app's adapter (imgMapper): an <img src> relative to the bundle (../<slug>/enduser/thumb.png) is read from the public article folder.
+     Without this the card thumbnails of the preview stayed empty colour boxes (B4 defect N1: the preview mapped fetch() only). ---- */
+  function mapImg(img) {
+    try {
+      var s = img.getAttribute && img.getAttribute('src'); if (!s) return;
+      var abs = new root.URL(s, root.location.href).href;
+      if (abs.indexOf(APP_PARENT) === 0 && abs.indexOf(APP_BASE) !== 0) img.setAttribute('src', PAGES_ROOT + abs.slice(APP_PARENT.length));
+      else if (abs.indexOf(APP_BASE + 'data/') === 0) img.setAttribute('src', PAGES_BASE + abs.slice(APP_BASE.length));
+    } catch (e) { /* fall through unmapped */ }
+  }
+  (function imgMapper() {
+    if (!root.MutationObserver) return;
+    function scan(n) { if (n.nodeType !== 1) return; if (n.tagName === 'IMG') mapImg(n); var l = n.querySelectorAll ? n.querySelectorAll('img') : []; for (var i = 0; i < l.length; i++) mapImg(l[i]); }
+    new root.MutationObserver(function (recs) { recs.forEach(function (r) { [].forEach.call(r.addedNodes, scan); }); }).observe(doc.documentElement, { childList: true, subtree: true });
+  })();
+
   /* ---- silent audio stub: the common webapp's media elements never load or play anything ---- */
   var HM = root.HTMLMediaElement && root.HTMLMediaElement.prototype;
   if (HM) {
@@ -78,5 +94,5 @@
   }
   if (doc.body) initUi(); else doc.addEventListener('DOMContentLoaded', initUi);
   try { if (q.get('tut') !== '1') root.localStorage.setItem('wut01.tutorial_done', 'true'); } catch (e) { /* */ }
-  root.__PVHost = { setOnline: setOnline, savedSlugs: function () { return Object.keys(saved); } };
+  root.__PVHost = { setOnline: setOnline, setSaved: function (slugs) { saved = {}; (slugs || []).forEach(function (s) { saved[s] = 'saved'; }); notify(null); decorateSoon(); }, savedSlugs: function () { return Object.keys(saved); } };
 })(window);

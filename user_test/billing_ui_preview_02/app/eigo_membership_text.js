@@ -66,23 +66,22 @@
   };
 
   var DRAFT = {   // NOT approved. Shown to the user in the preview as 文言案
-    intro: { title: 'eigo-radioへようこそ', lead: '今日から8日目の終わり({end})まで、すべての記事・すべての機能を無料でお使いいただけます。',
-      items: ['すべての記事を自由に聴ける', 'ダウンロード・オフライン再生も使える', '決済情報の登録は不要。無料体験が終わっても、自動で課金されることはありません'],
-      foot: '無料体験が終わったあとも、毎日好きな1記事は無料で利用できます。', button: 'はじめる' },
-    // Usage-data consent (user decision 2026-11-26 USER_02 sec 1: plan 2, built into the first free-trial notice, plain and not heavy; the privacy policy draft sec 2-8 / 5 says the same).
-    // Both answers are equal in weight and order-neutral; the app works the same with either answer.
+    intro: { title: 'eigo-radioへようこそ', lead: '{end}の終わりまで、すべての記事・機能を無料でお使いいただけます。',
+      items: ['決済情報の登録は不要。自動で課金されることはありません。', '体験が終わっても、毎日好きな1記事は無料で利用できます。'], button: 'はじめる' },
+    // Usage-data consent (user decision 2026-11-26 USER_02 sec 1: plan 2, built into the first free-trial notice, plain and not heavy; the privacy policy sec 2-8 / 5 says the same).
+    // B5: ONE short screen. The three notice items (what is sent / to whom / why) are in the lead; the details are one tap away. Both answers equal in weight and order; the app works the same with either answer.
     consent: {
       title: '利用状況の送信について',
-      lead: 'アプリをよりよくするため、アプリの使われ方の記録を、Google(Google LLC)の分析サービスへ送ってもよいか、おたずねします。',
-      what: ['再生や機能の利用状況、購入手続きの進み具合', 'エラーの種類、端末とアプリの情報、おおよその地域', 'アプリごとの識別番号(氏名やApple Accountとは結び付きません)'],
-      whatTitle: '送る情報', notSent: '検索した言葉、お支払い情報、氏名やメールアドレスは送りません。',
-      toTitle: '送信先', to: 'Google LLC(Google アナリティクス)', whyTitle: '目的', why: 'サービスの改善のための集計・分析です。広告には使いません。',
-      freedom: 'どちらを選んでも、すべての機能を同じように使えます。', later: '選んだ内容は、あとからマイページの「利用状況の送信」で変えられます。',
+      lead: 'アプリの使われ方の情報(再生や機能の利用状況、エラーの種類など)を、サービスの改善のため、Google LLC(Google アナリティクス)へ送ってもよいかおたずねします。広告には使いません。',
+      freedom: 'どちらを選んでも、アプリの機能は同じです。あとから、マイページの「利用状況の送信」で変えられます。',
+      more: 'くわしく見る', less: 'とじる',
+      whatTitle: '送る情報', what: ['再生や機能の利用状況、購入手続きの進み具合', 'エラーの種類、端末とアプリの情報、おおよその地域', 'アプリごとの識別番号(氏名やApple Accountとは結び付きません)'],
+      notSentTitle: '送らない情報', notSent: 'お支払い情報、氏名、メールアドレス、Apple Accountの情報、入力した文章、正確な位置情報は送りません。',
       agreeFirst: '同意して始める', declineFirst: '同意しないで始める', agree: '同意する', decline: '同意しない', saveFail: '選択を保存できませんでした。もう一度お試しください。'
     },
     consentSettings: {
       section: '利用状況の送信', row: '利用状況を送信する', on: 'オン', off: 'オフ', unanswered: '未選択',
-      note: 'アプリの使われ方の記録を、Google LLC(Google アナリティクス)へ送り、サービスの改善に役立てます。オフにすると、それ以降は送りません。オンでもオフでも、機能は変わりません。',
+      note: 'アプリの使われ方の情報を、サービス改善のためGoogle LLCへ送ります。オフにすると送りません。どちらでも機能は同じです。',
       offDone: 'オフにしました。これ以降は送信しません。', onDone: 'オンにしました。'
     },
     trialBarLast: '全機能無料体験中　本日まで',   // last trial day (user decision 2026-11-26 USER_02 sec 3-1: plan B = remaining days do not count today; the last day says "本日まで")
@@ -116,7 +115,6 @@
     offlineLockedHint: 'オフラインのため、保存していない記事は開けません。',
     pickSaveFail: '選択を保存できませんでした。もう一度お試しください。',
     deniedToast: 'この記事は、今日は利用できません。有料会員なら、すべての記事を自由にお楽しみいただけます。',
-    deniedSwitchToast: 'この記事は最後まで聴けます。レベルの切り替えは、無料記事として選んだ記事で利用できます。',
     settings: {
       trialA: 'すべての記事・機能をご利用いただけます。', trialB: '無料体験が終わっても、自動で有料会員になることはありません。',
       freeA: '毎日、好きな1記事を全機能でご利用いただけます。', freeB: '有料会員なら、すべての記事を自由にご利用いただけます。', freeJoinLabel: '有料会員',

@@ -66,7 +66,8 @@
     doc.body.appendChild(rootEl);
     return rootEl;
   }
-  function openModal(name, html, ctx) { ensureRoot(); modalName = name; modalCtx = ctx || null; $('em-sheet').innerHTML = html; $('em-modal').hidden = false; $('em-modal').setAttribute('data-em-modal', name); focusFirst($('em-sheet')); }
+  function hideToast() { var tt = rootEl && $('em-toast'); if (tt) { tt.hidden = true; root.clearTimeout(toastTimer); } }   // a short working notice (e.g. "確認しています…") must not stay over the dialog that answers it
+  function openModal(name, html, ctx) { ensureRoot(); hideToast(); modalName = name; modalCtx = ctx || null; $('em-sheet').innerHTML = html; $('em-modal').hidden = false; $('em-modal').setAttribute('data-em-modal', name); focusFirst($('em-sheet')); }
   var modalCtx = null;
   function closeModal() { if (!rootEl) return; modalName = ''; modalCtx = null; $('em-modal').hidden = true; $('em-modal').removeAttribute('data-em-modal'); $('em-sheet').innerHTML = ''; }
   function modalOpen() { return !!modalName; }
@@ -127,25 +128,25 @@
     if (typeof M.getUsageConsent !== 'function') { consentInfo = { consent: 'unanswered', available: false }; return Promise.resolve(consentInfo); }
     return M.getUsageConsent().then(function (r) { consentInfo = r; return r; }, function () { consentInfo = { consent: 'unanswered', available: false }; return consentInfo; });
   }
-  function consentBody(Cn) {
-    return '<h3 class="em-ch">' + esc(Cn.whatTitle) + '</h3>' + ul(Cn.what) + '<p class="em-sub">' + esc(Cn.notSent) + '</p>' +
-      '<h3 class="em-ch">' + esc(Cn.toTitle) + '</h3><p>' + esc(Cn.to) + '</p><h3 class="em-ch">' + esc(Cn.whyTitle) + '</h3><p>' + esc(Cn.why) + '</p>' +
-      '<p><b>' + esc(Cn.freedom) + '</b></p><p>' + esc(Cn.later) + '</p>' +
+  function consentDetails(Cn) {   // the part behind "くわしく見る": what is sent / not sent / the policy
+    return '<h3 class="em-ch">' + esc(Cn.whatTitle) + '</h3>' + ul(Cn.what) + '<h3 class="em-ch">' + esc(Cn.notSentTitle) + '</h3><p>' + esc(Cn.notSent) + '</p>' +
       '<p><a class="em-link" href="' + esc(legalHref(C.legalPages.privacy)) + '" target="_blank" rel="noopener" data-em-legal="privacy">' + esc(A.join.privacy) + '</a></p>';
   }
-  // The first notice. Trial + consent asked: ONE screen = the free-trial points + the consent question + two equal buttons. Consent only (not the trial, e.g. shown again after an unanswered close): the question alone.
+  // The first notice (B5: ONE short screen; the body scrolls only when the screen is small, the two buttons are a separate opaque block under it, never over the text).
+  // Trial + consent asked: the free-trial points (3 lines) + the consent question (what / to whom / why) + "details" + two equal buttons. Consent only (asked again / opened from My Page): the question alone.
   // When the app has no usage-data plugin there is nothing to ask: the old single "はじめる" button.
-  function showIntro(o) {   // o.combined: first launch of the trial (trial points + consent). Otherwise (asked again / opened from My Page) the consent question alone. o.closable: opened by the user from My Page (may leave without answering)
+  function showIntro(o) {   // o.combined: first launch of the trial (trial points + consent). Otherwise the consent question alone. o.closable: opened by the user from My Page (may leave without answering)
     o = o || {};
     var I = D.intro, Cn = D.consent, end = S && S.trialEndsAt ? mdText(S.trialEndsAt - 1) : '', ask = consentPending(), trial = !!o.combined && !!S && S.phase === 'trial';
-    ensureRoot(); var f = $('em-full'); f.setAttribute('data-em-full', 'intro'); f.hidden = false;
-    var head = trial ? '<h2>' + esc(I.title) + '</h2>' + (C.showDraftMarks ? '<p style="text-align:center">' + mark() + '</p>' : '') + '<p>' + esc(fmt(I.lead, { end: end })) + '</p>' + ul(I.items) + '<p class="em-foot">' + esc(I.foot) + '</p>' : '';
+    ensureRoot(); var f = $('em-full'); f.setAttribute('data-em-full', 'intro'); f.hidden = false; hideToast();
+    var head = trial ? '<h2>' + esc(I.title) + '</h2>' + (C.showDraftMarks ? '<p style="text-align:center">' + mark() + '</p>' : '') + ul([fmt(I.lead, { end: end })].concat(I.items)) : '';
     var acts;
     if (!ask) acts = btn('intro-ok', 'em-go', I.button);
     else acts = '<div class="em-eqacts">' + btn('consent-yes', 'em-eq', trial ? Cn.agreeFirst : Cn.agree) + btn('consent-no', 'em-eq', trial ? Cn.declineFirst : Cn.decline) + '</div>' + (o.closable ? '<div class="em-closerow">' + btn('consent-close', 'em-linkbtn', D.close) + '</div>' : '');
-    f.innerHTML = '<div class="em-intro" data-em-intro="' + (ask ? (trial ? 'trial_consent' : 'consent') : 'trial') + '">' + head +
-      (ask ? '<div class="em-consent" data-em-consent-box><h2' + (trial ? ' class="em-ch2"' : '') + '>' + esc(Cn.title) + '</h2><p>' + esc(Cn.lead) + '</p>' + consentBody(Cn) + '</div>' : '') +
-      '<div class="em-introacts">' + acts + '</div></div>';
+    f.innerHTML = '<div class="em-intro" data-em-intro="' + (ask ? (trial ? 'trial_consent' : 'consent') : 'trial') + '"><div class="em-intro-body" data-em-scroll>' + head +
+      (ask ? '<div class="em-consent" data-em-consent-box><h2 class="em-ch2">' + esc(Cn.title) + '</h2><p>' + esc(Cn.lead) + '</p><p><b>' + esc(Cn.freedom) + '</b></p>' +
+        '<button type="button" class="em-linkbtn em-morebtn" data-em-act="consent-more" aria-expanded="false">' + esc(Cn.more) + '</button><div class="em-more" data-em-more hidden>' + consentDetails(Cn) + '</div></div>' : '') +
+      '</div><div class="em-introacts">' + acts + '</div></div>';
     focusFirst(f);
   }
   function chooseConsent(value, fromScreen) {
@@ -160,7 +161,7 @@
 
   /* ---- join screen (common for every entry) ---- */
   function showJoin() {
-    ensureRoot(); var f = $('em-full'); f.setAttribute('data-em-full', 'join'); f.hidden = false;
+    ensureRoot(); var f = $('em-full'); f.setAttribute('data-em-full', 'join'); f.hidden = false; hideToast();
     renderJoin();
     if (!productOk()) loadProduct();
   }
@@ -252,7 +253,7 @@
     };
   }
   function dialogForBlocked(slug, ctx, reason) {
-    if (reason === 'grant_no_switch') { toast(D.deniedSwitchToast); return; }
+    if (!isFree() && !isOffline()) { try { host.diag && host.diag('js.membership.denied_unexpected', { reason: String(reason) }); } catch (e) { /* record only */ } refresh(); return; }   // the plan says this is allowed and the refusal reason is not one the UI knows (any unknown code): never a plan guidance here, only re-read the state
     var unpicked = isFree() && !pickSlug();
     if (isOffline() && !isSaved(slug)) { toast(unpicked ? D.offlineSelectHint : D.offlineLockedHint); return; }
     if (unpicked) { showConfirm(slug, ctx); return; }
@@ -298,7 +299,6 @@
   var lastFetchDenied = { slug: '', t: 0 };
   function showDenied(d) {
     var slug = d && d.slug;
-    if (d && d.reason === 'grant_no_switch') { toast(D.deniedSwitchToast); return; }
     if (!slug) { toast(D.deniedToast); return; }
     blocked(slug, { route: hashName(), resume: function () { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (e) { /* */ } } });
   }
@@ -358,6 +358,7 @@
       case 'consent-yes': chooseConsent('granted', true); return;
       case 'consent-no': chooseConsent('denied', true); return;
       case 'consent-close': closeFull(); scheduleCheck(); return;
+      case 'consent-more': { var mb = $('em-full') && $('em-full').querySelector('[data-em-more]'); if (mb) { var open = mb.hidden; mb.hidden = !open; el.setAttribute('aria-expanded', open ? 'true' : 'false'); el.textContent = open ? D.consent.less : D.consent.more; if (open) { try { mb.scrollIntoView({ block: 'nearest' }); } catch (e) { /* */ } } } return; }
       case 'consent-toggle':
         if (consentInfo && consentInfo.consent === 'unanswered') { if (!fullName() && !modalOpen()) showIntro({ closable: true }); return; }   // never answered: show the full explanation first
         chooseConsent(consentInfo && consentInfo.consent === 'granted' ? 'denied' : 'granted', false); return;
@@ -472,8 +473,7 @@
       var CS = D.consentSettings, st2 = consentInfo.consent, stLabel = st2 === 'granted' ? CS.on : (st2 === 'denied' ? CS.off : CS.unanswered);
       var consWant = '<div data-em-consent-set data-em-sig="' + esc(st2 + '|' + consentMsg) + '"><div class="pl">' + esc(CS.section) + '</div>' +
         '<button type="button" class="setrow" role="switch" aria-checked="' + (st2 === 'granted' ? 'true' : 'false') + '" data-em-act="consent-toggle">' + esc(CS.row) + '<span data-em-consent-state>' + esc(stLabel) + '</span></button>' +
-        '<div class="lvnote" data-em-consent-note>' + esc(CS.note) + '</div><div class="lvnote" data-em-consent-msg role="status">' + esc(consentMsg) + '</div>' +
-        '<a class="setrow" href="' + esc(legalHref(C.legalPages.privacy)) + '" target="_blank" rel="noopener" data-em-legal="privacy">' + esc(A.join.privacy) + '<span>&#8250;</span></a></div>';
+        '<div class="lvnote" data-em-consent-note>' + esc(CS.note) + '</div><div class="lvnote" data-em-consent-msg role="status">' + esc(consentMsg) + '</div>' + '</div>';
       if (!oc || oc.getAttribute('data-em-sig') !== st2 + '|' + consentMsg) {
         var h4 = doc.createElement('div'); h4.innerHTML = consWant; var cn = h4.firstChild;
         if (oc) oc.replaceWith(cn);
