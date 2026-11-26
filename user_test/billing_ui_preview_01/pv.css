@@ -1,0 +1,111 @@
+/* 課金・会員UI 統合プレビュー用の追加CSS(開発用・模擬)。基底は style.css/pc.css(現行アプリ webapp_proto_01 の複製)。
+   この追加分はプレビュー専用で、正式UIには未反映(UI承認前)。 */
+:root{--go:#17a34a;--go2:#0f7d37;--ink:#111}
+body{background:#eef2f9}
+.kari.pvnote{background:#fff1c2}
+body.nonotes .kari.pvnote{display:none}
+/* 状態バー */
+.pvbar{border-radius:14px;padding:9px 14px;margin:2px 0 12px;font-size:13px;line-height:1.5;border:1px solid var(--line);background:#fff;color:var(--muted)}
+.pvbar b{color:var(--navy)}
+.pvbar.trial{background:var(--soft2);border-color:#cfe0ff}
+.pvbar.trial b{font-size:14px}
+.pvbar.offline{background:#fdf0e6;border-color:#f2c9a1;color:#7a4300;font-weight:700}
+.pvbar small{display:block;color:var(--muted);font-weight:600;font-size:12px}
+/* チップ・ロック */
+.chip.free{background:#dcf5e5;color:#0d6b30}
+.chip.saved{background:#eef2f9;color:var(--navy)}
+.chip.warn{background:#fff1c2;color:#7a5b00}
+.thumb .lockb{position:absolute;z-index:3;right:5px;bottom:5px;width:26px;height:26px;border-radius:50%;background:rgba(16,40,94,.88);display:flex;align-items:center;justify-content:center}
+.thumb .lockb svg{width:15px;height:15px;fill:#fff}
+.cardplay.locked{background:#fff;border:1.5px solid #b9cdf7}
+.cardplay.locked svg{fill:var(--navy)}
+/* ボタン */
+.pvbtn{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;border-radius:999px;font-weight:800;font-size:17px;cursor:pointer;text-align:center;padding:0 18px;line-height:1.3}
+.pvbtn.go{border:0;color:#fff;background:linear-gradient(135deg,var(--go),var(--go2));box-shadow:0 6px 16px rgba(15,125,55,.35)}
+.pvbtn.free{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.pvbtn[disabled]{opacity:.55;cursor:default}
+.pvbtn+.pvbtn{margin-top:10px}
+.pvlink{border:0;background:transparent;color:var(--blue);font-weight:700;font-size:14px;cursor:pointer;text-decoration:underline;padding:10px 4px;min-height:44px}
+/* モーダル */
+#pvmodal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:18px}
+#pvmodal.on{display:flex}
+#pvmodal .back{position:absolute;inset:0;background:rgba(10,24,60,.6)}
+.pvsheet{position:relative;width:min(100%,380px);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:24px 22px 20px;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.pvsheet h3{margin:0 0 10px;font-size:20px;color:var(--navy);line-height:1.4}
+.pvsheet p{margin:8px 0;font-size:15px;line-height:1.65}
+.pvsheet ul{margin:10px 0;padding:0;list-style:none}
+.pvsheet li{position:relative;padding:3px 0 3px 26px;font-size:14.5px;line-height:1.55}
+.pvsheet li::before{content:"";position:absolute;left:3px;top:9px;width:11px;height:6px;border-left:3px solid var(--go);border-bottom:3px solid var(--go);transform:rotate(-45deg)}
+.pvsheet .sub{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.pvsheet .price{font-size:22px;font-weight:800;color:var(--navy);margin:12px 0 2px}
+.pvsheet .price small{font-size:13px;color:var(--muted);font-weight:700;margin-left:6px}
+.pvsheet .acts{margin-top:16px}
+.pvsheet .note{margin-top:12px;padding:8px 10px;background:#fff8e1;border:1px dashed #e0c564;border-radius:10px;font-size:12.5px;color:#7a5b00;line-height:1.5}
+/* 全画面案内 */
+.pvfull{position:fixed;inset:0;z-index:110;background:linear-gradient(180deg,#e8f0ff,#fff 55%);display:none;flex-direction:column;justify-content:center;padding:28px 24px;overflow:auto}
+.pvfull.on{display:flex}
+.pvfull .logo{margin-bottom:18px}
+.pvfull h2{text-align:center;color:var(--navy);margin:0 0 10px;font-size:24px}
+.pvfull p{font-size:15px;line-height:1.7}
+.pvfull ul{list-style:none;padding:0;margin:8px 0}
+.pvfull li{position:relative;padding:4px 0 4px 28px;font-size:15px}
+.pvfull li::before{content:"";position:absolute;left:4px;top:11px;width:12px;height:7px;border-left:3px solid var(--go);border-bottom:3px solid var(--go);transform:rotate(-45deg)}
+/* 加入画面 */
+.sub-hero{margin:6px 0 4px}
+.sub-hero h1{font-size:28px;line-height:1.3;color:var(--navy);margin:8px 0 6px}
+.sub-hero p{margin:0;color:var(--muted);font-size:16px;font-weight:700}
+.pvcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 2px 10px rgba(16,40,94,.06)}
+.pvcard h3{margin:0 0 6px;font-size:16px;color:var(--navy)}
+.pvcard ul{margin:6px 0 0;padding:0;list-style:none}
+.pvcard li{position:relative;padding:4px 0 4px 28px;font-size:15px}
+.pvcard li::before{content:"";position:absolute;left:4px;top:11px;width:12px;height:7px;border-left:3px solid var(--go);border-bottom:3px solid var(--go);transform:rotate(-45deg)}
+.pvprice .nm{font-size:13px;color:var(--muted);font-weight:700}
+.pvprice .amt{font-size:34px;font-weight:800;color:var(--navy);line-height:1.2}
+.pvprice .amt small{font-size:15px;margin-left:4px}
+.pvprice .per{font-size:13px;color:var(--text);font-weight:700}
+.trialnote{background:#fff8e1;border:2px solid #f0c34a;border-radius:14px;padding:12px 14px;font-size:14.5px;font-weight:700;color:#5b4300;line-height:1.6;margin:12px 0}
+.terms{font-size:12px;line-height:1.65;color:var(--muted);margin:12px 2px}
+.terms p{margin:5px 0}
+.auxlist{margin:18px 0 8px;border-top:1px solid var(--line);padding-top:6px;display:flex;flex-wrap:wrap;gap:0 14px;justify-content:center}
+/* 設定 */
+.plancard{background:#fff;border:1.5px solid #cfe0ff;border-radius:18px;padding:16px;margin:8px 0 12px}
+.plancard .pl0{font-size:12px;color:var(--muted);font-weight:700}
+.plancard .pn{font-size:24px;font-weight:800;color:var(--navy);margin:2px 0 8px}
+.plancard .pr{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.plancard .pr span:first-child{color:var(--muted);font-weight:700;flex:none}
+.plancard .pr span:last-child{text-align:right;font-weight:700;color:var(--navy)}
+.plancard p{margin:8px 0;font-size:14px;line-height:1.6}
+.plancard .pvbtn{margin-top:12px}
+.restorebox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:4px 14px 10px;margin:8px 0}
+.restorebox .setrow{border:0;padding:6px 0;margin:0;min-height:48px;border-radius:0}
+.restorebox .rnote{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.dlrow .st{font-weight:700}
+.dlrow .st.ok{color:#0d6b30}
+.dlrow .st.ng{color:#7a5b00}
+.applesheet{padding:0;overflow:hidden;background:#f2f2f7;width:min(100%,360px)}
+.applesheet .hd{padding:16px 18px;background:#fff;border-bottom:1px solid #ddd;display:flex;gap:12px;align-items:center}
+.applesheet .ico{width:48px;height:48px;border-radius:11px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.applesheet .bd{padding:14px 18px;font-size:14px}
+.applesheet .bd .pr{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e0e0e5}
+.applesheet .ft{padding:6px 18px 18px}
+.applesheet .ft button{display:block;width:100%;min-height:46px;border-radius:12px;border:0;font-weight:700;font-size:15px;margin-top:8px;cursor:pointer}
+.applesheet .ft .ok{background:#007aff;color:#fff}
+.applesheet .ft .ot{background:#fff;color:#222;border:1px solid #d1d1d6}
+.applesheet .mock{background:#ffe9a8;color:#6b4a00;font-size:12px;font-weight:800;padding:6px 18px;text-align:center}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid #cdd7ee;border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.pvtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-total) + 76px);z-index:130;max-width:min(92vw,420px);background:rgba(16,24,48,.94);color:#fff;border-radius:14px;padding:11px 16px;font-size:14px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.pvtoast[hidden]{display:none}
+.artbody .thumbbig{display:flex;gap:12px;align-items:flex-start;margin:6px 0 10px}
+.artbody h1{font-size:19px;margin:0 0 4px;color:var(--navy)}
+.artbody .en{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.artbody .acts2{display:grid;gap:8px;margin:12px 0}
+.artbody .acts2 .bigbtn{width:100%;justify-content:center}
+.artbody .favrow{display:flex;align-items:center;gap:6px;margin:6px 0}
+.artbody .favrow button{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:999px;min-height:44px;padding:0 14px;font-weight:700;color:var(--navy);cursor:pointer}
+.artbody .favrow button svg{width:20px;height:20px;fill:none;stroke:#d6336c;stroke-width:1.9}
+.artbody .favrow button[aria-pressed=true] svg{fill:#d6336c}
+.dlbtn2{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;border-radius:14px;border:1.5px solid #b9cdf7;background:#fff;color:var(--navy);font-weight:800;font-size:15px;cursor:pointer}
+.dldone2{background:#eaf7ef;border-color:#9fd6b2;color:#0d6b30}
+.sumfull{font-size:14px;color:var(--text);line-height:1.65;margin:8px 0}
+.pvsheet .ttl2{font-size:13px;color:var(--navy);font-weight:800;margin-top:12px}

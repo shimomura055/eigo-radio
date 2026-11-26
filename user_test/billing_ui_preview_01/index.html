@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="ui_verify">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>eigo-radio 課金・会員UI 統合プレビュー(開発用・模擬)</title>
+<link rel="stylesheet" href="shell.css">
+</head>
+<body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<header class="hd">
+  <div><b>eigo-radio 課金・会員 統合UIプレビュー</b> <span class="tg">開発用・模擬(実際の課金は発生しません)</span></div>
+  <button type="button" id="ptoggle" class="ptoggle">操作パネル</button>
+</header>
+<main class="wrap">
+  <aside id="panel" class="panel" aria-label="プレビュー専用の操作パネル(アプリ画面の外)">
+    <div class="ptitle">プレビュー専用 操作パネル<small>アプリの画面ではありません。正式版には入りません。</small></div>
+
+    <section>
+      <h2>1. 会員状態を切り替える(8種)</h2>
+      <div class="presets" id="presets">
+        <button type="button" data-preset="trial">無料体験中</button>
+        <button type="button" data-preset="trial_end">無料体験終了直後</button>
+        <button type="button" data-preset="free_unsel">無料会員・当日記事未選択</button>
+        <button type="button" data-preset="free_sel">無料会員・当日記事選択済み</button>
+        <button type="button" data-preset="paid">有料会員</button>
+        <button type="button" data-preset="canceled">解約済み・契約期間内</button>
+        <button type="button" data-preset="expired">有料契約終了後</button>
+        <button type="button" data-preset="offline">オフライン利用中</button>
+      </div>
+      <div class="cur" id="cur"></div>
+    </section>
+
+    <section>
+      <h2>2. 条件を細かく変える</h2>
+      <label class="fld" id="fld-day">無料体験の日(初回起動=12月5日。8日目の終わりまで)
+        <select id="selday"></select></label>
+      <div class="cur" id="daynote"></div>
+      <label class="fld">今日の無料記事(無料会員のとき)
+        <select id="selart"></select></label>
+      <div class="row2"><button type="button" id="midnight">翌日0時になった(無料枠リセット)</button></div>
+      <label class="chk"><input type="checkbox" id="chkoff"> オフラインにする</label>
+      <label class="chk"><input type="checkbox" id="chkgrace"> 有料会員で契約期限後に通信できない状態(猶予表示・文言案)</label>
+      <label class="fld">定期販促: 前回の案内表示からの経過日数 <b id="promoval">3</b>日(7日以上でホームを開くと表示)
+        <input type="range" id="promo" min="0" max="14" value="3"></label>
+      <div class="row2"><button type="button" id="reopenhome">ホームを開き直す</button><button type="button" id="resetall">最初の状態に戻す</button></div>
+      <label class="chk"><input type="checkbox" id="chknotes" checked> 「文言案・要確認」マークを表示</label>
+    </section>
+
+    <section>
+      <h2>3. 確認画面13種へ直接ジャンプ</h2>
+      <ol class="screens" id="screens"></ol>
+    </section>
+    <section class="small">
+      <h2>メモ</h2>
+      <p>記事カードを押すと記事ページ、▶/ロックを押すと権限判定(模擬)が動きます。購入・復元・解約はすべて模擬です。「文言案・要確認」は承認前の案です。</p>
+      <div class="evlog" id="evlog" aria-live="off"></div>
+    </section>
+  </aside>
+  <section class="stage" aria-label="アプリ画面(スマホ幅)">
+    <div class="phone"><iframe id="frame" src="app.html" title="アプリ画面(模擬)"></iframe></div>
+  </section>
+</main>
+<script src="shell.js"></script>
+</body>
+</html>
