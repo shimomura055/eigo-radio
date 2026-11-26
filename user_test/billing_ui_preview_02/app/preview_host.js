@@ -21,7 +21,7 @@
     return realFetch(input, init);
   };
 
-  /* ---- silent audio stub: the common webapp's <audio> / Audio objects never load or play anything ---- */
+  /* ---- silent audio stub: the common webapp's media elements never load or play anything ---- */
   var HM = root.HTMLMediaElement && root.HTMLMediaElement.prototype;
   if (HM) {
     HM.load = function () { };
