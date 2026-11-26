@@ -1,0 +1,29 @@
+/* 英語ラジオ ちょい聞き 法務・サポートページ共通CSS。配色・書体はWebアプリ(style.css)と同じ値を持つ独立ファイル(アプリのsha固定bundleへ影響させない)。外部フォント・JS・解析なし。 */
+:root{--navy:#10285e;--blue:#1d4fd8;--blue2:#0a3bbd;--soft:#e8f0ff;--soft2:#f3f7ff;--line:#dfe7f5;--text:#14213d;--muted:#5d6b88;--bg:#f7faff}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#eef2f9;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.75;font-size:16px}
+.wrap{max-width:720px;margin:0 auto;background:var(--bg);min-height:100vh;box-shadow:0 0 40px rgba(16,40,94,.08)}
+.hd{display:flex;align-items:center;gap:10px;padding:14px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.hd svg{width:28px;height:28px;flex:none}
+.hd b{color:var(--navy);font-size:16px;letter-spacing:.02em}
+main{padding:8px 18px 28px}
+h1{color:var(--navy);font-size:24px;line-height:1.35;margin:20px 0 6px}
+h2{color:var(--navy);font-size:19px;line-height:1.4;margin:30px 0 8px;padding-left:10px;border-left:4px solid var(--blue)}
+h3{color:var(--blue2);font-size:16px;margin:20px 0 4px}
+p{margin:8px 0}
+ul,ol{margin:8px 0;padding-left:1.5em}
+li{margin:4px 0}
+a{color:var(--blue);overflow-wrap:anywhere}
+.dates{color:var(--muted);font-size:14px;margin:0 0 12px}
+.tablewrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:12px;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:300px;font-size:15px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+th{background:var(--soft2);color:var(--navy);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.mail{display:inline-block;margin:4px 0;padding:10px 16px;min-height:44px;background:#fff;border:1px solid var(--line);border-radius:12px;font-weight:700;text-decoration:none}
+.hist{margin-top:34px;padding-top:6px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.hist h2{font-size:15px;border:0;padding:0;margin:14px 0 4px;color:var(--muted)}
+.ft{padding:18px;border-top:1px solid var(--line);background:#fff;font-size:14px}
+.ft nav a{display:inline-block;min-height:44px;line-height:44px;margin-right:16px}
+.ft p{color:var(--muted);margin:4px 0}
