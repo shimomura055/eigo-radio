@@ -1,0 +1,89 @@
+/* eigo_membership_ui.css -- styles of the iOS membership UI (RELEASE-IOS-BILLING-MEMBERSHIP-01 C5). iOS ONLY, UI APPROVAL PENDING (colours / layout may change).
+   Based on user_test/billing_ui_preview_01/pv.css (same look: join button green and primary, "continue free" black text with a black frame). Every new class is em-* so it cannot clash with the webapp.
+   The webapp's own variables (--navy --blue --line --muted ...) are reused with fallbacks. No wording here (content: strings are not used). */
+:root{--em-go:#17a34a;--em-go2:#0f7d37;--em-ink:#111}
+.em-kari{display:inline-block;margin-left:6px;padding:0 6px;border-radius:6px;background:#fff1c2;font-size:11px;font-weight:700}
+/* list top bar (trial days / today's free article) */
+.em-bar{border-radius:14px;padding:9px 14px;margin:2px 0 12px;font-size:13px;line-height:1.5;border:1px solid var(--line,#dbe3f3);background:#fff;color:var(--muted,#5b6b8c)}
+.em-bar b{color:var(--navy,#10285e)}
+.em-bar.em-trial{background:var(--soft2,#eef4ff);border-color:#cfe0ff}
+.em-bar.em-trial b{font-size:14px}
+/* cards: lock badge (thumbnails / titles / summaries stay normal: nothing is greyed out) */
+.thumb .em-lockb{position:absolute;z-index:3;right:5px;bottom:5px;width:26px;height:26px;border-radius:50%;background:rgba(16,40,94,.88);display:flex;align-items:center;justify-content:center}
+.thumb .em-lockb svg{width:15px;height:15px;fill:#fff}
+.cardplay.em-locked{background:#fff;border:1.5px solid #b9cdf7}
+.cardplay.em-locked svg{fill:var(--navy,#10285e)}
+.chip.em-free{background:#dcf5e5;color:#0d6b30}
+/* buttons */
+.em-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;border-radius:999px;font-weight:800;font-size:17px;cursor:pointer;text-align:center;padding:0 18px;line-height:1.3;font-family:inherit}
+.em-btn.em-go{border:0;color:#fff;background:linear-gradient(135deg,var(--em-go),var(--em-go2));box-shadow:0 6px 16px rgba(15,125,55,.35)}
+.em-btn.em-ok{border:0;color:#fff;background:linear-gradient(135deg,var(--blue,#1d4fd8),var(--blue2,#0a3bbd));box-shadow:0 6px 16px rgba(10,59,189,.35)}
+.em-btn.em-stay{background:#fff;color:var(--em-ink);border:2px solid var(--em-ink)}
+.em-btn[disabled]{opacity:.55;cursor:default}
+.em-btn+.em-btn{margin-top:10px}
+.em-link{border:0;background:transparent;color:var(--blue,#1d4fd8);font-weight:700;font-size:14px;cursor:pointer;text-decoration:underline;padding:10px 4px;min-height:44px;font-family:inherit}
+/* dialogs */
+.em-modal{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:18px}
+.em-modal[hidden]{display:none}
+.em-modal .em-back{position:absolute;inset:0;background:rgba(10,24,60,.6)}
+.em-sheet{position:relative;width:min(100%,380px);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:24px 22px 20px;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.em-sheet h3{margin:0 0 10px;font-size:20px;color:var(--navy,#10285e);line-height:1.4}
+.em-sheet p{margin:8px 0;font-size:15px;line-height:1.65}
+.em-sheet ul,.em-intro ul,.em-card ul{margin:10px 0;padding:0;list-style:none}
+.em-sheet li,.em-intro li,.em-card li{position:relative;padding:3px 0 3px 26px;font-size:14.5px;line-height:1.55}
+.em-sheet li::before,.em-intro li::before,.em-card li::before{content:"";position:absolute;left:3px;top:9px;width:11px;height:6px;border-left:3px solid var(--em-go);border-bottom:3px solid var(--em-go);transform:rotate(-45deg)}
+.em-sheet:focus,.em-full:focus{outline:none}
+.em-sub{font-size:12.5px;color:var(--muted,#5b6b8c);margin:4px 0 0}
+.em-price{font-size:22px;font-weight:800;color:var(--navy,#10285e);margin:12px 0 2px}
+.em-h2{font-size:13px;color:var(--navy,#10285e);font-weight:800;margin-top:12px}
+.em-acts{margin-top:16px}
+/* full screens (intro / join) */
+.em-full{position:fixed;inset:0;z-index:2147482900;background:#fff;overflow:auto;padding:14px 18px calc(28px + env(safe-area-inset-bottom,0px));padding-top:calc(14px + env(safe-area-inset-top,0px))}
+.em-full[hidden]{display:none}
+.em-topbar{margin:0 0 4px}
+.em-back-btn{border:0;background:transparent;color:var(--blue,#1d4fd8);font-weight:800;font-size:16px;min-height:44px;padding:0;cursor:pointer;font-family:inherit}
+.em-jtitle{margin:4px 0 0;color:var(--navy,#10285e);font-size:15px}
+.em-hero h1{font-size:28px;line-height:1.3;color:var(--navy,#10285e);margin:8px 0 6px}
+.em-hero p{margin:0;color:var(--muted,#5b6b8c);font-size:16px;font-weight:700}
+.em-card{background:#fff;border:1px solid var(--line,#dbe3f3);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 2px 10px rgba(16,40,94,.06)}
+.em-card h3{margin:0 0 6px;font-size:16px;color:var(--navy,#10285e)}
+.em-pricecard .em-nm{font-size:13px;color:var(--muted,#5b6b8c);font-weight:700}
+.em-pricecard .em-amt{font-size:34px;font-weight:800;color:var(--navy,#10285e);line-height:1.2}
+.em-pricecard .em-per{font-size:13px;color:var(--text,#1c2740);font-weight:700}
+.em-trialnote{background:#fff8e1;border:2px solid #f0c34a;border-radius:14px;padding:12px 14px;font-size:14.5px;font-weight:700;color:#5b4300;line-height:1.6;margin:12px 0}
+.em-msg{padding:10px 12px;border-radius:12px;background:var(--soft2,#eef4ff);font-size:14px;margin:12px 0}
+.em-terms{font-size:12px;line-height:1.65;color:var(--muted,#5b6b8c);margin:12px 2px}
+.em-terms p{margin:5px 0}
+.em-aux{margin:18px 0 8px;border-top:1px solid var(--line,#dbe3f3);padding-top:6px;display:flex;flex-wrap:wrap;gap:0 14px;justify-content:center}
+.em-intro{min-height:100%;display:flex;flex-direction:column;justify-content:center}
+.em-intro h2{text-align:center;color:var(--navy,#10285e);margin:0 0 10px;font-size:24px}
+.em-intro p{font-size:15px;line-height:1.7}
+.em-intro .em-foot{color:var(--muted,#5b6b8c);font-size:13.5px}
+/* My Page */
+.em-plan{background:#fff;border:1.5px solid #cfe0ff;border-radius:18px;padding:16px;margin:8px 0 12px}
+.em-pl0{font-size:12px;color:var(--muted,#5b6b8c);font-weight:700}
+.em-pn{font-size:24px;font-weight:800;color:var(--navy,#10285e);margin:2px 0 8px}
+.em-pr{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line,#dbe3f3);font-size:14px}
+.em-pr span:first-child{color:var(--muted,#5b6b8c);font-weight:700;flex:none}
+.em-pr span:last-child{text-align:right;font-weight:700;color:var(--navy,#10285e)}
+.em-plan p{margin:8px 0;font-size:14px;line-height:1.6}
+.em-plan .em-btn{margin-top:12px}
+.em-pl{font-weight:800;color:var(--navy,#10285e);margin:18px 0 6px}
+.em-restorebox{background:#fff;border:1px solid var(--line,#dbe3f3);border-radius:14px;padding:4px 14px 10px;margin:8px 0}
+.em-restorebox .setrow{border:0;padding:6px 0;margin:0;min-height:48px;border-radius:0;width:100%}
+.em-rnote{font-size:12px;color:var(--muted,#5b6b8c);line-height:1.6;margin:0 0 6px}
+.em-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-total,64px) + 76px);z-index:2147483100;max-width:min(92vw,420px);background:rgba(16,24,48,.94);color:#fff;border-radius:14px;padding:11px 16px;font-size:14px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.em-toast[hidden]{display:none}
+/* usage-data consent (first notice + My Page). The two answers share ONE class (.em-eq): same size, same colours, same weight; neither is the highlighted default. */
+.em-btn.em-eq{background:#fff;color:var(--em-ink);border:2px solid var(--em-ink)}
+.em-eqacts{display:flex;flex-direction:column;gap:10px}
+.em-eqacts .em-btn+.em-btn{margin-top:0}
+.em-introacts{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line,#dbe3f3);padding:12px 0 2px;margin-top:8px}
+.em-intro{justify-content:flex-start}
+.em-consent{border-top:1px solid var(--line,#dbe3f3);margin-top:12px;padding-top:6px}
+.em-consent h2{text-align:left;font-size:19px;margin:10px 0 6px}
+.em-intro .em-consent p,.em-intro .em-consent li{font-size:14px;line-height:1.6}
+.em-consent li::before{width:5px!important;height:5px!important;border:0!important;border-radius:50%;background:var(--muted,#5b6b8c);transform:none!important;top:12px!important;left:8px!important}
+.em-consent .em-ch{margin:12px 0 2px;font-size:14px;color:var(--navy,#10285e)}
+.em-closerow{text-align:center;margin-top:6px}
+.em-linkbtn{border:0;background:transparent;color:var(--muted,#5b6b8c);font-size:14px;text-decoration:underline;padding:10px;min-height:44px;cursor:pointer;font-family:inherit}

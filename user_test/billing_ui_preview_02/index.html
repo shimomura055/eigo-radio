@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="ui_verify">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>会員UI 操作プレビュー(実アプリのビルド物から生成)</title>
+<link rel="stylesheet" href="shell.css">
+</head>
+<body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<header class="hd">
+  <b>会員UI 操作プレビュー</b>
+  <span>中の画面は、実際のiPhoneアプリと同じ画面プログラム(共通webapp+会員UI)です。権限判定・購入・音声は表示専用の模擬で、音は鳴りません。</span>
+</header>
+<main class="wrap">
+  <section class="stage" aria-label="アプリ画面">
+    <div class="phone" id="phone"><iframe id="app" title="アプリ画面" src="about:blank"></iframe></div>
+    <div class="navrow">
+      <button type="button" data-go="#/home">ホーム</button><button type="button" data-go="#/me">マイページ</button><button type="button" data-go="#/review">復習帳</button><button type="button" data-go="#/fav">お気に入り</button><button type="button" data-go="#/search">検索</button>
+      <span class="sep"></span>
+      <button type="button" id="w-phone" class="on">スマホ幅(390)</button><button type="button" id="w-pc">PC幅</button>
+    </div>
+  </section>
+  <aside class="panel" aria-label="状態切替パネル">
+    <h2>状態の切替</h2>
+    <p class="note">状態を変えると、その状態でアプリを起動し直します。</p>
+    <fieldset id="f-scn"><legend>利用状態</legend>
+      <label><input type="radio" name="scn" value="trial" checked> 無料体験中</label>
+      <label><input type="radio" name="scn" value="trial_end"> 体験終了直後(終了案内が出る)</label>
+      <label><input type="radio" name="scn" value="free_unpicked"> 無料会員(今日の記事を未選択)</label>
+      <label><input type="radio" name="scn" value="free_picked"> 無料会員(今日の記事を選択済み)</label>
+      <label><input type="radio" name="scn" value="periodic"> 無料会員(定期の案内が出る)</label>
+      <label><input type="radio" name="scn" value="paid"> 有料会員</label>
+      <label><input type="radio" name="scn" value="canceled"> 有料会員(自動更新停止済み)</label>
+      <label><input type="radio" name="scn" value="post_paid"> 有料期間の終了直後(終了案内が出る)</label>
+    </fieldset>
+    <div class="row"><label>体験の日(1〜8日目) <select id="s-day"></select></label></div>
+    <div class="row"><label>今日の無料記事 <select id="s-pick"></select></label></div>
+    <div class="row"><label><input type="checkbox" id="c-first"> 初回起動として始める(最初の案内を出す)</label></div>
+    <fieldset><legend>利用状況の送信(同意)</legend>
+      <label><input type="radio" name="consent" value="unanswered" checked> 未回答</label>
+      <label><input type="radio" name="consent" value="granted"> 同意済み</label>
+      <label><input type="radio" name="consent" value="denied"> 同意しない</label>
+      <label><input type="radio" name="consent" value="none"> アプリに送信機能なし</label>
+    </fieldset>
+    <fieldset id="f-saved"><legend>オフライン保存済みの記事</legend><div id="saved-list">読み込み中…</div></fieldset>
+    <fieldset><legend>購入などの模擬結果(次の操作から反映)</legend>
+      <div class="row"><label>購入 <select id="s-buy"><option value="success">成功</option><option value="failed">失敗</option><option value="pending">承認待ち</option><option value="cancelled">取りやめ</option><option value="unverified">確認できない</option></select></label></div>
+      <div class="row"><label>購入の復元 <select id="s-restore"><option value="found">見つかる</option><option value="none">契約なし</option><option value="failed">通信失敗</option></select></label></div>
+      <div class="row"><label>価格の取得 <select id="s-product"><option value="ok">成功</option><option value="fail">失敗</option></select></label></div>
+    </fieldset>
+    <div class="row btns"><button type="button" id="b-apply" class="primary">この状態で起動し直す</button></div>
+    <h2>操作</h2>
+    <div class="row btns"><button type="button" id="b-day">日付を1日進める(アプリを開いたまま)</button></div>
+    <div class="row btns"><button type="button" id="b-off">オフラインにする / 戻す</button></div>
+    <p class="note" id="status">-</p>
+    <details class="diff"><summary>実アプリとの違い(模擬の範囲)</summary>
+      <ul><li>実際の音声再生・購入シート・Keychain・日付をまたぐ実時間は再現しません(表示専用の模擬)。</li>
+      <li>ダウンロードは行いません(保存済みの記事は上の指定どおりに表示)。</li>
+      <li>利用状況の送信は、選んだ内容を画面上で保持するだけで、どこにも送りません。</li></ul>
+    </details>
+  </aside>
+</main>
+<script src="shell.js"></script>
+</body>
+</html>

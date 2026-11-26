@@ -1,0 +1,1 @@
+window.EIGO_HOST_CONFIG = {"schema":1,"preview":true,"pagesBase":"https://shimomura055.github.io/eigo-radio/user_test/webapp_proto_01/","pagesRoot":"https://shimomura055.github.io/eigo-radio/user_test/"};

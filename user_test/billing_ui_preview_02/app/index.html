@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ja">
+<head><meta name="robots" content="noindex,nofollow"><meta name="eigo-radio-dev-page" content="v1" data-purpose="ui_verify">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="wut-build" content="43a6e8ac2900">
+<script src="upd.js?v=43a6e8ac2900"></script>
+<title>eigo-radio(Trial試作)</title>
+<link rel="stylesheet" href="style.css?v=43a6e8ac2900">
+<link rel="stylesheet" href="srs.css?v=43a6e8ac2900">
+<link rel="stylesheet" href="pc.css?v=43a6e8ac2900">
+</head>
+<body><div id="eigo-radio-dev-banner" style="background:#fff3cd;border:1px solid #e0c36a;padding:6px 10px;font-size:.85rem;margin:0 0 6px;color:#222">開発・Trial用ページです(Production判断用ではありません)</div>
+<div id="app">
+  <div id="view" role="main"></div>
+</div>
+<div id="mini" hidden></div>
+<div id="bubble" role="dialog" aria-label="本文中の意味" hidden></div>
+<div id="dock" hidden>
+  <div class="capwrap" id="capwrap"><div id="jacap" class="jacap" lang="ja" aria-live="polite"></div><i class="capbar" aria-hidden="true"><b></b></i><i class="capfade" aria-hidden="true"></i></div>
+  <div id="ctl" class="panel">
+    <div class="seekrow"><span id="tcur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="再生位置"><span id="ttot">0:00</span></div>
+    <div class="ctrl"><button type="button" class="capsw" id="capsw" role="switch" aria-checked="true" aria-label="日本語字幕"><span class="cslbl">字幕</span><i class="cstrack" aria-hidden="true"><b>ON</b><i class="csknob"></i></i></button><button type="button" class="speed" id="speedbtn" aria-label="再生速度 1.00x" aria-haspopup="true" aria-expanded="false">1.00x</button><button type="button" class="skip" id="back10" aria-label="10秒戻る">&minus;10</button><button type="button" class="pp" id="pp" aria-label="再生"></button><button type="button" class="skip" id="fwd10" aria-label="10秒進む">+10</button></div>
+  </div>
+  <div id="ratepop" role="group" aria-label="再生速度" hidden><input type="range" id="ratespd" min="0.5" max="1.5" step="0.05" value="1" aria-label="再生速度" aria-valuetext="再生速度 1.00x"><span class="rateval" id="rateval" aria-live="off">1.00x</span><button type="button" id="ratereset" class="on" aria-label="再生速度を1.0倍に戻す">1.0x</button></div>
+</div>
+<nav id="nav" aria-label="メインナビゲーション">
+  <a href="#/home" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>ホーム</span></a>
+  <a href="#/search" data-tab="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none"/><path d="M16.5 16.5L21 21" fill="none"/></svg><span>記事を探す</span></a>
+  <a href="#/review" data-tab="review"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none"/><path d="M12 6v14" fill="none"/></svg><span>復習帳</span></a>
+  <a href="#/me" data-tab="me"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none"/><path d="M4 21c1-5 5-6 8-6s7 1 8 6" fill="none"/></svg><span>マイページ</span></a>
+</nav>
+<div id="floatstack"><div id="sp" class="sentpanel" hidden></div><button type="button" id="followbtn" hidden>再生位置へ</button></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="tut" hidden></div>
+<audio id="aud" preload="metadata"></audio>
+<link rel="stylesheet" href="eigo_membership_ui.css"><script src="preview_config.js"></script><script src="preview_native.js"></script><script src="preview_host.js"></script><script src="eigo_membership_bridge.js"></script><script src="eigo_membership_text.js"></script><script src="eigo_membership_ui.js"></script>
+<script src="pwcard.js?v=43a6e8ac2900"></script>
+<script src="srs.js?v=43a6e8ac2900"></script>
+<script src="review.js?v=43a6e8ac2900"></script>
+<script src="bubble.js?v=43a6e8ac2900"></script>
+<script src="app.js?v=43a6e8ac2900"></script>
+</body>
+</html>
