@@ -204,6 +204,7 @@
       return refresh().then(function () {
         if (res === 'success') { closeModal(); closeFull(); toast(D.buyOk); try { root.location.hash = '#/me'; } catch (e) { /* */ } }
         else if (res === 'cancelled') { closeModal(); }
+        else if (res === 'already_active') { closeModal(); /* USER_05 G2: a paid contract already exists; the state refresh above shows it (join screen note alreadyPaid). No joined message. */ }
         else if (res === 'pending') simpleNotice('buy_pending', D.buyPendingTitle, D.buyPending);
         else if (res === 'unverified') simpleNotice('buy_unverified', D.buyUnverifiedTitle, D.buyUnverified);
         else if (res === 'busy') { /* the native side is already handling one purchase */ }
