@@ -59,7 +59,7 @@
   var HM = root.HTMLMediaElement && root.HTMLMediaElement.prototype;
   if (HM) {
     HM.load = function () { };
-    HM.play = function () { var el = this; try { Object.defineProperty(el, 'paused', { configurable: true, get: function () { return false; } }); } catch (e) { /* */ } try { el.dispatchEvent(new root.Event('play')); el.dispatchEvent(new root.Event('playing')); } catch (e) { /* */ } return Promise.resolve(); };
+    HM.play = function () { var el = this; try { var cu = root.__WUL && root.__WUL.getCur && root.__WUL.getCur(); if (cu && root.__PV && root.__PV.authorizeStart && !root.__PV.authorizeStart(cu.slug)) return Promise.reject(new Error('entitlement_denied')); } catch (e) { /* display stand-in only */ } try { Object.defineProperty(el, 'paused', { configurable: true, get: function () { return false; } }); } catch (e) { /* */ } try { el.dispatchEvent(new root.Event('play')); el.dispatchEvent(new root.Event('playing')); } catch (e) { /* */ } return Promise.resolve(); };
     HM.pause = function () { var el = this; try { Object.defineProperty(el, 'paused', { configurable: true, get: function () { return true; } }); } catch (e) { /* */ } try { el.dispatchEvent(new root.Event('pause')); } catch (e) { /* */ } };
   }
 

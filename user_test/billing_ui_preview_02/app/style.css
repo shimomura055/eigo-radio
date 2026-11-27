@@ -185,17 +185,21 @@ a.setrow{text-decoration:none}
 #tut.ctxstep .dim{background:rgba(10,24,60,.6)}
 #tut .ring.ctx{border:2px solid rgba(255,255,255,.92);box-shadow:0 0 0 3px rgba(255,255,255,.18);border-radius:18px}
 #tut .ring.main{border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 24px rgba(90,150,255,1)}
-#tut .tip{position:absolute;left:50%;transform:translateX(-50%);width:min(92vw,420px);background:#fff;border-radius:18px;padding:16px 18px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);color:var(--text)}
-#tut .tip h3{margin:0 0 6px;font-size:18px;color:var(--navy)}
-#tut .tip p{margin:4px 0;font-size:14.5px;line-height:1.6}
-#tut .tip .lvs{background:var(--soft2);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
-#tut .tip .foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
-#tut .dots{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
-#tut .dots i{width:8px;height:8px;border-radius:50%;background:#c9d6ee;display:block}
-#tut .dots i.on{background:var(--blue)}
-#tut .btns{display:flex;gap:8px}
-#tut .btns button{min-height:44px;border-radius:999px;padding:0 18px;font-weight:800;cursor:pointer;border:1.5px solid #b9cdf7;background:#fff;color:var(--navy)}
-#tut .btns button.pri{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:0}
+/* FINAL-UI-INTEGRATION 委任_02 ①(ユーザー原文B・C): 説明Windowは全ページ共通の太枠線+紺色(var(--navy)=#10285e。2026-11-27 USER_03で赤→紺。白地で約14:1)で通常のアプリ画面と区別し、文字サイズ・ボタン寸法は全ページ同一
+   (1枚目の旧値=見出し18px・本文14.5px・ボタン16px/高44px を固定。ページごとの縮小は廃止)。収まらない時は配置(上下・スクロール位置・ハイライト範囲)で解決し、
+   最後の手段は本文側のスクロール(見出しと操作ボタンは常に表示=.tbodyだけが縮む) */
+#tut .tip{position:absolute;left:50%;transform:translateX(-50%);width:min(92vw,420px);background:#fff;border:4px solid var(--navy);border-radius:18px;padding:14px 16px 12px;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 14px 40px rgba(0,0,0,.45);color:var(--navy);display:flex;flex-direction:column;overflow:hidden}
+#tut .tip h3{flex:none;margin:0 0 6px;font-size:18px;color:var(--navy)}
+#tut .tip .tbody{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+#tut .tip p{margin:4px 0;font-size:14.5px;line-height:1.6;color:var(--navy);font-weight:700}
+#tut .tip .lvs{background:var(--soft2);border:1px solid #b9cdf7;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;color:var(--navy);font-weight:700}
+#tut .tip .foot{flex:none;display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
+#tut .dots{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--navy);font-weight:700}
+#tut .dots i{width:8px;height:8px;border-radius:50%;background:#c5d0ea;display:block}
+#tut .dots i.on{background:var(--navy)}
+#tut .btns{display:flex;gap:6px}
+#tut .btns button{box-sizing:border-box;flex:none;min-width:76px;height:44px;min-height:44px;padding:0 12px;border-radius:999px;font-size:16px;font-weight:800;line-height:1;cursor:pointer;border:2.5px solid var(--navy);background:#fff;color:var(--navy);white-space:nowrap}
+#tut .btns button.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
 @media(max-width:380px){
   .cgrid{grid-template-columns:76px minmax(0,1fr) 44px}
   .cgrid .thumb{width:76px;height:76px}
@@ -204,6 +208,8 @@ a.setrow{text-decoration:none}
   .ctrl .pp{width:54px;height:54px}
   .lvseg button{font-size:15px}
   .stat b{font-size:21px}
+  #tut .tip{padding-left:12px;padding-right:12px}   /* USER_03 ①: 小さい画面でもスキップ/戻る/次へ(はじめる)の3つを1行に収め、ボタン内の余白(左右8px)を確保 */
+  #tut .btns button{padding:0 8px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .thumb{flex:none}
@@ -238,15 +244,9 @@ a.setrow{text-decoration:none}
 #followbtn{align-self:flex-end;z-index:35;border:0;background:var(--navy);color:#fff;font-weight:800;font-size:13.5px;min-height:44px;padding:0 16px;border-radius:999px;box-shadow:0 6px 16px rgba(16,40,94,.4);cursor:pointer}
 #followbtn[hidden]{display:none}
 #tut .tip .tbody p{margin:4px 0;font-size:14.5px;line-height:1.55}
-#tut .tip .fine2{font-size:12.5px;color:#5d6b88}
-#tut .tip.compact{padding:10px 14px 8px}
-#tut .tip.compact h3{font-size:16px;margin-bottom:2px}
-#tut .tip.compact .tbody p,#tut .tip.compact .lvs{font-size:13px;line-height:1.45;margin:3px 0}
-#tut .tip.compact .lvs{padding:5px 8px}
+#tut .tip .fine2{font-size:12.5px;color:var(--navy)}
 #tut .tip .foot{flex-wrap:wrap}
 #tut .btns{flex-wrap:wrap}
-#tut .btns button{white-space:nowrap}
-#tut .tip.compact .btns button{padding:0 12px;font-size:13px}
 
 /* dock: 画面下部固定(原文§1-1 確定仕様) 上=日本語キャプチャ → 中=再生操作 → 下=#nav。逆転させない */
 #dock{position:fixed;left:50%;transform:translateX(-50%);width:min(100%,var(--colw));bottom:var(--nav-total);z-index:38;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -6px 16px rgba(16,40,94,.08);padding:6px 10px 6px}
@@ -308,14 +308,15 @@ body.hasdock #toast{bottom:calc(var(--nav-total) + var(--dock-h) + 12px)}
 .wk{cursor:pointer;padding:7px 9px;margin:0 -9px;border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}   /* 縦横のpaddingはinline boxの当たり判定だけを広げ、行の高さ・折返しは変えない(負margin) */
 .wk:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
 .jacap[data-man] .cap::before{content:"選択中の文";display:inline-block;margin-right:8px;padding:0 8px;border-radius:999px;background:#fff1b8;color:#6b5200;font-size:11px;font-weight:800;vertical-align:1px}
-#bubble{position:fixed;z-index:36;box-sizing:border-box;width:min(92vw,320px);background:#fff;border:1.5px solid #b9cdf7;border-radius:14px;box-shadow:0 8px 22px rgba(16,40,94,.28);padding:6px 12px 10px;overflow-y:auto;overscroll-behavior:contain;overflow-wrap:anywhere;color:var(--text)}
+#bubble{position:fixed;z-index:36;box-sizing:border-box;width:min(92vw,320px);background:#fff;border:1.5px solid #b9cdf7;border-radius:14px;box-shadow:0 8px 22px rgba(16,40,94,.28);padding:6px 12px 0;overflow-y:auto;overscroll-behavior:contain;overflow-wrap:anywhere;color:var(--text)}   /* FINAL-UI-INTEGRATION 委任_02 ⑥: 下余白は .bub-act/.bub-ja 側へ(固定した操作行の下に余白が残るように) */
 #bubble[hidden]{display:none}
-#bubble .bub-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px}
+#bubble .bub-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px;position:sticky;top:0;z-index:1;background:#fff}   /* ⑥: 長い説明で吹き出し内をスクロールしても見出し(閉じる)と操作行(保存・閉じる)は常に見える */
 #bubble .bub-lab{font-size:11.5px;font-weight:800;color:var(--blue2);letter-spacing:.04em}
 #bubble .bub-x{flex:none;width:44px;height:44px;margin:-8px -10px -8px 0;border:0;background:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer;border-radius:999px}
 #bubble .bub-en{font-weight:800;font-size:16px;color:var(--navy);margin:0 0 2px}
 #bubble .bub-ja{font-size:15px;line-height:1.55;color:#27406f}
-#bubble .bub-act{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+#bubble .bub-ja:last-child{padding-bottom:10px}
+#bubble .bub-act{display:flex;align-items:center;gap:10px;margin-top:8px;padding:0 0 10px;flex-wrap:wrap;position:sticky;bottom:0;z-index:1;background:#fff}
 #bubble .bub-more{border:1.5px solid var(--blue);background:#fff;color:var(--blue2);font-weight:800;font-size:13px;min-height:44px;border-radius:999px;padding:0 14px;cursor:pointer}
 #bubble .bub-save{min-height:44px;min-width:56px;padding:0 10px;font-size:13px}   /* WUR 02e: 吹き出しの保存トグル(学ぶ画面と同じstore.toggle)。320幅でも「詳しく見る」が同じ行に残るよう詰める */
 @media(max-width:360px){#bubble .bub-act{gap:6px}#bubble .bub-more{padding:0 8px;font-size:12px}#bubble .bub-save{min-width:0;padding:0 8px}}

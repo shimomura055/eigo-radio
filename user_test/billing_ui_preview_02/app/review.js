@@ -49,7 +49,6 @@
       if (m.redoOk) h += '<button type="button" class="bigbtn srs-start srs-redo" data-srs-redo>もう一度復習する</button>';
     }
     if (m.netfail) h += '<div class="srs-warn" data-srs-warn="netfail" data-srs-netfail="' + m.netfail + '">通信できなかった項目が' + m.netfail + '件あります。今回は飛ばしました(予定は変わりません)。<button type="button" class="srs-link" data-srs-retry>再読込</button></div>';
-    if (m.orphans.length) h += '<div class="srs-warn" data-srs-warn="orphan" data-srs-orphan-count="' + m.orphans.length + '">元データが見つかりません: ' + m.orphans.length + '件(出題・評価の対象外)<button type="button" class="srs-link" data-srs-remove-orphans>まとめて解除</button></div>';
     h += '<h3 class="srs-h3">保存した表現 ' + m.items.length + '件</h3>';
     /* APP-UI-UNDO-BUILD-01 ⑧: 解除直後の項目(pend)は同じ位置に残し、青「解除」→赤「元に戻す」へ。保存件数(見出し)は保存中の実データ(m.items)のみ数える */
     (m.rows || m.items.map(function (x) { return { it: x, pend: false }; })).forEach(function (r) {
@@ -57,7 +56,7 @@
       h += '<div class="kpi srs-row' + (orph ? ' srs-orph' : '') + (r.pend ? ' srs-pend' : '') + '" data-srs-row="' + esc(it.key) + '"' + (r.pend ? ' data-srs-pending="1"' : '') + '><b class="srs-rowen">' + esc(it.en) + '</b>' +
         (r.pend ? '<button type="button" class="save srs-unsave srs-undo" data-srs-undo="' + esc(it.key) + '" aria-label="' + esc(it.en) + ' の保存解除を元に戻す">元に戻す</button>'
           : '<button type="button" class="save srs-unsave" data-srs-unsave="' + esc(it.key) + '" aria-label="' + esc(it.en) + ' の保存を解除">解除</button>') +
-        '<span class="m">' + esc(LVNAME[it.level] || it.level) + (orph ? ' / 元データが見つかりません' : ' / 次回 ' + (it.state === 'new' ? '未学習' : esc(it.due))) + '</span></div>';
+        '<span class="m">' + esc(LVNAME[it.level] || it.level) + (orph ? ' / データなし' : ' / 次回 ' + (it.state === 'new' ? '未学習' : esc(it.due))) + '</span></div>';
     });
     return h + '</section>';
   }
@@ -165,18 +164,23 @@
       V.status = {}; V.resolved = {};
       var arts = {}, jobs = Object.keys(slugs).map(function (slug) {
         if (deps.hasArticle && !deps.hasArticle(slug)) { arts[slug] = { orphan: true }; return Promise.resolve(); }
-        return Promise.resolve().then(function () { return deps.loadArticle(slug); }).then(function (a) { arts[slug] = { art: a }; }, function () { arts[slug] = { net: true }; });
+        return Promise.resolve().then(function () { return deps.loadArticle(slug); }).then(function (a) { arts[slug] = { art: a }; }, function (e) { arts[slug] = (e && (e.status === 404 || e.status === 410)) ? { orphan: true } : { net: true }; });   // USER_03 ④-2: 確定的な不存在(HTTP 404/410)=データなし。ネットワークエラー/タイムアウト/5xx等=通信失敗(データなしと表示しない・再読込で再試行)
       });
       return Promise.all(jobs).then(function () {
+        var extraJobs = [];
         items.forEach(function (i) {
           var a = arts[i.slug];
           if (a.net) { V.status[i.key] = 'netfail'; return; }
           if (a.orphan) { V.status[i.key] = 'orphan'; return; }
           var pwi = lookup(a.art, i.level, i.en, deps.bases ? deps.bases(i.slug) : undefined);   // 保存レベルのみ。別レベル代用禁止
-          if (!pwi) { V.status[i.key] = 'orphan'; return; }
-          V.status[i.key] = 'ok'; V.resolved[i.key] = pwi;
+          if (pwi) { V.status[i.key] = 'ok'; V.resolved[i.key] = pwi; return; }
+          if (!deps.lookupExtra) { V.status[i.key] = 'orphan'; return; }
+          /* W15: 現在版で見つからない時だけ補助pack(review_extra)を引く(現在版を優先)。404/不正=データなし。通信失敗=netfail(データなしにしない) */
+          extraJobs.push(Promise.resolve().then(function () { return deps.lookupExtra(i.slug, i.level, i.en); }).then(function (x) {
+            if (x) { V.status[i.key] = 'ok'; V.resolved[i.key] = x; } else V.status[i.key] = 'orphan';
+          }, function (e) { V.status[i.key] = (e && (e.status === 404 || e.status === 410)) ? 'orphan' : 'netfail'; }));
         });
-        return { st: st, items: items };
+        return Promise.all(extraJobs).then(function () { return { st: st, items: items }; });
       });
     }
     /* ② 同日再復習の対象・可否(保存データから毎回導出。新しい永続データは持たない)。
@@ -197,7 +201,7 @@
       var orphanKeys = {}, netfail = 0; items.forEach(function (i) { if (V.status[i.key] === 'orphan') orphanKeys[i.key] = 1; if (V.status[i.key] === 'netfail') netfail++; });
       var future = items.filter(function (i) { return i.state !== 'new' && i.due > t && V.status[i.key] !== 'orphan'; }).map(function (i) { return i.due; }).sort()[0];
       var newShown = part.queue.filter(function (i) { return i.state === 'new'; }).length;
-      return { storeStatus: p.st.status, items: items, queue: part.queue, orphans: items.filter(function (i) { return orphanKeys[i.key]; }), orphanKeys: orphanKeys, netfail: netfail, nextDue: future,
+      return { storeStatus: p.st.status, items: items, queue: part.queue, orphanKeys: orphanKeys, netfail: netfail, nextDue: future,
         counts: { remaining: part.queue.length, newShown: newShown, newDeferred: bq.counts.newDeferred }, rows: rowsModel(items),
         redoOk: p.st.status === 'ok' && redoCalc(items, p.st.state.settings).eligible };
     }
@@ -264,7 +268,6 @@
       if ((b = t.closest('[data-srs-grade]'))) return grade(b.getAttribute('data-srs-grade'));
       if ((b = t.closest('[data-srs-undo]'))) return undo(b.getAttribute('data-srs-undo'));
       if ((b = t.closest('[data-srs-unsave]'))) return unsave(b.getAttribute('data-srs-unsave'));
-      if ((b = t.closest('[data-srs-remove-orphans]'))) { store.removeMany(V.model.orphans.map(function (i) { return i.key; })); return showHome(); }
       if ((b = t.closest('[data-srs-end]')) || (b = t.closest('[data-srs-home]')) || (b = t.closest('[data-srs-retry]'))) return showHome();
       if ((b = t.closest('[data-srs-reset]'))) { dismiss(); store.resetAfterFailure(); return showHome(); }
     }

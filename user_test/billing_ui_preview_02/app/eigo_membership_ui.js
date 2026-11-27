@@ -302,6 +302,8 @@
     var iel = t.closest(INTENT_SEL); if (iel) setIntent(iel);   // the operation "open / play this article": the one-shot intent (see above); recorded for allowed articles too (native may still refuse a stale state)
     var om = t.closest('[data-omakase]');
     if (om) { if (isFree()) { intent = null; e.preventDefault(); e.stopImmediatePropagation(); decorateSoon(); } return; }   // the free plan has no omakase (the button is hidden; a stale tap does nothing and no guidance is shown)
+    var sq = t.closest('[data-seq]');
+    if (sq) { if (isFree()) { intent = null; e.preventDefault(); e.stopImmediatePropagation(); decorateSoon(); } return; }   // the free plan has no continuous play (USER_06; the buttons are hidden): a stale tap starts nothing and no guidance is shown
     var pl = t.closest('[data-play]'), op = pl ? null : t.closest('[data-open]'), src = pl || op;
     if (!src) return;
     var slug = pl ? pl.getAttribute('data-play') : op.getAttribute('data-open');
@@ -524,10 +526,44 @@
     if (isFree()) { if (!s.hasAttribute('data-em-hidden')) { s.setAttribute('data-em-hidden', '1'); s.hidden = true; s.style.display = 'none'; } }
     else if (s.hasAttribute('data-em-hidden')) { s.removeAttribute('data-em-hidden'); s.hidden = false; s.style.display = ''; }
   }
+  function hideEl(el, on) {   // fully removed from the layout (display:none, not greyed out); restored when the plan allows it again
+    if (on) { if (!el.hasAttribute('data-em-hidden')) { el.setAttribute('data-em-hidden', '1'); el.hidden = true; el.style.display = 'none'; } }
+    else if (el.hasAttribute('data-em-hidden')) { el.removeAttribute('data-em-hidden'); el.hidden = false; el.style.display = ''; }
+  }
+  function decorateSeq(v) {   // user decision 2026-11-27 USER_06 sec 2 / 3: the free plan has no continuous play on the lists (all articles / each genre): the two buttons (.seqbtns [data-seq]) and the note that only explains continuous play are hidden
+    var free = isFree(), bars = v.querySelectorAll('.seqbtns');
+    for (var i = 0; i < bars.length; i++) {
+      var b = bars[i]; hideEl(b, free);
+      var n = b.nextElementSibling;   // the note directly under the buttons ("continuous play also uses the selected level"); only that one note (the p.lvnote right after the bar; no word matching: W2 keeps wording out of this file); every other note stays
+      if (n && n.classList && n.classList.contains('lvnote') && n.tagName === 'P') hideEl(n, free);
+    }
+    var lone = v.querySelectorAll('[data-seq]');   // a [data-seq] button outside a .seqbtns bar (a changed webapp): hidden the same way
+    for (var j = 0; j < lone.length; j++) if (!lone[j].closest('.seqbtns')) hideEl(lone[j], free);
+  }
+  /* C14 (USER_06 sec 3 "continuous play does not exist for the free plan"; Fable decision on C13 candidate 1): when a trial / paid session that was playing a queue turns into the free plan, the mini player must not show
+     "連続再生 n/N" and the webapp's toast "連続再生: 次は…" must not appear. Display only: the audio behaviour (the selected article plays to its end, then stops = USER_04 sec 8) is native/adapter and is not touched. Trial / paid: nothing is changed. */
+  var CONT_MINI_RE = / · 連続再生 \d+\/\d+$/, CONT_TOAST_RE = /^連続再生: 次は/, moMini = null, moToast = null;
+  function stripContMini() {
+    if (!isFree()) return;
+    var m = doc.getElementById('minilv'); if (!m) return;
+    var t = m.textContent; if (t && CONT_MINI_RE.test(t)) m.textContent = t.replace(CONT_MINI_RE, '');
+  }
+  function hideContToast() {
+    if (!isFree()) return;
+    var t = doc.getElementById('toast'); if (t && !t.hidden && CONT_TOAST_RE.test(t.textContent || '')) t.hidden = true;
+  }
+  function watchCont() {
+    if (!root.MutationObserver) return;
+    var mini = doc.getElementById('mini'), tt = doc.getElementById('toast');
+    if (mini && !moMini) { moMini = new root.MutationObserver(stripContMini); moMini.observe(mini, { childList: true, characterData: true, subtree: true }); }
+    if (tt && !moToast) { moToast = new root.MutationObserver(hideContToast); moToast.observe(tt, { childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] }); }
+    stripContMini(); hideContToast();
+  }
   function decorate() {
     var v = view || (view = $('view')); if (!v) return;
+    watchCont();
     if (mo) mo.disconnect();
-    try { decorateCards(v); decorateBar(v); decorateOmakase(v); decorateMe(v); } catch (e) { try { host.diag && host.diag('js.membership.ui_error', { msg: String(e && e.message) }); } catch (x) { /* */ } }
+    try { decorateCards(v); decorateBar(v); decorateOmakase(v); decorateSeq(v); decorateMe(v); } catch (e) { try { host.diag && host.diag('js.membership.ui_error', { msg: String(e && e.message) }); } catch (x) { /* */ } }
     if (mo) mo.observe(v, { childList: true, subtree: true });
   }
 

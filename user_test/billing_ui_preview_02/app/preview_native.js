@@ -102,6 +102,13 @@
   };
   // Panel hooks (the shell calls these on the live frame; they are display controls, not an API of the app).
   root.__PV = {
+    // USER_06 (2026-11-27, preview = real app in behaviour): the stand-in refuses to START an article the plan does not allow, the same decision as the real native gate for
+    // a start (free: only the article picked for the day; trial / paid: any). The refusal is announced like the real one (accessDenied, point loadQueue) and nothing "plays".
+    authorizeStart: function (slug) {
+      var allow = S.phase !== 'free' || (!!S.pick && S.pick === slug);
+      if (!allow) emit('accessDenied', { slug: slug, reason: S.pick ? 'locked_today' : 'needs_pick', point: 'loadQueue' });
+      return allow;
+    },
     state: function () { return JSON.parse(JSON.stringify(Object.assign(view(), { scn: S.scn, consent: S.consent, shown: S.shown }))); },
     // the next purchase / restore result, the next-day move (the date changes while the app stays open), the answer to the usage-data question
     set: function (o) {

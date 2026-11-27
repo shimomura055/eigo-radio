@@ -202,7 +202,6 @@
       res.ok = r.ok; return res;
     }
     function remove(key) { return update(function (st) { st.items = st.items.filter(function (i) { return i.key !== key; }); }); }
-    function removeMany(keys) { var m = {}; keys.forEach(function (k) { m[k] = 1; }); return update(function (st) { st.items = st.items.filter(function (i) { return !m[i.key]; }); }); }
     function clearAll() { var st = emptyState(); st.migrated = true; return write(st); }   // 空stateを書く(keyを消すと旧wut01.savedから再移行されるため)
     function resetAfterFailure() { try { ls.removeItem(P.failKey); } catch (e) { } var st = emptyState(); st.migrated = true; return write(st); }   // 明示操作のみ
     function grade(key, g, expectHistLen) {   // 評価直前に再読込し、他タブで既に評価済みなら conflict
@@ -219,7 +218,7 @@
       var h = function (e) { if (!e || e.key === P.storeKey || e.key === null) cb(e); };
       win.addEventListener('storage', h); return function () { win.removeEventListener('storage', h); };
     }
-    return { load: load, state: state, update: update, migrateOnce: migrateOnce, isSaved: isSaved, toggle: toggle, remove: remove, removeMany: removeMany,
+    return { load: load, state: state, update: update, migrateOnce: migrateOnce, isSaved: isSaved, toggle: toggle, remove: remove,
       clearAll: clearAll, resetAfterFailure: resetAfterFailure, grade: grade, attachStorage: attachStorage };
   }
 

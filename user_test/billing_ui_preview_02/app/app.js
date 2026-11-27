@@ -39,11 +39,22 @@
   function fmt(t) { t = Math.max(0, t || 0); var m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
   /* ARTICLE-LISTING-STATE-IMAGE-KARI-01: item(slug)は直URL・保存済み記事・ダウンロード済み・復習帳の「解決」用。一覧に出す記事は items のみ(unlisted_items=旧版[公開URL維持・一覧除外]は解決にだけ使い、
      一覧・新着・検索・おまかせ・連続再生の候補・ジャンル棚[byNew/listItems/genreCount]には使わない)。unlisted_items無し(旧catalog)でも従来どおり動く。 */
-  function item(slug) {
+  function item(slug) {   // 入口用(自己完結): itemForReview と同じ解決のうち review_only===true 行だけ除く
     var c = ST.cat, a = c.items.filter(function (x) { return x.slug === slug; })[0];
-    return a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+    var r = a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+    return (r && r.review_only === true) ? undefined : r;
   }
-  function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' (' + r.status + ')'); return r.json(); }); }
+  /* FINAL-UI W13 ②: unlisted_items の review_only 行(復習専用の縮約データだけがサーバーに残る退役記事。契約=REVIEW-RETENTION DESIGN_02 §9)は復習の解決(itemForReview)にだけ使う。
+     item()=記事ページ・再生・ミニプレイヤー・キュー・保存した記事・お気に入り・共有・検索・一覧の入口用は review_only 行を返さない(=「記事が見つからない」)。 */
+  function isRO(x) { return !!x && x.review_only === true; }
+  /* FINAL-UI W15: 復習専用の行の置き場所は catalog の新top-level key review_only_items(DESIGN_03: 旧版アプリが旧版として開く経路を作らないため unlisted_items には置かない)。
+     itemForReview の解決順 = items → unlisted_items(legacy) → review_only_items。item() は review_only_items を見ない(入口制限は W13 のまま)。keyの無いcatalogは従来どおり。 */
+  function itemForReview(slug) {
+    var c = ST.cat, a = c.items.filter(function (x) { return x.slug === slug; })[0];
+    var u = a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+    return u || (Array.isArray(c.review_only_items) ? c.review_only_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+  }
+  function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) { var e = new Error(u + ' (' + r.status + ')'); e.status = r.status; throw e; } return r.json(); }); }   // e.status=HTTPの確定応答(404=不存在)。ネットワーク失敗/タイムアウトはstatusなし
   /* ECUI B(承継実装1): player系の真値(音声URL・総尺・同期)は article.json / sync_*.json。catalogは一覧表示用(カード分数・検索)のみ。
      例外: カード等のクリック内で同期的に src設定+play() する必要がある(iOS)ため、記事が未取得の瞬間だけ catalog の値で暫定再生し、取得完了後に reconcileAudio() が article の値へ差し替える。 */
   function lvInfo(slug, lv) {
@@ -62,6 +73,32 @@
       return u.href;
     }
     var i = lvInfo(slug, lv); return new URL('../' + slug + '/' + (i ? i.main : ''), location.href).href;
+  }
+  /* ---------- おまかせラジオの再生キュー(FINAL-UI-INTEGRATION 委任_02 ⑨ → 委任_09で新着の定義を確定。ユーザー原文2026-11-27 USER_03 ⑨ A案[APPROVED_FOR_PRODUCTION]) ----------
+     「新着記事」=公開中(listed=byNew()=catalog items)の記事のうち、最新公開日に公開された記事すべて(件数・日数の上限なし。昨日が最新なら昨日、数日更新が無ければ最後の公開日)。
+     再生順: (1)最新公開日の記事をランダム → (2)残りの公開中記事をランダム → (3)全記事を一巡した時点で停止。同一巡回内の重複なし。無料会員は提供しない(会員UI/native側の既存仕様。ここでは変更しない)。
+     公開日=catalog既存の added_ts(UNIX秒。無ければ added[ISO8601]を解釈)をJST(UTC+9)の暦日に直したもの(同日の判定は日単位。時刻・端末のタイムゾーンは無関係)。
+     日付が取れない記事は新着(最新日)に入れず(残り=第2段階)、最新日の決定にも使わない。乱数は OMK.rand、境界は OMK.newGroup で差し替え可(検証用)。 */
+  function pubDay(x) {   // 公開日(JSTの暦日 'YYYY-MM-DD')。取れなければ ''
+    var t = x && +x.added_ts;
+    if (!(t > 0) && x && typeof x.added === 'string') { var p = Date.parse(x.added); t = p > 0 ? p / 1000 : 0; }
+    if (!(t > 0) || !isFinite(t)) return '';
+    return new Date(t * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  }
+  function latestDaySlugs(sorted) {   // 新着順(byNew())の記事item配列 -> 最新公開日に公開された記事のslug配列
+    var days = (sorted || []).map(function (x) { return { s: x && x.slug, d: pubDay(x) }; }).filter(function (r) { return r.s && r.d; }), latest = '';
+    days.forEach(function (r) { if (r.d > latest) latest = r.d; });
+    return days.filter(function (r) { return r.d === latest; }).map(function (r) { return r.s; });
+  }
+  var OMK = { rand: function () { return Math.random(); }, newGroup: latestDaySlugs };   // newGroup(新着順の記事item配列) -> 新着グループに入れる記事のslug配列
+  function shuffleWith(a, rnd) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function buildOmakaseQueue(sorted, o) {   // sorted=新着順(byNew())の記事item配列。戻り値 {queue:[slug…](重複なし・全件), stage1:第1段階の件数, stage2:第2段階の件数}
+    o = o || {}; var rnd = o.rand || OMK.rand, gf = o.newGroup || OMK.newGroup, seen = {}, all = [];
+    sorted.forEach(function (x) { if (x && x.slug && !seen[x.slug]) { seen[x.slug] = 1; all.push(x.slug); } });
+    var want = {}, ngl = [];
+    (gf(sorted) || []).forEach(function (sl) { if (seen[sl] && !want[sl]) { want[sl] = 1; ngl.push(sl); } });   // 掲載中の記事だけ・重複なし
+    var rest = all.filter(function (sl) { return !want[sl]; });
+    return { queue: shuffleWith(ngl, rnd).concat(shuffleWith(rest, rnd)), stage1: ngl.length, stage2: rest.length };
   }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   var IC = {
@@ -119,8 +156,8 @@
   }
   function ensureArt(slug) {   // 真値は article.json。sync_*.json は article の sha を ?v= に付けて取得(CDNの新旧混在防止)
     if (ARTP[slug]) return ARTP[slug];
-    var base = '../' + slug + '/enduser/data/', it = item(slug);
-    ARTP[slug] = fetch(base + 'article.json').then(function (r) { if (!r.ok) throw new Error('article.json ' + r.status); return r.arrayBuffer(); }).then(function (buf) {
+    var base = '../' + slug + '/enduser/data/', it = itemForReview(slug);
+    ARTP[slug] = fetch(base + 'article.json').then(function (r) { if (!r.ok) { var e = new Error('article.json ' + r.status); e.status = r.status; throw e; } return r.arrayBuffer(); }).then(function (buf) {
       return shaHex(buf).then(function (hex) {
         var q = hex ? '?v=' + hex : '';
         return Promise.all([fetchJson(base + 'sync_std.json' + q), fetchJson(base + 'sync_adv.json' + q)]).then(function (sy) {
@@ -212,6 +249,7 @@
   function nextInQueue() {
     if (!cur || !cur.queue) return false;
     var n = cur.qi + 1;
+    while (n < cur.queue.length && !item(cur.queue[n])) n++;   // W13 ②: 記事として解決できない(review_only・非掲載で消えた等)slugはキューから飛ばす
     if (n >= cur.queue.length) { return false; }
     var prev = cur.slug, wasHere = route.name === 'player' && route.arg === prev;
     startPlay(cur.queue[n], { queue: cur.queue, qi: n, at: 0 });
@@ -380,6 +418,30 @@
     var g = lk3Resolve(L, en);   // ⑦: 音声なしのlk3項目。det空・audio=null(復習の答え側は日本語の意味のみ・音声ボタンなし)
     return g ? { en: g.en, kp: false, ja: g.ja, jaHtml: false, jaPending: false, det: [], audio: null } : null;
   }
+  /* FINAL-UI W15 補助pack(DESIGN_03 §2・EXTRA_PACK_PLAN_01 §3): 現在版のarticleから表現が見つからない時だけ、同じ記事dirの data/review_extra.json(review_extra_v1。縮約articleと同形)から解決する。
+     取得は記事ごとに1回(結果を保持)。404/410・不正な内容=null(データなし)。ネットワークエラー/5xx=statusなし/5xxのErrorを投げる(呼び側が通信失敗として扱う。失敗は保持しない=再読込で再試行)。 */
+  var EXTP = {};
+  function ensureExtra(slug) {
+    if (Object.prototype.hasOwnProperty.call(EXTP, slug)) return EXTP[slug];
+    var url = new URL('../' + slug + '/enduser/data/review_extra.json', location.href).href;
+    EXTP[slug] = fetch(url).then(function (r) {
+      if (r.status === 404 || r.status === 410) return { ex: null };
+      if (!r.ok) { var e = new Error('review_extra.json ' + r.status); e.status = r.status; throw e; }
+      return r.text().then(function (t) {
+        var j = null; try { j = JSON.parse(t); } catch (e) { j = null; }
+        if (!j || j.schema !== 'review_extra_v1' || !j.levels || typeof j.levels !== 'object') return { ex: null };
+        return { ex: j, url: url };
+      });
+    }).catch(function (e) { delete EXTP[slug]; throw e; });
+    return EXTP[slug];
+  }
+  function reviewLookupExtra(slug, level, en) {   // -> Promise<pwi|null>
+    return ensureExtra(slug).then(function (r) {
+      if (!r.ex) return null;
+      var eu = new URL('../' + slug + '/enduser/', location.href), dataUrl = r.url;
+      return reviewLookup(r.ex, level, en, { baseV: eu.href, baseK: new URL(r.ex.audio_base || '../', dataUrl).href });
+    });
+  }
   function levelsOf(slug, en) {   // 旧wut01.savedの移行用: その表現があるレベル(データで決定)
     var d = ART[slug], k = PWCard.normEn(en), out = [];
     if (!d) return out;
@@ -390,7 +452,7 @@
     var sv = lsGet(K_SAVED, []); if (!Array.isArray(sv)) sv = [];
     var st = store.load(); if (st.status === 'failed' || st.status === 'unavailable') return Promise.resolve();
     if (st.status === 'ok' && st.state.migrated) return Promise.resolve();
-    var slugs = {}; sv.forEach(function (x) { if (x && x.slug && item(x.slug)) slugs[x.slug] = 1; });
+    var slugs = {}; sv.forEach(function (x) { if (x && x.slug && itemForReview(x.slug)) slugs[x.slug] = 1; });
     return Promise.all(Object.keys(slugs).map(function (sl) { return ensureArt(sl).then(function () { return true; }, function () { return false; }); })).then(function (rs) {
       if (rs.indexOf(false) >= 0) return;
       store.migrateOnce(sv, SRS.todayJST(Date.now()), levelsOf);
@@ -404,9 +466,9 @@
     var el = $('srsroot'); if (!el || route.name !== 'review') return;
     var ctl = reviewCtl = WURReview.create({
       SRS: SRS, store: store, win: window,
-      hasArticle: function (slug) { return !!item(slug); },
+      hasArticle: function (slug) { return !!itemForReview(slug); },
       loadArticle: function (slug) { return ensureArt(slug).then(function (d) { return d.art; }); },
-      bases: basesFor, lookup: reviewLookup,
+      bases: basesFor, lookup: reviewLookup, lookupExtra: reviewLookupExtra,
       render: function (x) { return PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }); },
       playAudio: playReviewAudio, stopAudio: stopItemAudio, toast: toast   // WUI4: 復習の音声は保存項目の同レベルarticle項目のaudio(url[+start/end])のみ。再タップは先頭から
     });
@@ -488,7 +550,7 @@
     return h;
   }
   var DL_ST_NOTE = { partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません' };   // 通常の保存済み行には状態語を付けない(例外状態だけ表示=ユーザーの操作が要るため)
-  function savedItems() { var o = offCap(); var m = o && o.summary() || {}; return m.loaded ? (m.items || []) : null; }
+  function savedItems() { var o = offCap(); var m = o && o.summary() || {}; return m.loaded ? (m.items || []).filter(function (x) { return !(x && isRO(itemForReview(x.slug))); }) : null; }   // W13 ②: review_only(復習専用)は保存した記事に出さない(端末に保存音声が残っていても記事・本編へ到達させない)
   function savedRowHtml() { var it = savedItems(); return '<a class="setrow" id="savedrow" href="#/me/saved">保存した記事<span>' + (it ? it.length + '件 ' : '') + '&#8250;</span></a>'; }
   function savedInner() {   // 「保存した記事」一覧画面の本体(記事を開く・削除はここで行う)
     var items = savedItems();
@@ -627,7 +689,7 @@
           '<details class="te-ans"><summary>回答例を見る</summary><div class="te-a"><p class="te-en">' + (f['回答例'] || '') + '</p><p class="te-ja">' + (f['回答例の日本語訳'] || '') + '</p>' + a2 + '</div></details></div>';
       }).join('') + '</section>';
     }
-    out += '<section class="secbox"><h3>保存・復習</h3><p class="lvnote" style="text-align:left;margin:0 0 8px">各項目の「保存」で、この端末内に保存できます。</p><a class="setrow" href="#/review" style="text-decoration:none">復習帳を開く<span>&#8250;</span></a></section>';
+    /* FINAL-UI-INTEGRATION 委任_02 ⑦: 学ぶ画面の最下部セクション(保存の案内+復習帳リンク)は廃止。各語の保存ボタン・復習帳・下部ナビ・聴く/学ぶ切替は維持 */
     return out + modeSegHtml();   // ③-3 学習コンテンツの終了位置
 
   }
@@ -863,7 +925,7 @@
     delete pfClip[u];
   }
   function pfSync() {   // 画面状態(経路・モード・レベル・記事)に合わせて先読みを開始/中止。冪等
-    var want = {}, wantMainUrl = null, impl = pfImpl(), onPlayer = route && route.name === 'player' && !tutOn, slug = onPlayer ? route.arg : null;
+    var want = {}, wantMainUrl = null, impl = pfImpl(), onPlayer = route && route.name === 'player' && !tutOn, slug = onPlayer && item(route.arg) ? route.arg : null;   // W13 ②: item()で解決できない記事(review_only含む)は先読みしない
     if (onPlayer && ART[slug]) {
       if (ST.mode === 'learn' && !pfBlobFail && PWI && PWI.length) PWI.forEach(function (x) { if (x && x.audio && x.audio.url && x.audio.start == null) want[x.audio.url] = 1; });
       wantMainUrl = audioUrl(slug, ST.level);
@@ -958,6 +1020,7 @@
     $('nowlv').innerHTML = on ? ('再生中のレベル: ' + chip) : (chip + (sp > 1 ? ' 前回の続き(' + fmt(sp) + ')から再生します <button type="button" class="linkbtn" data-restart="1">最初から</button>' : ' 先頭から再生します'));
   }
   function enterPlayer(slug) {
+    if (!item(slug)) return;   // W13 ②: 「記事が見つかりません」表示のページは記事データを取得・描画しない(review_only行の縮約データをプレイヤーに載せない)
     ensureArt(slug).then(function () { if (route.name === 'player' && route.arg === slug) { renderContent(); updatePlayerUI(); } })
       .catch(function (e) { var c = $('pcontent'); if (c) c.innerHTML = '<div class="empty">読み込みエラー: ' + esc(e.message) + '</div>'; });
     if (ART[slug]) { renderContent(); }
@@ -970,6 +1033,7 @@
     document.body.classList.toggle('nomini', !show);
     if (!show) { m.hidden = true; return; }
     var it = item(cur.slug);
+    if (!it) { m.hidden = true; document.body.classList.add('nomini'); return; }   // W13 ②: 記事として解決できない(review_only・消えた)再生中slugではミニプレイヤーを出さない。旧: thumbHtml(undefined)で例外
     if (!m.firstChild || m.dataset.slug !== cur.slug) {
       m.dataset.slug = cur.slug;
       m.innerHTML = '<div class="miniin">' + thumbHtml(it, false) + '<div class="mt" data-open="' + cur.slug + '"><b>' + esc(it.title_ja) + '</b><span id="minilv"></span></div><button type="button" class="mpp" id="minipp" aria-label="再生/一時停止"></button><div class="bar" id="minibar"></div></div>';
@@ -1164,7 +1228,7 @@
       if (e && e.ok && w.closest('.sent')) { w.classList.add('wk'); w.setAttribute('role', 'button'); w.tabIndex = 0; w.setAttribute('aria-haspopup', 'dialog'); }
     });
   }
-  var bubEntry = null, bubWord = null;
+  var bubEntry = null, bubWord = null, bubAdj = 0;   // bubAdj: この吹き出しを出すために背景をずらした回数(上限2。無限ループ防止)
   function bubbleOpen() { var b = $('bubble'); return !!b && !b.hidden; }
   function markWordSel(w) {   // WUG A-5: 選択中のPhrase/Word(本文中)を淡いブルーで強調。常に1つだけ。吹き出しが閉じたら解除
     Array.prototype.forEach.call(document.querySelectorAll('.wsel'), function (e) { e.classList.remove('wsel'); });
@@ -1174,7 +1238,7 @@
     var b = $('bubble'); if (!b) return;
     markWordSel(null);
     var was = !b.hidden;
-    b.hidden = true; bubWord = null; bubEntry = null;
+    b.hidden = true; bubWord = null; bubEntry = null; bubAdj = 0;
     if (b.parentNode !== document.body) document.body.appendChild(b);
     b.className = ''; b.removeAttribute('style');
     capForce(false);
@@ -1213,7 +1277,7 @@
       ((m.audio || m.more || m.save) ? '<div class="bub-act">' + (m.audio ? '<button type="button" class="pwplay" data-pwplay="' + m.idx + '" aria-label="' + esc(m.en) + ' の音声を再生(本編は一時停止します)">' + IC.play + '</button>' : '') +
         (m.save ? (function () { var on = store.isSaved(route.arg, ST.level, m.en); return '<button type="button" class="save bub-save' + (on ? ' on' : '') + '" data-save="' + esc(m.en) + '" aria-pressed="' + on + '">' + (on ? '保存済' : '保存') + '</button>'; })() : '') +
         (m.more ? '<button type="button" class="bub-more" data-bubmore="' + m.idx + '">学ぶ画面で詳しく見る &#8250;</button>' : '') + '</div>' : '');
-    b.hidden = false; b.setAttribute('data-lk', entry.lk);
+    b.hidden = false; b.setAttribute('data-lk', entry.lk); bubAdj = 0;
     placeBubble();
   }
   function placeBubble() {
@@ -1227,13 +1291,17 @@
     b.className = ''; b.style.cssText = 'left:0;top:0;visibility:hidden;max-height:none';
     var bw = b.offsetWidth, bh = b.offsetHeight, vw = document.documentElement.clientWidth;
     var r = WURBubble.layout(rects, band, vw, bw, bh);
+    if (!r.fit && r.mode !== 'alt' && rects.length && bubAdj < 2) {   // 上にも下にも全体が入らない: 背景を少しずらして空きを作り再配置(⑥。短い説明の文字切れ・ボタン切れを出さない)
+      var sd = WURBubble.scrollNeed(rects, band, bh, window.pageYOffset || 0, Math.max(0, document.documentElement.scrollHeight - innerHeight));
+      if (sd) { bubAdj++; b.style.visibility = 'hidden'; window.scrollBy(0, sd); return placeBubble(); }
+    }
     if (r.mode === 'alt') {   // 吹き出しが難しい(帯域が狭い横向き等): キャプチャ枠の先頭へ意味行を代替表示(同じ要素を移動)
       b.style.cssText = ''; b.className = 'alt'; capForce(true); cj.insertBefore(b, cj.firstChild); cj.classList.add('hasw'); layoutDock();
       return;
     }
     capForce(false);
     if (cj) { cj.classList.remove('hasw'); layoutDock(); }
-    b.className = r.mode; b.style.cssText = 'left:' + Math.round(r.left) + 'px;top:' + Math.round(r.top) + 'px;width:' + Math.round(r.width) + 'px;max-height:' + Math.floor(r.maxH) + 'px;--ax:' + Math.round(r.arrowX) + 'px';
+    b.className = r.mode; b.style.cssText = 'left:' + Math.round(r.left) + 'px;top:' + Math.round(r.top) + 'px;width:' + Math.round(r.width) + 'px;max-height:' + (r.fit ? Math.ceil(r.maxH) + 1 : Math.floor(r.maxH)) + 'px;--ax:' + Math.round(r.arrowX) + 'px';
   }
   function onWordClick(w) {
     var gd = glossFor(route.arg), e = gd.byKey[w.getAttribute('data-hl')], se = w.closest('.sent');
@@ -1278,7 +1346,7 @@
       if (route.name !== 'player' || route.arg !== slug) location.hash = '#/player/' + slug;
       return;
     }
-    if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = shuffle(byNew().map(function (x) { return x.slug; })); startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ: ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
+    if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = buildOmakaseQueue(byNew()).queue; if (!q2.length) return; startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ: ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
     if ((b = t.closest('[data-seq]'))) {
       if (route.name !== 'player') ST.mode = 'listen';
       var items = listItems(b.dataset.g).map(function (x) { return x.slug; });
@@ -1351,24 +1419,49 @@
      (4) 枠のクランプ廃止(以前は y を2pxへ丸めて高さだけ残し枠が対象から外れた)。 */
   var TUT = null, probe = null, tutRaf = 0, tutLockBound = false;
   /* WEBAPP-TUTORIAL-REVISION-02(2026-11-12 ユーザー承認 APPROVED_FOR_PRODUCTION): 6ページ構成(旧P2=おまかせ/記事を探す を削除。P3〜P7を追加)。
-     実画面+実要素へのspotlight(既存方式)。説明用に保存・復習を実行しない: 学ぶ画面の「保存」・復習帳・復習画面の見せ方は表示(DOM)のみで、store/localStorage へは書かない
+     実画面+実要素へのspotlight(既存方式)。説明用に保存や復習を実行しない: 学ぶ画面の「保存」・復習帳・復習画面の見せ方は表示(DOM)のみで、store/localStorage へは書かない
      (P5=未保存が無い時は保存済ボタンの見た目だけを一時的に未保存へ/P6,P7=保存0件でも WURReview.homeHtml/answerHtml のサンプル描画。クリックは暗幕が遮り、離脱時に rerender で実データ描画へ戻る) */
+  function tutSampleNote() { return '<div class="srs-note" data-tut-sample="1">※ 説明用のサンプル表示です(実際の保存データは変更されません)</div>'; }
+  function tutSampleItem() { return { en: 'lean in', ja: '身を乗り出す', jaHtml: false, kp: true, det: [{ label: '解説', html: '積極的に関わる、前のめりになる、という意味です。' }], audio: null }; }   // 復習帳ページのサンプルと同じ固定データ(実記事・音声は読まない)
+  /* FINAL-UI W19 ①(方式B): 記事ページ系の説明ページは、実記事を開けない場合(会員UIが記事ページへの移動を拒否=hashが戻る/#modeseg が現れない。共通webappは会員状態を知らない)だけ、
+     復習帳ページと同じ「説明用のサンプル表示」で説明する。実記事を開ける場合(Web版・体験中・有料・選択記事)は従来どおり実記事(表示不変)。
+     サンプルは固定データ(tutSampleItem=復習帳サンプルと同一)で、実記事データ・音声・保存・再生状態・今日の無料記事の選択に触れない(inert=操作不可、data-save等の操作属性なし、native要求なし)。
+     閲覧制限の例外は作らない(hashは動かさず現在の画面の#viewを一時的に置き換えるだけ。離脱・終了時は rerender で実画面へ戻る)。 */
+  function tutPlayerSample() {
+    var vw = $('view'); if (!vw) return false;
+    if (reviewCtl) { try { reviewCtl.destroy(); } catch (e) { } reviewCtl = null; }
+    var card = PWCard.renderPWCard(tutSampleItem(), 0, { saved: false, playIcon: IC.play });
+    var o = offCap();
+    vw.innerHTML = '<div id="tutsample" data-tut-sample-page="1" inert>' + topBar({ back: true }) + tutSampleNote() +
+      '<div class="modeseg" id="modeseg" role="group" aria-label="聴く/学ぶ"><button type="button" aria-pressed="false">聴く</button><button type="button" aria-pressed="true">学ぶ</button></div>' +
+      '<div class="fsrow" id="fsrow"><button type="button" class="fsbtn" id="fsbtn" aria-label="この記事を始めから聞く">&#9654; 始めから聞く</button></div>' +
+      (o ? '<div class="dlslot" id="dlslot" aria-live="polite"><button type="button" class="dlmain dlbtn">オフライン用にダウンロード</button></div>' : '') +
+      '<section class="secbox pw" id="pwbox"><h3>Phrase / Word<small>Key Phraseを含む</small></h3>' + card + '</section></div>';
+    var cd = vw.querySelector('#pwbox .pwi'), sv = vw.querySelector('#pwbox .save');
+    if (cd) cd.setAttribute('data-tut-card', '1');
+    if (sv) { sv.setAttribute('data-tut-target', '1'); sv.removeAttribute('data-save'); sv.removeAttribute('data-ja'); }   // 保存操作の属性を持たない(クリックしても保存されない)
+    Array.prototype.forEach.call(vw.querySelectorAll('[data-pwtog]'), function (b) { b.removeAttribute('data-pwtog'); });
+    if (TUT) TUT.dirty = true;
+    window.scrollTo(0, 0);
+    return true;
+  }
   function tutSteps() {
     var first = byNew()[0].slug;
     function reviewReady(cb) { waitFor(['#srsroot [data-srs-view]'], function () { cb(); }); }
-    function sampleNote() { return '<div class="srs-note" data-tut-sample="1">※ 説明用のサンプル表示です(実際の保存データは変更されません)</div>'; }
-    function sampleItem() { return { en: 'lean in', ja: '身を乗り出す', jaHtml: false, kp: true, det: [{ label: '解説', html: '積極的に関わる、前のめりになる、という意味です。' }], audio: null }; }
+    function sampleNote() { return tutSampleNote(); }
+    function sampleItem() { return tutSampleItem(); }
     return [
       { hash: '#/home', sel: ['#lvseg-home'], title: 'レベルを選ぶ', html: '<p>ここで切り替えます。</p><div class="lvs"><b>Standard</b>：TOEIC 800点未満／英検2級程度<br><b>Advanced</b>：TOEIC 800点以上／英検準1級以上</div><p class="fine2">あくまで目安で、利用制限ではありません。</p>' },
-      { hash: '#/player/' + first, sel: ['#modeseg'], title: '聴く / 学ぶを切り替え', html: '<p>『聴く』で音声を楽しみ、『学ぶ』でPhrase / Word、文法、表現などを確認できます。</p>',
+      { hash: '#/home', sel: ['#omakase'], soft: true, title: '聴き流しには、おまかせラジオ', html: '<p>新着記事からランダムに連続再生。通勤中や家事をしながらの聴き流しにおすすめです。</p>' },   // USER_03 ①: P1とP2の間。ホームの実際のおまかせラジオ(#omakase)をspotlight。soft=対象が非表示(無料会員はおまかせ非表示)ならハイライトなしで説明のみ。操作は暗幕が遮り再生・保存は一切変更しない
+      { hash: '#/player/' + first, player: true, sel: ['#modeseg'], title: '聴く / 学ぶを切り替え', html: '<p>『聴く』で音声を楽しみ、『学ぶ』でPhrase / Word、文法、表現などを確認できます。</p>',
         prep: function (cb) {   // 委任_02: 「学ぶ」が選択された状態の画面を見せる(ST.modeは保存されない画面状態。離脱・終了で聴くへ戻る)
           waitFor(['#modeseg'], function () {
             if (ST.mode !== 'learn') setMode('learn');
             waitFor(['#pwbox .save'], function () { cb(); });
           });
         } },
-      { hash: '#/search', sel: ['#view label.search', '#browse .sh + .rows', '#nav a[data-tab=search]'], title: '記事を探す', clip: { 1: 4 }, html: '<p>下の『記事を探す』から、キーワード検索やジャンル一覧で読みたい記事を探せます。</p>' },
-      { hash: '#/player/' + first, ctx: ['#pwbox [data-tut-card]'], sel: ['#pwbox [data-tut-target]'], title: '気になる表現を保存', html: '<p>学ぶモードで気になったPhrase / Wordは『保存』をタップ。あとで復習帳にまとめて残せます。</p>',
+      { hash: '#/search', sel: ['#view label.search', '#browse .sh + .rows', '#nav a[data-tab=search]'], title: '記事を探す', clip: { 1: 3 }, clip0: { 1: 3 }, adapt: [function () { var fr = document.querySelector('#browse > .rows:first-child'), hd = document.querySelector('#browse > .sh'); if (fr) fr.style.display = 'none'; if (hd) hd.style.display = 'none'; }, function () { TUT.steps[TUT.i].clip = { 1: 2 }; }, function () { TUT.steps[TUT.i].clip = { 1: 1 }; }], ai: 0, html: '<p>下の『記事を探す』から、キーワード検索やジャンル一覧で読みたい記事を探せます。</p>' },
+      { hash: '#/player/' + first, player: true, ctx: ['#pwbox [data-tut-card]'], sel: ['#pwbox [data-tut-target]'], title: '気になる表現を保存', html: '<p>学ぶモードで気になったPhrase / Wordは『保存』をタップ。あとで復習帳にまとめて残せます。</p>',
         prep: function (cb) {
           waitFor(['#modeseg'], function () {
             if (ST.mode !== 'learn') setMode('learn');
@@ -1385,11 +1478,12 @@
           reviewReady(function () {
             if (!document.querySelector('#srsroot [data-srs-start]') && window.WURReview) {   // 保存0件/本日分なし: 同じ部品でサンプルを描画(書込なし)
               var it = function (en, k) { return { key: 'tut|' + k, en: en, level: 'adv', state: 'new', due: '' }; };
-              $('srsroot').innerHTML = sampleNote() + WURReview.homeHtml({ storeStatus: 'ok', counts: { remaining: 4, newShown: 4, newDeferred: 0 }, items: [it('lean in', 1), it('close to home', 2), it('hand something over to', 3), it('save the day', 4)], orphans: [], orphanKeys: {}, netfail: 0, nextDue: null });
+              $('srsroot').innerHTML = sampleNote() + WURReview.homeHtml({ storeStatus: 'ok', counts: { remaining: 4, newShown: 4, newDeferred: 0 }, items: [it('lean in', 1), it('close to home', 2), it('hand something over to', 3), it('save the day', 4)], orphanKeys: {}, netfail: 0, nextDue: null });
             }
             var sec = document.querySelector('#srsroot .srs-home'), cs = sec ? Array.prototype.slice.call(sec.children) : [], rows = cs.filter(function (c) { return c.classList.contains('srs-row'); });
             var st5 = TUT.steps[TUT.i], rk = function (n) { return function () { st5.clip = { 0: cs.indexOf(rows[Math.min(rows.length, n) - 1]) + 1 }; }; };
-            if (rows.length) { rk(3)(); st5.adapt = [rk(2), rk(1)]; st5.ai = 0; }   // 委任_02: 文脈枠=復習帳見出し〜保存した表現一覧(先頭の数件)〜始める。吹き出しが入らない小さい画面では一覧の件数を3→2→1へ減らす
+            var sb = document.querySelector('#srsroot [data-srs-start]'), rk0 = function () { var k = 0; cs.forEach(function (c, ci) { if (sb && c.contains(sb)) k = ci + 1; }); st5.clip = { 0: k || cs.length }; };   // 最終段: 一覧の行をすべて外し「始める」まで
+            if (rows.length) { rk(3)(); st5.adapt = [rk(2), rk(1), rk0]; st5.ai = 0; }   // 委任_02: 文脈枠=復習帳見出し〜保存した表現一覧(先頭の数件)〜始める。吹き出しが入らない小さい画面では一覧の件数を3→2→1へ減らす
             cb();
           });
         } },
@@ -1400,13 +1494,13 @@
             $('srsroot').innerHTML = sampleNote() + WURReview.answerHtml({ remaining: 5 }, { key: 'tut|lean in', en: x.en }, PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }), true);
             var bd = document.querySelector('#srsroot .srs-body'), st6 = TUT.steps[TUT.i];
             if (bd) bd.style.marginBottom = '16px';   // 文脈枠(上部)と4択枠(下部)の間に余白(枠が重ならない)。説明用プレビューDOMのみ
-            st6.adapt = [function () { var e = document.querySelector('#srsroot .srs-prog'); if (e) e.style.display = 'none'; }, function () { var e = document.querySelector('#srsroot [data-tut-sample]'); if (e) e.style.cssText = 'padding:3px 8px;margin:2px 0 12px;font-size:11px'; }, function () { var e = document.querySelector('#view .top'); if (e) e.style.display = 'none'; }];   // 小さい画面で吹き出しが入らない時だけ: 対象外の残件ヘッダ→サンプル注記→ロゴ見出しを順に縮める/隠す
+            st6.adapt = [function () { var e = document.querySelector('#srsroot .srs-prog'); if (e) e.style.display = 'none'; }, function () { var e = document.querySelector('#srsroot [data-tut-sample]'); if (e) e.style.cssText = 'padding:3px 8px;margin:2px 0 12px;font-size:11px'; }, function () { var e = document.querySelector('#view .top'); if (e) e.style.display = 'none'; }, function () { st6.ctxSoft = true; }];   // 小さい画面で吹き出しが入らない時だけ: 対象外の残件ヘッダ→サンプル注記→ロゴ見出しを順に縮める/隠す
             st6.ai = 0;
             cb();
           });
         } }
     ].concat(offCap() ? [   // APPUI-C ⑦: オフライン保存の機能(capability)がある環境だけ+1頁(Web版は従来の6頁のまま)。実際の記事ページ上でDLボタンをspotlight(ダウンロードは実行しない・保存は変更しない)
-      { hash: '#/player/' + first, sel: ['#dlslot .dlmain'], title: 'オフラインで聴く', html: '<p>記事をダウンロードすると、電波が届かない場所でも音声を再生できます。</p>',
+      { hash: '#/player/' + first, player: true, sel: ['#dlslot .dlmain'], title: 'オフラインで聴く', html: '<p>記事をダウンロードすると、電波が届かない場所でも音声を再生できます。</p>',
         prep: function (cb) { waitFor(['#fsrow', '#dlslot .dlmain'], function () { cb(); }); } }
     ] : []);
   }
@@ -1420,7 +1514,7 @@
   function startTutorial() {
     if (TUT) return;
     try {
-      TUT = { i: 0, steps: tutSteps(), prevHash: location.hash || '#/home', els: null, sig: '', built: false, stepAt: Date.now(), hid: 0 };
+      TUT = { i: 0, dir: 1, steps: tutSteps(), prevHash: location.hash || '#/home', els: null, sig: '', built: false, stepAt: Date.now(), hid: 0 };
       tutOn = true; $('tut').hidden = false; placePanel(true); (function () { var fs = $('floatstack'); if (fs) fs.hidden = true; })(); bindTutLock(); renderMini(); showStep();
       var loop = function () { if (!TUT) { tutRaf = 0; return; } try { tutSync(false); } catch (e) { tutAbort('sync_exception: ' + (e && e.message)); return; } tutRaf = requestAnimationFrame(loop); };
       tutRaf = requestAnimationFrame(loop);   // 毎フレーム実測(スクロール/Safariバー伸縮/回転/読込後のレイアウト変化へ追従)
@@ -1481,12 +1575,40 @@
     var vv = window.visualViewport, s = safeInsets(), t0 = vv ? vv.offsetTop : 0, h = vv ? vv.height : innerHeight;
     return { top: t0 + s.t, bottom: t0 + h - s.b, w: vv ? vv.width : innerWidth };
   }
+  function softHidden(els) { return els.some(function (e) { return !e || !e.getClientRects || !e.getClientRects().length; }); }
+  function tutDrop(i) { TUT.steps.splice(i, 1); if (TUT.i > i) TUT.i--; }
+  function tutPrune() {   // 現在の画面(hash)にあるsoftステップで対象が無い/非表示のものを除く(現在のステップは除かない)
+    for (var j = TUT.steps.length - 1; j >= 0; j--) {
+      var sj = TUT.steps[j]; if (j === TUT.i || !sj.soft || sj.hash !== location.hash) continue;
+      var es = stepSels(sj).map(function (q) { return document.querySelector(q); });
+      if (!es.every(Boolean) || softHidden(es)) tutDrop(j);
+    }
+  }
+  function tutSkipCur() {   // 現在のsoftステップを除き、進行方向(TUT.dir: 1=次へ,-1=戻る)の隣のページを表示。残りが無ければ通常終了
+    var back = TUT.dir < 0; tutDrop(TUT.i);
+    if (back) TUT.i--;
+    if (TUT.i < 0) TUT.i = 0;
+    if (TUT.i >= TUT.steps.length) { finishTutorial(true); return; }
+    showStep();
+  }
   function showStep() {
     var st = TUT.steps[TUT.i], tut = $('tut');
-    function go() { if (!TUT) return; try { if (st.prep) st.prep(go2); else go2(); } catch (e) { tutAbort('prep_exception: ' + (e && e.message)); } }
+    function go() { if (!TUT) return; try { if (st.player) probeReal(0); else if (st.prep) st.prep(go2); else go2(); } catch (e) { tutAbort('prep_exception: ' + (e && e.message)); } }
+    function probeReal(n) {   // W19 ①: 記事ページ系。実記事の画面が出ていれば従来どおり。hashが戻された(拒否)/#modeseg が現れないならサンプル表示(暗幕のまま待たない)
+      if (!TUT || TUT.steps[TUT.i] !== st) return;
+      try {
+        var real = !TUT.noReal && location.hash === st.hash;
+        if (real && document.getElementById('modeseg')) { if (st.prep) st.prep(go2); else go2(); return; }
+        if (real && n < 5) { setTimeout(function () { probeReal(n + 1); }, 100); return; }
+        TUT.noReal = true; tutPlayerSample(); go2();
+      } catch (e) { tutAbort('prep_exception: ' + (e && e.message)); }
+    }
     function go2() {
-      waitFor(stepSels(st), function (els) {
+      var raw = (st.ctx || []).concat(st.sel);
+      waitFor(raw, function (els) {
         if (!TUT) return;
+        tutPrune();   // W13 ①: 現在の画面にある soft ステップの対象が無い/非表示なら、表示する前にステップ自体を除く(総ページ数・点・進む/戻るを除いた後の数で整合)
+        if (st.soft && (els.length !== raw.length || softHidden(els))) { tutSkipCur(); return; }   // 対象が無い/非表示(例: 無料会員のホームはおまかせラジオ非表示): 説明文だけの表示をせず、このページを飛ばす
         if (els.length !== stepSels(st).length) { tutAbort('target_missing(step ' + (TUT.i + 1) + ': ' + els.length + '/' + stepSels(st).length + ')'); return; }   // 一部でも対象が無い=吹き出しを置けず暗幕だけが残る→終了
         if (!els[0].closest('#nav')) {   // 対象を見える領域の上寄りへ(吹き出しを下の空き領域へ置くため)
           var r = els[0].getBoundingClientRect(); window.scrollBy(0, r.top - (vvBox().top + 72));
@@ -1494,9 +1616,12 @@
         buildTut(); tutSync(true);   // 初回表示から実測位置で配置(同期)。以降は毎フレーム追従
       });
     }
+    if (st.clip0) st.clip = { 1: st.clip0[1] }; if (st.adapt) { st.ai = 0; st.ctxSoft = false; }   // ステップへ戻った時は縮退(ハイライト範囲の絞り込み)を初期状態から
     TUT.els = null; TUT.sig = ''; TUT.built = false; TUT.up = false; TUT.stepAt = Date.now(); TUT.hid = 0;
     tut.innerHTML = '<div class="dim"></div>';
-    if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else { if (st.reroute) rerender(false); go(); }
+    var dirty = TUT.dirty; TUT.dirty = false;   // サンプル表示で #view を置き換えていたら、別ページへ戻る時は必ず実画面を再描画
+    if (st.player && TUT.noReal) { go(); }   // 実記事を開けないと判明済み: 拒否されるhash移動を繰り返さずサンプル表示
+    else if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else { if (st.reroute || dirty) rerender(false); go(); }
   }
   function buildTut() {   // ステップごとに1回だけDOMを作る(位置更新では作り直さない)
     var st = TUT.steps[TUT.i], tut = $('tut'), last = TUT.i === TUT.steps.length - 1;
@@ -1507,16 +1632,14 @@
   }
   function tutSync(force) {   // 対象の実位置を測り、変化があれば位置だけ更新
     if (!TUT || !TUT.built) return;
-    var els = stepEls(); if (els.length !== stepSels(TUT.steps[TUT.i]).length) return;   // 対象が(再描画等で)一時的に無い間は更新しない
+    var st0 = TUT.steps[TUT.i];
+    if (st0.soft && softHidden(stepEls().length === stepSels(st0).length ? stepEls() : [null])) { tutSkipCur(); return; }   // 表示中に対象が非表示になった(会員UIの装飾等): このページを除いて次(戻り操作中は前)へ
+    var els = stepEls(); if (els.length !== stepSels(TUT.steps[TUT.i]).length) { if (TUT.noReal && TUT.steps[TUT.i].player && !document.getElementById('tutsample')) tutPlayerSample(); return; }   // 対象が(再描画等で)一時的に無い間は更新しない(サンプル表示が外部の再描画で消えた時は描き直す)
     var sig = sigOf(els) + '#' + viewSig();
     if (!force && sig === TUT.sig) return;
     TUT.els = els; TUT.sig = sig;
     var fit = placeTut(els), sa = TUT.steps[TUT.i];
     while (!fit && sa.adapt && sa.ai < sa.adapt.length) { sa.adapt[sa.ai++](); els = stepEls(); TUT.els = els; fit = placeTut(els); TUT.sig = sigOf(els) + '#' + viewSig(); }   // 委任_02: 入らない時だけ対象外の領域を縮めて再配置(順に1段ずつ)
-    if (!fit && !TUT.up && !els[0].closest('#nav')) {   // 吹き出しが入らない(横長画面等): 対象を画面の上端近くへ寄せて下の空きを広げ、1回だけ再配置
-      TUT.up = true; var r0 = els[0].getBoundingClientRect(); window.scrollBy(0, r0.top - (vvBox().top + 10));
-      TUT.sig = sigOf(stepEls()) + '#' + viewSig(); placeTut(stepEls());
-    }
   }
   function freeIntervals(rects, lo, hi, gap) {   // 対象矩形(+余白)を除いた縦方向の空き区間
     var busy = rects.map(function (r) { return [r.y - gap, r.y + r.h + gap]; }).sort(function (a, b) { return a[0] - b[0]; }), free = [], cur_ = lo;
@@ -1540,7 +1663,44 @@
     var q = Math.max(0, Math.min(18, r.w / 2, r.h / 2)), w2 = r.w - 2 * q, h2 = r.h - 2 * q;
     return 'M' + (r.x + q) + ' ' + r.y + 'h' + w2 + 'a' + q + ' ' + q + ' 0 0 1 ' + q + ' ' + q + 'v' + h2 + 'a' + q + ' ' + q + ' 0 0 1 -' + q + ' ' + q + 'h-' + w2 + 'a' + q + ' ' + q + ' 0 0 1 -' + q + ' -' + q + 'v-' + h2 + 'a' + q + ' ' + q + ' 0 0 1 ' + q + ' -' + q + 'z';
   }
-  function placeTut(els) {
+  /* FINAL-UI-INTEGRATION 委任_02 ①: 説明Windowの配置(文字・ボタンは全ページ同一サイズ=縮小しない)。順序: (1)対象と重ならない空き領域のうち最も下の区間へ、対象の直下(対象の下側)/直上(上側)に寄せて置く
+     → (2)入らない時は背景のスクロール位置をずらして空きを作る(固定ナビ上の対象は動かない) → (3)それでも入らない時は呼出側(tutSync)が対象外の領域/ハイライト範囲を縮める(adapt)
+     → (4)最後の手段: 横長なら対象の左右の空き列、それも無ければ最大の縦空き区間に置き、見出しと操作ボタンを残して本文(.tbody)だけをスクロールにする(ボタンは常に画面内)。 */
+  function tutFixed(e) { return !!(e && e.closest && e.closest('#nav,#dock,#mini')); }
+  function slotFor(rects, fixed, lo, hi, hiFull, gap, th, a0) {
+    rects = rects.slice(a0 || 0); fixed = fixed.slice(a0 || 0);   // 入る空き区間の最下段を選び、アンカー(ナビ以外の対象)の下側なら直下・上側なら直上へ寄せる。無ければ null
+    var anch = rects.filter(function (r, i) { return !fixed[i]; }); if (!anch.length) anch = rects;
+    var aTop = Math.min.apply(null, anch.map(function (r) { return r.y; })), aBot = Math.max.apply(null, anch.map(function (r) { return r.y + r.h; })), tries = hiFull > hi ? [hi, hiFull] : [hi];
+    for (var k = 0; k < tries.length; k++) {
+      var ok = freeIntervals(rects, lo, tries[k], gap).filter(function (f) { return f[1] - f[0] >= th; });
+      if (ok.length) {
+        var f = ok[ok.length - 1], top = (f[0] >= aBot - 1 || f[1] > aTop + 1) ? f[0] : Math.max(f[0], f[1] - th);
+        return { top: Math.round(top) };
+      }
+    }
+    return null;
+  }
+  function shiftFor(els, rects, lo, hi, hiFull, gap, th, a0) {   // 背景を d だけスクロールすれば全対象が見えて吹き出しが入る最小の |d|(無ければ null)
+    var fixed = els.map(tutFixed), sy = window.pageYOffset || 0, maxS = Math.max(0, document.documentElement.scrollHeight - innerHeight), reg = hiFull - lo;
+    function vis(d) {
+      for (var i = 0; i < rects.length; i++) {
+        if (fixed[i]) continue;
+        var y = rects[i].y - d, h = rects[i].h;
+        if (y < lo - 4 || (h <= reg ? y + h > hiFull + 4 : y > lo + 4)) return false;
+      }
+      return true;
+    }
+    for (var m = 0; m <= Math.max(sy, maxS - sy); m += 4) {
+      var ds = m ? [m, -m] : [0];
+      for (var q = 0; q < ds.length; q++) {
+        var d = ds[q]; if (sy + d < 0 || sy + d > maxS || !vis(d)) continue;
+        var r2 = rects.map(function (r, i) { return fixed[i] ? r : { x: r.x, y: r.y - d, w: r.w, h: r.h }; });
+        if (slotFor(r2, fixed, lo, hi, hiFull, gap, th, a0)) return d;
+      }
+    }
+    return null;
+  }
+  function placeTut(els, noShift) {
     var tut = $('tut'), tip = $('tip'), dim = tut.querySelector('.dim'), pad = 6, nctx = (TUT.steps[TUT.i].ctx || []).length;
     if (!tip || !dim) return;
     var o = tut.getBoundingClientRect(), W = o.width, H = o.height;   // #tut 自身の実矩形を原点・寸法にする(座標系の差を消す)
@@ -1548,30 +1708,25 @@
     var path = 'M0 0H' + W + 'V' + H + 'H0Z' + mergeOverlap(rects).map(roundRectPath).join('');   // 穴が重なる場合(固定ナビの裏に対象が来た等)は外接矩形へ統合(evenoddだと重なり部分が暗幕で塞がるため)
     dim.style.clipPath = 'path(evenodd,\'' + path + '\')';
     Array.prototype.forEach.call(tut.querySelectorAll('.ring'), function (rg, i) { var r = rects[i]; if (!r) return; rg.style.left = r.x + 'px'; rg.style.top = r.y + 'px'; rg.style.width = r.w + 'px'; rg.style.height = r.h + 'px'; });
-    // ---- 吹き出し配置: 対象と重ならない空き領域(下→上→狭い画面は文字を詰める→横長画面は対象の左右の空き列) ----
     var box = vvBox(), gap = 12, lo = box.top - o.top + 8, hiFull = box.bottom - o.top - 8, hi = Math.min(hiFull, dockTop() - o.top - 8);
-    tip.classList.remove('compact'); tip.style.cssText = 'top:0;visibility:hidden';
+    tip.style.cssText = 'top:0;visibility:hidden';
     var tw = Math.min(W * 0.92, 420); tip.style.width = tw + 'px';
-    var fit = true, free = freeIntervals(rects, lo, hi, gap), th = tip.offsetHeight;
-    function fits(f) { return f[1] - f[0] >= th; }
-    var ok = free.filter(fits);
-    if (!ok.length && hiFull > hi) { free = freeIntervals(rects, lo, hiFull, gap); ok = free.filter(fits); }   // 下部dockは対象ではないので、入らない時は吹き出しがdock上にかかってもよい
-    if (!ok.length) { tip.classList.add('compact'); th = tip.offsetHeight; free = freeIntervals(rects, lo, hi, gap); ok = free.filter(fits); if (!ok.length && hiFull > hi) { free = freeIntervals(rects, lo, hiFull, gap); ok = free.filter(fits); } }   // 小さい画面: 文字を詰める
-    if (ok.length) {
-      var f = ok[ok.length - 1];   // 最も下側の空き区間(対象の下)を優先
-      var firstBelow = f[0] >= Math.max.apply(null, rects.map(function (r) { return r.y; })) - 1;
-      tip.style.top = Math.round(firstBelow ? f[0] : Math.max(f[0], f[1] - th)) + 'px';   // 対象の下側なら対象の直下、上側なら対象の直上
-    } else {   // 縦に入らない(横長画面等): 対象の左右の空き列へ置く
-      var ux0 = Math.min.apply(null, rects.map(function (r) { return r.x; })) - gap, ux1 = Math.max.apply(null, rects.map(function (r) { return r.x + r.w; })) + gap;
-      var cols = [[8, ux0 - 8], [ux1 + 8, W - 8]].map(function (c) { return { x: c[0], w: c[1] - c[0] }; }).sort(function (a, b) { return b.w - a.w; }), col = cols[0];
-      if (col && col.w >= 150) {
-        tip.style.width = Math.min(col.w, 420) + 'px'; tip.style.left = col.x + 'px'; tip.style.transform = 'none'; tip.classList.add('compact'); th = tip.offsetHeight;
-        var avail = hiFull - lo; if (th > avail) { tip.style.maxHeight = Math.max(80, avail) + 'px'; tip.style.overflowY = 'auto'; th = tip.offsetHeight; }
-        tip.style.top = Math.round(Math.max(lo, Math.min(hiFull - th, rects[0].y))) + 'px';
-      } else {   // 最後の手段: 最大の縦空き区間へ入れてスクロール可
-        var f2 = free.slice().sort(function (a, b) { return (b[1] - b[0]) - (a[1] - a[0]); })[0] || [lo, hi];
-        tip.style.maxHeight = Math.max(80, f2[1] - f2[0]) + 'px'; tip.style.overflowY = 'auto'; th = tip.offsetHeight; tip.style.top = Math.round(f2[0]) + 'px'; fit = false;
-      }
+    var fixed = els.map(tutFixed), th = tip.offsetHeight, fit = true, a0 = TUT.steps[TUT.i].ctxSoft ? nctx : 0, slot = slotFor(rects, fixed, lo, hi, hiFull, gap, th, a0);
+    if (!slot && !noShift) {   // (2) スクロール位置を動かして空きを作る(1回だけ動かして再配置)
+      var d = shiftFor(els, rects, lo, hi, hiFull, gap, th, a0);
+      if (d) { window.scrollBy(0, d); return placeTut(stepEls(), true); }
+    }
+    if (slot) { tip.style.top = slot.top + 'px'; tip.style.visibility = 'visible'; return true; }
+    // (4) 最後の手段(呼出側のadaptで縮める余地が無くなった後もここに来る): 左右の空き列 → 最大の縦空き区間(本文だけスクロール)
+    var av = rects.slice(a0), ux0 = Math.min.apply(null, av.map(function (r) { return r.x; })) - gap, ux1 = Math.max.apply(null, av.map(function (r) { return r.x + r.w; })) + gap;
+    var cols = [[8, ux0 - 8], [ux1 + 8, W - 8]].map(function (c) { return { x: c[0], w: c[1] - c[0] }; }).sort(function (a, b) { return b.w - a.w; }), col = cols[0], avail = hiFull - lo;
+    if (col && col.w >= 220) {
+      tip.style.width = Math.min(col.w, 420) + 'px'; tip.style.left = col.x + 'px'; tip.style.transform = 'none'; th = tip.offsetHeight;
+      if (th > avail) { var tb1 = tip.querySelector('.tbody'), fl1 = th - (tb1 ? tb1.scrollHeight : 0) + Math.min(tb1 ? tb1.scrollHeight : 0, 70); tip.style.maxHeight = Math.max(fl1, avail) + 'px'; th = tip.offsetHeight; }
+      tip.style.top = Math.round(Math.max(lo, Math.min(hiFull - th, rects[0].y))) + 'px';
+    } else {
+      var f2 = freeIntervals(av, lo, hiFull, gap).sort(function (a, b) { return (b[1] - b[0]) - (a[1] - a[0]); })[0] || [lo, hiFull];
+      var tb0 = tip.querySelector('.tbody'), floor = tip.offsetHeight - (tb0 ? tb0.scrollHeight : 0) + Math.min(tb0 ? tb0.scrollHeight : 0, 70); tip.style.maxHeight = Math.max(floor, f2[1] - f2[0]) + 'px'; th = tip.offsetHeight; tip.style.top = Math.round(Math.max(lo, Math.min(f2[0], hiFull - th))) + 'px'; fit = false;
     }
     tip.style.visibility = 'visible';
     return fit;
@@ -1594,8 +1749,8 @@
     var b = e.target.closest('[data-tut]'); if (!b || !TUT) return;
     var a = b.dataset.tut;
     if (a === 'skip' || a === 'done') { finishTutorial(a === 'done'); return; }
-    if (a === 'prev') { if (TUT.i > 0) { TUT.i--; showStep(); } return; }
-    TUT.i++; showStep();
+    if (a === 'prev') { if (TUT.i > 0) { TUT.dir = -1; TUT.i--; showStep(); } return; }
+    TUT.dir = 1; TUT.i++; showStep();
   });
   function relayout() { if (TUT) TUT.up = false; tutSync(true); }
   window.addEventListener('resize', relayout);
@@ -1617,12 +1772,51 @@
     if (window.ResizeObserver) { var ro2 = new ResizeObserver(updateCapCue); ro2.observe(cj); ro2.observe($('capwrap')); }
     if (window.MutationObserver) new MutationObserver(updateCapCue).observe(cj, { childList: true, characterData: true, subtree: true });
   })();
+  /*W19-SWEEP>*/
+  /* FINAL-UI W19 ②(Fable決定): 再生できなくなった記事(item(slug)が解決できない=復習専用 review_only_items / 配信一覧から完全に消えた記事)のオフライン保存音声を、アプリが自動で端末から削除する。
+     対象はその保存音声だけ(復習帳・お気に入り・学習記録・再生履歴には触れない)。一覧除外(旧版の公開URL維持)・掲載中は item() が解決するので消さない。新しいnative APIは作らず、既存の EigoHost.offline.remove(slug) を使う。
+     実行契機=catalog読込み成功後と、保存一覧(summary)が取得できた時の変化通知。次のどれかなら絶対に削除しない: Web版(offline capabilityなし)/ catalogが正常でない(schema不一致・items空・slug欠落・
+     前回正常時の記事総数[slugを持つ全キーの行数]の半分未満)/ 保存一覧が未取得 / オフライン(navigator.onLine===false または summary.online===false)/ 再生中の記事・再生キューの記事。
+     失敗(例外・false)しても起動を妨げず、同じ記事は今回の起動中は再試行しない(次回起動で再試行)。利用者向けの新しい文言は出さない。削除の事実は診断ログ(EigoHost.diag)へ。 */
+  var K_CATN = 'wut01.catn';
+  var ORPH = { ok: null, tried: {}, busy: false };
+  function catRowsTotal(c) { return Object.keys(c).reduce(function (n, key) { return n + (Array.isArray(c[key]) ? c[key].filter(function (x) { return x && typeof x.slug === 'string'; }).length : 0); }, 0); }   // slugを持つ行の総数(items・一覧除外の旧版・復習専用など全キー。記事が別キーへ移っても総数は変わらない)
+  function catHealthy(c) {
+    if (!c || c.schema !== 'ecui_catalog_auto_v1' || !Array.isArray(c.items) || !c.items.length) return false;
+    if (!c.items.every(function (x) { return x && typeof x.slug === 'string' && x.slug; })) return false;
+    var n = catRowsTotal(c), prev = +lsGet(K_CATN, 0) || 0;
+    if (prev > 0 && n < Math.ceil(prev * 0.5)) return false;   // 前回正常時より極端に減っている(途中で切れたcatalog等)
+    return true;
+  }
+  function orphanSweep(why) {
+    try {
+      var o = offCap(); if (!o || ORPH.busy) return;
+      if (ORPH.ok === null) { ORPH.ok = catHealthy(ST.cat); if (ORPH.ok) lsSet(K_CATN, catRowsTotal(ST.cat)); }
+      if (!ORPH.ok) return;
+      if (window.navigator && window.navigator.onLine === false) return;
+      var m = o.summary() || {}; if (!m.loaded || m.online === false || !Array.isArray(m.items)) return;
+      var keep = {}; if (cur) { if (cur.slug) keep[cur.slug] = 1; (cur.queue || []).forEach(function (q) { var k = q && q.slug ? q.slug : q; if (typeof k === 'string') keep[k] = 1; }); }
+      var todo = m.items.map(function (x) { return x && x.slug; }).filter(function (sl) { return typeof sl === 'string' && sl && !ORPH.tried[sl] && !keep[sl] && !item(sl); });
+      if (!todo.length) return;
+      ORPH.busy = true;
+      var dg = function (ev, d) { try { var h = window.EigoHost; if (h && typeof h.diag === 'function') h.diag(ev, d); } catch (e) { } };
+      (function next(i) {
+        if (i >= todo.length) { ORPH.busy = false; return; }
+        var sl = todo[i]; ORPH.tried[sl] = true;
+        var rm; try { rm = Promise.resolve(o.remove(sl)); } catch (e) { rm = Promise.reject(e); }
+        rm.then(function (r) { dg('js.dl.orphan.removed', { slug: sl, why: why, result: r === false ? 'false' : 'ok' }); }, function (e) { dg('js.dl.orphan.failed', { slug: sl, why: why, msg: String(e && e.message || e).slice(0, 80) }); }).then(function () { next(i + 1); });
+      })(0);
+    } catch (e) { ORPH.busy = false; }
+  }
+  window.addEventListener('eigo-offline-change', function () { if (ST.cat) orphanSweep('offline-change'); });
+  /*<W19-SWEEP*/
   fetchJson('data/catalog_auto.json?v=' + ((document.querySelector('meta[name="wut-build"]') || {}).content || 'dev')).then(function (r) {   // ECUI C-DEV2: データ源は自動catalogのみ。失敗時は旧データへ黙って戻らず、明示エラーを出す
     if (!r || r.schema !== 'ecui_catalog_auto_v1' || !Array.isArray(r.items)) throw new Error('catalog_auto.json の形式が想定外です');
     ST.cat = r;
     setRate(); onRoute(); migrateSaved();
+    orphanSweep('catalog');   // W19 ②
     if (!lsGet(K_TUT, false) && !QS.get('notut')) setTimeout(startTutorial, 300);
     /*EIGO-I1:app-ready-hook*/ if (window.EigoHost && window.EigoHost.onAppReady) window.EigoHost.onAppReady({ getCur: function () { return cur; }, syncCur: function (c) { cur = c; refresh(true); } });
-    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, pre: PF_PRE, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
+    window.__WUL = { OMK: OMK, buildOmakaseQueue: buildOmakaseQueue, nextInQueue: nextInQueue, byNew: byNew, ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, itemForReview: itemForReview, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, pre: PF_PRE, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
   }).catch(function (e) { $('view').innerHTML = '<div class="empty" role="alert" data-load-error="1">一覧データ(catalog_auto.json)を読み込めませんでした: ' + esc(e.message) + '</div>'; });
 })();
