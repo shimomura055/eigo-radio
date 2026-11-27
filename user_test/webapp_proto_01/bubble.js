@@ -138,6 +138,8 @@
   /* 吹き出し配置。rects=語のclientRects(1行ごと)[{left,top,right,bottom}], band={top,bottom}(自由帯域), vw=表示幅, bw/bh=吹き出しの希望寸法
      戻り値 {mode:'above'|'below'|'alt', left, top, width, maxH, arrowX}。帯域高<MINBAND、または上下とも MINFIT 未満なら 'alt'(キャプチャ枠へ意味行を代替表示) */
   var MINBAND = 100, MINFIT = 90, GAP = 8, EDGE = 8;
+  /* FINAL-UI-INTEGRATION 委任_02 ⑥(吹き出し共通の表示処理): 全体が入る側(上→下)を選ぶ。どちら側にも入らない時は fit=false で返し、呼出側が scrollNeed() の量だけ背景をずらして再配置する
+     (短い説明[語+訳1〜2行+保存+閉じる]の文字切れ・ボタン切れを出さない)。ずらせない/長い説明の時だけ入る側の最大高さに収め、吹き出し内スクロール(見出しと操作行は固定=常に見える)。戻り値に fit/above/below を含む */
   function layout(rects, band, vw, bw, bh) {
     var bandH = band.bottom - band.top;
     if (bandH < MINBAND || !rects.length) return { mode: 'alt' };
@@ -146,13 +148,25 @@
     var w = Math.min(bw, vw - 2 * EDGE), cx = (first.left + first.right) / 2;
     if (rects.length > 1) cx = (rects[0].left + rects[0].right) / 2;
     var left = Math.max(EDGE, Math.min(cx - w / 2, vw - EDGE - w)), arrowX = Math.max(14, Math.min(w - 14, cx - left));
-    var mode, maxH;
+    var mode, maxH, fit = true;
     if (bh <= above) { mode = 'above'; maxH = bh; }
     else if (bh <= below) { mode = 'below'; maxH = bh; }
-    else if (Math.max(above, below) >= MINFIT) { mode = above >= below ? 'above' : 'below'; maxH = Math.max(above, below); }
-    else return { mode: 'alt' };
+    else if (Math.max(above, below) >= MINFIT) { fit = false; mode = above >= below ? 'above' : 'below'; maxH = Math.max(above, below); }
+    else return { mode: 'alt', fit: false, above: above, below: below };
     var h = Math.min(bh, maxH), top = mode === 'above' ? first.top - GAP - h : last.bottom + GAP;
-    return { mode: mode, left: left, top: top, width: w, maxH: maxH, arrowX: arrowX };
+    return { mode: mode, left: left, top: top, width: w, maxH: maxH, arrowX: arrowX, fit: fit, above: above, below: below };
   }
-  root.WURBubble = { glScore: glScore, glRescue: glRescue, lk3Reason: lk3Reason, checkLevel: checkLevel, layout: layout, MINBAND: MINBAND };
+  /* 背景を window.scrollBy(0, d) すれば全体が入る最小の |d|(無ければ null)。sy=現在のscrollY, maxS=最大scrollY。語自体は帯域内に残ること */
+  function scrollNeed(rects, band, bh, sy, maxS) {
+    if (!rects.length) return null;
+    var first = rects[0], last = rects[rects.length - 1], opts = [];
+    var a = band.top + GAP + bh - first.top;                 // 上側に入れる: 内容を a だけ下へ(=scrollBy(-a))
+    if (a > 0 && sy - a >= 0 && last.bottom + a <= band.bottom) opts.push(-a);
+    var b = last.bottom + GAP + bh - band.bottom;            // 下側に入れる: 内容を b だけ上へ(=scrollBy(+b))
+    if (b > 0 && sy + b <= maxS && first.top - b >= band.top) opts.push(b);
+    if (!opts.length) return null;
+    opts.sort(function (x, y) { return Math.abs(x) - Math.abs(y); });
+    return Math.ceil(Math.abs(opts[0])) * (opts[0] < 0 ? -1 : 1);
+  }
+  root.WURBubble = { scrollNeed: scrollNeed, glScore: glScore, glRescue: glRescue, lk3Reason: lk3Reason, checkLevel: checkLevel, layout: layout, MINBAND: MINBAND };
 })(window);

@@ -63,6 +63,20 @@
     }
     var i = lvInfo(slug, lv); return new URL('../' + slug + '/' + (i ? i.main : ''), location.href).href;
   }
+  /* ---------- おまかせラジオの再生キュー(FINAL-UI-INTEGRATION 委任_02 ⑨。ユーザー原文: 第1段階=新着記事のグループをランダム順 → 第2段階=残りの未再生記事をランダム順 → 第3段階=一巡で停止。同一セッションで重複なし) ----------
+     「新着記事」の範囲(グループの境界)は承認済み仕様に定義が無く(新着順の並び=added_ts降順のみ承認済み[internal-doc 11.]。ホームの「新着エピソード」欄は全掲載記事を新着順に並べるだけ)、
+     独断で日数・件数を決めない: 境界は OMK.newGroup(差し替え点)だけが決める。既定=空(新着グループなし)=第1段階が空で、第2段階に全記事をランダム順で並べる(判断待ちの間の挙動。承認後はこの1関数だけを差し替える)。
+     乱数も OMK.rand で差し替え可(検証用)。対象は byNew()=掲載中(一覧から除外した記事を含まない)。会員権限・選択レベルは従来どおり(権限は会員UI/native側、レベルは startPlay の ST.level)。 */
+  var OMK = { rand: function () { return Math.random(); }, newGroup: function (sorted) { return []; } };   // newGroup(新着順の記事item配列) -> 新着グループに入れる記事のslug配列
+  function shuffleWith(a, rnd) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function buildOmakaseQueue(sorted, o) {   // sorted=新着順(byNew())の記事item配列。戻り値 {queue:[slug…](重複なし・全件), stage1:第1段階の件数, stage2:第2段階の件数}
+    o = o || {}; var rnd = o.rand || OMK.rand, gf = o.newGroup || OMK.newGroup, seen = {}, all = [];
+    sorted.forEach(function (x) { if (x && x.slug && !seen[x.slug]) { seen[x.slug] = 1; all.push(x.slug); } });
+    var want = {}, ngl = [];
+    (gf(sorted) || []).forEach(function (sl) { if (seen[sl] && !want[sl]) { want[sl] = 1; ngl.push(sl); } });   // 掲載中の記事だけ・重複なし
+    var rest = all.filter(function (sl) { return !want[sl]; });
+    return { queue: shuffleWith(ngl, rnd).concat(shuffleWith(rest, rnd)), stage1: ngl.length, stage2: rest.length };
+  }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   var IC = {
     play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
@@ -626,7 +640,7 @@
           '<details class="te-ans"><summary>回答例を見る</summary><div class="te-a"><p class="te-en">' + (f['回答例'] || '') + '</p><p class="te-ja">' + (f['回答例の日本語訳'] || '') + '</p>' + a2 + '</div></details></div>';
       }).join('') + '</section>';
     }
-    out += '<section class="secbox"><h3>保存・復習</h3><p class="lvnote" style="text-align:left;margin:0 0 8px">各項目の「保存」で、この端末内に保存できます。</p><a class="setrow" href="#/review" style="text-decoration:none">復習帳を開く<span>&#8250;</span></a></section>';
+    /* FINAL-UI-INTEGRATION 委任_02 ⑦: 学ぶ画面の最下部セクション(保存の案内+復習帳リンク)は廃止。各語の保存ボタン・復習帳・下部ナビ・聴く/学ぶ切替は維持 */
     return out + modeSegHtml();   // ③-3 学習コンテンツの終了位置
 
   }
@@ -1163,7 +1177,7 @@
       if (e && e.ok && w.closest('.sent')) { w.classList.add('wk'); w.setAttribute('role', 'button'); w.tabIndex = 0; w.setAttribute('aria-haspopup', 'dialog'); }
     });
   }
-  var bubEntry = null, bubWord = null;
+  var bubEntry = null, bubWord = null, bubAdj = 0;   // bubAdj: この吹き出しを出すために背景をずらした回数(上限2。無限ループ防止)
   function bubbleOpen() { var b = $('bubble'); return !!b && !b.hidden; }
   function markWordSel(w) {   // WUG A-5: 選択中のPhrase/Word(本文中)を淡いブルーで強調。常に1つだけ。吹き出しが閉じたら解除
     Array.prototype.forEach.call(document.querySelectorAll('.wsel'), function (e) { e.classList.remove('wsel'); });
@@ -1173,7 +1187,7 @@
     var b = $('bubble'); if (!b) return;
     markWordSel(null);
     var was = !b.hidden;
-    b.hidden = true; bubWord = null; bubEntry = null;
+    b.hidden = true; bubWord = null; bubEntry = null; bubAdj = 0;
     if (b.parentNode !== document.body) document.body.appendChild(b);
     b.className = ''; b.removeAttribute('style');
     capForce(false);
@@ -1212,7 +1226,7 @@
       ((m.audio || m.more || m.save) ? '<div class="bub-act">' + (m.audio ? '<button type="button" class="pwplay" data-pwplay="' + m.idx + '" aria-label="' + esc(m.en) + ' の音声を再生(本編は一時停止します)">' + IC.play + '</button>' : '') +
         (m.save ? (function () { var on = store.isSaved(route.arg, ST.level, m.en); return '<button type="button" class="save bub-save' + (on ? ' on' : '') + '" data-save="' + esc(m.en) + '" aria-pressed="' + on + '">' + (on ? '保存済' : '保存') + '</button>'; })() : '') +
         (m.more ? '<button type="button" class="bub-more" data-bubmore="' + m.idx + '">学ぶ画面で詳しく見る &#8250;</button>' : '') + '</div>' : '');
-    b.hidden = false; b.setAttribute('data-lk', entry.lk);
+    b.hidden = false; b.setAttribute('data-lk', entry.lk); bubAdj = 0;
     placeBubble();
   }
   function placeBubble() {
@@ -1226,13 +1240,17 @@
     b.className = ''; b.style.cssText = 'left:0;top:0;visibility:hidden;max-height:none';
     var bw = b.offsetWidth, bh = b.offsetHeight, vw = document.documentElement.clientWidth;
     var r = WURBubble.layout(rects, band, vw, bw, bh);
+    if (!r.fit && r.mode !== 'alt' && rects.length && bubAdj < 2) {   // 上にも下にも全体が入らない: 背景を少しずらして空きを作り再配置(⑥。短い説明の文字切れ・ボタン切れを出さない)
+      var sd = WURBubble.scrollNeed(rects, band, bh, window.pageYOffset || 0, Math.max(0, document.documentElement.scrollHeight - innerHeight));
+      if (sd) { bubAdj++; b.style.visibility = 'hidden'; window.scrollBy(0, sd); return placeBubble(); }
+    }
     if (r.mode === 'alt') {   // 吹き出しが難しい(帯域が狭い横向き等): キャプチャ枠の先頭へ意味行を代替表示(同じ要素を移動)
       b.style.cssText = ''; b.className = 'alt'; capForce(true); cj.insertBefore(b, cj.firstChild); cj.classList.add('hasw'); layoutDock();
       return;
     }
     capForce(false);
     if (cj) { cj.classList.remove('hasw'); layoutDock(); }
-    b.className = r.mode; b.style.cssText = 'left:' + Math.round(r.left) + 'px;top:' + Math.round(r.top) + 'px;width:' + Math.round(r.width) + 'px;max-height:' + Math.floor(r.maxH) + 'px;--ax:' + Math.round(r.arrowX) + 'px';
+    b.className = r.mode; b.style.cssText = 'left:' + Math.round(r.left) + 'px;top:' + Math.round(r.top) + 'px;width:' + Math.round(r.width) + 'px;max-height:' + (r.fit ? Math.ceil(r.maxH) + 1 : Math.floor(r.maxH)) + 'px;--ax:' + Math.round(r.arrowX) + 'px';
   }
   function onWordClick(w) {
     var gd = glossFor(route.arg), e = gd.byKey[w.getAttribute('data-hl')], se = w.closest('.sent');
@@ -1277,7 +1295,7 @@
       if (route.name !== 'player' || route.arg !== slug) location.hash = '#/player/' + slug;
       return;
     }
-    if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = shuffle(byNew().map(function (x) { return x.slug; })); startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ: ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
+    if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = buildOmakaseQueue(byNew()).queue; if (!q2.length) return; startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ: ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
     if ((b = t.closest('[data-seq]'))) {
       if (route.name !== 'player') ST.mode = 'listen';
       var items = listItems(b.dataset.g).map(function (x) { return x.slug; });
@@ -1350,7 +1368,7 @@
      (4) 枠のクランプ廃止(以前は y を2pxへ丸めて高さだけ残し枠が対象から外れた)。 */
   var TUT = null, probe = null, tutRaf = 0, tutLockBound = false;
   /* WEBAPP-TUTORIAL-REVISION-02(2026-11-12 ユーザー承認 APPROVED_FOR_PRODUCTION): 6ページ構成(旧P2=おまかせ/記事を探す を削除。P3〜P7を追加)。
-     実画面+実要素へのspotlight(既存方式)。説明用に保存・復習を実行しない: 学ぶ画面の「保存」・復習帳・復習画面の見せ方は表示(DOM)のみで、store/localStorage へは書かない
+     実画面+実要素へのspotlight(既存方式)。説明用に保存や復習を実行しない: 学ぶ画面の「保存」・復習帳・復習画面の見せ方は表示(DOM)のみで、store/localStorage へは書かない
      (P5=未保存が無い時は保存済ボタンの見た目だけを一時的に未保存へ/P6,P7=保存0件でも WURReview.homeHtml/answerHtml のサンプル描画。クリックは暗幕が遮り、離脱時に rerender で実データ描画へ戻る) */
   function tutSteps() {
     var first = byNew()[0].slug;
@@ -1366,7 +1384,7 @@
             waitFor(['#pwbox .save'], function () { cb(); });
           });
         } },
-      { hash: '#/search', sel: ['#view label.search', '#browse .sh + .rows', '#nav a[data-tab=search]'], title: '記事を探す', clip: { 1: 4 }, html: '<p>下の『記事を探す』から、キーワード検索やジャンル一覧で読みたい記事を探せます。</p>' },
+      { hash: '#/search', sel: ['#view label.search', '#browse .sh + .rows', '#nav a[data-tab=search]'], title: '記事を探す', clip: { 1: 3 }, clip0: { 1: 3 }, adapt: [function () { var fr = document.querySelector('#browse > .rows:first-child'), hd = document.querySelector('#browse > .sh'); if (fr) fr.style.display = 'none'; if (hd) hd.style.display = 'none'; }, function () { TUT.steps[TUT.i].clip = { 1: 2 }; }, function () { TUT.steps[TUT.i].clip = { 1: 1 }; }], ai: 0, html: '<p>下の『記事を探す』から、キーワード検索やジャンル一覧で読みたい記事を探せます。</p>' },
       { hash: '#/player/' + first, ctx: ['#pwbox [data-tut-card]'], sel: ['#pwbox [data-tut-target]'], title: '気になる表現を保存', html: '<p>学ぶモードで気になったPhrase / Wordは『保存』をタップ。あとで復習帳にまとめて残せます。</p>',
         prep: function (cb) {
           waitFor(['#modeseg'], function () {
@@ -1388,7 +1406,8 @@
             }
             var sec = document.querySelector('#srsroot .srs-home'), cs = sec ? Array.prototype.slice.call(sec.children) : [], rows = cs.filter(function (c) { return c.classList.contains('srs-row'); });
             var st5 = TUT.steps[TUT.i], rk = function (n) { return function () { st5.clip = { 0: cs.indexOf(rows[Math.min(rows.length, n) - 1]) + 1 }; }; };
-            if (rows.length) { rk(3)(); st5.adapt = [rk(2), rk(1)]; st5.ai = 0; }   // 委任_02: 文脈枠=復習帳見出し〜保存した表現一覧(先頭の数件)〜始める。吹き出しが入らない小さい画面では一覧の件数を3→2→1へ減らす
+            var sb = document.querySelector('#srsroot [data-srs-start]'), rk0 = function () { var k = 0; cs.forEach(function (c, ci) { if (sb && c.contains(sb)) k = ci + 1; }); st5.clip = { 0: k || cs.length }; };   // 最終段: 一覧の行をすべて外し「始める」まで
+            if (rows.length) { rk(3)(); st5.adapt = [rk(2), rk(1), rk0]; st5.ai = 0; }   // 委任_02: 文脈枠=復習帳見出し〜保存した表現一覧(先頭の数件)〜始める。吹き出しが入らない小さい画面では一覧の件数を3→2→1へ減らす
             cb();
           });
         } },
@@ -1399,7 +1418,7 @@
             $('srsroot').innerHTML = sampleNote() + WURReview.answerHtml({ remaining: 5 }, { key: 'tut|lean in', en: x.en }, PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }), true);
             var bd = document.querySelector('#srsroot .srs-body'), st6 = TUT.steps[TUT.i];
             if (bd) bd.style.marginBottom = '16px';   // 文脈枠(上部)と4択枠(下部)の間に余白(枠が重ならない)。説明用プレビューDOMのみ
-            st6.adapt = [function () { var e = document.querySelector('#srsroot .srs-prog'); if (e) e.style.display = 'none'; }, function () { var e = document.querySelector('#srsroot [data-tut-sample]'); if (e) e.style.cssText = 'padding:3px 8px;margin:2px 0 12px;font-size:11px'; }, function () { var e = document.querySelector('#view .top'); if (e) e.style.display = 'none'; }];   // 小さい画面で吹き出しが入らない時だけ: 対象外の残件ヘッダ→サンプル注記→ロゴ見出しを順に縮める/隠す
+            st6.adapt = [function () { var e = document.querySelector('#srsroot .srs-prog'); if (e) e.style.display = 'none'; }, function () { var e = document.querySelector('#srsroot [data-tut-sample]'); if (e) e.style.cssText = 'padding:3px 8px;margin:2px 0 12px;font-size:11px'; }, function () { var e = document.querySelector('#view .top'); if (e) e.style.display = 'none'; }, function () { st6.ctxSoft = true; }];   // 小さい画面で吹き出しが入らない時だけ: 対象外の残件ヘッダ→サンプル注記→ロゴ見出しを順に縮める/隠す
             st6.ai = 0;
             cb();
           });
@@ -1493,6 +1512,7 @@
         buildTut(); tutSync(true);   // 初回表示から実測位置で配置(同期)。以降は毎フレーム追従
       });
     }
+    if (st.clip0) st.clip = { 1: st.clip0[1] }; if (st.adapt) { st.ai = 0; st.ctxSoft = false; }   // ステップへ戻った時は縮退(ハイライト範囲の絞り込み)を初期状態から
     TUT.els = null; TUT.sig = ''; TUT.built = false; TUT.up = false; TUT.stepAt = Date.now(); TUT.hid = 0;
     tut.innerHTML = '<div class="dim"></div>';
     if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else { if (st.reroute) rerender(false); go(); }
@@ -1512,10 +1532,6 @@
     TUT.els = els; TUT.sig = sig;
     var fit = placeTut(els), sa = TUT.steps[TUT.i];
     while (!fit && sa.adapt && sa.ai < sa.adapt.length) { sa.adapt[sa.ai++](); els = stepEls(); TUT.els = els; fit = placeTut(els); TUT.sig = sigOf(els) + '#' + viewSig(); }   // 委任_02: 入らない時だけ対象外の領域を縮めて再配置(順に1段ずつ)
-    if (!fit && !TUT.up && !els[0].closest('#nav')) {   // 吹き出しが入らない(横長画面等): 対象を画面の上端近くへ寄せて下の空きを広げ、1回だけ再配置
-      TUT.up = true; var r0 = els[0].getBoundingClientRect(); window.scrollBy(0, r0.top - (vvBox().top + 10));
-      TUT.sig = sigOf(stepEls()) + '#' + viewSig(); placeTut(stepEls());
-    }
   }
   function freeIntervals(rects, lo, hi, gap) {   // 対象矩形(+余白)を除いた縦方向の空き区間
     var busy = rects.map(function (r) { return [r.y - gap, r.y + r.h + gap]; }).sort(function (a, b) { return a[0] - b[0]; }), free = [], cur_ = lo;
@@ -1539,7 +1555,44 @@
     var q = Math.max(0, Math.min(18, r.w / 2, r.h / 2)), w2 = r.w - 2 * q, h2 = r.h - 2 * q;
     return 'M' + (r.x + q) + ' ' + r.y + 'h' + w2 + 'a' + q + ' ' + q + ' 0 0 1 ' + q + ' ' + q + 'v' + h2 + 'a' + q + ' ' + q + ' 0 0 1 -' + q + ' ' + q + 'h-' + w2 + 'a' + q + ' ' + q + ' 0 0 1 -' + q + ' -' + q + 'v-' + h2 + 'a' + q + ' ' + q + ' 0 0 1 ' + q + ' -' + q + 'z';
   }
-  function placeTut(els) {
+  /* FINAL-UI-INTEGRATION 委任_02 ①: 説明Windowの配置(文字・ボタンは全ページ同一サイズ=縮小しない)。順序: (1)対象と重ならない空き領域のうち最も下の区間へ、対象の直下(対象の下側)/直上(上側)に寄せて置く
+     → (2)入らない時は背景のスクロール位置をずらして空きを作る(固定ナビ上の対象は動かない) → (3)それでも入らない時は呼出側(tutSync)が対象外の領域/ハイライト範囲を縮める(adapt)
+     → (4)最後の手段: 横長なら対象の左右の空き列、それも無ければ最大の縦空き区間に置き、見出しと操作ボタンを残して本文(.tbody)だけをスクロールにする(ボタンは常に画面内)。 */
+  function tutFixed(e) { return !!(e && e.closest && e.closest('#nav,#dock,#mini')); }
+  function slotFor(rects, fixed, lo, hi, hiFull, gap, th, a0) {
+    rects = rects.slice(a0 || 0); fixed = fixed.slice(a0 || 0);   // 入る空き区間の最下段を選び、アンカー(ナビ以外の対象)の下側なら直下・上側なら直上へ寄せる。無ければ null
+    var anch = rects.filter(function (r, i) { return !fixed[i]; }); if (!anch.length) anch = rects;
+    var aTop = Math.min.apply(null, anch.map(function (r) { return r.y; })), aBot = Math.max.apply(null, anch.map(function (r) { return r.y + r.h; })), tries = hiFull > hi ? [hi, hiFull] : [hi];
+    for (var k = 0; k < tries.length; k++) {
+      var ok = freeIntervals(rects, lo, tries[k], gap).filter(function (f) { return f[1] - f[0] >= th; });
+      if (ok.length) {
+        var f = ok[ok.length - 1], top = (f[0] >= aBot - 1 || f[1] > aTop + 1) ? f[0] : Math.max(f[0], f[1] - th);
+        return { top: Math.round(top) };
+      }
+    }
+    return null;
+  }
+  function shiftFor(els, rects, lo, hi, hiFull, gap, th, a0) {   // 背景を d だけスクロールすれば全対象が見えて吹き出しが入る最小の |d|(無ければ null)
+    var fixed = els.map(tutFixed), sy = window.pageYOffset || 0, maxS = Math.max(0, document.documentElement.scrollHeight - innerHeight), reg = hiFull - lo;
+    function vis(d) {
+      for (var i = 0; i < rects.length; i++) {
+        if (fixed[i]) continue;
+        var y = rects[i].y - d, h = rects[i].h;
+        if (y < lo - 4 || (h <= reg ? y + h > hiFull + 4 : y > lo + 4)) return false;
+      }
+      return true;
+    }
+    for (var m = 0; m <= Math.max(sy, maxS - sy); m += 4) {
+      var ds = m ? [m, -m] : [0];
+      for (var q = 0; q < ds.length; q++) {
+        var d = ds[q]; if (sy + d < 0 || sy + d > maxS || !vis(d)) continue;
+        var r2 = rects.map(function (r, i) { return fixed[i] ? r : { x: r.x, y: r.y - d, w: r.w, h: r.h }; });
+        if (slotFor(r2, fixed, lo, hi, hiFull, gap, th, a0)) return d;
+      }
+    }
+    return null;
+  }
+  function placeTut(els, noShift) {
     var tut = $('tut'), tip = $('tip'), dim = tut.querySelector('.dim'), pad = 6, nctx = (TUT.steps[TUT.i].ctx || []).length;
     if (!tip || !dim) return;
     var o = tut.getBoundingClientRect(), W = o.width, H = o.height;   // #tut 自身の実矩形を原点・寸法にする(座標系の差を消す)
@@ -1547,30 +1600,25 @@
     var path = 'M0 0H' + W + 'V' + H + 'H0Z' + mergeOverlap(rects).map(roundRectPath).join('');   // 穴が重なる場合(固定ナビの裏に対象が来た等)は外接矩形へ統合(evenoddだと重なり部分が暗幕で塞がるため)
     dim.style.clipPath = 'path(evenodd,\'' + path + '\')';
     Array.prototype.forEach.call(tut.querySelectorAll('.ring'), function (rg, i) { var r = rects[i]; if (!r) return; rg.style.left = r.x + 'px'; rg.style.top = r.y + 'px'; rg.style.width = r.w + 'px'; rg.style.height = r.h + 'px'; });
-    // ---- 吹き出し配置: 対象と重ならない空き領域(下→上→狭い画面は文字を詰める→横長画面は対象の左右の空き列) ----
     var box = vvBox(), gap = 12, lo = box.top - o.top + 8, hiFull = box.bottom - o.top - 8, hi = Math.min(hiFull, dockTop() - o.top - 8);
-    tip.classList.remove('compact'); tip.style.cssText = 'top:0;visibility:hidden';
+    tip.style.cssText = 'top:0;visibility:hidden';
     var tw = Math.min(W * 0.92, 420); tip.style.width = tw + 'px';
-    var fit = true, free = freeIntervals(rects, lo, hi, gap), th = tip.offsetHeight;
-    function fits(f) { return f[1] - f[0] >= th; }
-    var ok = free.filter(fits);
-    if (!ok.length && hiFull > hi) { free = freeIntervals(rects, lo, hiFull, gap); ok = free.filter(fits); }   // 下部dockは対象ではないので、入らない時は吹き出しがdock上にかかってもよい
-    if (!ok.length) { tip.classList.add('compact'); th = tip.offsetHeight; free = freeIntervals(rects, lo, hi, gap); ok = free.filter(fits); if (!ok.length && hiFull > hi) { free = freeIntervals(rects, lo, hiFull, gap); ok = free.filter(fits); } }   // 小さい画面: 文字を詰める
-    if (ok.length) {
-      var f = ok[ok.length - 1];   // 最も下側の空き区間(対象の下)を優先
-      var firstBelow = f[0] >= Math.max.apply(null, rects.map(function (r) { return r.y; })) - 1;
-      tip.style.top = Math.round(firstBelow ? f[0] : Math.max(f[0], f[1] - th)) + 'px';   // 対象の下側なら対象の直下、上側なら対象の直上
-    } else {   // 縦に入らない(横長画面等): 対象の左右の空き列へ置く
-      var ux0 = Math.min.apply(null, rects.map(function (r) { return r.x; })) - gap, ux1 = Math.max.apply(null, rects.map(function (r) { return r.x + r.w; })) + gap;
-      var cols = [[8, ux0 - 8], [ux1 + 8, W - 8]].map(function (c) { return { x: c[0], w: c[1] - c[0] }; }).sort(function (a, b) { return b.w - a.w; }), col = cols[0];
-      if (col && col.w >= 150) {
-        tip.style.width = Math.min(col.w, 420) + 'px'; tip.style.left = col.x + 'px'; tip.style.transform = 'none'; tip.classList.add('compact'); th = tip.offsetHeight;
-        var avail = hiFull - lo; if (th > avail) { tip.style.maxHeight = Math.max(80, avail) + 'px'; tip.style.overflowY = 'auto'; th = tip.offsetHeight; }
-        tip.style.top = Math.round(Math.max(lo, Math.min(hiFull - th, rects[0].y))) + 'px';
-      } else {   // 最後の手段: 最大の縦空き区間へ入れてスクロール可
-        var f2 = free.slice().sort(function (a, b) { return (b[1] - b[0]) - (a[1] - a[0]); })[0] || [lo, hi];
-        tip.style.maxHeight = Math.max(80, f2[1] - f2[0]) + 'px'; tip.style.overflowY = 'auto'; th = tip.offsetHeight; tip.style.top = Math.round(f2[0]) + 'px'; fit = false;
-      }
+    var fixed = els.map(tutFixed), th = tip.offsetHeight, fit = true, a0 = TUT.steps[TUT.i].ctxSoft ? nctx : 0, slot = slotFor(rects, fixed, lo, hi, hiFull, gap, th, a0);
+    if (!slot && !noShift) {   // (2) スクロール位置を動かして空きを作る(1回だけ動かして再配置)
+      var d = shiftFor(els, rects, lo, hi, hiFull, gap, th, a0);
+      if (d) { window.scrollBy(0, d); return placeTut(stepEls(), true); }
+    }
+    if (slot) { tip.style.top = slot.top + 'px'; tip.style.visibility = 'visible'; return true; }
+    // (4) 最後の手段(呼出側のadaptで縮める余地が無くなった後もここに来る): 左右の空き列 → 最大の縦空き区間(本文だけスクロール)
+    var av = rects.slice(a0), ux0 = Math.min.apply(null, av.map(function (r) { return r.x; })) - gap, ux1 = Math.max.apply(null, av.map(function (r) { return r.x + r.w; })) + gap;
+    var cols = [[8, ux0 - 8], [ux1 + 8, W - 8]].map(function (c) { return { x: c[0], w: c[1] - c[0] }; }).sort(function (a, b) { return b.w - a.w; }), col = cols[0], avail = hiFull - lo;
+    if (col && col.w >= 220) {
+      tip.style.width = Math.min(col.w, 420) + 'px'; tip.style.left = col.x + 'px'; tip.style.transform = 'none'; th = tip.offsetHeight;
+      if (th > avail) { var tb1 = tip.querySelector('.tbody'), fl1 = th - (tb1 ? tb1.scrollHeight : 0) + Math.min(tb1 ? tb1.scrollHeight : 0, 70); tip.style.maxHeight = Math.max(fl1, avail) + 'px'; th = tip.offsetHeight; }
+      tip.style.top = Math.round(Math.max(lo, Math.min(hiFull - th, rects[0].y))) + 'px';
+    } else {
+      var f2 = freeIntervals(av, lo, hiFull, gap).sort(function (a, b) { return (b[1] - b[0]) - (a[1] - a[0]); })[0] || [lo, hiFull];
+      var tb0 = tip.querySelector('.tbody'), floor = tip.offsetHeight - (tb0 ? tb0.scrollHeight : 0) + Math.min(tb0 ? tb0.scrollHeight : 0, 70); tip.style.maxHeight = Math.max(floor, f2[1] - f2[0]) + 'px'; th = tip.offsetHeight; tip.style.top = Math.round(Math.max(lo, Math.min(f2[0], hiFull - th))) + 'px'; fit = false;
     }
     tip.style.visibility = 'visible';
     return fit;
@@ -1621,6 +1669,6 @@
     ST.cat = r;
     setRate(); onRoute(); migrateSaved();
     if (!lsGet(K_TUT, false) && !QS.get('notut')) setTimeout(startTutorial, 300);
-    window.__WUL = { ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, pre: PF_PRE, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
+    window.__WUL = { OMK: OMK, buildOmakaseQueue: buildOmakaseQueue, nextInQueue: nextInQueue, byNew: byNew, ST: ST, A: A, PA: PA, setLevel: setLevel, ensureArt: ensureArt, getCur: function () { return cur; }, ART: ART, startPlay: startPlay, item: item, tutCheck: tutCheck, visBox: visBox, normRate: normRate, RATE_MIN: RATE_MIN, RATE_MAX: RATE_MAX, RATE_STEP: RATE_STEP, layoutDock: layoutDock, getUnits: function () { return units; }, getFollow: function () { return follow; }, getManual: function () { return manual; }, snap: snap, glossFor: glossFor, resetGloss: function () { GLOSS = {}; }, getPWI: function () { return PWI; }, RESUME_MS: RESUME_MS, WUR02C: 1, WUR02E: 1, store: store, SRS: SRS, getReview: function () { return reviewCtl; }, migrateSaved: migrateSaved, savedPos: savedPos, resetForTest: function () { cur = null; A.pause(); A.removeAttribute('src'); A.load(); refresh(true); }, getPF: function () { return { clip: pfClip, main: pfMain, pre: PF_PRE, orig: pfBlobOrig, impl: (pfImpl() === PF_WEB ? 'web' : pfImpl() === PF_NOOP ? 'noop' : 'hook'), webkit: PF_WEBKIT, blobFail: pfBlobFail }; } };
   }).catch(function (e) { $('view').innerHTML = '<div class="empty" role="alert" data-load-error="1">一覧データ(catalog_auto.json)を読み込めませんでした: ' + esc(e.message) + '</div>'; });
 })();
