@@ -36,7 +36,7 @@
   /* ---------- HTML生成(純関数・data-属性はPlaywright E2E用) ---------- */
   function homeHtml(m) {
     var h = '<section class="srs-home" data-srs-view="home">';
-    h += '<h2 class="srs-h">復習帳<span class="kari">仮動作</span></h2>';
+    h += '<h2 class="srs-h">復習帳</h2>';
     if (m.storeStatus === 'failed') h += '<div class="srs-warn" data-srs-warn="failed">保存データを読み込めませんでした。壊れたデータは退避済みで、勝手に作り直しません。<button type="button" class="srs-link" data-srs-reset>初期化して続ける</button></div>';
     if (m.storeStatus === 'unavailable') h += '<div class="srs-warn" data-srs-warn="unavailable">この環境では保存できません(プライベートモード等)。</div>';
     var total = m.counts.remaining;

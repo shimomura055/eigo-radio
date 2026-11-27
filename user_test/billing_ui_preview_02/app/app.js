@@ -88,7 +88,7 @@
   }
   document.addEventListener('error', function (e) { var t = e.target; if (t && t.tagName === 'IMG' && t.closest('.thumb')) t.remove(); }, true);
 
-  /* ---------- 学習記録(仮集計: 再生秒を端末内へ加算) ---------- */
+  /* ---------- 学習記録(再生秒を端末内へ加算) ---------- */
   function dayKey(d) { d = d || new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
   var statAcc = 0, lastTickMs = 0;
   function statTick() {
@@ -298,14 +298,12 @@
   /* ---------- 画面: ホーム ---------- */
   function viewHome() {
     var s = statsView(), items = byNew();
-    return topBar() + '<p class="tag">英語を、ラジオで楽しく学ぼう。<span class="kari">コピー仮</span></p>' +
+    return topBar() +
       lvSeg('lvseg-home') + '<p class="lvnote">選んだレベルで、このアプリのすべての再生ボタンが再生されます(現在: <b data-lvname>' + LV[ST.level] + '</b>)</p>' +
       '<div class="stats" id="stats"><div class="stat"><small>連続学習</small><b>' + s.streak + '<i>日</i></b></div><div class="stat"><small>今週</small><b>' + s.week + '<i>分</i></b></div><div class="stat"><small>累計</small><b>' + s.total.v + '<i>' + s.total.u + '</i></b></div></div>' +
-      '<div class="lvnote" style="margin:-6px 0 12px">学習記録は端末内の再生時間による<span class="kari">仮集計</span></div>' +
-      '<section class="omakase" id="omakase"><span class="pill">おまかせラジオ</span><h2>今日も英語を楽しもう。</h2><p>新着記事からランダムに連続再生</p>' +
-      '<button type="button" class="bigbtn" id="omakase-btn" data-omakase>' + IC.play + '<span><span data-lvname2>' + LV[ST.level] + '</span>で再生</span></button>' +
-      '<div class="fine">仮設定: 新着' + items.length + '件すべてをランダム順・既聴も含む・1周で停止(Production採用しない)</div></section>' +
-      '<div class="sh"><h3>新着エピソード<span class="kari">新着順・概要は仮</span></h3><a href="#/list?g=all">すべて見る &#8250;</a></div>' +
+      '<section class="omakase" id="omakase"><span class="pill">おまかせラジオ</span><p>新着記事からランダムに連続再生</p>' +
+      '<button type="button" class="bigbtn" id="omakase-btn" data-omakase>' + IC.play + '<span><span data-lvname2>' + LV[ST.level] + '</span>で再生</span></button></section>' +
+      '<div class="sh"><h3>新着エピソード</h3><a href="#/list?g=all">すべて見る &#8250;</a></div>' +
       '<div class="cards">' + items.map(function (it) { return cardHtml(it, 'home'); }).join('') + '</div>';
   }
   /* ---------- 画面: 記事を探す ---------- */
@@ -424,7 +422,11 @@
   function viewMeLegal() {
     return '<div class="pl">サポート・規約</div>' + LEGAL_LINKS.map(function (x) {
       return '<a class="setrow" data-legal="' + x[0] + '" href="' + esc(legalHref(x[0])) + '" target="_blank" rel="noopener">' + x[1] + '<span>&#8250;</span></a>';
-    }).join('');
+    }).join('') + supportLogHtml();
+  }
+  function supportLogHtml() {   // 診断ログ共有(2026-11-10承認・2026-11-26再確認): 通常画面(オフライン保存の管理)から外し「サポート」欄へ。App(offline capability)のみ表示=Web版は何も出さない
+    var o = offCap(); if (!o || typeof o.shareLog !== 'function') return '';
+    return '<div class="dlmsg" data-support-log="1"><button type="button" class="dllink" data-dl-act="share-log">ログを共有</button> <small>(または ファイルApp &gt; eigo-radio &gt; poc_log.jsonl)</small></div>';
   }
   function viewMe() {
     return topBar() + '<h2 style="margin:4px 0 8px;color:var(--navy)">マイページ' + (DEV ? '<span class="kari">ダミー</span>' : '') + '</h2>' + (DEV ? '<div class="dummy">マイページはダミー画面です(正式仕様なし)。</div>' : '') +
@@ -492,7 +494,6 @@
       return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc(DL_STATUS[x.status] || '') + (x.bytes ? ' (' + dlMB(x.bytes) + ')' : '') + '</small>' +
         '<button type="button" class="dllink" data-dl-act="remove" data-dl-slug="' + esc(x.slug) + '" aria-label="' + esc(x.title) + 'の保存を削除">削除</button></div>';
     }).join('') : '<div class="dlmsg">まだ保存した記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。</div>';
-    h += '<div class="dlmsg"><button type="button" class="dllink" data-dl-act="share-log">ログを共有</button> <small>(または ファイルApp &gt; eigo-radio &gt; poc_log.jsonl)</small></div>';
     return h;
   }
   function viewMeDl() { var o = offCap(); if (!o) return ''; try { if (o.refresh) o.refresh(); } catch (e) { } return '<div class="pl">オフライン保存の管理</div><div class="dlmgmt" id="medl" aria-live="polite">' + dlMgmtHtml() + '</div>'; }
@@ -618,7 +619,7 @@
           '<details class="te-ans"><summary>回答例を見る</summary><div class="te-a"><p class="te-en">' + (f['回答例'] || '') + '</p><p class="te-ja">' + (f['回答例の日本語訳'] || '') + '</p>' + a2 + '</div></details></div>';
       }).join('') + '</section>';
     }
-    out += '<section class="secbox"><h3>保存・復習</h3><p class="lvnote" style="text-align:left;margin:0 0 8px">各項目の「保存」で、この端末内(仮動作)に保存できます。</p><a class="setrow" href="#/review" style="text-decoration:none">復習帳を開く<span>&#8250;</span></a></section>';
+    out += '<section class="secbox"><h3>保存・復習</h3><p class="lvnote" style="text-align:left;margin:0 0 8px">各項目の「保存」で、この端末内に保存できます。</p><a class="setrow" href="#/review" style="text-decoration:none">復習帳を開く<span>&#8250;</span></a></section>';
     return out + modeSegHtml();   // ③-3 学習コンテンツの終了位置
 
   }
@@ -1268,7 +1269,7 @@
       if (route.name !== 'player' || route.arg !== slug) location.hash = '#/player/' + slug;
       return;
     }
-    if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = shuffle(byNew().map(function (x) { return x.slug; })); startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ(仮設定): ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
+    if ((b = t.closest('[data-omakase]'))) { if (route.name !== 'player') ST.mode = 'listen'; var q2 = shuffle(byNew().map(function (x) { return x.slug; })); startPlay(q2[0], { queue: q2, qi: 0, at: 0 }); toast('おまかせラジオ: ' + LV[ST.level] + ' · ランダム ' + q2.length + '件'); return; }
     if ((b = t.closest('[data-seq]'))) {
       if (route.name !== 'player') ST.mode = 'listen';
       var items = listItems(b.dataset.g).map(function (x) { return x.slug; });
