@@ -432,7 +432,7 @@
       '<div class="pl">レベル設定(共通)</div>' + lvSeg('lvseg-me', true) +
       '<div class="lvnote">Standard: ' + LV_HINT.std + ' / Advanced: ' + LV_HINT.adv + '。目安であり、どちらも自由に選べます。</div>' +
       '<button class="setrow" id="tutbtn">使い方(チュートリアル)を見る<span>&#8250;</span></button>' + viewMeDl() +
-      '<a class="setrow" id="favrow" href="#/fav">お気に入り記事<span>' + favItems().length + '件 &#8250;</span></a>' +
+      '<a class="setrow" id="favrow" href="#/fav">お気に入り記事<span>' + favItems().length + '件 &#8250;</span></a>' + (offCap() ? savedRowHtml() : '') +
       viewMeLegal() +
       (DEV ? '<button class="setrow" id="resetbtn">端末内の試作データを消す(レベル・保存・学習記録・チュートリアル)<span>&#8250;</span></button>' +
         '<div class="setrow"><span>試作版ビルド</span><small>rev12 / Trial・未承認 / 数値・ジャンル・概要の一部は仮データ</small></div>' +
@@ -470,7 +470,7 @@
         return '<div class="dlmain dlchk" data-dl-state="checking" role="status">確認中…</div>';
     }
   }
-  var DL_GUIDE = '<a href="#/me">マイページ</a>の「オフライン保存の管理」で不要な保存を削除するか、上限を上げてください(自動では削除しません)。';
+  var DL_GUIDE = '<a href="#/me">マイページ</a>の「オフライン保存の管理」で不要な保存を削除してください(自動では削除しません)。';
   function dlWhy(s, lead) {   // lead=true: 失敗(何も保存できていない) / false: 一部のみ保存(途中終了)
     if (s.reason === 'storage_limit') return (lead ? '保存容量の上限に達したためダウンロードできませんでした。' : '保存容量の上限に達したため、一部のみ保存されています。') + DL_GUIDE;
     if (s.reason === 'stale') return '記事が更新されています。もう一度ダウンロードすると最新の音声を保存できます。';
@@ -478,29 +478,43 @@
     return lead ? 'ダウンロードに失敗しました。もう一度お試しください。' : '一部のみ保存されています(途中で終了しました)。もう一度ダウンロードしてください。';
   }
   function dlSlotHtml(slug) { var o = offCap(); if (o && typeof o.touch === 'function') { try { o.touch(slug); } catch (e) { } } return o ? '<div class="dlslot" id="dlslot" data-dl-slug="' + esc(slug) + '" aria-live="polite">' + dlInner(slug) + '</div>' : ''; }
-  var DL_STATUS = { saved: '保存済み', partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません', none: '' };
   function dlMgmtHtml() {   // マイページ「オフライン保存の管理」(旧・右上シートの容量/上限/削除/診断/オフライン表示を移設)
     var o = offCap(); if (!o) return '';
     var m = o.summary() || {}, h = '';
     if (!m.loaded) return '<div class="dlmsg">確認中…</div>';
     if (m.online === false) h += '<div class="dlmsg dloff" data-dl-offline="1">現在オフラインです。保存済みの記事は下の一覧からそのまま聴けます。</div>';
-    var pct = m.limitBytes > 0 ? Math.round(m.usedBytes / m.limitBytes * 100) : 0;
-    h += '<div class="dlmsg" data-dl-usage="1">保存容量: ' + dlMB(m.usedBytes) + ' / 上限 ' + dlMB(m.limitBytes) + (pct >= 80 ? ' <b class="dlerr">(残りわずか)</b>' : '') + '</div>';
-    h += '<label class="dlmsg">上限: <select data-dl-limit="1">' + [200, 500, 1024, 2048].map(function (mb) { var v = mb * 1048576; return '<option value="' + v + '"' + (v === m.limitBytes ? ' selected' : '') + '>' + (mb >= 1024 ? (mb / 1024) + 'GB' : mb + 'MB') + '</option>'; }).join('') + '</select> <small>(超えても自動削除しません)</small></label>';
-    var items = m.items || [];
-    h += '<div class="dlmsg"><b>保存した記事</b></div>';
-    h += items.length ? items.map(function (x) {
-      return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc(DL_STATUS[x.status] || '') + (x.bytes ? ' (' + dlMB(x.bytes) + ')' : '') + '</small>' +
+    var room = Math.max(0, (m.limitBytes || 0) - (m.usedBytes || 0));   // AND2(2026-11-27 承認): 上限の選択欄は撤去(上限は内部の安全停止として残る)。表示=現在の保存容量 + あと約Y(Y = min(内部上限の残り, 端末の空き)。端末の空きが取得できない時は内部上限の残りのみ)
+    if (typeof m.freeBytes === 'number' && isFinite(m.freeBytes) && m.freeBytes >= 0) room = Math.min(room, m.freeBytes);
+    h += '<div class="dlmsg" data-dl-usage="1">現在の保存容量：' + dlMB(m.usedBytes) + '<br>' + (room <= 0 ? 'これ以上は保存できません。不要な保存を削除してください。' : 'あと約' + dlMB(room) + '保存できます') + '</div>';
+    return h;
+  }
+  var DL_ST_NOTE = { partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません' };   // 通常の保存済み行には状態語を付けない(例外状態だけ表示=ユーザーの操作が要るため)
+  function savedItems() { var o = offCap(); var m = o && o.summary() || {}; return m.loaded ? (m.items || []) : null; }
+  function savedRowHtml() { var it = savedItems(); return '<a class="setrow" id="savedrow" href="#/me/saved">保存した記事<span>' + (it ? it.length + '件 ' : '') + '&#8250;</span></a>'; }
+  function savedInner() {   // 「保存した記事」一覧画面の本体(記事を開く・削除はここで行う)
+    var items = savedItems();
+    if (!items) return '<div class="dlmsg">確認中…</div>';
+    return items.length ? items.map(function (x) {
+      var st = x.status === 'saved' ? '' : (DL_ST_NOTE[x.status] || '');
+      return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc((st ? st + ' ' : '') + (x.bytes ? '(' + dlMB(x.bytes) + ')' : '')) + '</small>' +
         '<button type="button" class="dllink" data-dl-act="remove" data-dl-slug="' + esc(x.slug) + '" aria-label="' + esc(x.title) + 'の保存を削除">削除</button></div>';
     }).join('') : '<div class="dlmsg">まだ保存した記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。</div>';
-    return h;
+  }
+  function viewMeSaved() {
+    var o = offCap(); if (!o) return viewMe();   // オフライン保存の機能が無い環境(Web版)にはこの画面は無い
+    try { if (o.refresh) o.refresh(); } catch (e) { }
+    var it = savedItems();
+    return topBar({ back: true }) + '<h2 style="margin:4px 0 4px;color:var(--navy)">保存した記事' + (it ? '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + it.length + '件</small>' : '') + '</h2>' +
+      '<div class="dlmgmt" id="savedscr" aria-live="polite">' + savedInner() + '</div>';
   }
   function viewMeDl() { var o = offCap(); if (!o) return ''; try { if (o.refresh) o.refresh(); } catch (e) { } return '<div class="pl">オフライン保存の管理</div><div class="dlmgmt" id="medl" aria-live="polite">' + dlMgmtHtml() + '</div>'; }
   window.addEventListener('eigo-offline-change', function (ev) {   // 変化通知: 現在表示中の骨格・管理欄だけを書き換える(骨格自体は描画時に同期で出ている)
     if (!offCap()) return;
     var sl = $('dlslot'), slug = ev && ev.detail && ev.detail.slug;
     if (sl && route.name === 'player' && (!slug || slug === sl.getAttribute('data-dl-slug'))) sl.innerHTML = dlInner(sl.getAttribute('data-dl-slug'));
-    var md = $('medl'); if (md && route.name === 'me' && !md.querySelector('select:focus')) md.innerHTML = dlMgmtHtml();
+    var md = $('medl'); if (md && route.name === 'me') md.innerHTML = dlMgmtHtml();
+    var sr = $('savedrow'); if (sr && route.name === 'me') sr.outerHTML = savedRowHtml();
+    var sc = $('savedscr'); if (sc && route.name === 'me' && route.arg === 'saved') { sc.innerHTML = savedInner(); var sh = sc.previousElementSibling, it = savedItems(); if (sh && sh.tagName === 'H2') sh.innerHTML = '保存した記事' + (it ? '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + it.length + '件</small>' : ''); }
   });
   document.addEventListener('click', function (e) {   // ダウンロード操作。チュートリアル中は無視(M8)。進行中・済み・確認中の再タップは adapter 側でも二重起動しない
     var b = e.target.closest && e.target.closest('[data-dl-act]'); if (!b) return;
@@ -510,10 +524,6 @@
     if (act === 'start') { var s = o.state(slug); if (s && (s.status === 'busy' || s.status === 'saved' || s.status === 'checking')) return; o.start(slug); }
     else if (act === 'cancel' || act === 'remove') o.remove(slug);
     else if (act === 'share-log' && o.shareLog) o.shareLog();
-  });
-  document.addEventListener('change', function (e) {
-    var t = e.target; if (!t || !t.getAttribute || !t.hasAttribute('data-dl-limit') || tutOn) return;
-    var o = offCap(); if (o && o.setLimit) o.setLimit(Number(t.value));
   });
 
   /* ---------- 画面: プレイヤー ---------- */
@@ -976,6 +986,7 @@
   var fromHash = null, curHash = null;   // WUG A-3: アプリ内の遷移元(画面の種類が変わった時だけ更新。連続再生で記事→記事へ進んでも遷移元は保持)
   var BACK_LAB = { home: 'ホーム', list: '一覧', search: '検索', review: '復習帳', me: 'マイページ', fav: 'お気に入り' };
   function backInfo() {
+    if (route.name === 'me' && route.arg === 'saved') return { hash: '#/me', label: 'マイページに戻る' };   // 保存した記事の一覧画面の戻り先は常にマイページ
     var h = fromHash;
     if (!h || h === curHash || h.indexOf('#/player') === 0) h = route.name === 'list' ? '#/search' : (route.name === 'fav' ? '#/me' : '#/home');   // 遷移元が不明(直接アクセス等)のときの既定
     var nm = h.slice(2).split(/[\/?]/)[0];
@@ -999,7 +1010,7 @@
       case 'fav': html = viewFav(); break;
       case 'player': html = viewPlayer(route.arg); break;
       case 'review': html = viewReview(); break;
-      case 'me': html = viewMe(); break;
+      case 'me': html = route.arg === 'saved' ? viewMeSaved() : viewMe(); break;
       default: html = viewHome();
     }
     v.innerHTML = html; syncModeClass();
