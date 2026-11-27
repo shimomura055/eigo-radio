@@ -175,15 +175,16 @@
     if (productOk()) priceBlock = '<div class="em-card em-pricecard"><div class="em-nm">' + esc(J.planName) + '</div><div class="em-amt">' + esc(fmt(J.price, v)) + '</div><div class="em-per">' + esc(J.renewal) + '</div></div>';
     else priceBlock = '<div class="em-card em-pricecard"><div class="em-nm">' + esc(J.planName) + '</div><div class="em-per" data-em-product="unavailable">' + esc(S && S.product && S.product.reason === 'not_loaded' ? D.productLoading : D.productFail) + '</div>' +
       '<button type="button" class="em-link" data-em-act="product-retry">' + esc(D.productRetry) + '</button></div>';
-    var trialNote = S && S.phase === 'trial' ? '<div class="em-msg" data-em-trialnote>' + esc(fmt(A.trialBuyNotice, { date: trialLastDayText(S) })) + '</div>' : '';
+    // USER_05 sec 2: the free-trial notice is NOT a coloured box above the button: it is the first paragraph of the notes under the button (same size / format), with the real trial end date
+    var trialPara = S && S.phase === 'trial' ? '<p data-em-trialnote>' + esc(fmt(A.trialBuyNotice, { date: trialLastDayText(S) })) + '</p>' : '';
     var paidNote = S && (S.phase === 'paid' || S.phase === 'paid_grace_offline') ? '<div class="em-msg">' + esc(D.alreadyPaid) + '</div>' : '';
     var buy = canBuy ? '<button type="button" class="em-btn em-go" id="em-buy" data-em-act="buy"' + ((busy || waiting || !productOk()) ? ' disabled' : '') + '>' + (busy ? esc(D.working) : '<span class="em-b1">' + esc(fmt(J.button, v)) + '</span><span class="em-b2" data-em-buynote>' + esc(D.buyNote) + '</span>') + '</button>' : '';   // B6 sec 2-11: line 2 says this button starts Apple's purchase
     var pendNote = waiting ? '<div class="em-msg" data-em-pending>' + esc(D.buyPending) + '</div>' : '';
-    var terms = '<div class="em-terms" id="em-terms">' + (C.showDraftMarks ? mark() : '') + D.terms.map(function (t) { return '<p>' + esc(fmt(t, v)) + '</p>'; }).join('') + '</div>';
+    var terms = '<div class="em-terms" id="em-terms">' + (C.showDraftMarks ? mark() : '') + trialPara + D.terms.map(function (t) { return '<p>' + esc(fmt(t, v)) + '</p>'; }).join('') + '</div>';
     f.innerHTML = '<div class="em-topbar"><button type="button" class="em-back-btn" data-em-act="join-close" aria-label="' + esc(D.back) + '"><span aria-hidden="true">&#8249;</span> ' + esc(D.back) + '</button></div>' +
       '<h2 class="em-jtitle">' + esc(J.title) + '</h2><div class="em-hero"><h1>' + lines(J.main) + '</h1><p>' + esc(J.sub) + '</p></div>' +
-      '<div class="em-card"><h3>' + esc(J.meritTitle) + '</h3>' + ul(J.merits) + '</div>' + priceBlock + trialNote + paidNote + pendNote + buy + terms +
-      '<div class="em-aux"><button type="button" class="em-link" data-em-act="restore">' + esc(J.restore) + '</button>' +
+      '<div class="em-card"><h3>' + esc(J.meritTitle) + '</h3>' + ul(J.merits) + '</div>' + priceBlock + paidNote + pendNote + buy + (canBuy ? restoreLineHtml() : '') + terms +
+      '<div class="em-aux">' +
       '<a class="em-link" href="' + esc(legalHref(C.legalPages.terms)) + '" target="_blank" rel="noopener" data-em-legal="terms">' + esc(J.terms) + '</a>' +
       '<a class="em-link" href="' + esc(legalHref(C.legalPages.privacy)) + '" target="_blank" rel="noopener" data-em-legal="privacy">' + esc(J.privacy) + '</a></div>';
     f.scrollTop = keep;
@@ -383,7 +384,6 @@
       case 'close': case 'stay': case 'confirm-cancel': closeModal(); return;
       case 'join': closeModal(); showJoin(); return;
       case 'join-close': closeFull(); scheduleCheck(); return;
-      case 'saved-back': try { root.location.hash = '#/me'; } catch (e) { /* */ } return;
       case 'intro-ok': closeFull(); refresh(); return;
       case 'consent-yes': chooseConsent('granted', true); return;
       case 'consent-no': chooseConsent('denied', true); return;
@@ -397,6 +397,7 @@
       case 'buy': doBuy(); return;
       case 'manage': doManage(); return;
       case 'restore': closeModal(); doRestore(); return;
+      case 'restore-help': simpleNotice('restore_help', A.restore.name, A.restore.help); return;
       case 'product-retry': renderJoinLoading(); loadProduct(); return;
     }
   }
@@ -447,12 +448,17 @@
     var anchor = v.querySelector('.tag') || v.querySelector('.top');
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(nb, anchor.nextSibling); else v.insertBefore(nb, v.firstChild);
   }
+  // USER_05 sec 6: the purchase-restore entry sits right under a join button: a quiet text link + a "?" help button (the explanation opens on tap; it is not shown all the time)
+  function restoreLineHtml() {
+    var R = A.restore;
+    return '<div class="em-restoreline" data-em-restoreline><button type="button" class="em-rlink" data-em-act="restore">' + esc(R.name) + '</button><button type="button" class="em-help" data-em-act="restore-help" aria-label="' + esc(D.restoreHelpAria) + '"><span class="em-q" aria-hidden="true">?</span></button></div>';
+  }
   function planCardHtml() {
     var St = A.settings, DS = D.settings, v = priceVars(), h = '<div class="em-plan" data-em-plan="' + esc(S.phase) + (S.paidCancelled ? ':cancelled' : '') + '"><div class="em-pl0">' + esc(St.planLabel) + '</div>';
     if (S.phase === 'trial') {
-      h += '<div class="em-pn">' + esc(St.trial) + '</div><div class="em-pr"><span>' + esc(St.trialEndDate) + '</span><span>' + esc(ymdText(S.trialEndsAt - 1)) + '</span></div><p>' + esc(DS.trialA) + '</p><p>' + esc(DS.trialB) + '</p>' + btn('join', 'em-go', St.join);
+      h += '<div class="em-pn">' + esc(St.trial) + '</div><div class="em-pr"><span>' + esc(St.trialEndDate) + '</span><span>' + esc(ymdText(S.trialEndsAt - 1)) + '</span></div><p>' + esc(DS.trialA) + '</p><p>' + esc(DS.trialB) + '</p>' + btn('join', 'em-go', St.join) + restoreLineHtml();
     } else if (S.phase === 'free') {
-      h += '<div class="em-pn">' + esc(St.free) + '</div><p>' + esc(DS.freeA) + '</p><p>' + esc(DS.freeB) + '</p><div class="em-pr"><span>' + esc(DS.freeJoinLabel) + '</span><span>' + esc(fmt(St.monthlyShort, v)) + '</span></div>' + btn('join', 'em-go', St.join);
+      h += '<div class="em-pn">' + esc(St.free) + '</div><p>' + esc(DS.freeA) + '</p><p>' + esc(DS.freeB) + '</p><div class="em-pr"><span>' + esc(DS.freeJoinLabel) + '</span><span>' + esc(fmt(St.monthlyShort, v)) + '</span></div>' + btn('join', 'em-go', St.join) + restoreLineHtml();
     } else {   // paid / paid_grace_offline
       h += '<div class="em-pn">' + esc(St.paid) + '</div>';
       if (S.paidCancelled) h += '<div class="em-pr"><span>' + esc(St.contractState) + '</span><span>' + esc(St.stoppedAuto) + '</span></div><div class="em-pr"><span>' + esc(St.expiry) + '</span><span>' + esc(S.paidExpiresAt ? ymdText(S.paidExpiresAt) : '') + '</span></div><p>' + esc(DS.paidCancelledA) + '</p>';
@@ -462,61 +468,13 @@
     }
     return h + '</div>';
   }
-  /* ---- offline saving (B6 sec 2-3 / 2-4). The common webapp (lock-pinned, unmodified) draws the block; this overlay trims it (iOS only; Web has no EigoHost.offline, Android is unchanged):
-     - the limit chooser (select + "(超えても自動削除しません)") is removed (the limit stays inside native as the safety stop; nothing about it is changed), the usage line says what is saved and how much room is left
-     - the saved-article rows leave My Page: a "保存した記事 N件 ›" row under the favourites row opens a list screen (hash #/me/saved, same structure as the favourites screen) where articles are opened / deleted */
+  /* ---- offline saving: drawn entirely by the common webapp (USER_05 sec 1; the usage line, the "保存した記事" row on My Page and the list screen #/me/saved are its own code, so nothing is trimmed or redrawn here).
+     This overlay only keeps out of the way on the list screen (no plan card / procedures block there). */
   function meArg() { var h = (root.location.hash || '').replace(/^#\/?/, ''); return h.split(/[?#]/)[0].split('/')[1] || ''; }
   function savedMode() { return hashName() === 'me' && meArg() === 'saved'; }
-  function offlineSummary() { try { var o = host.offline; var s = o && typeof o.summary === 'function' ? o.summary() : null; return s && s.loaded ? s : null; } catch (e) { return null; } }
-  function mbText(b) { return (Math.round((Number(b) || 0) / 1048576 * 10) / 10) + 'MB'; }
-  function fixLimitWords(node) {   // common texts / adapter notices that still say "raise the limit" (the chooser no longer exists)
-    var cut = D.storage.cut, w;
-    try { w = doc.createTreeWalker(node, 4 /* SHOW_TEXT */); } catch (e) { return; }
-    var n; while ((n = w.nextNode())) cut.forEach(function (c) { if (n.nodeValue && n.nodeValue.indexOf(c[0]) >= 0) n.nodeValue = n.nodeValue.split(c[0]).join(c[1]); });
-  }
-  function decorateStorage(v) {
-    var Sv = D.saved, St2 = D.storage, sm = offlineSummary(), md = v.querySelector('#medl');
-    if (md) {
-      [].forEach.call(md.querySelectorAll('select[data-dl-limit]'), function (s) { var l = s.closest ? s.closest('label') : null; (l || s).remove(); });
-      [].forEach.call(md.querySelectorAll('.dlrow[data-dl-row]'), function (r) { r.remove(); });
-      [].forEach.call(md.querySelectorAll('.dlmsg'), function (m) { var t = (m.textContent || '').trim(); if (t === Sv.row || t === Sv.empty) m.remove(); });
-      var u = md.querySelector('[data-dl-usage]');
-      if (u && sm) {
-        var room = Math.max(0, (sm.limitBytes || 0) - (sm.usedBytes || 0));   // B7 (USER_03 sec 2-3): the smaller of "what the internal ceiling still allows" and "what the device still has free" (native freeBytes; absent = the internal remainder only, as before)
-        if (typeof sm.freeBytes === 'number' && isFinite(sm.freeBytes) && sm.freeBytes >= 0) room = Math.min(room, sm.freeBytes);
-        var l1 = fmt(St2.used, { used: mbText(sm.usedBytes) }), l2 = room <= 0 ? St2.full : fmt(St2.room, { room: mbText(room) });
-        var sig = l1 + '|' + l2;
-        if (u.getAttribute('data-em-sig') !== sig) { u.setAttribute('data-em-sig', sig); u.innerHTML = esc(l1) + '<br>' + esc(l2); }
-      }
-    }
-    var fav = v.querySelector('#favrow'), want = '<a class="setrow" id="savedrow" data-em-saved-row href="#/me/saved">' + esc(Sv.row) + '<span>' + (sm ? (sm.items || []).length + esc(Sv.unit) + ' ' : '') + '&#8250;</span></a>';
-    var row = v.querySelector('[data-em-saved-row]');
-    if (!row || row.outerHTML !== want) {
-      var h = doc.createElement('div'); h.innerHTML = want; var nr = h.firstChild;
-      if (row) row.replaceWith(nr);
-      else if (fav && fav.parentNode) fav.parentNode.insertBefore(nr, fav.nextSibling);
-      else if (md && md.parentNode) md.parentNode.insertBefore(nr, md.nextSibling);
-    }
-    fixLimitWords(v);
-  }
-  function renderSavedScreen(v) {
-    var Sv = D.saved, sm = offlineSummary(), items = sm ? (sm.items || []) : [], top = v.querySelector('.top');
-    if (top) { var side = top.querySelector('.side'); if (side && !side.querySelector('[data-em-act="saved-back"]')) side.innerHTML = '<button type="button" class="iconbtn backbtn" data-em-act="saved-back" aria-label="' + esc(Sv.back) + '"><span class="ba" aria-hidden="true">&#8249;</span><span class="bl">' + esc(Sv.back) + '</span></button>'; }
-    var sig = 'sv|' + (sm ? '1' : '0') + '|' + items.map(function (i) { return [i.slug, i.status, i.bytes, i.title].join(':'); }).join(',');
-    var cur = v.querySelector('[data-em-saved-screen]');
-    if (cur && cur.getAttribute('data-em-sig') === sig) return;
-    [].slice.call(v.children).forEach(function (n) { if (n !== top) n.remove(); });
-    var h = doc.createElement('div'); h.setAttribute('data-em-saved-screen', '1'); h.setAttribute('data-em-sig', sig);
-    var rows = items.map(function (x) {
-      var st = x.status === 'saved' ? '' : (Sv.st[x.status] || ''), small = (st ? st + ' ' : '') + (x.bytes ? '(' + mbText(x.bytes) + ')' : '');   // no state word on a plain saved row (user instruction); exceptional states stay (the user must act)
-      return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc(small) + '</small>' +
-        '<button type="button" class="dllink" data-dl-act="remove" data-dl-slug="' + esc(x.slug) + '" aria-label="' + esc(fmt(Sv.delAria, { title: x.title })) + '">' + esc(Sv.del) + '</button></div>';
-    }).join('');
-    h.innerHTML = '<h2 class="em-sv-h">' + esc(Sv.title) + (sm ? '<small>' + items.length + esc(Sv.unit) + '</small>' : '') + '</h2>' + (sm ? (items.length ? rows : '<div class="dlmsg">' + esc(Sv.empty) + '</div>') : '');
-    v.appendChild(h);
-  }
+  function legalHeadEl(v) { return [].filter.call(v.querySelectorAll('.pl'), function (n) { return /サポート・規約/.test(n.textContent); })[0] || null; }
   function decorateMe(v) {
-    if (savedMode()) { renderSavedScreen(v); return; }
+    if (savedMode()) return;   // the saved-article list screen is the common webapp's own
     var old = v.querySelector('[data-em-plan]');
     if (hashName() !== 'me' || !S) { if (old) old.remove(); var ob = v.querySelector('[data-em-other]'); if (ob) ob.remove(); var ocs = v.querySelector('[data-em-consent-set]'); if (ocs) ocs.remove(); [].forEach.call(v.querySelectorAll('[data-em-legal-row]'), function (n) { n.remove(); }); return; }
     var want = planCardHtml();
@@ -524,16 +482,17 @@
       var h = doc.createElement('div'); h.innerHTML = want; var nb = h.firstChild;
       if (old) old.replaceWith(nb); else { var h2 = v.querySelector('h2'); if (h2 && h2.parentNode) h2.parentNode.insertBefore(nb, h2.nextSibling); else v.insertBefore(nb, v.firstChild); }
     }
-    // "その他の手続き": purchase restore (every state, auxiliary position) + the contract management entry for paid states
-    var otherWant = '<div class="em-other" data-em-other><div class="em-pl" id="em-other-procs">' + esc(A.restore.sectionTitle) + '</div><div class="em-restorebox"><button type="button" class="setrow" data-em-act="restore" id="em-restorebtn">' + esc(A.restore.name) + '<span>&#8250;</span></button>' +
-      '<p class="em-rnote">' + esc(A.restore.note) + '</p>' + ((S.phase === 'paid' || S.phase === 'paid_grace_offline') ? '<button type="button" class="setrow" data-em-act="manage">' + esc(S.paidCancelled ? D.manageRowCancelled : D.manageRow) + '<span>&#8250;</span></button>' : '') + '</div></div>';
+    // "その他の手続き": only the contract-management entry, and only for paid states (USER_05 sec 6: the purchase restore link sits under the join buttons; a block with nothing left is not drawn)
+    var paidNow = S.phase === 'paid' || S.phase === 'paid_grace_offline';
+    var otherWant = paidNow ? '<div class="em-other" data-em-other><div class="em-pl" id="em-other-procs">' + esc(A.restore.sectionTitle) + '</div><div class="em-restorebox"><button type="button" class="setrow" data-em-act="manage">' + esc(S.paidCancelled ? D.manageRowCancelled : D.manageRow) + '<span>&#8250;</span></button></div></div>' : '';
     var oo = v.querySelector('[data-em-other]');
-    if (!oo || oo.outerHTML !== otherWant) {
+    if (!otherWant) { if (oo) oo.remove(); }
+    else if (!oo || oo.outerHTML !== otherWant) {
       var h3 = doc.createElement('div'); h3.innerHTML = otherWant; var nn = h3.firstChild;
       if (oo) oo.replaceWith(nn);
       else {
-        var legalHead = [].filter.call(v.querySelectorAll('.pl'), function (n) { return /サポート・規約/.test(n.textContent); })[0];
-        if (legalHead && legalHead.parentNode) legalHead.parentNode.insertBefore(nn, legalHead); else v.appendChild(nn);
+        var anchorEl = v.querySelector('[data-em-consent-set]') || legalHeadEl(v);
+        if (anchorEl && anchorEl.parentNode) anchorEl.parentNode.insertBefore(nn, anchorEl); else v.appendChild(nn);
       }
     }
     // terms / specified-commercial-transactions rows next to the webapp's own support / privacy rows (URLs are settings: CONFIG.legalPages)
@@ -544,7 +503,6 @@
       a.href = legalHref(C.legalPages[key]); a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = esc(A.legalRows[key]) + '<span>&#8250;</span>';
       if (last && last.parentNode) { last.parentNode.insertBefore(a, last.nextSibling); last = a; } else v.appendChild(a);
     });
-    decorateStorage(v);
     // consent switch (only when the app has the usage-data plugin and it is available)
     var oc = v.querySelector('[data-em-consent-set]');
     if (!consentAvailable()) { if (oc) oc.remove(); }
@@ -556,7 +514,7 @@
       if (!oc || oc.getAttribute('data-em-sig') !== st2 + '|' + consentMsg) {
         var h4 = doc.createElement('div'); h4.innerHTML = consWant; var cn = h4.firstChild;
         if (oc) oc.replaceWith(cn);
-        else { var oo2 = v.querySelector('[data-em-other]'); if (oo2 && oo2.parentNode) oo2.parentNode.insertBefore(cn, oo2.nextSibling); else v.appendChild(cn); }
+        else { var oo2 = v.querySelector('[data-em-other]'), lh2 = legalHeadEl(v); if (oo2 && oo2.parentNode) oo2.parentNode.insertBefore(cn, oo2.nextSibling); else if (lh2 && lh2.parentNode) lh2.parentNode.insertBefore(cn, lh2); else v.appendChild(cn); }
       }
     }
   }
@@ -568,7 +526,7 @@
   function decorate() {
     var v = view || (view = $('view')); if (!v) return;
     if (mo) mo.disconnect();
-    try { decorateCards(v); decorateBar(v); decorateOmakase(v); decorateMe(v); fixLimitWords(v); } catch (e) { try { host.diag && host.diag('js.membership.ui_error', { msg: String(e && e.message) }); } catch (x) { /* */ } }
+    try { decorateCards(v); decorateBar(v); decorateOmakase(v); decorateMe(v); } catch (e) { try { host.diag && host.diag('js.membership.ui_error', { msg: String(e && e.message) }); } catch (x) { /* */ } }
     if (mo) mo.observe(v, { childList: true, subtree: true });
   }
 
@@ -576,8 +534,6 @@
   function init() {
     view = $('view');
     if (view && root.MutationObserver) { mo = new root.MutationObserver(function () { decorateSoon(); }); mo.observe(view, { childList: true, subtree: true }); }
-    root.addEventListener('eigo-offline-change', decorateSoon);   // a save / delete changes the saved count and the saved list screen
-    if (doc.body && root.MutationObserver) new root.MutationObserver(function () { var n = doc.querySelector('[data-eigo-notice]'); if (n) fixLimitWords(n); }).observe(doc.body, { childList: true, subtree: true });   // adapter notices ("raise the limit" half is dropped)
     var a = host.audioEl; if (a && a.addEventListener) { a.addEventListener('pause', scheduleCheck); a.addEventListener('ended', scheduleCheck); }
     doc.addEventListener('visibilitychange', function () { if (!doc.hidden) { refresh(); scheduleCheck(); } });
     try { if (host.audioEl && host.audioEl.addEventListener) host.audioEl.addEventListener('playing', function () { intent = null; }); } catch (e) { /* cosmetic: the intent is also deleted by the next gesture */ }   // the operation succeeded: its intent is spent

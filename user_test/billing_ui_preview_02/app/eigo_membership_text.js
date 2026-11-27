@@ -49,12 +49,12 @@
       merits: ['毎日の新着記事がすべて聴き放題', '過去の記事もすべて利用可能', '全記事を自由にダウンロード・オフライン再生'],
       planName: '有料会員プラン', price: '{yen}円／月（税込）', renewal: '1か月ごとの自動更新',
       button: '月額{yen}円で有料会員になる',
-      restore: '購入を復元する', terms: '利用規約', privacy: 'プライバシーポリシー'
+      terms: '利用規約', privacy: 'プライバシーポリシー'
     },
     trialBuyNotice: '現在、{date}まで全機能を無料でご利用いただけます。有料会員に加入すると、加入時点から料金が発生します。',   // section 4-5 (join during the trial); {date} = trial end date
     restore: {   // section 4-9
       sectionTitle: 'その他の手続き', name: '購入を復元する',
-      note: '機種変更や再インストールなどで、契約済みの有料会員資格が反映されない場合にご利用ください。追加料金はかかりません。'
+      help: '機種変更やアプリの再インストールなどで、契約済みの有料会員資格が反映されない場合にご利用ください。追加料金はかかりません。'   // USER_05 sec 6: shown only when the "?" next to the link is tapped (the user's own sentence)
     },
     trialBar: '全機能無料体験中　あと{days}日',   // section 4-3-1 (example wording)
     settings: {   // section 4-9: item names are approved; the descriptive sentences are in DRAFT.settings
@@ -105,6 +105,7 @@
     retry: 'もう一度試す', close: '閉じる', working: '処理しています…',
     buyOk: '有料会員になりました。すべての記事・機能をご利用いただけます。',
     productLoading: '価格を確認しています…', productFail: '価格を取得できません。通信状況をご確認のうえ、もう一度お試しください。', productRetry: 'もう一度取得する',
+    restoreHelpAria: '購入の復元について',
     restoreOk: '有料会員の資格を復元しました。', restoreNoneTitle: '復元できる契約が見つかりませんでした',
     restoreNone: 'このApple Accountで購入した有効な有料会員の契約がありません。追加料金はかかりません。', restoreFailTitle: '復元できませんでした', restoreFail: '通信状況をご確認のうえ、もう一度お試しください。', restoreWorking: '確認しています…',
     manageFail: '契約の管理画面を開けませんでした。iPhoneの「設定」から確認してください。',
@@ -123,14 +124,6 @@
     },
     // B6 (user decision 2026-11-27 USER_03 sec 2-11): the button that really starts Apple's purchase says so on a second line (the first-entry buttons "有料会員になる" carry no such line).
     buyNote: '（Appleの購入手続きに進みます）',
-    // B6 sec 2-3 / 2-4: My Page offline-saving block. The limit chooser is gone (the limit stays an internal safety stop); the block says what is saved and how much room is left.
-    // B7: "room" = the smaller of (internal ceiling minus what is used) and (device free space from native; absent = the internal remainder). {used} {room} are sizes like "11.4MB".
-    storage: { used: '現在の保存容量：{used}', room: 'あと約{room}保存できます', full: 'これ以上は保存できません。不要な保存を削除してください。',
-      cut: [['を削除するか、上限を上げてください', 'を削除してください']] },   // the common texts / adapter notices that still say "raise the limit" lose that half (the chooser no longer exists)
-    // B6 sec 2-4: the saved-articles list is its own screen (same structure as the favourites: a row on My Page -> a list screen; articles are opened / deleted there).
-    saved: { row: '保存した記事', unit: '件', title: '保存した記事', back: '戻る', del: '削除', delAria: '{title}の保存を削除',
-      empty: 'まだ保存した記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。',
-      st: { partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません' } },
     back: '戻る', lockBadgeAria: 'ロック中', lockedPlayAria: '{title} は今日は利用できません(有料会員限定)'
   };
 

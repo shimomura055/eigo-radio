@@ -47,7 +47,6 @@
       <div class="row"><label>購入 <select id="s-buy"><option value="success">成功</option><option value="failed">失敗</option><option value="pending">承認待ち</option><option value="cancelled">取りやめ</option><option value="unverified">確認できない</option></select></label></div>
       <div class="row"><label>購入の復元 <select id="s-restore"><option value="found">見つかる</option><option value="none">契約なし</option><option value="failed">通信失敗</option></select></label></div>
       <div class="row"><label>価格の取得 <select id="s-product"><option value="ok">成功</option><option value="fail">失敗</option></select></label></div>
-      <div class="row"><label>端末の空き容量(模擬) <select id="s-free"><option value="300" selected>300MB</option><option value="50">50MB</option><option value="0">0MB(空きなし)</option><option value="3000">3000MB</option><option value="na">取得できない</option></select></label></div>
     </fieldset>
     <div class="row btns"><button type="button" id="b-apply" class="primary">この状態で起動し直す</button></div>
     <h2>操作</h2>
@@ -56,7 +55,8 @@
     <p class="note" id="status">-</p>
     <details class="diff"><summary>実アプリとの違い(模擬の範囲)</summary>
       <ul><li>実際の音声再生・購入シート・Keychain・日付をまたぐ実時間は再現しません(表示専用の模擬)。</li>
-      <li>ダウンロードは行いません(保存済みの記事は上の指定どおりに表示)。端末の空き容量も実際の値ではなく、上の指定値を使います。</li>
+      <li>ダウンロードは行いません(保存済みの記事は上の指定どおりに表示)。</li>
+      <li>「契約内容の確認・解約」は、実アプリではAppleの契約管理画面が開きます。プレビューでは開けないため、その旨の表示だけが出ます。解約後の見え方(自動更新停止済み)は、上の利用状態で「有料会員(自動更新停止済み)」を選ぶと確認できます。</li>
       <li>利用状況の送信は、選んだ内容を画面上で保持するだけで、どこにも送りません。</li></ul>
     </details>
   </aside>

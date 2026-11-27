@@ -39,6 +39,20 @@
   var listeners = {};
   function emit(n, d) { (listeners[n] || []).slice().forEach(function (cb) { try { cb(d || {}); } catch (e) { /* */ } }); }
   function later(v, ms) { return new Promise(function (res) { root.setTimeout(function () { res(v); }, ms || 0); }); }
+  function showManageStandIn() {
+    var d = root.document; if (!d || !d.body || d.querySelector('[data-pv-manage]')) return;
+    var w = d.createElement('div'); w.setAttribute('data-pv-manage', '1'); w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true');
+    w.style.cssText = 'position:fixed;inset:0;z-index:2147483000;background:rgba(16,40,94,.45);display:flex;align-items:center;justify-content:center;padding:20px;font-family:sans-serif';
+    var c = d.createElement('div'); c.style.cssText = 'background:#fff;border-radius:16px;padding:20px 18px;max-width:340px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25);color:#10285e';
+    c.innerHTML = '<div style="font-size:12px;font-weight:700;color:#5b6b8c;margin-bottom:6px">プレビュー専用の表示</div>' +
+      '<h3 style="margin:0 0 8px;font-size:17px">実アプリではAppleの契約管理画面が開きます</h3>' +
+      '<p style="margin:0 0 8px;font-size:14px;line-height:1.6">プレビューでは開けないため、この表示のみです。契約内容を確認しただけでは、会員の状態は変わりません。</p>' +
+      '<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#5b6b8c">解約したあとの見え方(自動更新停止済み)は、右の状態パネルで「有料会員(自動更新停止済み)」を選ぶと確認できます。</p>';
+    var b = d.createElement('button'); b.type = 'button'; b.textContent = '閉じる'; b.setAttribute('data-pv-manage-close', '1');
+    b.style.cssText = 'width:100%;min-height:46px;border:0;border-radius:12px;background:#1d4fd8;color:#fff;font-size:16px;font-weight:700;cursor:pointer';
+    b.addEventListener('click', function () { if (w.parentNode) w.parentNode.removeChild(w); });
+    c.appendChild(b); w.appendChild(c); d.body.appendChild(w);
+  }
   var Membership = {
     getAccessState: function () { return Promise.resolve(view()); },
     canAccess: function (a) { var allow = S.phase !== 'free' || (!!S.pick && S.pick === a.slug); return Promise.resolve({ allow: allow, reason: allow ? 'ok' : (S.pick ? 'locked' : 'select_required') }); },
@@ -60,7 +74,8 @@
         return { result: 'failed', reason: 'network' };
       });
     },
-    openManageSubscriptions: function () { return Promise.resolve({ opened: true }); },
+    // The real app opens Apple's subscription management screen here (system UI: it cannot be opened in a browser). The preview shows a clearly marked stand-in notice instead, so the tap is not silent (USER_05 sec 3). Preview only: not part of the app build.
+    openManageSubscriptions: function () { showManageStandIn(); return Promise.resolve({ opened: true }); },
     commitFreePick: function (a) {
       if (S.phase !== 'free') return Promise.resolve({ ok: false, code: 'not_needed' });
       if (S.pick) return Promise.resolve({ ok: false, code: 'already_picked' });
