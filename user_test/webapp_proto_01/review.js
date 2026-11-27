@@ -167,15 +167,20 @@
         return Promise.resolve().then(function () { return deps.loadArticle(slug); }).then(function (a) { arts[slug] = { art: a }; }, function (e) { arts[slug] = (e && (e.status === 404 || e.status === 410)) ? { orphan: true } : { net: true }; });   // USER_03 ④-2: 確定的な不存在(HTTP 404/410)=データなし。ネットワークエラー/タイムアウト/5xx等=通信失敗(データなしと表示しない・再読込で再試行)
       });
       return Promise.all(jobs).then(function () {
+        var extraJobs = [];
         items.forEach(function (i) {
           var a = arts[i.slug];
           if (a.net) { V.status[i.key] = 'netfail'; return; }
           if (a.orphan) { V.status[i.key] = 'orphan'; return; }
           var pwi = lookup(a.art, i.level, i.en, deps.bases ? deps.bases(i.slug) : undefined);   // 保存レベルのみ。別レベル代用禁止
-          if (!pwi) { V.status[i.key] = 'orphan'; return; }
-          V.status[i.key] = 'ok'; V.resolved[i.key] = pwi;
+          if (pwi) { V.status[i.key] = 'ok'; V.resolved[i.key] = pwi; return; }
+          if (!deps.lookupExtra) { V.status[i.key] = 'orphan'; return; }
+          /* W15: 現在版で見つからない時だけ補助pack(review_extra)を引く(現在版を優先)。404/不正=データなし。通信失敗=netfail(データなしにしない) */
+          extraJobs.push(Promise.resolve().then(function () { return deps.lookupExtra(i.slug, i.level, i.en); }).then(function (x) {
+            if (x) { V.status[i.key] = 'ok'; V.resolved[i.key] = x; } else V.status[i.key] = 'orphan';
+          }, function (e) { V.status[i.key] = (e && (e.status === 404 || e.status === 410)) ? 'orphan' : 'netfail'; }));
         });
-        return { st: st, items: items };
+        return Promise.all(extraJobs).then(function () { return { st: st, items: items }; });
       });
     }
     /* ② 同日再復習の対象・可否(保存データから毎回導出。新しい永続データは持たない)。

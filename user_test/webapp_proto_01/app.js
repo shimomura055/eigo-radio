@@ -47,9 +47,12 @@
   /* FINAL-UI W13 ②: unlisted_items の review_only 行(復習専用の縮約データだけがサーバーに残る退役記事。契約=REVIEW-RETENTION DESIGN_02 §9)は復習の解決(itemForReview)にだけ使う。
      item()=記事ページ・再生・ミニプレイヤー・キュー・保存した記事・お気に入り・共有・検索・一覧の入口用は review_only 行を返さない(=「記事が見つからない」)。 */
   function isRO(x) { return !!x && x.review_only === true; }
+  /* FINAL-UI W15: 復習専用の行の置き場所は catalog の新top-level key review_only_items(DESIGN_03: 旧版アプリが旧版として開く経路を作らないため unlisted_items には置かない)。
+     itemForReview の解決順 = items → unlisted_items(legacy) → review_only_items。item() は review_only_items を見ない(入口制限は W13 のまま)。keyの無いcatalogは従来どおり。 */
   function itemForReview(slug) {
     var c = ST.cat, a = c.items.filter(function (x) { return x.slug === slug; })[0];
-    return a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+    var u = a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
+    return u || (Array.isArray(c.review_only_items) ? c.review_only_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
   }
   function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) { var e = new Error(u + ' (' + r.status + ')'); e.status = r.status; throw e; } return r.json(); }); }   // e.status=HTTPの確定応答(404=不存在)。ネットワーク失敗/タイムアウトはstatusなし
   /* ECUI B(承継実装1): player系の真値(音声URL・総尺・同期)は article.json / sync_*.json。catalogは一覧表示用(カード分数・検索)のみ。
@@ -414,6 +417,30 @@
     var g = lk3Resolve(L, en);   // ⑦: 音声なしのlk3項目。det空・audio=null(復習の答え側は日本語の意味のみ・音声ボタンなし)
     return g ? { en: g.en, kp: false, ja: g.ja, jaHtml: false, jaPending: false, det: [], audio: null } : null;
   }
+  /* FINAL-UI W15 補助pack(DESIGN_03 §2・EXTRA_PACK_PLAN_01 §3): 現在版のarticleから表現が見つからない時だけ、同じ記事dirの data/review_extra.json(review_extra_v1。縮約articleと同形)から解決する。
+     取得は記事ごとに1回(結果を保持)。404/410・不正な内容=null(データなし)。ネットワークエラー/5xx=statusなし/5xxのErrorを投げる(呼び側が通信失敗として扱う。失敗は保持しない=再読込で再試行)。 */
+  var EXTP = {};
+  function ensureExtra(slug) {
+    if (Object.prototype.hasOwnProperty.call(EXTP, slug)) return EXTP[slug];
+    var url = new URL('../' + slug + '/enduser/data/review_extra.json', location.href).href;
+    EXTP[slug] = fetch(url).then(function (r) {
+      if (r.status === 404 || r.status === 410) return { ex: null };
+      if (!r.ok) { var e = new Error('review_extra.json ' + r.status); e.status = r.status; throw e; }
+      return r.text().then(function (t) {
+        var j = null; try { j = JSON.parse(t); } catch (e) { j = null; }
+        if (!j || j.schema !== 'review_extra_v1' || !j.levels || typeof j.levels !== 'object') return { ex: null };
+        return { ex: j, url: url };
+      });
+    }).catch(function (e) { delete EXTP[slug]; throw e; });
+    return EXTP[slug];
+  }
+  function reviewLookupExtra(slug, level, en) {   // -> Promise<pwi|null>
+    return ensureExtra(slug).then(function (r) {
+      if (!r.ex) return null;
+      var eu = new URL('../' + slug + '/enduser/', location.href), dataUrl = r.url;
+      return reviewLookup(r.ex, level, en, { baseV: eu.href, baseK: new URL(r.ex.audio_base || '../', dataUrl).href });
+    });
+  }
   function levelsOf(slug, en) {   // 旧wut01.savedの移行用: その表現があるレベル(データで決定)
     var d = ART[slug], k = PWCard.normEn(en), out = [];
     if (!d) return out;
@@ -440,7 +467,7 @@
       SRS: SRS, store: store, win: window,
       hasArticle: function (slug) { return !!itemForReview(slug); },
       loadArticle: function (slug) { return ensureArt(slug).then(function (d) { return d.art; }); },
-      bases: basesFor, lookup: reviewLookup,
+      bases: basesFor, lookup: reviewLookup, lookupExtra: reviewLookupExtra,
       render: function (x) { return PWCard.renderPWCard(x, 0, { variant: 'review', playIcon: IC.play }); },
       playAudio: playReviewAudio, stopAudio: stopItemAudio, toast: toast   // WUI4: 復習の音声は保存項目の同レベルarticle項目のaudio(url[+start/end])のみ。再タップは先頭から
     });
