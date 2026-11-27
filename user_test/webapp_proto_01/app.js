@@ -43,7 +43,7 @@
     var c = ST.cat, a = c.items.filter(function (x) { return x.slug === slug; })[0];
     return a || (Array.isArray(c.unlisted_items) ? c.unlisted_items.filter(function (x) { return x && x.slug === slug; })[0] : undefined);
   }
-  function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' (' + r.status + ')'); return r.json(); }); }
+  function fetchJson(u) { return fetch(u).then(function (r) { if (!r.ok) { var e = new Error(u + ' (' + r.status + ')'); e.status = r.status; throw e; } return r.json(); }); }   // e.status=HTTPの確定応答(404=不存在)。ネットワーク失敗/タイムアウトはstatusなし
   /* ECUI B(承継実装1): player系の真値(音声URL・総尺・同期)は article.json / sync_*.json。catalogは一覧表示用(カード分数・検索)のみ。
      例外: カード等のクリック内で同期的に src設定+play() する必要がある(iOS)ため、記事が未取得の瞬間だけ catalog の値で暫定再生し、取得完了後に reconcileAudio() が article の値へ差し替える。 */
   function lvInfo(slug, lv) {
@@ -63,11 +63,23 @@
     }
     var i = lvInfo(slug, lv); return new URL('../' + slug + '/' + (i ? i.main : ''), location.href).href;
   }
-  /* ---------- おまかせラジオの再生キュー(FINAL-UI-INTEGRATION 委任_02 ⑨。ユーザー原文: 第1段階=新着記事のグループをランダム順 → 第2段階=残りの未再生記事をランダム順 → 第3段階=一巡で停止。同一セッションで重複なし) ----------
-     「新着記事」の範囲(グループの境界)は承認済み仕様に定義が無く(新着順の並び=added_ts降順のみ承認済み[internal-doc 11.]。ホームの「新着エピソード」欄は全掲載記事を新着順に並べるだけ)、
-     独断で日数・件数を決めない: 境界は OMK.newGroup(差し替え点)だけが決める。既定=空(新着グループなし)=第1段階が空で、第2段階に全記事をランダム順で並べる(判断待ちの間の挙動。承認後はこの1関数だけを差し替える)。
-     乱数も OMK.rand で差し替え可(検証用)。対象は byNew()=掲載中(一覧から除外した記事を含まない)。会員権限・選択レベルは従来どおり(権限は会員UI/native側、レベルは startPlay の ST.level)。 */
-  var OMK = { rand: function () { return Math.random(); }, newGroup: function (sorted) { return []; } };   // newGroup(新着順の記事item配列) -> 新着グループに入れる記事のslug配列
+  /* ---------- おまかせラジオの再生キュー(FINAL-UI-INTEGRATION 委任_02 ⑨ → 委任_09で新着の定義を確定。ユーザー原文2026-11-27 USER_03 ⑨ A案[APPROVED_FOR_PRODUCTION]) ----------
+     「新着記事」=公開中(listed=byNew()=catalog items)の記事のうち、最新公開日に公開された記事すべて(件数・日数の上限なし。昨日が最新なら昨日、数日更新が無ければ最後の公開日)。
+     再生順: (1)最新公開日の記事をランダム → (2)残りの公開中記事をランダム → (3)全記事を一巡した時点で停止。同一巡回内の重複なし。無料会員は提供しない(会員UI/native側の既存仕様。ここでは変更しない)。
+     公開日=catalog既存の added_ts(UNIX秒。無ければ added[ISO8601]を解釈)をJST(UTC+9)の暦日に直したもの(同日の判定は日単位。時刻・端末のタイムゾーンは無関係)。
+     日付が取れない記事は新着(最新日)に入れず(残り=第2段階)、最新日の決定にも使わない。乱数は OMK.rand、境界は OMK.newGroup で差し替え可(検証用)。 */
+  function pubDay(x) {   // 公開日(JSTの暦日 'YYYY-MM-DD')。取れなければ ''
+    var t = x && +x.added_ts;
+    if (!(t > 0) && x && typeof x.added === 'string') { var p = Date.parse(x.added); t = p > 0 ? p / 1000 : 0; }
+    if (!(t > 0) || !isFinite(t)) return '';
+    return new Date(t * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  }
+  function latestDaySlugs(sorted) {   // 新着順(byNew())の記事item配列 -> 最新公開日に公開された記事のslug配列
+    var days = (sorted || []).map(function (x) { return { s: x && x.slug, d: pubDay(x) }; }).filter(function (r) { return r.s && r.d; }), latest = '';
+    days.forEach(function (r) { if (r.d > latest) latest = r.d; });
+    return days.filter(function (r) { return r.d === latest; }).map(function (r) { return r.s; });
+  }
+  var OMK = { rand: function () { return Math.random(); }, newGroup: latestDaySlugs };   // newGroup(新着順の記事item配列) -> 新着グループに入れる記事のslug配列
   function shuffleWith(a, rnd) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function buildOmakaseQueue(sorted, o) {   // sorted=新着順(byNew())の記事item配列。戻り値 {queue:[slug…](重複なし・全件), stage1:第1段階の件数, stage2:第2段階の件数}
     o = o || {}; var rnd = o.rand || OMK.rand, gf = o.newGroup || OMK.newGroup, seen = {}, all = [];
@@ -134,7 +146,7 @@
   function ensureArt(slug) {   // 真値は article.json。sync_*.json は article の sha を ?v= に付けて取得(CDNの新旧混在防止)
     if (ARTP[slug]) return ARTP[slug];
     var base = '../' + slug + '/enduser/data/', it = item(slug);
-    ARTP[slug] = fetch(base + 'article.json').then(function (r) { if (!r.ok) throw new Error('article.json ' + r.status); return r.arrayBuffer(); }).then(function (buf) {
+    ARTP[slug] = fetch(base + 'article.json').then(function (r) { if (!r.ok) { var e = new Error('article.json ' + r.status); e.status = r.status; throw e; } return r.arrayBuffer(); }).then(function (buf) {
       return shaHex(buf).then(function (hex) {
         var q = hex ? '?v=' + hex : '';
         return Promise.all([fetchJson(base + 'sync_std.json' + q), fetchJson(base + 'sync_adv.json' + q)]).then(function (sy) {
@@ -1377,6 +1389,7 @@
     function sampleItem() { return { en: 'lean in', ja: '身を乗り出す', jaHtml: false, kp: true, det: [{ label: '解説', html: '積極的に関わる、前のめりになる、という意味です。' }], audio: null }; }
     return [
       { hash: '#/home', sel: ['#lvseg-home'], title: 'レベルを選ぶ', html: '<p>ここで切り替えます。</p><div class="lvs"><b>Standard</b>：TOEIC 800点未満／英検2級程度<br><b>Advanced</b>：TOEIC 800点以上／英検準1級以上</div><p class="fine2">あくまで目安で、利用制限ではありません。</p>' },
+      { hash: '#/home', sel: ['#omakase'], soft: true, title: '聴き流しには、おまかせラジオ', html: '<p>新着記事からランダムに連続再生。通勤中や家事をしながらの聴き流しにおすすめです。</p>' },   // USER_03 ①: P1とP2の間。ホームの実際のおまかせラジオ(#omakase)をspotlight。soft=対象が非表示(無料会員はおまかせ非表示)ならハイライトなしで説明のみ。操作は暗幕が遮り再生・保存は一切変更しない
       { hash: '#/player/' + first, sel: ['#modeseg'], title: '聴く / 学ぶを切り替え', html: '<p>『聴く』で音声を楽しみ、『学ぶ』でPhrase / Word、文法、表現などを確認できます。</p>',
         prep: function (cb) {   // 委任_02: 「学ぶ」が選択された状態の画面を見せる(ST.modeは保存されない画面状態。離脱・終了で聴くへ戻る)
           waitFor(['#modeseg'], function () {
@@ -1402,7 +1415,7 @@
           reviewReady(function () {
             if (!document.querySelector('#srsroot [data-srs-start]') && window.WURReview) {   // 保存0件/本日分なし: 同じ部品でサンプルを描画(書込なし)
               var it = function (en, k) { return { key: 'tut|' + k, en: en, level: 'adv', state: 'new', due: '' }; };
-              $('srsroot').innerHTML = sampleNote() + WURReview.homeHtml({ storeStatus: 'ok', counts: { remaining: 4, newShown: 4, newDeferred: 0 }, items: [it('lean in', 1), it('close to home', 2), it('hand something over to', 3), it('save the day', 4)], orphans: [], orphanKeys: {}, netfail: 0, nextDue: null });
+              $('srsroot').innerHTML = sampleNote() + WURReview.homeHtml({ storeStatus: 'ok', counts: { remaining: 4, newShown: 4, newDeferred: 0 }, items: [it('lean in', 1), it('close to home', 2), it('hand something over to', 3), it('save the day', 4)], orphanKeys: {}, netfail: 0, nextDue: null });
             }
             var sec = document.querySelector('#srsroot .srs-home'), cs = sec ? Array.prototype.slice.call(sec.children) : [], rows = cs.filter(function (c) { return c.classList.contains('srs-row'); });
             var st5 = TUT.steps[TUT.i], rk = function (n) { return function () { st5.clip = { 0: cs.indexOf(rows[Math.min(rows.length, n) - 1]) + 1 }; }; };
@@ -1433,7 +1446,7 @@
     if (n && e.children[n - 1]) { var b = e.children[n - 1].getBoundingClientRect().bottom; return { left: r.left, top: r.top, width: r.width, height: Math.max(0, b - r.top) }; }
     return { left: r.left, top: r.top, width: r.width, height: r.height };
   }
-  function stepSels(st) { return (st.ctx || []).concat(st.sel); }   // 文脈枠(ctx=弱)を先頭、説明対象(sel=強)を後ろ(委任_02 二段階ハイライト)
+  function stepSels(st) { return st.noHl ? [] : (st.ctx || []).concat(st.sel); }   // noHl=対象が非表示でハイライトなし(soft step)   // 文脈枠(ctx=弱)を先頭、説明対象(sel=強)を後ろ(委任_02 二段階ハイライト)
   function stepEls() { return TUT ? stepSels(TUT.steps[TUT.i]).map(function (q) { return document.querySelector(q); }).filter(Boolean) : []; }
   function startTutorial() {
     if (TUT) return;
@@ -1499,12 +1512,15 @@
     var vv = window.visualViewport, s = safeInsets(), t0 = vv ? vv.offsetTop : 0, h = vv ? vv.height : innerHeight;
     return { top: t0 + s.t, bottom: t0 + h - s.b, w: vv ? vv.width : innerWidth };
   }
+  function softHidden(els) { return els.some(function (e) { return !e || !e.getClientRects || !e.getClientRects().length; }); }
   function showStep() {
     var st = TUT.steps[TUT.i], tut = $('tut');
     function go() { if (!TUT) return; try { if (st.prep) st.prep(go2); else go2(); } catch (e) { tutAbort('prep_exception: ' + (e && e.message)); } }
     function go2() {
-      waitFor(stepSels(st), function (els) {
+      var raw = (st.ctx || []).concat(st.sel);
+      waitFor(raw, function (els) {
         if (!TUT) return;
+        if (st.soft && (els.length !== raw.length || softHidden(els))) { st.noHl = true; buildTut(); tutSync(true); return; }   // 対象が無い/非表示: ハイライトなし・説明のみ(例: 無料会員のホームはおまかせラジオ非表示)
         if (els.length !== stepSels(st).length) { tutAbort('target_missing(step ' + (TUT.i + 1) + ': ' + els.length + '/' + stepSels(st).length + ')'); return; }   // 一部でも対象が無い=吹き出しを置けず暗幕だけが残る→終了
         if (!els[0].closest('#nav')) {   // 対象を見える領域の上寄りへ(吹き出しを下の空き領域へ置くため)
           var r = els[0].getBoundingClientRect(); window.scrollBy(0, r.top - (vvBox().top + 72));
@@ -1512,7 +1528,7 @@
         buildTut(); tutSync(true);   // 初回表示から実測位置で配置(同期)。以降は毎フレーム追従
       });
     }
-    if (st.clip0) st.clip = { 1: st.clip0[1] }; if (st.adapt) { st.ai = 0; st.ctxSoft = false; }   // ステップへ戻った時は縮退(ハイライト範囲の絞り込み)を初期状態から
+    st.noHl = false; if (st.clip0) st.clip = { 1: st.clip0[1] }; if (st.adapt) { st.ai = 0; st.ctxSoft = false; }   // ステップへ戻った時は縮退(ハイライト範囲の絞り込み)を初期状態から
     TUT.els = null; TUT.sig = ''; TUT.built = false; TUT.up = false; TUT.stepAt = Date.now(); TUT.hid = 0;
     tut.innerHTML = '<div class="dim"></div>';
     if (location.hash !== st.hash) { location.hash = st.hash; setTimeout(go, 50); } else { if (st.reroute) rerender(false); go(); }
@@ -1526,6 +1542,8 @@
   }
   function tutSync(force) {   // 対象の実位置を測り、変化があれば位置だけ更新
     if (!TUT || !TUT.built) return;
+    var st0 = TUT.steps[TUT.i];
+    if (st0.soft && !st0.noHl && softHidden(stepEls().length === stepSels(st0).length ? stepEls() : [null])) { st0.noHl = true; buildTut(); force = true; }   // 描画後に対象が非表示になった(会員UIの装飾等): 説明のみへ切替
     var els = stepEls(); if (els.length !== stepSels(TUT.steps[TUT.i]).length) return;   // 対象が(再描画等で)一時的に無い間は更新しない
     var sig = sigOf(els) + '#' + viewSig();
     if (!force && sig === TUT.sig) return;
@@ -1595,6 +1613,12 @@
   function placeTut(els, noShift) {
     var tut = $('tut'), tip = $('tip'), dim = tut.querySelector('.dim'), pad = 6, nctx = (TUT.steps[TUT.i].ctx || []).length;
     if (!tip || !dim) return;
+    if (TUT.steps[TUT.i].noHl) {   // ハイライトなし(説明のみ): 暗幕に穴を開けず、説明Windowを見える領域の中央へ
+      var b0 = vvBox(), o0 = tut.getBoundingClientRect(); dim.style.clipPath = 'none';
+      tip.style.cssText = 'top:0;visibility:hidden'; tip.style.width = Math.min(o0.width * 0.92, 420) + 'px';
+      var h0 = tip.offsetHeight, lo0 = b0.top - o0.top + 8, hi0 = b0.bottom - o0.top - 8;
+      tip.style.top = Math.round(Math.max(lo0, lo0 + (hi0 - lo0 - h0) / 2)) + 'px'; tip.style.visibility = 'visible'; return true;
+    }
     var o = tut.getBoundingClientRect(), W = o.width, H = o.height;   // #tut 自身の実矩形を原点・寸法にする(座標系の差を消す)
     var rects = els.map(function (e, i) { var r = tgtRect(i, e), pd = nctx ? (i < nctx ? 8 : 4) : pad; return { x: r.left - o.left - pd, y: r.top - o.top - pd, w: r.width + pd * 2, h: r.height + pd * 2 }; });   // 二段階: 文脈枠は外へ8px・主対象は4px(重なり部は穴が統合され文脈枠内は明るい)
     var path = 'M0 0H' + W + 'V' + H + 'H0Z' + mergeOverlap(rects).map(roundRectPath).join('');   // 穴が重なる場合(固定ナビの裏に対象が来た等)は外接矩形へ統合(evenoddだと重なり部分が暗幕で塞がるため)

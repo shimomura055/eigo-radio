@@ -185,21 +185,21 @@ a.setrow{text-decoration:none}
 #tut.ctxstep .dim{background:rgba(10,24,60,.6)}
 #tut .ring.ctx{border:2px solid rgba(255,255,255,.92);box-shadow:0 0 0 3px rgba(255,255,255,.18);border-radius:18px}
 #tut .ring.main{border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 24px rgba(90,150,255,1)}
-/* FINAL-UI-INTEGRATION 委任_02 ①(ユーザー原文B・C): 説明Windowは全ページ共通の太枠線+赤系の文字(白地で約6:1以上)で通常のアプリ画面と区別し、文字サイズ・ボタン寸法は全ページ同一
+/* FINAL-UI-INTEGRATION 委任_02 ①(ユーザー原文B・C): 説明Windowは全ページ共通の太枠線+紺色(var(--navy)=#10285e。2026-11-27 USER_03で赤→紺。白地で約14:1)で通常のアプリ画面と区別し、文字サイズ・ボタン寸法は全ページ同一
    (1枚目の旧値=見出し18px・本文14.5px・ボタン16px/高44px を固定。ページごとの縮小は廃止)。収まらない時は配置(上下・スクロール位置・ハイライト範囲)で解決し、
    最後の手段は本文側のスクロール(見出しと操作ボタンは常に表示=.tbodyだけが縮む) */
-#tut .tip{position:absolute;left:50%;transform:translateX(-50%);width:min(92vw,420px);background:#fff;border:4px solid #c62828;border-radius:18px;padding:14px 16px 12px;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 14px 40px rgba(0,0,0,.45);color:#b3261e;display:flex;flex-direction:column;overflow:hidden}
-#tut .tip h3{flex:none;margin:0 0 6px;font-size:18px;color:#b3261e}
+#tut .tip{position:absolute;left:50%;transform:translateX(-50%);width:min(92vw,420px);background:#fff;border:4px solid var(--navy);border-radius:18px;padding:14px 16px 12px;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 14px 40px rgba(0,0,0,.45);color:var(--navy);display:flex;flex-direction:column;overflow:hidden}
+#tut .tip h3{flex:none;margin:0 0 6px;font-size:18px;color:var(--navy)}
 #tut .tip .tbody{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
-#tut .tip p{margin:4px 0;font-size:14.5px;line-height:1.6;color:#b3261e;font-weight:700}
-#tut .tip .lvs{background:#fff4f2;border:1px solid #e8b4ad;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;color:#b3261e;font-weight:700}
+#tut .tip p{margin:4px 0;font-size:14.5px;line-height:1.6;color:var(--navy);font-weight:700}
+#tut .tip .lvs{background:var(--soft2);border:1px solid #b9cdf7;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px;line-height:1.6;color:var(--navy);font-weight:700}
 #tut .tip .foot{flex:none;display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
-#tut .dots{display:flex;gap:6px;align-items:center;font-size:12px;color:#b3261e;font-weight:700}
-#tut .dots i{width:8px;height:8px;border-radius:50%;background:#e6c3be;display:block}
-#tut .dots i.on{background:#c62828}
-#tut .btns{display:flex;gap:8px}
-#tut .btns button{box-sizing:border-box;flex:none;width:76px;height:44px;min-height:44px;padding:0;border-radius:999px;font-size:16px;font-weight:800;line-height:1;cursor:pointer;border:2.5px solid #c62828;background:#fff;color:#b3261e;white-space:nowrap}
-#tut .btns button.pri{background:#c62828;color:#fff;border-color:#c62828}
+#tut .dots{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--navy);font-weight:700}
+#tut .dots i{width:8px;height:8px;border-radius:50%;background:#c5d0ea;display:block}
+#tut .dots i.on{background:var(--navy)}
+#tut .btns{display:flex;gap:6px}
+#tut .btns button{box-sizing:border-box;flex:none;min-width:76px;height:44px;min-height:44px;padding:0 12px;border-radius:999px;font-size:16px;font-weight:800;line-height:1;cursor:pointer;border:2.5px solid var(--navy);background:#fff;color:var(--navy);white-space:nowrap}
+#tut .btns button.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
 @media(max-width:380px){
   .cgrid{grid-template-columns:76px minmax(0,1fr) 44px}
   .cgrid .thumb{width:76px;height:76px}
@@ -208,6 +208,8 @@ a.setrow{text-decoration:none}
   .ctrl .pp{width:54px;height:54px}
   .lvseg button{font-size:15px}
   .stat b{font-size:21px}
+  #tut .tip{padding-left:12px;padding-right:12px}   /* USER_03 ①: 小さい画面でもスキップ/戻る/次へ(はじめる)の3つを1行に収め、ボタン内の余白(左右8px)を確保 */
+  #tut .btns button{padding:0 8px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .thumb{flex:none}
@@ -242,7 +244,7 @@ a.setrow{text-decoration:none}
 #followbtn{align-self:flex-end;z-index:35;border:0;background:var(--navy);color:#fff;font-weight:800;font-size:13.5px;min-height:44px;padding:0 16px;border-radius:999px;box-shadow:0 6px 16px rgba(16,40,94,.4);cursor:pointer}
 #followbtn[hidden]{display:none}
 #tut .tip .tbody p{margin:4px 0;font-size:14.5px;line-height:1.55}
-#tut .tip .fine2{font-size:12.5px;color:#b3261e}
+#tut .tip .fine2{font-size:12.5px;color:var(--navy)}
 #tut .tip .foot{flex-wrap:wrap}
 #tut .btns{flex-wrap:wrap}
 
