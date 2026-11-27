@@ -71,13 +71,15 @@
   /* ---- saved articles (display table): slugs passed by the panel (?saved=a,b) ---- */
   var saved = {}; (q.get('saved') || '').split(',').forEach(function (s) { if (s) saved[s] = 'saved'; });
   var limit = 524288000;
+  var freeMb = q.has('freemb') ? q.get('freemb') : '300';   // B7 (USER_03 sec 2-3): MOCK of the device free space (the app reads it from the device); '' / 'na' = could not be read
+  function freeBytes() { var n = Number(freeMb); return freeMb === '' || freeMb === 'na' || !isFinite(n) || n < 0 ? null : n * 1048576; }
   function catalog() { try { return root.__WUL.ST.cat; } catch (e) { return null; } }
   function titleOf(slug) { var c = catalog(), l = c ? (c.items || []).concat(c.unlisted_items || []) : []; for (var i = 0; i < l.length; i++) if (l[i].slug === slug) return l[i].title_ja || slug; return slug; }
   function notify(slug) { try { root.dispatchEvent(new root.CustomEvent('eigo-offline-change', { detail: { slug: slug || null } })); } catch (e) { /* */ } }
   function state(slug) { var st = saved[slug]; return st === 'saved' ? { status: 'saved', online: online } : (st === 'busy' ? { status: 'busy', pct: 40, online: online } : { status: 'none', online: online }); }
   function summary() {
     var items = Object.keys(saved).map(function (s) { return { slug: s, title: titleOf(s), status: saved[s], bytes: 11400000 }; });
-    return { loaded: true, online: online, usedBytes: items.length * 11400000, limitBytes: limit, items: items };
+    return { loaded: true, online: online, usedBytes: items.length * 11400000, limitBytes: limit, freeBytes: freeBytes(), items: items };
   }
   var host = root.EigoHost = root.EigoHost || {};
   host.mode = 'native'; host.v = 1;
@@ -112,5 +114,5 @@
   }
   if (doc.body) initUi(); else doc.addEventListener('DOMContentLoaded', initUi);
   try { if (q.get('tut') !== '1') root.localStorage.setItem('wut01.tutorial_done', 'true'); } catch (e) { /* */ }
-  root.__PVHost = { setOnline: setOnline, setSaved: function (slugs) { saved = {}; (slugs || []).forEach(function (s) { saved[s] = 'saved'; }); notify(null); decorateSoon(); }, savedSlugs: function () { return Object.keys(saved); } };
+  root.__PVHost = { setFree: function (mb) { freeMb = String(mb == null ? '' : mb); notify(null); decorateSoon(); }, setOnline: setOnline, setSaved: function (slugs) { saved = {}; (slugs || []).forEach(function (s) { saved[s] = 'saved'; }); notify(null); decorateSoon(); }, savedSlugs: function () { return Object.keys(saved); } };
 })(window);

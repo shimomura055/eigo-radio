@@ -252,21 +252,37 @@
       else { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (e) { /* */ } }
     };
   }
-  /* B6 (user decision 2026-11-27 USER_03 sec 2-2): the free-article confirmation ("今日の無料記事は〇〇にしますか？") opens ONLY after a user operation. Sources that are not a tap
-     (a native refusal of a queue restored at launch, a restored route, a state redraw, a timer) must never open it. "User operation" = a click on an article / play control (ctx.viaClick),
-     or any pointer / touch / key press in the page within the last GESTURE_MS (a link, a back gesture, a play control the UI does not intercept). */
-  var GESTURE_MS = 5000, lastGestureAt = -1e9;
-  function noteGesture(e) { var t = e && e.target; if (t && rootEl && rootEl.contains && rootEl.contains(t)) return; lastGestureAt = nowMs(); }
+  /* B6/B7 (user decision 2026-11-27 USER_03 sec 2-2): the free-article confirmation ("今日の無料記事は〇〇にしますか？") opens ONLY from the user's operation on that article. */
+  /* B7 (USER_03 sec 2-2, re-fix; supersedes the B6 time window): NO time window. A guidance / confirmation popup (pick confirmation, paid-only guidance, expired guidance) may only be
+     opened from the processing of the user's operation "open / play THIS article": the click handler records a one-shot intent {slug}; only the decision for that slug (our own check
+     or a native refusal) can claim it (claiming deletes it). No intent or another slug => nothing is shown (state re-read only). The intent is also deleted by any later gesture start
+     (touch / pointer / key = scroll, another tap, long press) and when playback starts. Intent-less sources (history / reload hash change, a native refusal nobody asked for, the route
+     restored at launch, the restored queue) never open a popup. */
+  var intent = null;
+  var INTENT_SEL = '[data-open],[data-play],a[href^="#/player/"],[data-omakase],#pp,#minipp,[data-fromstart],[data-from],[data-solosid],[data-fromsid],[data-pwplay]';
+  function decodeSlug(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+  function intentSlugOf(el) {   // the article the operation means; null = "whatever the app starts" (omakase / mini player)
+    var s = el.closest('[data-play]'); if (s) return s.getAttribute('data-play');
+    s = el.closest('[data-open]'); if (s) return s.getAttribute('data-open');
+    s = el.closest('a[href^="#/player/"]'); if (s) { var hm = /^#\/player\/([^?\/#]+)/.exec(s.getAttribute('href') || ''); return hm ? decodeSlug(hm[1]) : null; }
+    var m = PLAYER_RE.exec(root.location.hash || ''); if (m && el.closest('#pp,[data-fromstart],[data-from],[data-solosid],[data-fromsid],[data-pwplay]')) return decodeSlug(m[1]);
+    return null;
+  }
+  function setIntent(el) { intent = { slug: intentSlugOf(el) }; }
+  function claimIntent(slug) {   // one-shot: true only when an operation asked for this article (or "whatever starts") and nobody used it yet
+    if (!intent) return false;
+    if (intent.slug !== null && slug && intent.slug !== slug) return false;
+    intent = null; return true;
+  }
+  function noteGesture(e) { var t = e && e.target; if (t && rootEl && rootEl.contains && rootEl.contains(t)) return; intent = null; }
   ['pointerdown', 'touchstart', 'mousedown', 'keydown'].forEach(function (n) { doc.addEventListener(n, noteGesture, true); });
-  function userInitiated(ctx) { return !!(ctx && ctx.viaClick) || nowMs() - lastGestureAt <= GESTURE_MS; }
+  function quiet(slug, ctx, why) { try { host.diag && host.diag('js.membership.popup_suppressed', { why: why, route: ctx && ctx.route }); } catch (e) { /* record only */ } refresh(); }
   function dialogForBlocked(slug, ctx, reason) {
     if (!isFree() && !isOffline()) { try { host.diag && host.diag('js.membership.denied_unexpected', { reason: String(reason) }); } catch (e) { /* record only */ } refresh(); return; }   // the plan says this is allowed and the refusal reason is not one the UI knows (any unknown code): never a plan guidance here, only re-read the state
+    if (!(ctx && ctx.authorized)) { quiet(slug, ctx, 'no_operation'); return; }   // not the processing of a user operation on this article: no popup / toast of any kind
     var unpicked = isFree() && !pickSlug();
     if (isOffline() && !isSaved(slug)) { toast(unpicked ? D.offlineSelectHint : D.offlineLockedHint); return; }
-    if (unpicked) {
-      if (!userInitiated(ctx)) { try { host.diag && host.diag('js.membership.confirm_suppressed', { route: ctx && ctx.route }); } catch (e) { /* record only */ } refresh(); return; }   // not a user operation: nothing is shown
-      showConfirm(slug, ctx); return;
-    }
+    if (unpicked) { showConfirm(slug, ctx); return; }
     if ((ctx && ctx.route === 'me') || isOffline()) showExpired(slug, ctx); else showPaywall();
   }
   function blocked(slug, ctx) {   // the UI state says "not available": ask native once more (a finish-grant may still allow it), then show the matching dialog
@@ -281,14 +297,15 @@
     if (rootEl && rootEl.contains(t)) return;
     if (t.closest('[data-fav]')) return;   // favourites are never limited
     if (bypassEl) return;
+    var iel = t.closest(INTENT_SEL); if (iel) setIntent(iel);   // the operation "open / play this article": the one-shot intent (see above); recorded for allowed articles too (native may still refuse a stale state)
     var om = t.closest('[data-omakase]');
-    if (om) { if (isFree()) { e.preventDefault(); e.stopImmediatePropagation(); decorateSoon(); } return; }   // the free plan has no omakase (the button is hidden; a stale tap does nothing and no guidance is shown)
+    if (om) { if (isFree()) { intent = null; e.preventDefault(); e.stopImmediatePropagation(); decorateSoon(); } return; }   // the free plan has no omakase (the button is hidden; a stale tap does nothing and no guidance is shown)
     var pl = t.closest('[data-play]'), op = pl ? null : t.closest('[data-open]'), src = pl || op;
     if (!src) return;
     var slug = pl ? pl.getAttribute('data-play') : op.getAttribute('data-open');
     if (!slug || canOpenByState(slug)) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    blocked(slug, { route: hashName(), viaClick: true, resume: resumeOpen(slug, src) });
+    blocked(slug, { route: hashName(), authorized: claimIntent(slug), resume: resumeOpen(slug, src) });
   }
   doc.addEventListener('click', onDocClick, true);   // capture: runs before the webapp's own delegated handler
   var PLAYER_RE = /^#\/player\/([^?\/#]+)/;
@@ -300,31 +317,33 @@
     var oldUrl = e.oldURL || '', oldHash = oldUrl.indexOf('#') >= 0 ? oldUrl.slice(oldUrl.indexOf('#')) : '#/home';
     try { root.history.replaceState(null, '', oldUrl || ('#/home')); } catch (x) { try { root.location.hash = oldHash; } catch (y) { /* */ } }
     var route = oldHash.replace(/^#\/?/, '').split(/[?\/]/)[0] || 'home';
-    blocked(slug, { route: route, resume: function () { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (x) { /* */ } } });
+    blocked(slug, { route: route, authorized: claimIntent(slug), resume: function () { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (x) { /* */ } } });   // authorized only when a tap on a link to this article asked for it; history / reload / external hash changes are silent
   });
 
   /* ------------------------------------------------------------------ native refusals (accessDenied) */
   var deferredDenied = null;
   var EXPLICIT_POINTS = { loadQueue: 1, download: 1, playItem: 1, replaceQueueItem: 1, fetch: 1 };
   var lastFetchDenied = { slug: '', t: 0 };
-  function showDenied(d) {
+  function showDenied(d, authorized) {   // authorized = this refusal answers a user operation (the intent was claimed when it arrived)
     var slug = d && d.slug;
-    if (!slug) { toast(D.deniedToast); return; }
-    blocked(slug, { route: hashName(), resume: function () { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (e) { /* */ } } });
+    if (!slug) { if (authorized) toast(D.deniedToast); else quiet('', null, 'no_operation'); return; }
+    blocked(slug, { route: hashName(), authorized: !!authorized, resume: function () { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (e) { /* */ } } });
   }
   M.on('accessDenied', function (d) {
     if (!d || d.point === 'prefetchClip') return;   // silent background prefetch: nothing to tell the user
     if (d.reason === 'slug_mismatch' || d.reason === 'bad_slug') { try { host.diag && host.diag('js.membership.denied_bad_id', { point: d.point, reason: d.reason }); } catch (e) { /* record only */ } return; }   // an id/URL fault, not a plan matter: no dialog (log only)
     if (d.point === 'playItem' && onReviewRoute()) { refresh(); try { host.diag && host.diag('js.membership.review_audio_refused', { reason: d.reason }); } catch (e) { /* record only */ } return; }   // review-book audio is playable in every plan (user decision 2026-11-26 USER_02 sec 3-2): never a restriction / join notice here
     if (d.point === 'autoNext') { refresh(); return; }   // a free member finishing the picked article is refused auto-advance every time (normal): silent; notices come only from popupDue
-    if (d.point === 'download') { refresh().then(function () { if (!modalOpen()) toast(D.deniedToast); }); return; }   // a refused save: one short notice, no dialog (saved files stay)
+    if (d.point === 'download') { refresh().then(function () { if (!modalOpen()) toast(D.deniedToast); }); return; }   // answers the user's own save tap (no article popup)   // a refused save: one short notice, no dialog (saved files stay)
     if (d.point === 'fetch') {   // article data refused (the UI state was stale, e.g. the plan changed at midnight): one explanation per article, and leave the broken article page
       var tn = nowMs(); if (lastFetchDenied.slug === d.slug && tn - lastFetchDenied.t < 3000) return; lastFetchDenied = { slug: d.slug, t: tn };
     }
+    var mine = claimIntent(d.slug);   // B7: only a refusal that answers the user's operation on this article may show anything
     refresh().then(function () {
       if (d.point === 'fetch' && PLAYER_RE.test(root.location.hash || '') && !canOpenByState(d.slug)) { try { root.history.replaceState(null, '', '#/home'); root.dispatchEvent(new root.Event('hashchange')); } catch (e) { /* */ } }
+      if (!mine) { quiet(d.slug, null, 'refusal_without_operation:' + d.point); return; }   // restored queue at launch, background refusals, a refusal after a scroll / other tap: silent
       if (isPlaying()) { toast(D.deniedToast); return; }                // never put a popup in front of playback
-      if (onListRoute() || EXPLICIT_POINTS[d.point]) { if (!modalOpen()) showDenied(d); else toast(D.deniedToast); return; }
+      if (onListRoute() || EXPLICIT_POINTS[d.point]) { if (!modalOpen()) showDenied(d, true); else toast(D.deniedToast); return; }
       deferredDenied = d; toast(D.deniedToast);                          // reading / learning an article page: tell now with a toast, explain in the list afterwards
     });
   });
@@ -338,7 +357,7 @@
     if (S.storeSynced === false) return;   // the first store sync is still running (max 15 s): no notice yet; native sends accessChanged when it ends
     if (isPlaying() || tutorialOpen() || (doc.hidden === true)) return;
     if (consentInfo === null) return;   // the consent answer is being read first (loadConsent -> scheduleCheck): the first notice must know whether it asks
-    if (deferredDenied && onListRoute()) { var d = deferredDenied; deferredDenied = null; showDenied(d); return; }
+    if (deferredDenied && onListRoute()) { var d = deferredDenied; deferredDenied = null; showDenied(d, true); return; }   // the deferred explanation answers an operation that was claimed when the refusal arrived
     if (!onHome()) return;
     var kind = null;
     if (S.firstLaunchNoticeDue && S.phase === 'trial') kind = 'first_launch';
@@ -463,8 +482,9 @@
       [].forEach.call(md.querySelectorAll('.dlmsg'), function (m) { var t = (m.textContent || '').trim(); if (t === Sv.row || t === Sv.empty) m.remove(); });
       var u = md.querySelector('[data-dl-usage]');
       if (u && sm) {
-        var room = Math.max(0, (sm.limitBytes || 0) - (sm.usedBytes || 0)), low = sm.limitBytes > 0 && sm.usedBytes / sm.limitBytes >= 0.8;
-        var l1 = fmt(St2.used, { used: mbText(sm.usedBytes) }), l2 = room <= 0 ? St2.full : fmt(St2.room, { room: mbText(room) }) + (low ? St2.low : '');
+        var room = Math.max(0, (sm.limitBytes || 0) - (sm.usedBytes || 0));   // B7 (USER_03 sec 2-3): the smaller of "what the internal ceiling still allows" and "what the device still has free" (native freeBytes; absent = the internal remainder only, as before)
+        if (typeof sm.freeBytes === 'number' && isFinite(sm.freeBytes) && sm.freeBytes >= 0) room = Math.min(room, sm.freeBytes);
+        var l1 = fmt(St2.used, { used: mbText(sm.usedBytes) }), l2 = room <= 0 ? St2.full : fmt(St2.room, { room: mbText(room) });
         var sig = l1 + '|' + l2;
         if (u.getAttribute('data-em-sig') !== sig) { u.setAttribute('data-em-sig', sig); u.innerHTML = esc(l1) + '<br>' + esc(l2); }
       }
@@ -560,6 +580,7 @@
     if (doc.body && root.MutationObserver) new root.MutationObserver(function () { var n = doc.querySelector('[data-eigo-notice]'); if (n) fixLimitWords(n); }).observe(doc.body, { childList: true, subtree: true });   // adapter notices ("raise the limit" half is dropped)
     var a = host.audioEl; if (a && a.addEventListener) { a.addEventListener('pause', scheduleCheck); a.addEventListener('ended', scheduleCheck); }
     doc.addEventListener('visibilitychange', function () { if (!doc.hidden) { refresh(); scheduleCheck(); } });
+    try { if (host.audioEl && host.audioEl.addEventListener) host.audioEl.addEventListener('playing', function () { intent = null; }); } catch (e) { /* cosmetic: the intent is also deleted by the next gesture */ }   // the operation succeeded: its intent is spent
     root.setInterval(function () { scheduleCheck(); }, 5000);
     var ticks = 0; root.setInterval(function () { if (!doc.hidden && ++ticks % 12 === 0) refresh(); }, 5000);   // picks up a date change / trial end while the app stays open
     loadConsent().then(function () { decorateSoon(); scheduleCheck(); });

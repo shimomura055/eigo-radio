@@ -14,6 +14,7 @@
     if ($('c-first').checked) p.set('first', '1');
     p.set('consent', radio('consent')); p.set('buy', $('s-buy').value); p.set('restore', $('s-restore').value);
     if ($('s-product').value === 'fail') p.set('product', 'fail');
+    p.set('freemb', $('s-free').value);
     var sv = savedSel(); if (sv.length) p.set('saved', sv.join(','));
     if (!online) p.set('online', '0');
     p.set('_', String(Date.now()));
@@ -35,6 +36,7 @@
   $('b-apply').addEventListener('click', function () { start('#/home'); });
   $('b-day').addEventListener('click', function () { live(function (w) { w.__PV.advanceDay(); }); $('status').textContent = '日付を1日進めました(アプリは開いたまま)'; });
   $('b-off').addEventListener('click', function () { online = !online; live(function (w) { w.__PVHost.setOnline(online); }); $('status').textContent = online ? 'オンライン' : 'オフライン(通信なし)'; });
+  $('s-free').addEventListener('change', function () { live(function (w) { w.__PVHost.setFree($('s-free').value); }); });
   ['s-buy', 's-restore', 's-product'].forEach(function (id) { $(id).addEventListener('change', function () { live(function (w) { w.__PV.set({ buy: $('s-buy').value, restore: $('s-restore').value, product: $('s-product').value }); }); }); });
   [].forEach.call(document.querySelectorAll('[data-go]'), function (b) { b.addEventListener('click', function () { live(function (w) { w.location.hash = b.getAttribute('data-go'); }); }); });
   $('w-phone').addEventListener('click', function () { $('phone').classList.remove('pc'); $('w-phone').classList.add('on'); $('w-pc').classList.remove('on'); });
