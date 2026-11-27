@@ -121,6 +121,16 @@
       paidA: 'すべての記事・機能をご利用いただけます。', paidCancelledA: '利用期限まで、すべての記事・機能をご利用いただけます。',
       priceLabel: '料金'
     },
+    // B6 (user decision 2026-11-27 USER_03 sec 2-11): the button that really starts Apple's purchase says so on a second line (the first-entry buttons "有料会員になる" carry no such line).
+    buyNote: '（Appleの購入手続きに進みます）',
+    // B6 sec 2-3 / 2-4: My Page offline-saving block. The limit chooser is gone (the limit stays an internal safety stop); the block says what is saved and how much room is left.
+    // "room" = internal ceiling minus what is used (the native side has no device-free-space call yet; see RESULT_B6). {used} {room} are sizes like "11.4MB".
+    storage: { used: '現在の保存容量：{used}', room: 'あと約{room}保存できます', low: '（残りわずか）', full: 'これ以上は保存できません。不要な保存を削除してください。',
+      cut: [['を削除するか、上限を上げてください', 'を削除してください']] },   // the common texts / adapter notices that still say "raise the limit" lose that half (the chooser no longer exists)
+    // B6 sec 2-4: the saved-articles list is its own screen (same structure as the favourites: a row on My Page -> a list screen; articles are opened / deleted there).
+    saved: { row: '保存した記事', unit: '件', title: '保存した記事', back: '戻る', del: '削除', delAria: '{title}の保存を削除',
+      empty: 'まだ保存した記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。',
+      st: { partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません' } },
     back: '戻る', lockBadgeAria: 'ロック中', lockedPlayAria: '{title} は今日は利用できません(有料会員限定)'
   };
 

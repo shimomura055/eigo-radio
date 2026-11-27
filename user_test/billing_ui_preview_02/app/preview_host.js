@@ -37,6 +37,24 @@
     new root.MutationObserver(function (recs) { recs.forEach(function (r) { [].forEach.call(r.addedNodes, scan); }); }).observe(doc.documentElement, { childList: true, subtree: true });
   })();
 
+  /* ---- legal links (B6 sec 8, display only): the app links to the official pages <pagesRoot>../<key>/ (e.g. https://shimomura055.github.io/eigo-radio/privacy/). In the preview those are shown from the
+     review copies under <pagesRoot>legal_preview_01/<key>.html (privacy / terms / tokushoho / support). The real app's official URLs are not changed. ---- */
+  var LEGAL_KEYS = ['privacy', 'terms', 'tokushoho', 'support'];
+  function mapLegal(a) {
+    try {
+      var h = a.getAttribute && a.getAttribute('href'); if (!h || h.charAt(0) === '#') return;
+      var u = new root.URL(h, root.location.href), m = /\/(privacy|terms|tokushoho|support)\/?$/.exec(u.pathname);
+      if (!m || LEGAL_KEYS.indexOf(m[1]) < 0) return;
+      a.setAttribute('href', PAGES_ROOT + 'legal_preview_01/' + m[1] + '.html');
+    } catch (e) { /* leave as is */ }
+  }
+  (function legalMapper() {
+    if (!root.MutationObserver) return;
+    function scan(n) { if (n.nodeType !== 1) return; if (n.tagName === 'A') mapLegal(n); var l = n.querySelectorAll ? n.querySelectorAll('a[href]') : []; for (var i = 0; i < l.length; i++) mapLegal(l[i]); }
+    new root.MutationObserver(function (recs) { recs.forEach(function (r) { [].forEach.call(r.addedNodes, scan); }); }).observe(doc.documentElement, { childList: true, subtree: true });
+    doc.addEventListener('click', function (e) { var a = e.target && e.target.closest ? e.target.closest('a[href]') : null; if (a) mapLegal(a); }, true);
+  })();
+
   /* ---- silent audio stub: the common webapp's media elements never load or play anything ---- */
   var HM = root.HTMLMediaElement && root.HTMLMediaElement.prototype;
   if (HM) {

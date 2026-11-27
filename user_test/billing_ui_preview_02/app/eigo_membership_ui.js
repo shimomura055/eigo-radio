@@ -175,9 +175,9 @@
     if (productOk()) priceBlock = '<div class="em-card em-pricecard"><div class="em-nm">' + esc(J.planName) + '</div><div class="em-amt">' + esc(fmt(J.price, v)) + '</div><div class="em-per">' + esc(J.renewal) + '</div></div>';
     else priceBlock = '<div class="em-card em-pricecard"><div class="em-nm">' + esc(J.planName) + '</div><div class="em-per" data-em-product="unavailable">' + esc(S && S.product && S.product.reason === 'not_loaded' ? D.productLoading : D.productFail) + '</div>' +
       '<button type="button" class="em-link" data-em-act="product-retry">' + esc(D.productRetry) + '</button></div>';
-    var trialNote = S && S.phase === 'trial' ? '<div class="em-trialnote" data-em-trialnote>' + esc(fmt(A.trialBuyNotice, { date: trialLastDayText(S) })) + '</div>' : '';
+    var trialNote = S && S.phase === 'trial' ? '<div class="em-msg" data-em-trialnote>' + esc(fmt(A.trialBuyNotice, { date: trialLastDayText(S) })) + '</div>' : '';
     var paidNote = S && (S.phase === 'paid' || S.phase === 'paid_grace_offline') ? '<div class="em-msg">' + esc(D.alreadyPaid) + '</div>' : '';
-    var buy = canBuy ? '<button type="button" class="em-btn em-go" id="em-buy" data-em-act="buy"' + ((busy || waiting || !productOk()) ? ' disabled' : '') + '>' + esc(busy ? D.working : fmt(J.button, v)) + '</button>' : '';
+    var buy = canBuy ? '<button type="button" class="em-btn em-go" id="em-buy" data-em-act="buy"' + ((busy || waiting || !productOk()) ? ' disabled' : '') + '>' + (busy ? esc(D.working) : '<span class="em-b1">' + esc(fmt(J.button, v)) + '</span><span class="em-b2" data-em-buynote>' + esc(D.buyNote) + '</span>') + '</button>' : '';   // B6 sec 2-11: line 2 says this button starts Apple's purchase
     var pendNote = waiting ? '<div class="em-msg" data-em-pending>' + esc(D.buyPending) + '</div>' : '';
     var terms = '<div class="em-terms" id="em-terms">' + (C.showDraftMarks ? mark() : '') + D.terms.map(function (t) { return '<p>' + esc(fmt(t, v)) + '</p>'; }).join('') + '</div>';
     f.innerHTML = '<div class="em-topbar"><button type="button" class="em-back-btn" data-em-act="join-close" aria-label="' + esc(D.back) + '"><span aria-hidden="true">&#8249;</span> ' + esc(D.back) + '</button></div>' +
@@ -252,11 +252,21 @@
       else { try { root.location.hash = '#/player/' + encodeURIComponent(slug); } catch (e) { /* */ } }
     };
   }
+  /* B6 (user decision 2026-11-27 USER_03 sec 2-2): the free-article confirmation ("今日の無料記事は〇〇にしますか？") opens ONLY after a user operation. Sources that are not a tap
+     (a native refusal of a queue restored at launch, a restored route, a state redraw, a timer) must never open it. "User operation" = a click on an article / play control (ctx.viaClick),
+     or any pointer / touch / key press in the page within the last GESTURE_MS (a link, a back gesture, a play control the UI does not intercept). */
+  var GESTURE_MS = 5000, lastGestureAt = -1e9;
+  function noteGesture(e) { var t = e && e.target; if (t && rootEl && rootEl.contains && rootEl.contains(t)) return; lastGestureAt = nowMs(); }
+  ['pointerdown', 'touchstart', 'mousedown', 'keydown'].forEach(function (n) { doc.addEventListener(n, noteGesture, true); });
+  function userInitiated(ctx) { return !!(ctx && ctx.viaClick) || nowMs() - lastGestureAt <= GESTURE_MS; }
   function dialogForBlocked(slug, ctx, reason) {
     if (!isFree() && !isOffline()) { try { host.diag && host.diag('js.membership.denied_unexpected', { reason: String(reason) }); } catch (e) { /* record only */ } refresh(); return; }   // the plan says this is allowed and the refusal reason is not one the UI knows (any unknown code): never a plan guidance here, only re-read the state
     var unpicked = isFree() && !pickSlug();
     if (isOffline() && !isSaved(slug)) { toast(unpicked ? D.offlineSelectHint : D.offlineLockedHint); return; }
-    if (unpicked) { showConfirm(slug, ctx); return; }
+    if (unpicked) {
+      if (!userInitiated(ctx)) { try { host.diag && host.diag('js.membership.confirm_suppressed', { route: ctx && ctx.route }); } catch (e) { /* record only */ } refresh(); return; }   // not a user operation: nothing is shown
+      showConfirm(slug, ctx); return;
+    }
     if ((ctx && ctx.route === 'me') || isOffline()) showExpired(slug, ctx); else showPaywall();
   }
   function blocked(slug, ctx) {   // the UI state says "not available": ask native once more (a finish-grant may still allow it), then show the matching dialog
@@ -278,7 +288,7 @@
     var slug = pl ? pl.getAttribute('data-play') : op.getAttribute('data-open');
     if (!slug || canOpenByState(slug)) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    blocked(slug, { route: hashName(), resume: resumeOpen(slug, src) });
+    blocked(slug, { route: hashName(), viaClick: true, resume: resumeOpen(slug, src) });
   }
   doc.addEventListener('click', onDocClick, true);   // capture: runs before the webapp's own delegated handler
   var PLAYER_RE = /^#\/player\/([^?\/#]+)/;
@@ -354,6 +364,7 @@
       case 'close': case 'stay': case 'confirm-cancel': closeModal(); return;
       case 'join': closeModal(); showJoin(); return;
       case 'join-close': closeFull(); scheduleCheck(); return;
+      case 'saved-back': try { root.location.hash = '#/me'; } catch (e) { /* */ } return;
       case 'intro-ok': closeFull(); refresh(); return;
       case 'consent-yes': chooseConsent('granted', true); return;
       case 'consent-no': chooseConsent('denied', true); return;
@@ -432,7 +443,60 @@
     }
     return h + '</div>';
   }
+  /* ---- offline saving (B6 sec 2-3 / 2-4). The common webapp (lock-pinned, unmodified) draws the block; this overlay trims it (iOS only; Web has no EigoHost.offline, Android is unchanged):
+     - the limit chooser (select + "(超えても自動削除しません)") is removed (the limit stays inside native as the safety stop; nothing about it is changed), the usage line says what is saved and how much room is left
+     - the saved-article rows leave My Page: a "保存した記事 N件 ›" row under the favourites row opens a list screen (hash #/me/saved, same structure as the favourites screen) where articles are opened / deleted */
+  function meArg() { var h = (root.location.hash || '').replace(/^#\/?/, ''); return h.split(/[?#]/)[0].split('/')[1] || ''; }
+  function savedMode() { return hashName() === 'me' && meArg() === 'saved'; }
+  function offlineSummary() { try { var o = host.offline; var s = o && typeof o.summary === 'function' ? o.summary() : null; return s && s.loaded ? s : null; } catch (e) { return null; } }
+  function mbText(b) { return (Math.round((Number(b) || 0) / 1048576 * 10) / 10) + 'MB'; }
+  function fixLimitWords(node) {   // common texts / adapter notices that still say "raise the limit" (the chooser no longer exists)
+    var cut = D.storage.cut, w;
+    try { w = doc.createTreeWalker(node, 4 /* SHOW_TEXT */); } catch (e) { return; }
+    var n; while ((n = w.nextNode())) cut.forEach(function (c) { if (n.nodeValue && n.nodeValue.indexOf(c[0]) >= 0) n.nodeValue = n.nodeValue.split(c[0]).join(c[1]); });
+  }
+  function decorateStorage(v) {
+    var Sv = D.saved, St2 = D.storage, sm = offlineSummary(), md = v.querySelector('#medl');
+    if (md) {
+      [].forEach.call(md.querySelectorAll('select[data-dl-limit]'), function (s) { var l = s.closest ? s.closest('label') : null; (l || s).remove(); });
+      [].forEach.call(md.querySelectorAll('.dlrow[data-dl-row]'), function (r) { r.remove(); });
+      [].forEach.call(md.querySelectorAll('.dlmsg'), function (m) { var t = (m.textContent || '').trim(); if (t === Sv.row || t === Sv.empty) m.remove(); });
+      var u = md.querySelector('[data-dl-usage]');
+      if (u && sm) {
+        var room = Math.max(0, (sm.limitBytes || 0) - (sm.usedBytes || 0)), low = sm.limitBytes > 0 && sm.usedBytes / sm.limitBytes >= 0.8;
+        var l1 = fmt(St2.used, { used: mbText(sm.usedBytes) }), l2 = room <= 0 ? St2.full : fmt(St2.room, { room: mbText(room) }) + (low ? St2.low : '');
+        var sig = l1 + '|' + l2;
+        if (u.getAttribute('data-em-sig') !== sig) { u.setAttribute('data-em-sig', sig); u.innerHTML = esc(l1) + '<br>' + esc(l2); }
+      }
+    }
+    var fav = v.querySelector('#favrow'), want = '<a class="setrow" id="savedrow" data-em-saved-row href="#/me/saved">' + esc(Sv.row) + '<span>' + (sm ? (sm.items || []).length + esc(Sv.unit) + ' ' : '') + '&#8250;</span></a>';
+    var row = v.querySelector('[data-em-saved-row]');
+    if (!row || row.outerHTML !== want) {
+      var h = doc.createElement('div'); h.innerHTML = want; var nr = h.firstChild;
+      if (row) row.replaceWith(nr);
+      else if (fav && fav.parentNode) fav.parentNode.insertBefore(nr, fav.nextSibling);
+      else if (md && md.parentNode) md.parentNode.insertBefore(nr, md.nextSibling);
+    }
+    fixLimitWords(v);
+  }
+  function renderSavedScreen(v) {
+    var Sv = D.saved, sm = offlineSummary(), items = sm ? (sm.items || []) : [], top = v.querySelector('.top');
+    if (top) { var side = top.querySelector('.side'); if (side && !side.querySelector('[data-em-act="saved-back"]')) side.innerHTML = '<button type="button" class="iconbtn backbtn" data-em-act="saved-back" aria-label="' + esc(Sv.back) + '"><span class="ba" aria-hidden="true">&#8249;</span><span class="bl">' + esc(Sv.back) + '</span></button>'; }
+    var sig = 'sv|' + (sm ? '1' : '0') + '|' + items.map(function (i) { return [i.slug, i.status, i.bytes, i.title].join(':'); }).join(',');
+    var cur = v.querySelector('[data-em-saved-screen]');
+    if (cur && cur.getAttribute('data-em-sig') === sig) return;
+    [].slice.call(v.children).forEach(function (n) { if (n !== top) n.remove(); });
+    var h = doc.createElement('div'); h.setAttribute('data-em-saved-screen', '1'); h.setAttribute('data-em-sig', sig);
+    var rows = items.map(function (x) {
+      var st = x.status === 'saved' ? '' : (Sv.st[x.status] || ''), small = (st ? st + ' ' : '') + (x.bytes ? '(' + mbText(x.bytes) + ')' : '');   // no state word on a plain saved row (user instruction); exceptional states stay (the user must act)
+      return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc(small) + '</small>' +
+        '<button type="button" class="dllink" data-dl-act="remove" data-dl-slug="' + esc(x.slug) + '" aria-label="' + esc(fmt(Sv.delAria, { title: x.title })) + '">' + esc(Sv.del) + '</button></div>';
+    }).join('');
+    h.innerHTML = '<h2 class="em-sv-h">' + esc(Sv.title) + (sm ? '<small>' + items.length + esc(Sv.unit) + '</small>' : '') + '</h2>' + (sm ? (items.length ? rows : '<div class="dlmsg">' + esc(Sv.empty) + '</div>') : '');
+    v.appendChild(h);
+  }
   function decorateMe(v) {
+    if (savedMode()) { renderSavedScreen(v); return; }
     var old = v.querySelector('[data-em-plan]');
     if (hashName() !== 'me' || !S) { if (old) old.remove(); var ob = v.querySelector('[data-em-other]'); if (ob) ob.remove(); var ocs = v.querySelector('[data-em-consent-set]'); if (ocs) ocs.remove(); [].forEach.call(v.querySelectorAll('[data-em-legal-row]'), function (n) { n.remove(); }); return; }
     var want = planCardHtml();
@@ -460,19 +524,14 @@
       a.href = legalHref(C.legalPages[key]); a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = esc(A.legalRows[key]) + '<span>&#8250;</span>';
       if (last && last.parentNode) { last.parentNode.insertBefore(a, last.nextSibling); last = a; } else v.appendChild(a);
     });
-    // saved-article rows (user instruction: no state label on a row -- neither the common list's "saved" word nor a membership availability word): row = title (tap = article page) + size + the management action (delete).
-    // Only the plain "saved" word of the common list is dropped; the exceptional states (partial / busy / failed ...) stay because the user must act on them.
-    [].forEach.call(v.querySelectorAll('.dlrow[data-dl-row]'), function (r) {
-      var small = r.querySelector('small'), old = r.querySelector('.em-st'); if (old) old.remove();
-      if (small && /^\s*保存済み/.test(small.textContent)) small.textContent = small.textContent.replace(/^\s*保存済み\s*/, '');
-    });
+    decorateStorage(v);
     // consent switch (only when the app has the usage-data plugin and it is available)
     var oc = v.querySelector('[data-em-consent-set]');
     if (!consentAvailable()) { if (oc) oc.remove(); }
     else {
       var CS = D.consentSettings, st2 = consentInfo.consent, stLabel = st2 === 'granted' ? CS.on : (st2 === 'denied' ? CS.off : CS.unanswered);
       var consWant = '<div data-em-consent-set data-em-sig="' + esc(st2 + '|' + consentMsg) + '"><div class="pl">' + esc(CS.section) + '</div>' +
-        '<button type="button" class="setrow" role="switch" aria-checked="' + (st2 === 'granted' ? 'true' : 'false') + '" data-em-act="consent-toggle">' + esc(CS.row) + '<span data-em-consent-state>' + esc(stLabel) + '</span></button>' +
+        '<button type="button" class="setrow em-swrow" role="switch" aria-checked="' + (st2 === 'granted' ? 'true' : 'false') + '" data-em-act="consent-toggle"><span class="em-swlabel">' + esc(CS.row) + '</span><span class="em-swstate" data-em-consent-state>' + esc(stLabel) + '</span><span class="em-switch" aria-hidden="true"><i></i></span></button>' +   // B6 sec 2-10: a real switch (colour + knob position + state word)
         '<div class="lvnote" data-em-consent-note>' + esc(CS.note) + '</div><div class="lvnote" data-em-consent-msg role="status">' + esc(consentMsg) + '</div>' + '</div>';
       if (!oc || oc.getAttribute('data-em-sig') !== st2 + '|' + consentMsg) {
         var h4 = doc.createElement('div'); h4.innerHTML = consWant; var cn = h4.firstChild;
@@ -489,7 +548,7 @@
   function decorate() {
     var v = view || (view = $('view')); if (!v) return;
     if (mo) mo.disconnect();
-    try { decorateCards(v); decorateBar(v); decorateOmakase(v); decorateMe(v); } catch (e) { try { host.diag && host.diag('js.membership.ui_error', { msg: String(e && e.message) }); } catch (x) { /* */ } }
+    try { decorateCards(v); decorateBar(v); decorateOmakase(v); decorateMe(v); fixLimitWords(v); } catch (e) { try { host.diag && host.diag('js.membership.ui_error', { msg: String(e && e.message) }); } catch (x) { /* */ } }
     if (mo) mo.observe(v, { childList: true, subtree: true });
   }
 
@@ -497,6 +556,8 @@
   function init() {
     view = $('view');
     if (view && root.MutationObserver) { mo = new root.MutationObserver(function () { decorateSoon(); }); mo.observe(view, { childList: true, subtree: true }); }
+    root.addEventListener('eigo-offline-change', decorateSoon);   // a save / delete changes the saved count and the saved list screen
+    if (doc.body && root.MutationObserver) new root.MutationObserver(function () { var n = doc.querySelector('[data-eigo-notice]'); if (n) fixLimitWords(n); }).observe(doc.body, { childList: true, subtree: true });   // adapter notices ("raise the limit" half is dropped)
     var a = host.audioEl; if (a && a.addEventListener) { a.addEventListener('pause', scheduleCheck); a.addEventListener('ended', scheduleCheck); }
     doc.addEventListener('visibilitychange', function () { if (!doc.hidden) { refresh(); scheduleCheck(); } });
     root.setInterval(function () { scheduleCheck(); }, 5000);
