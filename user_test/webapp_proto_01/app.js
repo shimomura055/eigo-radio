@@ -440,7 +440,7 @@
   }
 
   /* ---------- APPUI-C ⑦ オフライン保存UI(共通UI。App(native)が window.EigoHost.offline を提供する環境だけで表示。Web版=capabilityなし=何も出さない) ----------
-     契約(v1): EigoHost.offline = { v:1, state(slug)->{status:'checking|none|busy|partial|saved|failed|unknown', pct, reason, ...}(同期), touch(slug), start(slug), remove(slug), summary()(同期), setLimit(bytes), shareLog(), refresh() }
+     契約(v1): EigoHost.offline = { v:1, state(slug)->{status:'checking|none|busy|partial|saved|failed|unknown', pct, reason, ...}(同期), touch(slug), start(slug), remove(slug), summary()(同期), shareLog(), refresh() }
      変化通知=window の 'eigo-offline-change' イベント(detail:{slug|null})。判定はmode文字列でなく機能(capability)の有無。文言・CSSはこの共通ソースが唯一の定義。 */
   function offCap() {
     var h = window.EigoHost, o = h && h.offline;
@@ -470,22 +470,20 @@
         return '<div class="dlmain dlchk" data-dl-state="checking" role="status">確認中…</div>';
     }
   }
-  var DL_GUIDE = '<a href="#/me">マイページ</a>の「オフライン保存の管理」で不要な保存を削除してください(自動では削除しません)。';
+  var DL_GUIDE = '端末の空き容量を確保するか、<a href="#/me/saved">保存した記事</a>から不要な保存を削除してください(自動では削除しません)。';
   function dlWhy(s, lead) {   // lead=true: 失敗(何も保存できていない) / false: 一部のみ保存(途中終了)
-    if (s.reason === 'storage_limit') return (lead ? '保存容量の上限に達したためダウンロードできませんでした。' : '保存容量の上限に達したため、一部のみ保存されています。') + DL_GUIDE;
+    if (s.reason === 'storage_full') return (lead ? '端末の空き容量が足りないためダウンロードできませんでした。' : '端末の空き容量が足りないため、一部のみ保存されています。') + DL_GUIDE;   // 2026-11-27 USER_05: アプリ独自の保存容量上限は撤廃。保存が止まるのは端末の空きが足りない時だけ
     if (s.reason === 'stale') return '記事が更新されています。もう一度ダウンロードすると最新の音声を保存できます。';
     if (s.reason === 'offline') return lead ? 'ネットワークに接続できないためダウンロードできませんでした。接続を確認してもう一度お試しください。' : '一部のみ保存されています(ネットワークが切れました)。接続を確認してもう一度ダウンロードしてください。';
     return lead ? 'ダウンロードに失敗しました。もう一度お試しください。' : '一部のみ保存されています(途中で終了しました)。もう一度ダウンロードしてください。';
   }
   function dlSlotHtml(slug) { var o = offCap(); if (o && typeof o.touch === 'function') { try { o.touch(slug); } catch (e) { } } return o ? '<div class="dlslot" id="dlslot" data-dl-slug="' + esc(slug) + '" aria-live="polite">' + dlInner(slug) + '</div>' : ''; }
-  function dlMgmtHtml() {   // マイページ「オフライン保存の管理」(旧・右上シートの容量/上限/削除/診断/オフライン表示を移設)
+  function dlMgmtHtml() {   // マイページ「オフライン保存の管理」(旧・右上シートの容量/削除/診断/オフライン表示を移設)
     var o = offCap(); if (!o) return '';
     var m = o.summary() || {}, h = '';
     if (!m.loaded) return '<div class="dlmsg">確認中…</div>';
-    if (m.online === false) h += '<div class="dlmsg dloff" data-dl-offline="1">現在オフラインです。保存済みの記事は下の一覧からそのまま聴けます。</div>';
-    var room = Math.max(0, (m.limitBytes || 0) - (m.usedBytes || 0));   // AND2(2026-11-27 承認): 上限の選択欄は撤去(上限は内部の安全停止として残る)。表示=現在の保存容量 + あと約Y(Y = min(内部上限の残り, 端末の空き)。端末の空きが取得できない時は内部上限の残りのみ)
-    if (typeof m.freeBytes === 'number' && isFinite(m.freeBytes) && m.freeBytes >= 0) room = Math.min(room, m.freeBytes);
-    h += '<div class="dlmsg" data-dl-usage="1">現在の保存容量：' + dlMB(m.usedBytes) + '<br>' + (room <= 0 ? 'これ以上は保存できません。不要な保存を削除してください。' : 'あと約' + dlMB(room) + '保存できます') + '</div>';
+    if (m.online === false) h += '<div class="dlmsg dloff" data-dl-offline="1">現在オフラインです。保存済みの記事は「保存した記事」からそのまま聴けます。</div>';
+    h += '<div class="dlmsg" data-dl-usage="1">現在の保存容量：' + dlMB(m.usedBytes) + '</div>';   // 2026-11-27 USER_05 sec 1: 現在の保存容量だけを表示(アプリ独自の上限・「あと約Y保存できます」は撤廃)
     return h;
   }
   var DL_ST_NOTE = { partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません' };   // 通常の保存済み行には状態語を付けない(例外状態だけ表示=ユーザーの操作が要るため)
