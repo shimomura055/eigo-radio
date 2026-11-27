@@ -47,7 +47,7 @@
     c.innerHTML = '<div style="font-size:12px;font-weight:700;color:#5b6b8c;margin-bottom:6px">プレビュー専用の表示</div>' +
       '<h3 style="margin:0 0 8px;font-size:17px">実アプリではAppleの契約管理画面が開きます</h3>' +
       '<p style="margin:0 0 8px;font-size:14px;line-height:1.6">プレビューでは開けないため、この表示のみです。契約内容を確認しただけでは、会員の状態は変わりません。</p>' +
-      '<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#5b6b8c">解約したあとの見え方(自動更新停止済み)は、右の状態パネルで「有料会員(自動更新停止済み)」を選ぶと確認できます。</p>';
+      '<p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:#5b6b8c">解約したあとの見え方(自動更新停止済み)は、状態パネルで「有料会員(自動更新停止済み)」を選ぶと確認できます。</p>';
     var b = d.createElement('button'); b.type = 'button'; b.textContent = '閉じる'; b.setAttribute('data-pv-manage-close', '1');
     b.style.cssText = 'width:100%;min-height:46px;border:0;border-radius:12px;background:#1d4fd8;color:#fff;font-size:16px;font-weight:700;cursor:pointer';
     b.addEventListener('click', function () { if (w.parentNode) w.parentNode.removeChild(w); });
