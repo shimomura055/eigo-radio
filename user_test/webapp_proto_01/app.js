@@ -664,7 +664,7 @@
         return PWCard.renderPWCard(x, i, { saved: isSaved(x.en), playIcon: IC.play });
       }).join('') + '</section>';
     }
-    if (L.todays_expression && L.todays_expression.length) {   /* TDXP 委任_03: Today's Expression(学ぶの2番目=Phrase/Wordの次・文法の前。ユーザー判断 UDR #253。キー無し=非表示。折りたたみ・入力欄・採点・履歴・TTSなし。固定注記は見出し直下に1個) */
+    if (L.todays_expression && L.todays_expression.length) {   /* TDXP 委任_03: Today's Expression(学ぶの2番目=Phrase/Wordの次・Think & Expressの前。ユーザー判断 UDR #253。キー無し=非表示。折りたたみ・入力欄・採点・履歴・TTSなし。固定注記は見出し直下に1個) */
       out += '<section class="secbox tx-box" id="todaysbox"><h3>Today&#39;s Expression<small>本日の表現</small></h3><p class="lvnote tx-fixed">この記事に関連する、本文には登場しない英語表現を紹介します。</p>' + L.todays_expression.map(function (it) {
         var f = {}; it.fields.forEach(function (x) { f[x.label] = x.html; });
         return '<div class="tx"><p class="tx-expr">' + (f['表現'] || '') + '</p><p class="tx-mean">' + (f['意味'] || '') + '</p><dl>' +
@@ -674,12 +674,7 @@
           '</dl></div>';   /* ECUI 委任_05(TELK): 「この記事とのつながり」(link)は描画しない(既存データに残っていても非表示) */
       }).join('') + '</section>';
     }
-    if (L.grammar && L.grammar.length) {
-      out += '<section class="secbox gram"><h3>文法・構文解説<small>Grammar &amp; Sentence Structure</small></h3>' + L.grammar.map(function (it) {
-        return '<div class="gr"><dl>' + it.fields.map(function (f) { return '<dt>' + esc(f.label) + '</dt><dd>' + f.html + '</dd>'; }).join('') + '</dl></div>';
-      }).join('') + '</section>';
-    }
-    if (L.think_express && L.think_express.length) {   /* TEX 委任_03: Think & Express(文法の次=3番目。キー無し=非表示。回答例は<details>初期閉・入力欄/採点/履歴/TTSなし) */
+    if (L.think_express && L.think_express.length) {   /* TEX 委任_03: Think & Express(Today's Expressionの次=3番目。キー無し=非表示。回答例は<details>初期閉・入力欄/採点/履歴/TTSなし) */
       out += '<section class="secbox te-box" id="thinkbox"><h3>Think &amp; Express<small>自分の考えを英語で</small></h3>' + L.think_express.map(function (it) {
         var f = {}; it.fields.forEach(function (x) { f[x.label] = x.html; });
         /* TE-DISPLAY 委任_06: 賛否・二択の新形式(6項目)は同じ<details>内に区切り線+もう一つの回答例(英+訳)。キー無し(旧形式・自由回答)は''=従来とバイト同一 */
