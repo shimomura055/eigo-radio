@@ -45,7 +45,7 @@
     return (r && r.review_only === true) ? undefined : r;
   }
   /* FINAL-UI W13 ②: unlisted_items の review_only 行(復習専用の縮約データだけがサーバーに残る退役記事。契約=REVIEW-RETENTION DESIGN_02 §9)は復習の解決(itemForReview)にだけ使う。
-     item()=記事ページ・再生・ミニプレイヤー・キュー・保存した記事・お気に入り・共有・検索・一覧の入口用は review_only 行を返さない(=「記事が見つからない」)。 */
+     item()=記事ページ・再生・ミニプレイヤー・キュー・ダウンロードした記事・お気に入り・共有・検索・一覧の入口用は review_only 行を返さない(=「記事が見つからない」)。 */
   function isRO(x) { return !!x && x.review_only === true; }
   /* FINAL-UI W15: 復習専用の行の置き場所は catalog の新top-level key review_only_items(DESIGN_03: 旧版アプリが旧版として開く経路を作らないため unlisted_items には置かない)。
      itemForReview の解決順 = items → unlisted_items(legacy) → review_only_items。item() は review_only_items を見ない(入口制限は W13 のまま)。keyの無いcatalogは従来どおり。 */
@@ -532,7 +532,7 @@
         return '<div class="dlmain dlchk" data-dl-state="checking" role="status">確認中…</div>';
     }
   }
-  var DL_GUIDE = '端末の空き容量を確保するか、<a href="#/me/saved">保存した記事</a>から不要な保存を削除してください(自動では削除しません)。';
+  var DL_GUIDE = '端末の空き容量を確保するか、<a href="#/me/saved">ダウンロードした記事</a>から不要な保存を削除してください(自動では削除しません)。';
   function dlWhy(s, lead) {   // lead=true: 失敗(何も保存できていない) / false: 一部のみ保存(途中終了)
     if (s.reason === 'storage_full') return (lead ? '端末の空き容量が足りないためダウンロードできませんでした。' : '端末の空き容量が足りないため、一部のみ保存されています。') + DL_GUIDE;   // 2026-11-27 USER_05: アプリ独自の保存容量上限は撤廃。保存が止まるのは端末の空きが足りない時だけ
     if (s.reason === 'stale') return '記事が更新されています。もう一度ダウンロードすると最新の音声を保存できます。';
@@ -544,27 +544,27 @@
     var o = offCap(); if (!o) return '';
     var m = o.summary() || {}, h = '';
     if (!m.loaded) return '<div class="dlmsg">確認中…</div>';
-    if (m.online === false) h += '<div class="dlmsg dloff" data-dl-offline="1">現在オフラインです。保存済みの記事は「保存した記事」からそのまま聴けます。</div>';
+    if (m.online === false) h += '<div class="dlmsg dloff" data-dl-offline="1">現在オフラインです。保存済みの記事は「ダウンロードした記事」からそのまま聴けます。</div>';
     h += '<div class="dlmsg" data-dl-usage="1">現在の保存容量：' + dlMB(m.usedBytes) + '</div>';   // 2026-11-27 USER_05 sec 1: 現在の保存容量だけを表示(アプリ独自の上限・「あと約Y保存できます」は撤廃)
     return h;
   }
   var DL_ST_NOTE = { partial: '一部のみ保存', busy: '保存中', checking: '確認中…', failed: '保存できませんでした', unknown: '確認できません' };   // 通常の保存済み行には状態語を付けない(例外状態だけ表示=ユーザーの操作が要るため)
-  function savedItems() { var o = offCap(); var m = o && o.summary() || {}; return m.loaded ? (m.items || []).filter(function (x) { return !(x && isRO(itemForReview(x.slug))); }) : null; }   // W13 ②: review_only(復習専用)は保存した記事に出さない(端末に保存音声が残っていても記事・本編へ到達させない)
-  function savedRowHtml() { var it = savedItems(); return '<a class="setrow" id="savedrow" href="#/me/saved">保存した記事<span>' + (it ? it.length + '件 ' : '') + '&#8250;</span></a>'; }
-  function savedInner() {   // 「保存した記事」一覧画面の本体(記事を開く・削除はここで行う)
+  function savedItems() { var o = offCap(); var m = o && o.summary() || {}; return m.loaded ? (m.items || []).filter(function (x) { return !(x && isRO(itemForReview(x.slug))); }) : null; }   // W13 ②: review_only(復習専用)はダウンロードした記事に出さない(端末に保存音声が残っていても記事・本編へ到達させない)
+  function savedRowHtml() { var it = savedItems(); return '<a class="setrow" id="savedrow" href="#/me/saved">ダウンロードした記事<span>' + (it ? it.length + '件 ' : '') + '&#8250;</span></a>'; }
+  function savedInner() {   // 「ダウンロードした記事」一覧画面の本体(記事を開く・削除はここで行う)
     var items = savedItems();
     if (!items) return '<div class="dlmsg">確認中…</div>';
     return items.length ? items.map(function (x) {
       var st = x.status === 'saved' ? '' : (DL_ST_NOTE[x.status] || '');
       return '<div class="dlrow" data-dl-row="' + esc(x.slug) + '"><a href="#/player/' + encodeURIComponent(x.slug) + '">' + esc(x.title) + '</a><small>' + esc((st ? st + ' ' : '') + (x.bytes ? '(' + dlMB(x.bytes) + ')' : '')) + '</small>' +
         '<button type="button" class="dllink" data-dl-act="remove" data-dl-slug="' + esc(x.slug) + '" aria-label="' + esc(x.title) + 'の保存を削除">削除</button></div>';
-    }).join('') : '<div class="dlmsg">まだ保存した記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。</div>';
+    }).join('') : '<div class="dlmsg">まだダウンロードした記事はありません。記事ページの「オフライン用にダウンロード」から保存できます。</div>';
   }
   function viewMeSaved() {
     var o = offCap(); if (!o) return viewMe();   // オフライン保存の機能が無い環境(Web版)にはこの画面は無い
     try { if (o.refresh) o.refresh(); } catch (e) { }
     var it = savedItems();
-    return topBar({ back: true }) + '<h2 style="margin:4px 0 4px;color:var(--navy)">保存した記事' + (it ? '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + it.length + '件</small>' : '') + '</h2>' +
+    return topBar({ back: true }) + '<h2 style="margin:4px 0 4px;color:var(--navy)">ダウンロードした記事' + (it ? '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + it.length + '件</small>' : '') + '</h2>' +
       '<div class="dlmgmt" id="savedscr" aria-live="polite">' + savedInner() + '</div>';
   }
   function viewMeDl() { var o = offCap(); if (!o) return ''; try { if (o.refresh) o.refresh(); } catch (e) { } return '<div class="pl">オフライン保存の管理</div><div class="dlmgmt" id="medl" aria-live="polite">' + dlMgmtHtml() + '</div>'; }
@@ -574,7 +574,7 @@
     if (sl && route.name === 'player' && (!slug || slug === sl.getAttribute('data-dl-slug'))) sl.innerHTML = dlInner(sl.getAttribute('data-dl-slug'));
     var md = $('medl'); if (md && route.name === 'me') md.innerHTML = dlMgmtHtml();
     var sr = $('savedrow'); if (sr && route.name === 'me') sr.outerHTML = savedRowHtml();
-    var sc = $('savedscr'); if (sc && route.name === 'me' && route.arg === 'saved') { sc.innerHTML = savedInner(); var sh = sc.previousElementSibling, it = savedItems(); if (sh && sh.tagName === 'H2') sh.innerHTML = '保存した記事' + (it ? '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + it.length + '件</small>' : ''); }
+    var sc = $('savedscr'); if (sc && route.name === 'me' && route.arg === 'saved') { sc.innerHTML = savedInner(); var sh = sc.previousElementSibling, it = savedItems(); if (sh && sh.tagName === 'H2') sh.innerHTML = 'ダウンロードした記事' + (it ? '<small style="font-size:13px;color:var(--muted);margin-left:8px">' + it.length + '件</small>' : ''); }
   });
   document.addEventListener('click', function (e) {   // ダウンロード操作。チュートリアル中は無視(M8)。進行中・済み・確認中の再タップは adapter 側でも二重起動しない
     var b = e.target.closest && e.target.closest('[data-dl-act]'); if (!b) return;
@@ -1048,7 +1048,7 @@
   var fromHash = null, curHash = null;   // WUG A-3: アプリ内の遷移元(画面の種類が変わった時だけ更新。連続再生で記事→記事へ進んでも遷移元は保持)
   var BACK_LAB = { home: 'ホーム', list: '一覧', search: '検索', review: '復習帳', me: 'マイページ', fav: 'お気に入り' };
   function backInfo() {
-    if (route.name === 'me' && route.arg === 'saved') return { hash: '#/me', label: 'マイページに戻る' };   // 保存した記事の一覧画面の戻り先は常にマイページ
+    if (route.name === 'me' && route.arg === 'saved') return { hash: '#/me', label: 'マイページに戻る' };   // ダウンロードした記事の一覧画面の戻り先は常にマイページ
     var h = fromHash;
     if (!h || h === curHash || h.indexOf('#/player') === 0) h = route.name === 'list' ? '#/search' : (route.name === 'fav' ? '#/me' : '#/home');   // 遷移元が不明(直接アクセス等)のときの既定
     var nm = h.slice(2).split(/[\/?]/)[0];
@@ -1452,7 +1452,7 @@
     return [
       { hash: '#/home', sel: ['#lvseg-home'], title: 'レベルを選ぶ', html: '<p>ここで切り替えます。</p><div class="lvs"><b>Standard</b>：TOEIC 800点未満／英検2級程度<br><b>Advanced</b>：TOEIC 800点以上／英検準1級以上</div><p class="fine2">あくまで目安で、利用制限ではありません。</p>' },
       { hash: '#/home', sel: ['#omakase'], soft: true, title: '聴き流しには、おまかせラジオ', html: '<p>新着記事からランダムに連続再生。通勤中や家事をしながらの聴き流しにおすすめです。</p>' },   // USER_03 ①: P1とP2の間。ホームの実際のおまかせラジオ(#omakase)をspotlight。soft=対象が非表示(無料会員はおまかせ非表示)ならハイライトなしで説明のみ。操作は暗幕が遮り再生・保存は一切変更しない
-      { hash: '#/player/' + first, player: true, sel: ['#modeseg'], title: '聴く / 学ぶを切り替え', html: '<p>『聴く』で音声を楽しみ、『学ぶ』でPhrase / Word、文法、表現などを確認できます。</p>',
+      { hash: '#/player/' + first, player: true, sel: ['#modeseg'], title: '聴く / 学ぶを切り替え', html: '<p>『聴く』で音声を楽しみ、『学ぶ』で単語やフレーズ、英語表現などを確認できます。</p>',
         prep: function (cb) {   // 委任_02: 「学ぶ」が選択された状態の画面を見せる(ST.modeは保存されない画面状態。離脱・終了で聴くへ戻る)
           waitFor(['#modeseg'], function () {
             if (ST.mode !== 'learn') setMode('learn');
